@@ -298,4 +298,7 @@ gradle-app.setting
 # Java heap dump
 *.hprof
 
+# Spring application
+**/application-secret.yml
+
 # End of https://www.toptal.com/developers/gitignore/api/intellij,java,gradle,windows,macos,web,visualstudiocode
