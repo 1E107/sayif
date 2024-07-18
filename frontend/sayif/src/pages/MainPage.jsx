@@ -5,3 +5,5 @@ const MainPage = () => {
         <Main></Main>
     )
 }
+
+export default MainPage;
