@@ -1,9 +1,9 @@
-function MainPage() {
-    const MainPageView = (
+function Main() {
+    const MainView = (
         <div>Main Page</div>
     )
 
-    return MainPageView;
+    return MainView;
 }
 
-export default MainPage;
+export default Main;
