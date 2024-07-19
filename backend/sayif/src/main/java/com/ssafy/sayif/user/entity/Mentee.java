@@ -1,37 +1,30 @@
 package com.ssafy.sayif.user.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
+import lombok.Getter;
+
 import java.time.LocalDateTime;
 
 @Entity
-@DiscriminatorValue("MENTEE")
-public class Mentee extends User {
+@Getter
+public class Mentee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer menteeId;
+    private int menteeId;
 
-    @Column(name = "apply_date", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime applyDate;
+    @Column(nullable = false)
+    private LocalDateTime applyDate = LocalDateTime.now();
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
-    private MenteeStatus status = MenteeStatus.Pending;
+    @Column(nullable = false)
+    private Status status = Status.Pending;
 
-    @Column(name = "auth_file")
+    @Lob
     private String authFile;
 
     @OneToOne
-    @JoinColumn(name = "id")
-    private User user;
+    @JoinColumn(name = "mentee_id")
+    private Member member;
 
 }
