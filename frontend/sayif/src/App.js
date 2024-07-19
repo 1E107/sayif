@@ -11,7 +11,7 @@ function App() {
       <Header></Header>
       <Routes>
         <Route path="/" element={<MainPage></MainPage>}></Route>
-        <Route path="/introduction" element={<IntroPage></IntroPage>}></Route>
+        <Route path="/serviceIntroduction" element={<IntroPage></IntroPage>}></Route>
         <Route path="/community" element={<CommunityPage></CommunityPage>}></Route>
       </Routes>
     </BrowserRouter>

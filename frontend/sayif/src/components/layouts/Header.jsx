@@ -7,49 +7,65 @@ import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import {useNavigate} from 'react-router-dom';
-import PersonIcon from '@mui/icons-material/Person';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import '../../styles/fonts.css'
+
 const pages = ['새잎 소개', '멘토링', '소통 공간', '정보 공간'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const settings = {
+  '새잎 소개' :  ['서비스 소개', '커리큘럼 로드맵', '공지사항'],
+  '멘토링' :  ['멘토링 그룹 생성', '멘토링 신청', '멘토 프로필 조회', '멘토링 자료 공유'],
+  '소통 공간' :  ['자유 게시판'],
+  '정보 공간' :  ['자립 지원 정보']
+};
+const menuToPage = {
+  '서비스 소개' : '/serviceIntroduction',
+  '커리큘럼 로드맵' : '/',
+  '공지사항' : '/',
+  '멘토링 그룹 생성' : '/',
+  '멘토링 신청' : '/',
+  '멘토 프로필 조회' : '/',
+  '멘토링 자료 공유' : '/',
+  '자유 게시판' : '/community',
+  '자립 지원 정보' : '/info'
+} 
 
 function Header() {
   const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [anchorElSubLow, setAnchorElSubLow] = React.useState(null); // 줄어든 화면
+  const [anchorElSubFull, setAnchorElSubFull] = React.useState(null); // 전체 화면
+  const [currentSettings, setCurrentSettings] = React.useState([]);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
+  const handleOpenSubMenuLow = (event, page) => {
+    setAnchorElSubLow(event.currentTarget);
+    setCurrentSettings(settings[page]);
+    // 멘토링 메뉴의 경우 멘토, 멘티 볼 수 있는 하위 메뉴 다르게 하면 될 것 같음
+  };
+  const handleOpenSubMenuFull = (event, page) => {
+    setAnchorElSubFull(event.currentTarget);
+    setCurrentSettings(settings[page]);
+    // 멘토링 메뉴의 경우 멘토, 멘티 볼 수 있는 하위 메뉴 다르게 하면 될 것 같음
   };
 
-  const handleCloseNavMenu = (page) => {
+  const handleCloseNavMenu = () => {
     setAnchorElNav(null);
-
-    switch(page) {
-      case '새잎 소개' :
-        navigate("/introduction");
-        break;
-      case '멘토링' :
-        navigate("/mentoring");
-        break;
-      case '소통 공간' :
-        navigate("/community");
-        break;
-      case '정보 공간' :
-        navigate("/info");
-        break;
-    }
   };
 
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
+  const handleCloseSubMenuLow = (subMenu) => {
+    setAnchorElSubLow(null);
+    navigate(menuToPage[subMenu]);
+  };
+
+  const handleCloseSubMenuFull = (subMenu) => {
+    setAnchorElSubFull(null);
+    navigate(menuToPage[subMenu]);
   };
 
   return (
@@ -61,10 +77,8 @@ function Header() {
             variant="h6"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            href="/"
             sx={{
-              ml: 5,
-              mr: 2,
               display: { xs: 'none', md: 'flex' },
               fontFamily: 'monospace',
               fontWeight: 700,
@@ -76,6 +90,7 @@ function Header() {
             <img src="logo.png"></img>
           </Typography>
 
+          {/* 화면 크기 줄이면 */}
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
@@ -106,17 +121,49 @@ function Header() {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={() => handleCloseNavMenu(page)}>
-                  <Typography textAlign="center">{page}</Typography>
+                <MenuItem key={page} onClick={(event) => {handleOpenSubMenuLow(event, page)}}>
+                  <Typography textAlign="center" fontFamily="ChosunGu">{page}</Typography>
                 </MenuItem>
               ))}
+              <Menu
+                sx={{ 
+                  mt: '45px'
+                }}
+                id="menu-appbar"
+                anchorEl={anchorElSubLow}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(anchorElSubLow)}
+                onClose={handleCloseSubMenuLow}
+              >
+                {currentSettings.map((setting) => (
+                  <MenuItem key={setting} onClick={() => {handleCloseSubMenuLow(setting)}}>
+                    <Typography 
+                      fontFamily="ChosunGu" 
+                      paddingLeft="5px" 
+                      paddingRight="20px" 
+                      marginTop="2px"
+                      minWidth="120px"
+                      >
+                        {setting}
+                      </Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
             </Menu>
           </Box>
           <Typography
             variant="h5"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            href="/"
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },
@@ -128,30 +175,49 @@ function Header() {
               textDecoration: 'none',
             }}
           >
-            LOGO
+            <img src="logo.png"></img>
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'center', alignItems: 'center' }}>
+
+          {/* 전체 화면 */}
+          <Box sx={{ 
+              flexGrow: 1, 
+              display: { xs: 'none', md: 'flex' }, 
+              justifyContent: 'center', 
+              alignItems: 'center'
+            }}
+          >
             {pages.map((page) => (
               <Button
                 key={page}
-                onClick={() => handleCloseNavMenu(page)}
+                onClick={(event) => { handleOpenSubMenuFull(event, page) }}
                 sx={{ my: 2, color: 'black', display: 'block', fontFamily: 'ChosunGu', fontWeight: 'bold'}}
               >
                 {page}
               </Button>
             ))}
-          </Box>
-
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="로그인">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <PersonIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-              </IconButton>
-            </Tooltip>
-            {/* <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
+            <Menu
+              sx={{
+                mt: '45px',
+                '& .MuiPaper-root': {
+                  overflow: 'visible',
+                  boxShadow: 'none',
+                  minWidth: '170px',
+                  filter: 'drop-shadow(0px 2px 5px rgba(0,0,0,0.32))',
+                  '&::before': {
+                    content: '""',
+                    display: 'block',
+                    position: 'absolute',
+                    top: 0,
+                    right: 14,
+                    width: 10,
+                    height: 10,
+                    bgcolor: 'background.paper',
+                    transform: 'translateY(-50%) rotate(45deg)',
+                    zIndex: 0,
+                  },
+                },
+              }}
+              anchorEl={anchorElSubFull}
               anchorOrigin={{
                 vertical: 'top',
                 horizontal: 'right',
@@ -161,15 +227,24 @@ function Header() {
                 vertical: 'top',
                 horizontal: 'right',
               }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
+              open={Boolean(anchorElSubFull)}
+              onClose={handleCloseSubMenuFull}
+              id="menu-appbar"
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+              {currentSettings.map((setting) => (
+                <MenuItem key={setting} onClick={() => { handleCloseSubMenuFull(setting) }} sx={{boxShadow:'none'}}>
+                  <Typography sx={{fontFamily: 'ChosunGu', fontSize: '14px'}}> {setting} </Typography>
                 </MenuItem>
               ))}
-            </Menu> */}
+            </Menu>
+          </Box>
+
+          <Box sx={{ flexGrow: 0 }}>
+            <Tooltip title="로그인">
+              <IconButton sx={{ p: 0 }}>
+                <PersonOutlineIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+              </IconButton>
+            </Tooltip>
           </Box>
         </Toolbar>
       </Container>
