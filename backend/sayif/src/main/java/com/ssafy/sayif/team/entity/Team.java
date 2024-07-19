@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 public class Team {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "name", length = 30, nullable = false)
@@ -38,8 +38,8 @@ public class Team {
     @Column(name = "day_of_week")
     private Integer dayOfWeek;
 
-    @Column(name = "time")
-    private LocalTime time;
+    @Column(name = "mentoring_time")
+    private LocalTime mentoringTime;
 
     @Column(name = "end_date")
     private LocalDateTime endDate;

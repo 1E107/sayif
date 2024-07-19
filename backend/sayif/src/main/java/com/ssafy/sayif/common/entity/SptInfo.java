@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 public class SptInfo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "title", length = 100)
@@ -41,4 +41,6 @@ public class SptInfo {
     @Column(name = "hit_count")
     private Integer hitCount;
 
+    @Column(name = "img")
+    private String img;
 }

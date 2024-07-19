@@ -1,10 +1,13 @@
 package com.ssafy.sayif.team.entity;
 
+import com.ssafy.sayif.user.entity.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -20,21 +23,21 @@ import lombok.NoArgsConstructor;
 public class TeamMsg {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "msg_content")
+    @Column(columnDefinition = "TEXT")
     private String msgContent;
 
     @Column(name = "send_at")
     private LocalDateTime sendAt;
 
-    @Column(name = "user_id", nullable = false)
-    private Integer userId;
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
 
-    @Column(name = "team_id", nullable = false)
-    private Integer teamId;
-
-
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    private Team team;
 }
 

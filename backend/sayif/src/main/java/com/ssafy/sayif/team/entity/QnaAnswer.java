@@ -1,43 +1,38 @@
 package com.ssafy.sayif.team.entity;
 
-
+import com.ssafy.sayif.common.entity.BaseTimeEntity;
+import com.ssafy.sayif.user.entity.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import java.sql.Timestamp;
-import lombok.AccessLevel;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SuperBuilder
+@NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class QnaAnswer {
+public class QnaAnswer extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "qna_board_id", nullable = false)
-    private Integer qnaBoardId;
+    @ManyToOne
+    @JoinColumn(name = "teamboard_id")
+    private TeamBoard teamBoard;
 
-    @Column(name = "user_id", nullable = false)
-    private Integer userId;
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
 
-    @Column(name = "answer")
+    @Column(columnDefinition = "TEXT")
     private String answer;
-
-    @Column(name = "created_at")
-    private Timestamp createdAt;
-
-    @Column(name = "edited_at")
-    private Timestamp editedAt;
-
 }
-

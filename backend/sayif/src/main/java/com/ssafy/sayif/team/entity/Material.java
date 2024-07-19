@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,7 +21,7 @@ import lombok.NoArgsConstructor;
 public class Material {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "chapter")
@@ -28,8 +30,9 @@ public class Material {
     @Column(name = "file", length = 255)
     private String file;
 
-    @Column(name = "mt_id", nullable = false)
-    private Integer mtId;
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    private Team team;
 
 }
 

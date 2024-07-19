@@ -1,6 +1,12 @@
 package com.ssafy.sayif.user.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import lombok.Getter;
 
 
@@ -9,8 +15,9 @@ import lombok.Getter;
 public class Mentor {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int mentorId;
+    @OneToOne
+    @JoinColumn(name = "mentor_id")
+    private Member member;
 
     @Column(length = 20)
     private String major;
@@ -19,14 +26,9 @@ public class Mentor {
 
     private int seq;
 
-    @Lob
+    @Column(columnDefinition = "TEXT")
     private String intro;
 
     @Enumerated(EnumType.STRING)
     private Track track;
-
-    @OneToOne
-    @JoinColumn(name = "member_id")
-    private Member member;
-
 }
