@@ -7,27 +7,28 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
-import java.time.LocalDateTime;
 import lombok.Getter;
+
 
 @Entity
 @Getter
-public class Mentee {
+public class Mentor {
 
     @Id
     @OneToOne
-    @JoinColumn(name = "mentee_id")
+    @JoinColumn(name = "mentor_id")
     private Member member;
 
-    @Column(nullable = false)
-    private LocalDateTime applyDate;
+    @Column(length = 20)
+    private String major;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Status status = Status.Pending;
+    private int regCode;
+
+    private int seq;
 
     @Column(columnDefinition = "TEXT")
-    private String authFile;
+    private String intro;
 
-
+    @Enumerated(EnumType.STRING)
+    private Track track;
 }

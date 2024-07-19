@@ -8,17 +8,18 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "ROLE")
-public class User {
+public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String userId;
+    private String memberId;
     private String pwd;
     private String name;
     private String nickname;
@@ -28,6 +29,8 @@ public class User {
 
     private String profileImg;
 
-    @OneToOne
-    private Team teamId;
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    private Team team;
+
 }

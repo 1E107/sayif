@@ -1,5 +1,5 @@
 package com.ssafy.sayif.user.entity;
 
-public enum MenteeStatus {
+enum Status {
     Pending, Approved, Rejected
 }
