@@ -1,4 +1,4 @@
-package com.ssafy.sayif.common.entity;
+package com.ssafy.sayif.team.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class Quiz {
+public class Material {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -25,8 +25,11 @@ public class Quiz {
     @Column(name = "chapter")
     private Integer chapter;
 
-    @Column(name = "question")
-    private String question;
+    @Column(name = "file", length = 255)
+    private String file;
+
+    @Column(name = "mt_id", nullable = false)
+    private Integer mtId;
 
 }
 

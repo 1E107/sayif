@@ -1,6 +1,5 @@
 package com.ssafy.sayif.user.entity;
 
-import com.ssafy.sayif.team.entity.Team;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,7 +7,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
-import jakarta.persistence.OneToOne;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -28,6 +26,4 @@ public class User {
 
     private String profileImg;
 
-    @OneToOne
-    private Team teamId;
 }

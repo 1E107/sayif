@@ -16,17 +16,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class Quiz {
+public class QuizChoice {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    @Column(name = "chapter")
-    private Integer chapter;
+    @Column(name = "quiz_id", nullable = false)
+    private Integer quizId;
 
-    @Column(name = "question")
-    private String question;
+    @Column(name = "content")
+    private String content;
+
+    @Column(name = "is_answer")
+    private Boolean isAnswer;
 
 }
 

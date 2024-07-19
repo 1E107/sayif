@@ -1,10 +1,11 @@
-package com.ssafy.sayif.common.entity;
+package com.ssafy.sayif.team.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,17 +17,24 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class Quiz {
+public class TeamMsg {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private Long id;
 
-    @Column(name = "chapter")
-    private Integer chapter;
+    @Column(name = "msg_content")
+    private String msgContent;
 
-    @Column(name = "question")
-    private String question;
+    @Column(name = "send_at")
+    private LocalDateTime sendAt;
+
+    @Column(name = "user_id", nullable = false)
+    private Integer userId;
+
+    @Column(name = "team_id", nullable = false)
+    private Integer teamId;
+
 
 }
 
