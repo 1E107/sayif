@@ -26,7 +26,7 @@ const menuToPage = {
   '커리큘럼 로드맵' : '/',
   '공지사항' : '/',
   '멘토링 그룹 생성' : '/',
-  '멘토링 신청' : '/',
+  '멘토링 신청' : '/apply-mentoring',
   '멘토 프로필 조회' : '/',
   '멘토링 자료 공유' : '/',
   '자유 게시판' : '/community',
@@ -69,7 +69,7 @@ function Header() {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="fixed">
       <Container maxWidth="xl" style={{backgroundColor: 'white'}}>
         <Toolbar disableGutters>
           
