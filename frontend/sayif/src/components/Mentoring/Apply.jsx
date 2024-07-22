@@ -5,6 +5,7 @@ import '../../styles/fonts.css'
 import { useState } from "react";
 import DateTime from "./Step/DateTime";
 import SelectMentor from "./Step/SelectMentor";
+import Finish from "./Step/Finish";
 
 function Apply() {
     const [showApplyMain, setShowApplyMain] = useState(true);
@@ -90,6 +91,8 @@ function Apply() {
             }
              {
                 showSelectMentor && <SelectMentor formData={formData} reSelectInfo={handleReSelect} finishPage={handleFinishPage}></SelectMentor>
+            } {
+                showFinish && <Finish></Finish>
             }
            </S.Container>
         </>
