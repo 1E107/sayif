@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 const Main = styled.div`
     margin-top: 170px;
-    padding-left: 100px;
+    padding-left: 50px;
 `;
 
 const ApplyPage = () => {

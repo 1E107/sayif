@@ -63,15 +63,29 @@ const StyledCalendar = styled(Calendar)`
 `;
 
 
-function DateTime() 
+function DateTime({selectInfoSave}) 
 {
     const [TextAMPM, setTextAMPM] = useState("오전");
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
+    const [time, setTime] = useState("");
+    const [mentorList, setMentorList] = useState([]);
 
     const handleAMPM = () => {
         if(TextAMPM === '오전') setTextAMPM("오후");
         else setTextAMPM("오전");
+    };
+
+    const handleNextBtn = () => {
+        // 1. 서버로 시작 날짜(시작~종료), 시간 전달하고 멘토 리스트 받아오기
+        //mentorSave("please input mentor list"); // 2. 서버에서 받아온 멘토 리스트 넣기
+        selectInfoSave({
+            TextAMPM: TextAMPM,
+            startDate: startDate,
+            endDate: endDate,
+            time: time,
+            mentorList: [] 
+        })
     };
 
     const changeDate  = (event) => {
@@ -80,73 +94,78 @@ function DateTime()
 
         setStartDate(startDateFormat);
         setEndDate(endDateFormat);
-        // react에서 상태 업데이트가 비동기로 이루어지기 때문에 바로 startDate 호출하면 이전 값이 출력된다
-        console.log(startDateFormat);
-        console.log(endDateFormat);
+    }
+
+    const changeTime = (data) => {
+        setTime(data);
     }
 
     const DateTimeView = (
         <>
             <S.Container>
-                <S.DateTimeContainer>
-                    <S.BOX>
-                        <S.ContainerText>희망하는 멘토링 시작 일자가 언제인가요?</S.ContainerText>
-                        <StyledCalendar 
-                            onChange={changeDate}
-                            formatDay={(locale, date) => moment(date).format("DD")}
-                            selectRange={true}    
-                        />
-                    </S.BOX>
-                    <S.BOX>
-                        <S.ContainerText>희망하는 멘토링 시간이 언제인가요?</S.ContainerText>
-                        <div style={{
-                            backgroundColor: "#F5F5F5",
-                        }}>
-                            <IconButton aria-label="delete" size="large" style={{display: "inline-block", padding:"0px 5px 3px 0px"}} onClick={handleAMPM}>
-                                <ChevronLeftIcon />
-                            </IconButton>
-                            <S.TimeSelectText>{TextAMPM}</S.TimeSelectText>
-                            <IconButton aria-label="delete" size="large" style={{display: "inline-block", padding:"0px 0px 3px 5px"}} onClick={handleAMPM}>
-                                <ChevronRightIcon />
-                            </IconButton>
-                        </div>
-                        <S.TimeBlock>
-                                <S.TimeBtn>
-                                    <StyledButton>01:00</StyledButton>
-                                    <StyledButton>02:00</StyledButton>
-                                    <StyledButton>03:00</StyledButton>
-                                </S.TimeBtn>
-                                <S.TimeBtn>
-                                    <StyledButton>04:00</StyledButton>
-                                    <StyledButton>05:00</StyledButton>
-                                    <StyledButton>06:00</StyledButton>
-                                </S.TimeBtn>
-                                <S.TimeBtn>
-                                    <StyledButton>07:00</StyledButton>
-                                    <StyledButton>08:00</StyledButton>
-                                    <StyledButton>09:00</StyledButton>
-                                </S.TimeBtn>
-                                <S.TimeBtn>
-                                    <StyledButton>10:00</StyledButton>
-                                    <StyledButton>11:00</StyledButton>
-                                    <StyledButton>12:00</StyledButton>
-                                </S.TimeBtn>
-                            </S.TimeBlock>
-                    </S.BOX>
-                </S.DateTimeContainer>
-
-                <Button 
-                variant="contained"
-                style={{
-                    fontFamily: "ChosunGu",
-                    backgroundColor: "#116530",
-                    width: "250px",
-                    height: "50px",
-                    float: "right",
-                    margin: "30px 30px 80px 30px",
-                }}>
-                적용하기
-                </Button>
+                <div>  신청 아이콘 보여줌 </div>
+                <div>
+                    <S.DateTimeContainer>
+                        <S.BOX>
+                            <S.ContainerText>희망하는 멘토링 시작 일자가 언제인가요?</S.ContainerText>
+                            <StyledCalendar 
+                                onChange={changeDate}
+                                formatDay={(locale, date) => moment(date).format("DD")}
+                                selectRange={true}    
+                            />
+                        </S.BOX>
+                        <S.BOX>
+                            <S.ContainerText>희망하는 멘토링 시간이 언제인가요?</S.ContainerText>
+                            <div style={{
+                                backgroundColor: "#F5F5F5",
+                            }}>
+                                <IconButton aria-label="delete" size="large" style={{display: "inline-block", padding:"0px 5px 3px 0px"}} onClick={handleAMPM}>
+                                    <ChevronLeftIcon />
+                                </IconButton>
+                                <S.TimeSelectText>{TextAMPM}</S.TimeSelectText>
+                                <IconButton aria-label="delete" size="large" style={{display: "inline-block", padding:"0px 0px 3px 5px"}} onClick={handleAMPM}>
+                                    <ChevronRightIcon />
+                                </IconButton>
+                            </div>
+                            <S.TimeBlock>
+                                    <S.TimeBtn>
+                                        <StyledButton onClick={() => {changeTime("01:00")}}>01:00</StyledButton>
+                                        <StyledButton onClick={() => {changeTime("02:00")}}>02:00</StyledButton>
+                                        <StyledButton onClick={() => {changeTime("03:00")}}>03:00</StyledButton>
+                                    </S.TimeBtn>
+                                    <S.TimeBtn>
+                                        <StyledButton onClick={() => {changeTime("04:00")}}>04:00</StyledButton>
+                                        <StyledButton onClick={() => {changeTime("05:00")}}>05:00</StyledButton>
+                                        <StyledButton onClick={() => {changeTime("06:00")}}>06:00</StyledButton>
+                                    </S.TimeBtn>
+                                    <S.TimeBtn>
+                                        <StyledButton onClick={() => {changeTime("07:00")}}>07:00</StyledButton>
+                                        <StyledButton onClick={() => {changeTime("08:00")}}>08:00</StyledButton>
+                                        <StyledButton onClick={() => {changeTime("09:00")}}>09:00</StyledButton>
+                                    </S.TimeBtn>
+                                    <S.TimeBtn>
+                                        <StyledButton onClick={() => {changeTime("10:00")}}>10:00</StyledButton>
+                                        <StyledButton onClick={() => {changeTime("11:00")}}>11:00</StyledButton>
+                                        <StyledButton onClick={() => {changeTime("12:00")}}>12:00</StyledButton>
+                                    </S.TimeBtn>
+                                </S.TimeBlock>
+                        </S.BOX>
+                    </S.DateTimeContainer>
+                </div>
+                <div >
+                    <Button 
+                    variant="contained"
+                    onClick={handleNextBtn}
+                    style={{
+                        fontFamily: "ChosunGu",
+                        backgroundColor: "#116530",
+                        width: "250px",
+                        height: "50px",
+                        margin: "30px 30px 80px 30px",
+                    }}>
+                    적용하기
+                    </Button>
+                </div>
             </S.Container>
         </>
     )
