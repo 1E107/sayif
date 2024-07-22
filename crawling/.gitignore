@@ -286,4 +286,5 @@ poetry.toml
 # LSP config files
 pyrightconfig.json
 images/
+insert_queries.sql
 # End of https://www.toptal.com/developers/gitignore/api/python,pycharm

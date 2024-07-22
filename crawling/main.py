@@ -1,4 +1,5 @@
 import base64
+import json
 import os
 
 import mysql.connector
@@ -17,13 +18,9 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 
-# MySQL 데이터베이스 연결 설정
-db_config = {
-    "host": "127.0.0.1",
-    "user": "root",
-    "password": "ssafy",
-    "database": "test",
-}
+# db_config.json 파일 읽기
+with open("db_config.json", "r") as config_file:
+    db_config = json.load(config_file)
 
 
 # 데이터베이스를 생성하는 함수
@@ -93,21 +90,34 @@ def download_base64_image(data_url, folder, index):
     return None
 
 
+def extract_item(soup, class_name, default="No data"):
+    item = soup.find("li", class_=class_name)
+    if item:
+        text_wrap = item.find("div", class_="text_wrap")
+        if text_wrap:
+            return text_wrap.string.strip()
+    return default
+
+
 # 데이터베이스에 데이터 저장 함수
-def save_to_db(cursor, data):
+def save_to_db(cursor, data, sql_file):
     query = """
     INSERT INTO project_info (idx, title, ranged, region, period, method, image_path)
     VALUES (%s, %s, %s, %s, %s, %s, %s)
     """
     cursor.execute(query, data)
+    # SQL 쿼리를 파일에 저장
+    sql_query = cursor.statement
+    with open(sql_file, "a") as file:
+        file.write(sql_query + ";\n")
 
 
 # 테이블 생성 함수
 def create_table(cursor):
     create_table_query = """
     CREATE TABLE IF NOT EXISTS project_info (
-        id INT  AUTO_INCREMENT PRIMARY KEY,
-        idx INT ,
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        idx INT,
         title VARCHAR(255),
         ranged VARCHAR(255),
         region VARCHAR(255),
@@ -123,6 +133,13 @@ def create_table(cursor):
 folder = "images"
 if not os.path.exists(folder):
     os.makedirs(folder)
+
+# SQL 쿼리를 저장할 파일 경로
+sql_file = "insert_queries.sql"
+
+# 파일이 존재하면 삭제
+if os.path.exists(sql_file):
+    os.remove(sql_file)
 
 try:
     # 데이터베이스 연결
@@ -192,25 +209,11 @@ try:
                 title = detail_view_div.find("div", class_="title")
                 title_text = title.string.strip() if title else "No title"
 
-                # 분야 추출
-                item1 = soup.find("li", class_="item icon01")
-                range = item1.find("div", class_="text_wrap")
-                range_text = range.string.strip() if range else "No range"
-
-                # 지역 추출
-                item2 = soup.find("li", class_="item icon02")
-                region = item2.find("div", class_="text_wrap")
-                region_text = region.string.strip() if region else "No region"
-
-                # 모집 기간 추출
-                item3 = soup.find("li", class_="item icon03")
-                period = item3.find("div", class_="text_wrap")
-                period_text = period.string.strip() if period else "No period"
-
-                # 접수 방법 추출
-                item6 = soup.find("li", class_="item icon06")
-                mtd = item6.find("div", class_="text_wrap")
-                mtd_text = mtd.string.strip() if mtd else "No method"
+                # 항목 추출
+                range_text = extract_item(soup, "item icon01", "No range")
+                region_text = extract_item(soup, "item icon02", "No region")
+                period_text = extract_item(soup, "item icon03", "No period")
+                mtd_text = extract_item(soup, "item icon06", "No method")
 
                 # 이미지 URL 추출
                 img_tags = soup.find_all("img")
@@ -239,7 +242,7 @@ try:
                     mtd_text,
                     image_path,
                 )
-                save_to_db(cursor, data)
+                save_to_db(cursor, data, sql_file)
                 conn.commit()
 
         except Exception as e:
