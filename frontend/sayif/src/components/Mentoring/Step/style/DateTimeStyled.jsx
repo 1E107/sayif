@@ -3,7 +3,7 @@ import '../../../../styles/fonts.css'
 
 const Container = styled.div`
     margin-top: 50px;
-    padding-right: 10px;
+    padding-right: 60px;
     padding-left: 10px;
 `;
 
