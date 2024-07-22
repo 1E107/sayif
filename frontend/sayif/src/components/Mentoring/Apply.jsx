@@ -10,6 +10,7 @@ function Apply() {
     const [showApplyMain, setShowApplyMain] = useState(true);
     const [showApplyDetail, setShowApplyDetail] = useState(false);
     const [showSelectMentor, setShowSelectMentor] = useState(false);
+    const [showFinish, setShowFinish] = useState(false);
 
     // StartApply 컴포넌트에서 서버에서 멘토 리스트 요청 -> 받아온 데이터를 부모 컴포넌트 Apply로 넘겨줌
     // Apply 컴포넌트에서는 다시 selectMentor 컴포넌트로 데이터 넘겨줌
@@ -30,6 +31,16 @@ function Apply() {
         setShowApplyDetail(false);
         setShowSelectMentor(true);
         console.log(newData);
+    }
+
+    const handleReSelect = () => {
+        setShowSelectMentor(false);
+        setShowApplyDetail(true);
+    }
+
+    const handleFinishPage = () => {
+        setShowSelectMentor(false);
+        setShowFinish(true);
     }
 
     const clickApplyBtn = () => {
@@ -78,7 +89,7 @@ function Apply() {
                 showApplyDetail && <DateTime selectInfoSave={handleSelectInfo}></DateTime>
             }
              {
-                showSelectMentor && <SelectMentor formData={formData}></SelectMentor>
+                showSelectMentor && <SelectMentor formData={formData} reSelectInfo={handleReSelect} finishPage={handleFinishPage}></SelectMentor>
             }
            </S.Container>
         </>

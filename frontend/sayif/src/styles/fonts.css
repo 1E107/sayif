@@ -19,7 +19,7 @@
     font-style: normal;
 }
 
-/* 메인 페이지 설명 텍스트, 소개 페이지에서 사용하는 폰트 */
+/* 메인 페이지 설명 텍스트, 서비스 소개 페이지에서 사용하는 폰트 */
 @font-face {
     font-family: 'NanumBarunpen';
     src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumBarunpen.woff') format('woff');
