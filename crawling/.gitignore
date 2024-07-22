@@ -287,4 +287,5 @@ poetry.toml
 pyrightconfig.json
 images/
 insert_queries.sql
+db_config.json
 # End of https://www.toptal.com/developers/gitignore/api/python,pycharm
