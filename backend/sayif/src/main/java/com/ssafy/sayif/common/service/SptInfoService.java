@@ -16,9 +16,6 @@ public class SptInfoService {
     private final SptInfoRepository sptInfoRepository;
 
     public List<SptInfo> findAll() {
-        for (SptInfo sptInfo : sptInfoRepository.findAll()) {
-            System.out.println("sptInfo = " + sptInfo);
-        }
         return sptInfoRepository.findAll();
     }
 

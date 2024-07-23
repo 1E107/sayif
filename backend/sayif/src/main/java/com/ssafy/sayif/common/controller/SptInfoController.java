@@ -28,7 +28,7 @@ public class SptInfoController {
     }
 
     @GetMapping("/{id}")
-    public SptInfo getSptInfo(@PathVariable int id) {
+    public SptInfo getSptInfo(@PathVariable("id") int id) {
         Optional<SptInfo> sptInfo = sptInfoService.findById(id);
         log.info(sptInfo.toString());
         return sptInfo.orElse(null);
