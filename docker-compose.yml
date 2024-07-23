@@ -1,0 +1,19 @@
+version: '3'
+services:
+  backend:
+    image: leechanghojjang/sayif-backend:latest
+    build:
+      context: ./backend/sayif
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+
+  frontend:
+    image: leechanghojjang/sayif-frontend:latest
+    build:
+      context: ./frontend/sayif
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
