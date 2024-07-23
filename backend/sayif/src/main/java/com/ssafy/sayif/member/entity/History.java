@@ -1,4 +1,4 @@
-package com.ssafy.sayif.user.entity;
+package com.ssafy.sayif.member.entity;
 
 import com.ssafy.sayif.team.entity.Team;
 import jakarta.persistence.Column;
