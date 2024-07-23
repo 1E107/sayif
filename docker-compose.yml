@@ -3,7 +3,7 @@ services:
   backend:
     image: leechanghojjang/sayif-backend:latest
     ports:
-      - "8080:8080"
+      - "8081:8080"
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://sayif-mysql:3306/sayif
       - SPRING_DATASOURCE_USERNAME=root
