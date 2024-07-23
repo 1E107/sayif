@@ -1,5 +1,4 @@
 import base64
-import json
 import os
 
 from bs4 import BeautifulSoup
@@ -71,8 +70,8 @@ def extract_item(soup, class_name, default="No data"):
 def save_query(data, sql_file):
     data = tuple(d.replace("'", "''") if isinstance(d, str) else d for d in data)
     query = f"""
-    INSERT INTO spt_info (id, title, ranged, region, recruit_start, recruit_end, method, image_path)
-    VALUES ('{data[0]}', '{data[1]}', '{data[2]}', '{data[3]}', '{data[4]}', '{data[5]}', '{data[6]}', '{data[7]}');
+    INSERT INTO spt_info (id, title, ranged, region, recruit_start, recruit_end,hit_count, method, img)
+    VALUES ('{data[0]}', '{data[1]}', '{data[2]}', '{data[3]}', '{data[4]}', '{data[5]}',0, '{data[6]}', '{data[7]}');
     """
     with open(sql_file, "a") as file:
         file.write(query + "\n")

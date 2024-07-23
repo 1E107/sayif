@@ -5,3 +5,5 @@ spring:
     hibernate:
       ddl-auto: create
     show-sql: true
+server:
+  port: 80
