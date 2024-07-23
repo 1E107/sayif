@@ -23,7 +23,6 @@ public class MemberService {
         if (memberRepository.existsByMemberId(memberId)) return false;
 
         Member member = new Member();
-
         member.setMemberId(memberId);
         member.setPassword(bCryptPasswordEncoder.encode(pwd));
         member.setNickname(registerRequestDto.getNickname());
@@ -32,10 +31,9 @@ public class MemberService {
         member.setPhone(registerRequestDto.getPhone());
         member.setRole(Role.Mentee);
 
-        System.out.println(memberId);
-
         memberRepository.save(member);
-
         return true;
     }
+
+
 }
