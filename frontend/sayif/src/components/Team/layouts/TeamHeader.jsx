@@ -15,6 +15,8 @@ import AdbIcon from '@mui/icons-material/Adb';
 import {useNavigate} from 'react-router-dom';
 import TeamSideMenu from './TeamSideMenu';
 import Drawer from '@mui/material/Drawer';
+import TeamMain from "../TeamMain";
+
 import '../../../styles/fonts.css'
 
 const pages = ['AI 새잎 클로버', '새잎 홈페이지'];
@@ -24,6 +26,7 @@ function ResponsiveAppBar() {
   const navigate = useNavigate();
 
   const [showSide, setShowSide] = React.useState(false);
+  const [selectSideMenu, setSelectSideMenu] = React.useState("");
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -53,8 +56,33 @@ function ResponsiveAppBar() {
     else setShowSide(true);
   }
 
-  const handleShowCompo = () => { // 사이드 메뉴에서 선택한 메뉴에 따라 어떤 컴포넌트 보여줄 지 선택
-
+  const handleShowPage = (select) => { // 사이드 메뉴에서 선택한 메뉴에 따라 어떤 컴포넌트 보여줄 지 선택
+    switch (select) {
+        case "홈":
+            navigate("/team");
+            break;
+        case "우리 팀 보기":
+            navigate("/team/team-member");
+            break;
+        case "멘토링 회의":
+            navigate("/team/meeting");
+            break;
+        case "멘토링 자료":
+            navigate("/team/document");
+            break;
+        case "Q&A 게시판":
+            navigate("/team/board");
+            break;
+        case "메시지":
+            navigate("/team/message");
+            break;
+        case "퀴즈":
+            navigate("/team/quiz");
+            break;
+        case "사연함":
+            navigate("/team/story-board");
+            break;
+    }
   }
 
   return (
@@ -175,7 +203,7 @@ function ResponsiveAppBar() {
           </Box>
 
           <Drawer open={showSide}>
-            <TeamSideMenu offSideMenu={handleShowSideMenu}/>
+            <TeamSideMenu offSideMenu={handleShowSideMenu} selectSideMenu={handleShowPage}/>
           </Drawer>
         </Toolbar>
       </Container>

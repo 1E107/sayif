@@ -26,9 +26,9 @@ const icon = {
     "사연함" : <NoteAltIcon/>
 }
 
-function TeamSideMenu({offSideMenu}) {
+function TeamSideMenu({offSideMenu, selectSideMenu}) {
     const handleShowPage = (select) => {
-        console.log(select);
+        selectSideMenu(select);
     }
 
     const SideMenuView = (
