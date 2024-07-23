@@ -2,11 +2,7 @@ import styled from "styled-components";
 import '../../../styles/fonts.css'
 
 const Container = styled.div`
-    background-color: #F7F9F6;
-    height: 600px;
-    justify-content: center;
-    display: flex;
-    align-items: center;
+   
 `;
 
 const ImageBox = styled.div`
