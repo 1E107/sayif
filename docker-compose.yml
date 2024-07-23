@@ -3,9 +3,9 @@ services:
   backend:
     image: leechanghojjang/sayif-backend:latest
     ports:
-      - "9090:9090"
+      - "9090:8080"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://sayif-mysql:3306/sayif
+      - SPRING_DATASOURCE_URL=jdbc:mysql://i11e107.p.ssafy.io:3306/sayif
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=sayif
     networks:
