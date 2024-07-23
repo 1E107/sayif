@@ -1,9 +1,11 @@
 package com.ssafy.sayif.team.dto;
 
+import lombok.Builder;
 import lombok.Data;
 
+@Builder
 @Data
-public class SearchResponseDto {
+public class MentoringSearchResponse {
     private String mentor1Nickname;
     private String mentor2Nickname;
     private String startDate;

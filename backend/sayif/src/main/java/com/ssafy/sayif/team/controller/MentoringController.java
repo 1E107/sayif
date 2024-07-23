@@ -1,10 +1,12 @@
 package com.ssafy.sayif.team.controller;
 
-import com.ssafy.sayif.team.dto.RecruitRequestDto;
-import com.ssafy.sayif.team.dto.SearchRequestDto;
-import com.ssafy.sayif.team.dto.SearchResponseDto;
+import com.ssafy.sayif.team.dto.MentoringApplicationRequest;
+import com.ssafy.sayif.team.dto.MentoringRecruitRequest;
+import com.ssafy.sayif.team.dto.MentoringSearchRequest;
+import com.ssafy.sayif.team.dto.MentoringSearchResponse;
+import com.ssafy.sayif.team.entity.Team;
 import com.ssafy.sayif.team.service.MentoringService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,23 +14,29 @@ import java.util.List;
 
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/mentoring")
 public class MentoringController {
 
-    @Autowired
-    MentoringService mentoringService;
 
+    private final MentoringService mentoringService;
 
     @PostMapping("/recruit")
-    public ResponseEntity<?> recruit(@RequestBody RecruitRequestDto recruitRequestDto){
-        int res = mentoringService.recruit(recruitRequestDto);
+    public ResponseEntity<?> recruit(@RequestBody MentoringRecruitRequest mentoringRecruitRequest){
+        Team res = mentoringService.recruit(mentoringRecruitRequest);
         return ResponseEntity.ok(res);
     }
 
     @PostMapping("/search/{page_no}/{size_no}")
-    public ResponseEntity<?> search(@RequestBody SearchRequestDto searchRequestDto, @PathVariable int page_no, @PathVariable int size_no){
-        List<SearchResponseDto> mentoList = mentoringService.search(searchRequestDto);
-        return ResponseEntity.ok(mentoList);
+    public ResponseEntity<?> search(@RequestBody MentoringSearchRequest mentoringSearchRequest, @PathVariable int page_no, @PathVariable int size_no){
+        List<MentoringSearchResponse> mentorList = mentoringService.search(mentoringSearchRequest, page_no, size_no);
+        return ResponseEntity.ok(mentorList);
     }
+
+//    @PostMapping("/application")
+//    public ResponseEntity<?> application(@RequestBody MentoringApplicationRequest mentoringApplicationRequest){
+//        int res = mentoringService.application(mentoringApplicationRequest);
+//        return ResponseEntity.ok(res);
+//    }
 
 }

@@ -3,7 +3,7 @@ package com.ssafy.sayif.team.dto;
 import lombok.Data;
 
 @Data
-public class SearchRequestDto {
+public class MentoringSearchRequest {
     private String startDateFrom;
     private String startDateTo;
     private String pmam;
