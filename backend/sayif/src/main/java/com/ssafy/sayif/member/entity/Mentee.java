@@ -9,12 +9,13 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class Mentee{
+@PrimaryKeyJoinColumn(name = "mentee_id")
+public class Mentee extends Member{
 
-    @Id
-    @OneToOne
-    @JoinColumn(name = "mentee_id")
-    private Member member;
+//    @Id
+//    @OneToOne
+//    @JoinColumn(name = "mentee_id")
+//    private Member member;
 
     @Column(nullable = false)
     private LocalDateTime applyDate;

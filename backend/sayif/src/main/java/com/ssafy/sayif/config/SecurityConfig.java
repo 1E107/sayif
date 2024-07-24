@@ -59,6 +59,7 @@ public class SecurityConfig {
                 .requestMatchers("/login", "/**", "/member/register").permitAll()
                 .requestMatchers("/admin").hasRole("ADMIN")
                 .requestMatchers("/reissue").permitAll()
+                .requestMatchers("/ws/**").permitAll() // 웹소켓 엔드포인트 인증 허용
                 .anyRequest().authenticated());
 
         http
