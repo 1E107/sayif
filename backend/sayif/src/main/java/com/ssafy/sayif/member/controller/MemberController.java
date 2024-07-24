@@ -1,6 +1,7 @@
 package com.ssafy.sayif.member.controller;
 
 import com.ssafy.sayif.member.dto.MemberInfoResponseDto;
+import com.ssafy.sayif.member.dto.MemberUpdateRequestDto;
 import com.ssafy.sayif.member.dto.RegisterRequestDto;
 import com.ssafy.sayif.member.exception.UnauthorizedException;
 import com.ssafy.sayif.member.jwt.JWTUtil;
@@ -24,8 +25,6 @@ public class MemberController {
 
     @GetMapping("/member-info")
     public MemberInfoResponseDto getMemberInfo(@RequestHeader("Authorization") String authorizationHeader) {
-        System.out.println("Authorization header = " + authorizationHeader);
-
         String token = jwtUtil.resolveToken(authorizationHeader);
         if (token != null && !jwtUtil.isExpired(token)) {
             String memberId = jwtUtil.getMemberId(token);
@@ -33,5 +32,14 @@ public class MemberController {
         } else {
             throw new UnauthorizedException("유효하지 않은 토큰입니다.");
         }
+    }
+
+    @PutMapping("/member-info")
+    public String updateMemberInfo(@RequestHeader("Authorization") String authorizationHeader,
+                                   @RequestBody MemberUpdateRequestDto updateRequestDto) {
+        String token = jwtUtil.resolveToken(authorizationHeader);
+        String memberId = jwtUtil.getMemberId(token);
+        memberService.updateMemberInfo(memberId, updateRequestDto);
+        return "success";
     }
 }

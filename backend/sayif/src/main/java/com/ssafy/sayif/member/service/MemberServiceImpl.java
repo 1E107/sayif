@@ -1,6 +1,7 @@
 package com.ssafy.sayif.member.service;
 
 import com.ssafy.sayif.member.dto.MemberInfoResponseDto;
+import com.ssafy.sayif.member.dto.MemberUpdateRequestDto;
 import com.ssafy.sayif.member.dto.RegisterRequestDto;
 import com.ssafy.sayif.member.entity.Member;
 import com.ssafy.sayif.member.entity.Role;
@@ -37,6 +38,19 @@ public class MemberServiceImpl implements MemberService {
         return true;
     }
 
+    @Override
+    public void updateMemberInfo(String memberId, MemberUpdateRequestDto updateRequestDto) {
+        Member member = memberRepository.findByMemberId(memberId);
+        if (member != null) {
+            if (updateRequestDto.getNickname() != null) member.setNickname(updateRequestDto.getNickname());
+            if (updateRequestDto.getGender() != null) member.setGender(updateRequestDto.getGender());
+            if (updateRequestDto.getEmail() != null) member.setEmail(updateRequestDto.getEmail());
+            if (updateRequestDto.getPhone() != null) member.setPhone(updateRequestDto.getPhone());
+            memberRepository.save(member);
+        } else {
+            throw new RuntimeException("Member not found");
+        }
+    }
 
 
     @Override
