@@ -1,4 +1,4 @@
-package com.ssafy.sayif.user.entity;
+package com.ssafy.sayif.member.entity;
 
 enum Status {
     Pending, Approved, Rejected
