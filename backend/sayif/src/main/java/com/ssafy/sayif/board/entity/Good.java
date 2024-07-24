@@ -1,6 +1,6 @@
 package com.ssafy.sayif.board.entity;
 
-import com.ssafy.sayif.member.entity.Member;
+import com.ssafy.sayif.user.entity.Member;
 import jakarta.persistence.*;
 
 @Entity
