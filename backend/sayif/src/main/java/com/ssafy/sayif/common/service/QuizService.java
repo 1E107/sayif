@@ -1,6 +1,6 @@
 package com.ssafy.sayif.common.service;
 
-import com.ssafy.sayif.common.dto.QuizChoiceResponseDto;
+import com.ssafy.sayif.common.dto.QuizChoiceDto;
 import com.ssafy.sayif.common.entity.Quiz;
 import com.ssafy.sayif.common.repository.QuizChoiceRepository;
 import com.ssafy.sayif.common.repository.QuizRepository;
@@ -22,10 +22,10 @@ public class QuizService {
         return quizRepository.findAllByChapter(chapterNum);
     }
 
-    public List<QuizChoiceResponseDto> getQuizChoices(int quizId) {
+    public List<QuizChoiceDto> getQuizChoices(int quizId) {
         Quiz quiz = quizRepository.findById(quizId).get();
         return quizChoiceRepository.findAllByQuiz(quiz).stream()
-            .map(quizChoice -> QuizChoiceResponseDto.builder()
+            .map(quizChoice -> QuizChoiceDto.builder()
                 .id(quizChoice.getId()).content(quizChoice.getContent())
                 .isAnswer(quizChoice.getIsAnswer()).build()).collect(Collectors.toList());
     }
