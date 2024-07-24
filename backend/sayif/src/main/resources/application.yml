@@ -3,7 +3,5 @@ spring:
     include: secret
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
     show-sql: true
-  jwt:
-    secret: bangcutsoragodoongmeruohboksayif

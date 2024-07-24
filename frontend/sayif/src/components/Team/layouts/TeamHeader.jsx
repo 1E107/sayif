@@ -12,21 +12,12 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
-import {useNavigate} from 'react-router-dom';
-import TeamSideMenu from './TeamSideMenu';
-import Drawer from '@mui/material/Drawer';
-import TeamMain from "../TeamMain";
-
 import '../../../styles/fonts.css'
 
 const pages = ['AI 새잎 클로버', '새잎 홈페이지'];
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const navigate = useNavigate();
-
-  const [showSide, setShowSide] = React.useState(false);
-  const [selectSideMenu, setSelectSideMenu] = React.useState("");
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -44,49 +35,11 @@ function ResponsiveAppBar() {
   };
 
   const handleAIClover = () => {
-    navigate("/"); // 나중에 경로 수정
-  }
 
-  const handleGoMain = () => {
-    navigate("/");
-  }
-
-  const handleShowSideMenu = () => {
-    if(showSide) setShowSide(false);
-    else setShowSide(true);
-  }
-
-  const handleShowPage = (select) => { // 사이드 메뉴에서 선택한 메뉴에 따라 어떤 컴포넌트 보여줄 지 선택
-    switch (select) {
-        case "홈":
-            navigate("/team");
-            break;
-        case "우리 팀 보기":
-            navigate("/team/team-member");
-            break;
-        case "멘토링 회의":
-            navigate("/team/meeting");
-            break;
-        case "멘토링 자료":
-            navigate("/team/document");
-            break;
-        case "Q&A 게시판":
-            navigate("/team/board");
-            break;
-        case "메시지":
-            navigate("/team/message");
-            break;
-        case "퀴즈":
-            navigate("/team/quiz");
-            break;
-        case "사연함":
-            navigate("/team/story-board");
-            break;
-    }
   }
 
   return (
-    <AppBar position="fixed" style={{backgroundColor: "white"}}>
+    <AppBar position="static" style={{backgroundColor: "white"}}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Typography
@@ -103,16 +56,7 @@ function ResponsiveAppBar() {
               textDecoration: 'none',
             }}
           >
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleShowSideMenu}
-            >
-              <MenuIcon />
-            </IconButton>
-            <div style={{padding: "12px 12px 12px 0px"}}>팀 오피스</div>
+            팀 오피스
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -152,7 +96,6 @@ function ResponsiveAppBar() {
             </Menu>
           </Box>
 
-         
           <Typography
             variant="h5"
             noWrap
@@ -164,20 +107,11 @@ function ResponsiveAppBar() {
               flexGrow: 1,
               fontFamily: 'ChosunGu',
               fontWeight: 'bold',
-              color: '#0B4619',
+              color: 'inherit',
               textDecoration: 'none',
             }}
           >
-             <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
-            >
-              <MenuIcon />
-            </IconButton>
-            <div style={{padding: "12px 12px 12px 0px"}}>팀 오피스</div>
+            팀 오피스
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'flex-end', marginRight: '30px' }}>
             <Button
@@ -187,7 +121,7 @@ function ResponsiveAppBar() {
                 AI 새잎 클로버
             </Button>
             <Button
-                onClick={handleGoMain}
+                onClick={handleCloseNavMenu}
                 sx={{ my: 2, display: 'block', fontFamily: 'ChosunGu', color: '#D1C285', fontWeight: '600' }}
             >
                 새잎 홈페이지
@@ -201,10 +135,6 @@ function ResponsiveAppBar() {
               </IconButton>
             </Tooltip>
           </Box>
-
-          <Drawer open={showSide}>
-            <TeamSideMenu offSideMenu={handleShowSideMenu} selectSideMenu={handleShowPage}/>
-          </Drawer>
         </Toolbar>
       </Container>
     </AppBar>
