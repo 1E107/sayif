@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class QuizChoiceResponseDto {
+public class QuizChoiceDto {
 
     private Integer id;
 
