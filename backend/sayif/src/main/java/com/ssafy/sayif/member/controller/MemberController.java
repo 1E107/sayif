@@ -42,4 +42,12 @@ public class MemberController {
         memberService.updateMemberInfo(memberId, updateRequestDto);
         return "success";
     }
+
+    @DeleteMapping("/member-info")
+    public String deleteMemberInfo(@RequestHeader("Authorization") String authorizationHeader) {
+        String token = jwtUtil.resolveToken(authorizationHeader);
+        String memberId = jwtUtil.getMemberId(token);
+        memberService.deleteMember(memberId);
+        return "success";
+    }
 }

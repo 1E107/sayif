@@ -6,6 +6,7 @@ import com.ssafy.sayif.member.dto.RegisterRequestDto;
 import com.ssafy.sayif.member.entity.Member;
 import com.ssafy.sayif.member.entity.Role;
 import com.ssafy.sayif.member.repository.MemberRepository;
+import com.ssafy.sayif.member.repository.RefreshRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import java.util.Optional;
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
+    private final RefreshRepository refreshRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
@@ -50,6 +52,23 @@ public class MemberServiceImpl implements MemberService {
         } else {
             throw new RuntimeException("Member not found");
         }
+    }
+
+    @Override
+    public void deleteMember(String memberId) {
+        Member member = memberRepository.findByMemberId(memberId);
+        if (member != null) {
+            memberRepository.delete(member);
+            deleteRefreshTokens(memberId);
+        } else {
+            throw new RuntimeException("Member not found");
+        }
+    }
+
+    @Override
+    public void deleteRefreshTokens(String memberId) {
+        System.out.println(memberId);
+        refreshRepository.deleteByMemberId(memberId);
     }
 
 
