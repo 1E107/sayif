@@ -6,12 +6,13 @@ import lombok.Getter;
 
 @Entity
 @Getter
-public class Mentor {
+@PrimaryKeyJoinColumn(name = "mentor_id")
+public class Mentor extends Member {
 
-    @Id
-    @OneToOne
-    @JoinColumn(name = "mentor_id")
-    private Member member;
+//    @Id
+//    @OneToOne
+//    @JoinColumn(name = "mentor_id")
+//    private Member member;
 
     @Column(length = 20)
     private String major;

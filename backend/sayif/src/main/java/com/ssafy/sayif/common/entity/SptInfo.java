@@ -11,12 +11,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
+@ToString
 public class SptInfo {
 
     @Id
@@ -26,11 +28,11 @@ public class SptInfo {
     @Column(name = "title", length = 100)
     private String title;
 
-    @Column(name = "content")
-    private String content;
+    @Column(name = "ranged")
+    private String ranged;
 
-    @Column(name = "center")
-    private String center;
+    @Column(name = "region")
+    private String region;
 
     @Column(name = "recruit_start")
     private LocalDateTime recruitStart;
@@ -40,6 +42,9 @@ public class SptInfo {
 
     @Column(name = "hit_count")
     private Integer hitCount;
+
+    @Column(name = "method")
+    private String method;
 
     @Column(name = "img")
     private String img;

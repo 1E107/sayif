@@ -1,5 +1,7 @@
 import TeamMain from "../../components/Team/TeamMain";
 import ShowMembers from "../../components/Team/ShowMembers";
+import Board from "../../components/Team/Board/BoardList";
+
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 
@@ -19,6 +21,7 @@ const MainPage = () => {
         <Main>
             {location.pathname === '/team' && <TeamMain/>}
             {location.pathname === '/team/team-member' && <ShowMembers/>}
+            {location.pathname === '/team/board' && <Board/>}
         </Main>
     )
 }

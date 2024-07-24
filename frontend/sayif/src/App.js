@@ -6,6 +6,7 @@ import CommunityPage from "./pages/Community/CommunityPage";
 import ApplyPage from "./pages/Mentoring/ApplyPage";
 import TeamPage from "./pages/Team/TeamPage";
 import TeamHeader from "./components/Team/layouts/TeamHeader";
+import BoardPage from "./pages/Team/BoardPage";
 
 import "./App.css";
 
@@ -25,6 +26,7 @@ function App() {
         <Route path="/community" element={<CommunityPage />} />
         <Route path="/apply-mentoring" element={<ApplyPage />} />
         <Route path="/team/*" element={<TeamPage />} />
+        <Route path="/team/board/detail/:id" element = {<BoardPage/>} /> 
       </Routes>
     </>
   );

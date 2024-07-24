@@ -1,5 +1,4 @@
 import base64
-import json
 import os
 
 from bs4 import BeautifulSoup
@@ -37,7 +36,7 @@ def is_image_url(url):
 
 def get_unique_filename(folder, index, file_extension):
     file_name = f"image_{index}"
-    return os.path.join(folder, f"{file_name}.{file_extension}")
+    return os.path.join(folder, f"{file_name}.{file_extension}").replace("\\", "/")
 
 
 def download_base64_image(data_url, folder, index):
@@ -71,15 +70,15 @@ def extract_item(soup, class_name, default="No data"):
 def save_query(data, sql_file):
     data = tuple(d.replace("'", "''") if isinstance(d, str) else d for d in data)
     query = f"""
-    INSERT INTO spt_info (id, title, ranged, region, recruit_start, recruit_end, method, image_path)
-    VALUES ('{data[0]}', '{data[1]}', '{data[2]}', '{data[3]}', '{data[4]}', '{data[5]}', '{data[6]}', '{data[7]}');
+    INSERT INTO spt_info (id, title, ranged, region, recruit_start, recruit_end, hit_count, method, img)
+    VALUES ('{data[0]}', '{data[1]}', '{data[2]}', '{data[3]}', '{data[4]}', '{data[5]}', 0, '{data[6]}', '{data[7]}');
     """
     with open(sql_file, "a") as file:
         file.write(query + "\n")
 
 
 # 이미지 저장 폴더
-folder = "images"
+folder = "images/"
 if not os.path.exists(folder):
     os.makedirs(folder)
 
@@ -93,7 +92,7 @@ if os.path.exists(sql_file):
 try:
     for i in range(800, -1, -1):
         # 인덱스 폴더가 존재하면 continue
-        if os.path.exists(os.path.join(folder, f"image_{i}.png")):
+        if os.path.exists(os.path.join(folder, f"image_{i}.png").replace("\\", "/")):
             print(f"Index {i} already processed, skipping...")
             continue
 

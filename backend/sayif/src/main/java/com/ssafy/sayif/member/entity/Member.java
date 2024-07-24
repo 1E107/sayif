@@ -8,6 +8,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Member {
 
     @Id
@@ -25,6 +26,7 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Getter
     @ManyToOne
     @JoinColumn(name = "team_id")
     private Team team;

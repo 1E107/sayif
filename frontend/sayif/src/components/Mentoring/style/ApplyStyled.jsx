@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import '../../../styles/fonts.css'
+import styled from 'styled-components';
+import '../../../styles/fonts.css';
 
 const Title = styled.div`
     font-family: ONE-Mobile-POP;
@@ -17,20 +17,20 @@ const ExplainText = styled.div`
 `;
 
 const ApplyIconContainer = styled.div`
-    height : 300px;
-    display : flex;
-    gap : 10px;
-    align-items: center; 
-    justify-content: center; 
+    height: 300px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
 `;
 
 const ApplyIconStep1 = styled.div`
-    background-image: url("/img/Apply/apply-step1.png");
+    background-image: url('/img/Apply/apply-step1.png');
     background-size: cover;
     width: 200px;
     height: 200px;
-    display: flex; 
-    align-items: center; 
+    display: flex;
+    align-items: center;
     justify-content: center;
     margin-top: 50px;
     aligin-items: center;
