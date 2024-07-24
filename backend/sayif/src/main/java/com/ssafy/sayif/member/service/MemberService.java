@@ -8,4 +8,7 @@ public interface MemberService {
     MemberInfoResponseDto getMemberInfo(String memberId);
     Boolean registerMember(RegisterRequestDto registerRequestDto);
     void updateMemberInfo(String memberId, MemberUpdateRequestDto updateRequestDto);
+
+    void deleteMember(String memberId);
+    void deleteRefreshTokens(String memberId);
 }
