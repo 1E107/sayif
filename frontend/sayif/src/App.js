@@ -20,20 +20,11 @@ function App() {
         <Header></Header>
       )}
       <Routes>
-        <Route path="/" element={<MainPage></MainPage>}></Route>
-        <Route
-          path="/serviceIntroduction"
-          element={<IntroPage></IntroPage>}
-        ></Route>
-        <Route
-          path="/community"
-          element={<CommunityPage></CommunityPage>}
-        ></Route>
-        <Route
-          path="/apply-mentoring"
-          element={<ApplyPage></ApplyPage>}
-        ></Route>
-        <Route path="/team" element={<TeamPage></TeamPage>}></Route>
+        <Route path="/" element={<MainPage />}></Route>
+        <Route path="/serviceIntroduction" element={<IntroPage />} />
+        <Route path="/community" element={<CommunityPage />} />
+        <Route path="/apply-mentoring" element={<ApplyPage />} />
+        <Route path="/team/*" element={<TeamPage />} />
       </Routes>
     </>
   );
