@@ -19,7 +19,7 @@ import java.util.List;
 @Repository
 public interface MentoringRepository extends JpaRepository<Team, Integer> {
 
-    @Query("SELECT t FROM Team t WHERE t.startDate >= :startDateFrom AND t.startDate < :startDateTo AND t.mentoringTime = :mentoringTime")
+    @Query("SELECT t FROM Team t WHERE t.startDate BETWEEN :startDateFrom AND :startDateTo AND t.mentoringTime = :mentoringTime AND t.status = 'Apply'")
     Page<Team> findTeamsByStartDateBetweenAndMentoringTime(
             @Param("startDateFrom") LocalDate startDateFrom,
             @Param("startDateTo") LocalDate startDateTo,
@@ -27,15 +27,5 @@ public interface MentoringRepository extends JpaRepository<Team, Integer> {
             Pageable pageable
     );
 
-    // 이거 나중에 UserRepository에 추가해서 쓰면됨
-//    @Query("SELECT m.nickname FROM Member m WHERE m.team.id = :teamId AND m.role = 'Mentor'")
-//    List<String> findMentorNicknamesByTeamId(@Param("teamId") int teamId);
 
-//    @Query("SELECT COUNT(m) FROM Member m WHERE m.team.id = :teamId AND m.role = 'Mentee'")
-//    long countMenteesByTeamId(@Param("teamId") int teamId);
-
-//    @Transactional
-//    @Modifying
-//    @Query("UPDATE Member m SET m.team.id = :teamId WHERE m.id = :userId OR m.id = :pairId")
-//    int updateTeamIdForUserIdOrPairId(@Param("teamId") Long teamId, @Param("userId") String userId, @Param("pairId") String pairId);
 }
