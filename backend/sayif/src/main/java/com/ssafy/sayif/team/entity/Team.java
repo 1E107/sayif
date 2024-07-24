@@ -40,7 +40,7 @@ public class Team {
     @Column(name = "day_of_week")
     private String dayOfWeek;
 
-    @Column(name = "mentoring_time")
+    @Column(name = "mentoring_time", columnDefinition = "TIME")
     private LocalTime mentoringTime;
 
     @Column(name = "end_date")

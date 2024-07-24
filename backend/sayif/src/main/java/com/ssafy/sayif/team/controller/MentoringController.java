@@ -33,10 +33,10 @@ public class MentoringController {
         return ResponseEntity.ok(mentorList);
     }
 
-//    @PostMapping("/application")
-//    public ResponseEntity<?> application(@RequestBody MentoringApplicationRequest mentoringApplicationRequest){
-//        int res = mentoringService.application(mentoringApplicationRequest);
-//        return ResponseEntity.ok(res);
-//    }
+    @PostMapping("/application")
+    public ResponseEntity<?> application(@RequestBody MentoringApplicationRequest mentoringApplicationRequest){
+        int res = mentoringService.application(mentoringApplicationRequest);
+        return ResponseEntity.ok(res);
+    }
 
 }
