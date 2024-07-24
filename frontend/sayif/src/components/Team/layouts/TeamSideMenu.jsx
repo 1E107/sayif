@@ -35,7 +35,7 @@ function TeamSideMenu({offSideMenu, selectSideMenu}) {
         <Box sx={{ width: 250 }} role="presentation" onClick={offSideMenu}>
         <div style={{textAlign: "center", margin: "30px"}}>
             <img 
-                src="logo-green.png"
+                src="/logo-green.png"
                 width="70px"
             />
         </div>
