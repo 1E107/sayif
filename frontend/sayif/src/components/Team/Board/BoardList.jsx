@@ -9,8 +9,9 @@ import TableRow from '@mui/material/TableRow';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 import { useState } from 'react';
-import S from './style/BoardStyled';
-import '../../styles/fonts.css';
+import S from './style/BoardListStyled';
+import '../../../styles/fonts.css';
+import { useNavigate } from 'react-router-dom';
 
 const columns = [
     { id: 'title', label: '제목', minWidth: 250, align: 'center' },
@@ -22,6 +23,7 @@ const columns = [
 
 const rows = [
     {
+        writingId : 1,
         title: 'React의 기초',
         writer: '홍길동',
         writeDate: '2024-07-01',
@@ -29,6 +31,7 @@ const rows = [
         read: 150,
     },
     {
+        writingId : 2,
         title: '자바스크립트 심화',
         writer: '이몽룡',
         writeDate: '2024-07-05',
@@ -36,6 +39,7 @@ const rows = [
         read: 200,
     },
     {
+        writingId : 3,
         title: 'CSS Flexbox 이해하기',
         writer: '성춘향',
         writeDate: '2024-07-10',
@@ -43,6 +47,7 @@ const rows = [
         read: 120,
     },
     {
+        writingId : 4,
         title: 'Node.js 시작하기',
         writer: '김철수',
         writeDate: '2024-07-15',
@@ -50,6 +55,7 @@ const rows = [
         read: 90,
     },
     {
+        writingId : 5,
         title: '프론트엔드와 백엔드의 차이',
         writer: '박영희',
         writeDate: '2024-07-20',
@@ -57,6 +63,7 @@ const rows = [
         read: 300,
     },
     {
+        writingId : 6,
         title: 'API와 데이터 통신',
         writer: '최민수',
         writeDate: '2024-07-22',
@@ -64,6 +71,7 @@ const rows = [
         read: 180,
     },
     {
+        writingId : 7,
         title: '웹 접근성의 중요성',
         writer: '이순신',
         writeDate: '2024-07-25',
@@ -71,6 +79,7 @@ const rows = [
         read: 60,
     },
     {
+        writingId : 8,
         title: '리액트 라우터 사용법',
         writer: '강감찬',
         writeDate: '2024-07-27',
@@ -78,6 +87,7 @@ const rows = [
         read: 220,
     },
     {
+        writingId : 9,
         title: '모바일 웹 최적화',
         writer: '유관순',
         writeDate: '2024-07-30',
@@ -85,6 +95,7 @@ const rows = [
         read: 110,
     },
     {
+        writingId : 10,
         title: '서버 사이드 렌더링',
         writer: '장보고',
         writeDate: '2024-08-01',
@@ -94,6 +105,7 @@ const rows = [
 ];
 
 function Board() {
+    const navigate = useNavigate();
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(7);
 
@@ -105,6 +117,11 @@ function Board() {
         setRowsPerPage(+event.target.value);
         setPage(0);
     };
+
+    const moveDetailPage = id => {
+        console.log("hello", id);
+        navigate(`/team/board/detail/${id}`);
+    }
 
     const BoardView = (
         <S.Container>
@@ -168,7 +185,8 @@ function Board() {
                                             hover
                                             role="checkbox"
                                             tabIndex={-1}
-                                            key={row.code}
+                                            key={row.writingId}
+                                            onClick = {() => moveDetailPage(row.writingId)}
                                         >
                                             {columns.map(column => {
                                                 const value = row[column.id];
