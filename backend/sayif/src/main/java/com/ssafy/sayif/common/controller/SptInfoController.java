@@ -3,7 +3,6 @@ package com.ssafy.sayif.common.controller;
 import com.ssafy.sayif.common.entity.SptInfo;
 import com.ssafy.sayif.common.service.SptInfoService;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,17 +20,14 @@ public class SptInfoController {
 
     @GetMapping
     public List<SptInfo> getAllSptInfo() {
-        for (SptInfo sptInfo : sptInfoService.findAll()) {
-            log.info(sptInfo.toString());
-        }
+        log.info("자립 지원 사업 전체 조회");
         return sptInfoService.findAll();
     }
 
     @GetMapping("/{id}")
     public SptInfo getSptInfo(@PathVariable("id") int id) {
-        Optional<SptInfo> sptInfo = sptInfoService.findById(id);
-        log.info(sptInfo.toString());
-        return sptInfo.orElse(null);
+        log.info("자립 지원 사업 단일 조회");
+        return sptInfoService.findById(id).orElse(null);
     }
 
 

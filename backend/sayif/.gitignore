@@ -300,5 +300,6 @@ gradle-app.setting
 
 # Spring application
 **/application-secret.yml
-
+sql/
+*.sql
 # End of https://www.toptal.com/developers/gitignore/api/intellij,java,gradle,windows,macos,web,visualstudiocode
