@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import '../../../styles/fonts.css';
+import '../../../../styles/fonts.css';
 
 const Container = styled.div`
     margin: 20px;
