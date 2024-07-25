@@ -38,12 +38,8 @@ public class MentoringService {
 
 
     @Transactional
-    public Team recruit(MentoringRecruitRequest mentoringRecruitRequest) {
-//            public int recruit(@AuthenticationPrincipal UserService userService, RecruitRequestDto recruitRequestDto) {
-//         시큐리티 하고 나면 유저아이디 이렇게 접근함
-//        userService.getUserId();
+    public Team recruit(MentoringRecruitRequest mentoringRecruitRequest, String memberId) {
         try {
-            String userId = "mentor1";
 
             // LocalDate로 파싱
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -60,9 +56,8 @@ public class MentoringService {
                 mentoringTime = mentoringTime.plusHours(12);
             }
 
-            String nickName = memberRepository.findByMemberId(userId).getNickname();
+            String nickName = memberRepository.findByMemberId(memberId).getNickname();
             Team team = Team.builder()
-                    // TODO: 일단 userId 저장으로 두고 userRepository 완성되면 nickname 찾아오는 걸로 수정하기
                     .name(nickName)
                     .point(0)
                     .startDate(startDate)
@@ -73,9 +68,8 @@ public class MentoringService {
                     .build();
             mentoringRepository.save(team);
 
-
-            // TODO: userRepository에서 userId, 다른멘토 아이디 찾아서 멘토링 팀 번호 매칭
-            memberRepository.updateTeamIdForUserIdOrPairId(team.getId(), userId, mentoringRecruitRequest.getId());
+            // memberId, 다른멘토 아이디 찾아서 멘토링 팀 번호 매칭
+            memberRepository.updateTeamIdForUserIdOrPairId(team.getId(), memberId, mentoringRecruitRequest.getId());
 
             return team;
         } catch (Exception e) {
@@ -149,10 +143,8 @@ public class MentoringService {
     }
 
     @Transactional
-    public int application(MentoringApplicationRequest mentoringApplicationRequest) {
+    public int application(MentoringApplicationRequest mentoringApplicationRequest, String memberId) {
         int teamId = mentoringApplicationRequest.getId();
-
-        String memberId = "mentee2";
         return memberRepository.updateMemberTeam(memberId, Role.Mentee, teamId);
     }
 }
