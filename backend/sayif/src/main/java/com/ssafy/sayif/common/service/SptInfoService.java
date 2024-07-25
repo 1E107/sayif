@@ -3,9 +3,9 @@ package com.ssafy.sayif.common.service;
 import com.ssafy.sayif.common.entity.SptInfo;
 import com.ssafy.sayif.common.repository.SptInfoRepository;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,8 +21,8 @@ public class SptInfoService {
         return sptInfoRepository.findById(id);
     }
 
-    public Page<SptInfo> findAllPaged(int page, int size) {
+    public List<SptInfo> findAllPaged(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return sptInfoRepository.findAll(pageable);
+        return sptInfoRepository.findAll(pageable).getContent();
     }
 }
