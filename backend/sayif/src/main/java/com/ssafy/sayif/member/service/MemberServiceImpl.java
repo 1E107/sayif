@@ -59,7 +59,7 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findByMemberId(memberId);
         if (member != null) {
             memberRepository.delete(member);
-            deleteRefreshTokens(memberId);
+//            deleteRefreshTokens(memberId);
         } else {
             throw new RuntimeException("Member not found");
         }
