@@ -19,6 +19,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+/**
+ * 게시판 서비스 클래스입니다.
+ */
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -85,12 +88,12 @@ public class BoardService {
     /**
      * 게시글 논리적 삭제
      *
-     * @param boardId 삭제할 게시글의 ID
+     * @param id 삭제할 게시글의 ID
      * @return 삭제된 게시글의 BoardResponseDto를 Optional로 반환, 이미 삭제된 게시글인 경우 Optional.empty() 반환
      */
-    public boolean removePost(int boardId) {
-        Board board = boardRepository.findById(boardId)
-            .orElseThrow(() -> new IllegalArgumentException("Invalid board ID: " + boardId));
+    public boolean removePost(int id) {
+        Board board = boardRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Invalid board ID: " + id));
 
         if (board.getIsRemove()) {
             return false;
@@ -119,7 +122,7 @@ public class BoardService {
      *
      * @param page 페이지 번호
      * @param size 페이지 크기
-     * @return 게시글 목록의 BoardResponseDto 리스트
+     * @return isRemove가 false인 게시글 목록의 BoardResponseDto 리스트
      */
     public List<BoardResponseDto> getPostList(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -129,6 +132,18 @@ public class BoardService {
             .filter(board -> !board.getIsRemove()) // isRemove가 false인 게시글 필터링
             .map(this::convertToDto)
             .collect(Collectors.toList());
+    }
+
+    /**
+     * 게시글 상세 조회
+     *
+     * @param id 조회할 게시글의 ID
+     * @return 게시글의 BoardResponseDto
+     */
+    public BoardResponseDto getPostDetail(int id) {
+        Board board = boardRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Invalid board ID: " + id));
+        return this.convertToDto(board);
     }
 
     /**

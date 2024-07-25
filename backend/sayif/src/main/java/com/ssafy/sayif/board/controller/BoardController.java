@@ -46,4 +46,9 @@ public class BoardController {
         @PathVariable("size") int size) {
         return ResponseEntity.ok(boardService.getPostList(page, size));
     }
+
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<?> getPostDetail(@PathVariable("id") int id) {
+        return ResponseEntity.ok(boardService.getPostDetail(id));
+    }
 }
