@@ -2,7 +2,9 @@ package com.ssafy.sayif.member.entity;
 
 import com.ssafy.sayif.team.entity.Team;
 import jakarta.persistence.*;
-import lombok.*;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Getter

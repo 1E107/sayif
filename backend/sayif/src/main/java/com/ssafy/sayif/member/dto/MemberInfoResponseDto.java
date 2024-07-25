@@ -11,7 +11,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberInfoResponseDto {
-
     private String memberId;
     private String name;
     private String nickname;
