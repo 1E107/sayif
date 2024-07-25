@@ -2,8 +2,6 @@ spring:
   profiles:
     include: secret
   jpa:
-    hibernate:
-      ddl-auto: none
     show-sql: true
   jwt:
     secret: bangcutsoragodoongmeruohboksayif

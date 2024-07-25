@@ -2,6 +2,7 @@ package com.ssafy.sayif.member.entity;
 
 import com.ssafy.sayif.team.entity.Team;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.Setter;
 
