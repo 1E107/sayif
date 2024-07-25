@@ -1,5 +1,7 @@
 spring:
   profiles:
     include: secret
+  jackson:
+    property-naming-strategy: SNAKE_CASE
   jwt:
     secret: bangcutsoragodoongmeruohboksayif
