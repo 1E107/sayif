@@ -17,4 +17,7 @@ public interface MemberService {
     void deleteRefreshTokens(String memberId);
 
     List<MentoringRecordResponseDto> getMentoringRecords(String memberId);
+
+    boolean isMemberExists(String memberId);
+    boolean updatePassword(String memberId, String newPwd, String newPwdCheck);
 }
