@@ -1,6 +1,5 @@
 package com.ssafy.sayif.team.controller;
 
-import com.ssafy.sayif.member.repository.MemberRepository;
 import com.ssafy.sayif.team.dto.PostChatRequestDto;
 import com.ssafy.sayif.team.dto.GetChatResponseDto;
 import com.ssafy.sayif.team.entity.Team;
@@ -9,7 +8,9 @@ import com.ssafy.sayif.team.repository.TeamMsgRepository;
 import com.ssafy.sayif.team.repository.TeamRepository;
 import com.ssafy.sayif.member.entity.Member;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -33,8 +34,8 @@ public class ChatController {
     private SimpMessagingTemplate messagingTemplate;
 
     @MessageMapping("/team/{teamId}/chat")
-    public void sendMessage(@PathVariable("teamId") Integer teamId,
-                            PostChatRequestDto chatRequestDto,
+    public void sendMessage(@DestinationVariable("teamId") Integer teamId,
+                            @Payload PostChatRequestDto chatRequestDto,
                             @AuthenticationPrincipal Member currentUser) {
         // 현재 로그인된 사용자의 정보는 @AuthenticationPrincipal을 통해 자동으로 주입됨
 

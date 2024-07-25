@@ -9,7 +9,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import lombok.*;
@@ -37,16 +36,13 @@ public class Team {
     @Column(name = "day_of_week")
     private String dayOfWeek;
 
-    @Column(name = "mentoring_time")
+    @Column(name = "mentoring_time", columnDefinition = "TIME")
     private LocalTime mentoringTime;
 
     @Column(name = "end_date")
     private LocalDate endDate;
 
-    @Setter
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private TeamStatus status;
-
 }
-

@@ -40,4 +40,3 @@ public class TeamMsg {
     @JoinColumn(name = "team_id")
     private Team team;
 }
-
