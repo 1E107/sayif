@@ -125,4 +125,27 @@ public class MemberServiceImpl implements MemberService {
         return list;
 
     }
+
+    @Override
+    public boolean isMemberExists(String memberId) {
+        Member member = memberRepository.findByMemberId(memberId);
+        return member != null;
+    }
+
+    @Override
+    public boolean updatePassword(String memberId, String newPwd, String newPwdCheck) {
+        if (!newPwd.equals(newPwdCheck)) {
+            return false; // 비밀번호와 비밀번호 확인이 일치하지 않음
+        }
+
+        Member member = memberRepository.findByMemberId(memberId);
+        if (member == null) {
+            return false; // 회원을 찾을 수 없음
+        }
+
+        // 비밀번호 암호화
+        member.setPassword(bCryptPasswordEncoder.encode(newPwd));
+        memberRepository.save(member);
+        return true; // 비밀번호 변경됨
+    }
 }

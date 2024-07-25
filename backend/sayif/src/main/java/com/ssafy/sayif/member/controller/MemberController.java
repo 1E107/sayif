@@ -1,9 +1,6 @@
 package com.ssafy.sayif.member.controller;
 
-import com.ssafy.sayif.member.dto.MemberInfoResponseDto;
-import com.ssafy.sayif.member.dto.MemberUpdateRequestDto;
-import com.ssafy.sayif.member.dto.MentoringRecordResponseDto;
-import com.ssafy.sayif.member.dto.RegisterRequestDto;
+import com.ssafy.sayif.member.dto.*;
 import com.ssafy.sayif.member.entity.History;
 import com.ssafy.sayif.member.exception.UnauthorizedException;
 import com.ssafy.sayif.member.jwt.JWTUtil;
@@ -63,4 +60,27 @@ public class MemberController {
         List<MentoringRecordResponseDto> mentoringRecords = memberService.getMentoringRecords(memberId);
         return ResponseEntity.ok(mentoringRecords);
     }
+
+    @PostMapping("/password-change")
+    public ResponseEntity<?> findChange(@RequestBody MemberIdRequestDto request) {
+        boolean exists = memberService.isMemberExists(request.getMemberId());
+        if (exists) {
+            // 비밀번호 변경 로직을 여기에 추가합니다.
+            return ResponseEntity.ok("Member exists.");
+        } else {
+            return ResponseEntity.status(404).body("Member not found.");
+        }
+    }
+
+    @PutMapping("/password-change")
+    public ResponseEntity<String> changePassword(@RequestBody PasswordChangeRequestDto request) {
+        boolean isUpdated = memberService.updatePassword(request.getMemberId(), request.getNewPwd(), request.getNewPwdCheck());
+
+        if (isUpdated) {
+            return ResponseEntity.ok("Password updated successfully.");
+        } else {
+            return ResponseEntity.badRequest().body("Password update failed. Please check if passwords match and member exists.");
+        }
+    }
+
 }
