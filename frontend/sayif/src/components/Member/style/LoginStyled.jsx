@@ -5,9 +5,9 @@ import '../../../styles/fonts.css';
 const Container = styled.div`
     height: 300px;
     width: 500px;
-    margin-top: 200px;
+    margin-top: 250px;
     border-radius: 20px;
-    margin-right: 40px;
+    margin-right: 60px;
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
     align-items: center;
     display: flex;
