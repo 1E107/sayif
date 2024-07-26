@@ -2,10 +2,7 @@ package com.ssafy.sayif.team.controller;
 
 import com.ssafy.sayif.member.exception.UnauthorizedException;
 import com.ssafy.sayif.member.jwt.JWTUtil;
-import com.ssafy.sayif.team.dto.MentoringApplicationRequest;
-import com.ssafy.sayif.team.dto.MentoringRecruitRequest;
-import com.ssafy.sayif.team.dto.MentoringSearchRequest;
-import com.ssafy.sayif.team.dto.MentoringSearchResponse;
+import com.ssafy.sayif.team.dto.*;
 import com.ssafy.sayif.team.entity.Team;
 import com.ssafy.sayif.team.service.MentoringService;
 import lombok.RequiredArgsConstructor;
@@ -57,5 +54,11 @@ public class MentoringController {
         }
 
     }
+
+//    @GetMapping("/profile/{page_no}/{size_no}")
+//    public ResponseEntity<?> profile(@PathVariable int page_no, @PathVariable int size_no){
+//        List<MentorProfileResponse> mentorList = mentoringService.profile(page_no, size_no);
+//        return ResponseEntity.ok(mentorList);
+//    }
 
 }
