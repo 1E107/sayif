@@ -33,4 +33,5 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
     int updateMemberTeam(@Param("memberId") String memberId, @Param("role") Role role,
         @Param("newTeamId") int newTeamId);
 
+    List<Member> findByTeamId(Long teamId);
 }

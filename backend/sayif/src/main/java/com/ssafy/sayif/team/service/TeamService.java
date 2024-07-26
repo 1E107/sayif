@@ -1,9 +1,12 @@
 package com.ssafy.sayif.team.service;
+import com.ssafy.sayif.member.entity.Member;
+import com.ssafy.sayif.member.repository.MemberRepository;
 import com.ssafy.sayif.member.repository.MenteeRepository;
 import com.ssafy.sayif.team.entity.Team;
 import com.ssafy.sayif.team.entity.TeamStatus;
 import com.ssafy.sayif.team.repository.TeamRepository;
 import com.ssafy.sayif.team.util.TeamConstants;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -13,16 +16,17 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class TeamService {
 
-    @Autowired
-    private TeamRepository teamRepository;
+    private final TeamRepository teamRepository;
+    private final MenteeRepository menteeRepository;
+    private final SimpMessagingTemplate messagingTemplate;
+    private final MemberRepository memberRepository;
 
-    @Autowired
-    private MenteeRepository menteeRepository;
-
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
+    public List<Member> getMembersByTeamId(Long teamId) {
+        return memberRepository.findByTeamId(teamId);
+    }
 
     @Scheduled(cron = "0 0 0 * * ?") // 매일 자정에 실행
     public void processTeamStatuses() {
