@@ -10,7 +10,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberUpdateRequestDto {
-    private String memberId;
+
+    private String username;
     private String name;
     private String nickname;
     private String gender;

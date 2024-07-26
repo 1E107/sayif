@@ -1,7 +1,15 @@
 spring:
   profiles:
     include: secret
-  jpa:
-    hibernate:
-      ddl-auto: create
-    show-sql: true
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+  jwt:
+    secret: bangcutsoragodoongmeruohboksayif
+
+server:
+  servlet:
+    encoding:
+      enabled: true
+      charset: UTF-8
+      force: true
+  port: 8010

@@ -6,6 +6,7 @@ import lombok.Data;
 @Builder
 @Data
 public class MentoringSearchResponse {
+    private int id;
     private String mentor1Nickname;
     private String mentor2Nickname;
     private String startDate;

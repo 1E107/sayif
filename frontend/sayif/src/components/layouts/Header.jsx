@@ -10,9 +10,11 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
+import Avatar from '@mui/material/Avatar';
 import {useNavigate} from 'react-router-dom';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import '../../styles/fonts.css'
+import { useSelector } from 'react-redux';
 
 const pages = ['새잎 소개', '멘토링', '소통 공간', '정보 공간'];
 const settings = {
@@ -39,6 +41,7 @@ function Header() {
   const [anchorElSubLow, setAnchorElSubLow] = React.useState(null); // 줄어든 화면
   const [anchorElSubFull, setAnchorElSubFull] = React.useState(null); // 전체 화면
   const [currentSettings, setCurrentSettings] = React.useState([]);
+  const { token } = useSelector(state => state.member);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -68,6 +71,14 @@ function Header() {
     navigate(menuToPage[subMenu]);
   };
 
+  const handleLoginPage = () => {
+    navigate("/member/login");
+  }
+
+  const handleTeamPage = () => {
+    navigate("/team")
+  }
+
   return (
     <AppBar position="fixed">
       <Container maxWidth="xl" style={{backgroundColor: 'white'}}>
@@ -87,7 +98,7 @@ function Header() {
               textDecoration: 'none',
             }}
           >
-            <img src="logo.png"></img>
+            <img src="/logo.png"></img>
           </Typography>
 
           {/* 화면 크기 줄이면 */}
@@ -240,11 +251,35 @@ function Header() {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="로그인">
-              <IconButton sx={{ p: 0 }}>
+            {token ? (
+              <div style={{display: "flex"}}>
+               <Button
+                onClick={handleTeamPage}
+                sx={{ my: 2, color: 'black', display: 'block', fontFamily: 'ChosunGu', fontWeight: 'bold'}}
+              >
+                팀 오피스
+              </Button>
+              <Box sx={{ flexGrow: 0 }}>
+              <Tooltip title="마이페이지">
+                  <IconButton
+                      sx={{ p: 0, my: 2, mx: 1 }}
+                  >
+                      <Avatar
+                          alt="Remy Sharp"
+                          src="/static/images/avatar/2.jpg"
+                      />
+                  </IconButton>
+              </Tooltip>
+          </Box>
+              </div>
+             
+            ) : (
+              <Tooltip title="로그인">
+              <IconButton sx={{ p: 0 }} onClick={handleLoginPage}>
                 <PersonOutlineIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
               </IconButton>
             </Tooltip>
+            )}
           </Box>
         </Toolbar>
       </Container>

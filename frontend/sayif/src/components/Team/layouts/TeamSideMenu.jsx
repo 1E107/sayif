@@ -15,14 +15,14 @@ import '../../../styles/fonts.css';
 import { ListItemIcon, Typography } from '@mui/material';
 
 const icon = {
-    홈: <HomeIcon />,
+    '홈': <HomeIcon />,
     '우리 팀 보기': <PersonIcon />,
     '멘토링 회의': <VideocamIcon />,
     '멘토링 자료': <AttachFileIcon />,
     'Q&A 게시판': <ContactSupportIcon />,
-    메시지: <QuestionAnswerIcon />,
-    퀴즈: <QuizIcon />,
-    사연함: <NoteAltIcon />,
+    '메시지': <QuestionAnswerIcon />,
+    '퀴즈': <QuizIcon />,
+    '사연함': <NoteAltIcon />,
 };
 
 function TeamSideMenu({ offSideMenu, selectSideMenu }) {

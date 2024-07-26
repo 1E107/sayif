@@ -1,7 +1,7 @@
 package com.ssafy.sayif.board.entity;
 
 import com.ssafy.sayif.common.entity.BaseTimeEntity;
-import com.ssafy.sayif.user.entity.Member;
+import com.ssafy.sayif.member.entity.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -12,9 +12,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+@Getter
 @Entity
+@NoArgsConstructor
 @SuperBuilder
 public class Board extends BaseTimeEntity {
 

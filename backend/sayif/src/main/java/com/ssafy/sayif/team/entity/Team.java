@@ -7,21 +7,21 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
+@Setter
 public class Team {
 
     @Id
@@ -40,7 +40,7 @@ public class Team {
     @Column(name = "day_of_week")
     private String dayOfWeek;
 
-    @Column(name = "mentoring_time")
+    @Column(name = "mentoring_time", columnDefinition = "TIME")
     private LocalTime mentoringTime;
 
     @Column(name = "end_date")
@@ -49,6 +49,4 @@ public class Team {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private TeamStatus status;
-
 }
-
