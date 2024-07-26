@@ -5,3 +5,10 @@ spring:
     property-naming-strategy: SNAKE_CASE
   jwt:
     secret: bangcutsoragodoongmeruohboksayif
+
+server:
+  servlet:
+    encoding:
+      enabled: true
+      charset: UTF-8
+      force: true
