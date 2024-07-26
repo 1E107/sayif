@@ -1,6 +1,6 @@
 package com.ssafy.sayif.common.entity;
 
-import com.ssafy.sayif.member.entity.Member;
+import com.ssafy.sayif.user.entity.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
