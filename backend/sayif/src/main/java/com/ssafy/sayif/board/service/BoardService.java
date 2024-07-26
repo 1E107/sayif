@@ -16,7 +16,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -112,9 +111,8 @@ public class BoardService {
      */
     public List<BoardResponseDto> getPostList(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Board> boardPage = boardRepository.findAll(pageable);
 
-        return boardPage.stream()
+        return boardRepository.findAll(pageable).stream()
             .filter(board -> !board.getIsRemove())
             .map(this::convertToDto)
             .collect(Collectors.toList());

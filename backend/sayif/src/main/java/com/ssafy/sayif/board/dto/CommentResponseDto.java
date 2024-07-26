@@ -1,5 +1,6 @@
 package com.ssafy.sayif.board.dto;
 
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,10 +10,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Data
-public class CommentRequestDto {
+public class CommentResponseDto {
 
+    private int id;
     private String content;
-    private String memberId;
-    private int boardId;
+    private String writer;
+    private LocalDateTime createdAt;
+
 
 }

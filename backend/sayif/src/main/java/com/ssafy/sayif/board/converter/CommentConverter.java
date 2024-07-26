@@ -36,7 +36,7 @@ public class CommentConverter {
         return Comment.builder()
             .member(result.member())
             .board(result.board())
-            .content(dto.getComment())
+            .content(dto.getContent())
             .build();
     }
 

@@ -2,9 +2,14 @@ package com.ssafy.sayif.board.service;
 
 import com.ssafy.sayif.board.converter.CommentConverter;
 import com.ssafy.sayif.board.dto.CommentRequestDto;
+import com.ssafy.sayif.board.dto.CommentResponseDto;
 import com.ssafy.sayif.board.entity.Comment;
+import com.ssafy.sayif.board.exception.CommentNotFoundException;
 import com.ssafy.sayif.board.repository.CommentRepository;
+import com.ssafy.sayif.member.exception.UnauthorizedAccessException;
 import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,24 +23,63 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final CommentConverter commentConverter;
 
-    public void writeComment(CommentRequestDto dto) {
-        commentRepository.save(commentConverter.convertToEntity(dto));
+    private Comment findCommentById(int commentId) {
+        return commentRepository.findById(commentId)
+            .orElseThrow(() -> new CommentNotFoundException(commentId));
     }
 
+    private boolean isAuthorizedUser(Comment comment, String memberId) {
+        return !memberId.equals(comment.getMember().getMemberId());
+    }
 
-    public void modifyComment(int commentId, String memberId, CommentRequestDto dto) {
-        Comment comment =
-            commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid comment ID"));
+    private Comment updateCommentContent(Comment comment, String content) {
+        Comment updatedComment =
+            comment.toBuilder()
+                .content(content)
+                .modifiedAt(LocalDateTime.now()).build();
+        commentRepository.save(updatedComment);
+        return updatedComment;
+    }
 
-        if (!memberId.equals(comment.getMember().getMemberId())) {
-            throw new IllegalArgumentException("Invalid member ID");
+    private CommentResponseDto convertToDto(Comment comment) {
+        return CommentResponseDto.builder()
+            .id(comment.getId())
+            .content(comment.getContent())
+            .createdAt(comment.getCreatedAt())
+            .writer(comment.getMember().getMemberId())
+            .build();
+    }
+
+    public void writeComment(CommentRequestDto dto) {
+        Comment comment = commentConverter.convertToEntity(dto);
+        commentRepository.save(comment);
+    }
+
+    public Comment modifyComment(int commentId, String memberId, CommentRequestDto dto) {
+        Comment comment = findCommentById(commentId);
+
+        if (isAuthorizedUser(comment, memberId)) {
+            throw new UnauthorizedAccessException("Invalid member ID");
         }
 
-        commentRepository.save(
-            Comment.builder()
-                .board(comment.getBoard())
-                .member(comment.getMember())
-                .content(dto.getComment()).build());
+        return updateCommentContent(comment, dto.getContent());
+    }
+
+    public void deleteComment(int commentId, String memberId) {
+        Comment comment = findCommentById(commentId);
+
+        if (isAuthorizedUser(comment, memberId)) {
+            throw new UnauthorizedAccessException("Invalid member ID");
+        }
+
+        commentRepository.delete(comment);
+    }
+
+    public List<CommentResponseDto> getCommentList(int boardId) {
+        return commentRepository
+            .findAllByBoardId(boardId)
+            .stream()
+            .map(this::convertToDto)
+            .toList();
     }
 }
