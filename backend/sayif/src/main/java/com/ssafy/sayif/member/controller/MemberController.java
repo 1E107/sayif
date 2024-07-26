@@ -1,11 +1,17 @@
 package com.ssafy.sayif.member.controller;
 
+import com.ssafy.sayif.common.entity.Letter;
 import com.ssafy.sayif.member.dto.*;
 import com.ssafy.sayif.member.entity.History;
 import com.ssafy.sayif.member.exception.UnauthorizedException;
 import com.ssafy.sayif.member.jwt.JWTUtil;
+import com.ssafy.sayif.member.service.LetterService;
+import com.ssafy.sayif.member.service.LetterServiceImpl;
 import com.ssafy.sayif.member.service.MemberServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +23,7 @@ import java.util.List;
 public class MemberController {
 
     private final MemberServiceImpl memberService;
+    private final LetterServiceImpl letterService;
     private final JWTUtil jwtUtil;
 
     @PostMapping("/register")
@@ -81,6 +88,30 @@ public class MemberController {
         } else {
             return ResponseEntity.badRequest().body("Password update failed. Please check if passwords match and member exists.");
         }
+    }
+
+    @PostMapping("/message")
+    public ResponseEntity<String> sendLetter(@RequestBody LetterRequestDto request, @RequestHeader("Authorization") String authorizationHeader) {
+        String senderId = jwtUtil.getMemberIdByHeader(authorizationHeader);
+        letterService.sendLetter(request.getTitle(), request.getContent(), senderId, request.getReceiver());
+        return ResponseEntity.ok("Message sent successfully.");
+    }
+
+    @GetMapping("/message/{id}")
+    public ResponseEntity<LetterResponseDto> getLetter(@PathVariable int id, @RequestHeader("Authorization") String authorizationHeader) {
+        String memberId = jwtUtil.getMemberIdByHeader(authorizationHeader);
+        LetterResponseDto letter = letterService.getLetterById(id, memberId);
+        return ResponseEntity.ok(letter);
+    }
+
+    @GetMapping("/message/{page_no}/{size_no}")
+    public ResponseEntity<Page<LetterResponseDto>> getReceivedLetters(@PathVariable int page_no,
+                                                                      @PathVariable int size_no,
+                                                                      @RequestHeader("Authorization") String authorizationHeader) {
+        String memberId = jwtUtil.getMemberIdByHeader(authorizationHeader);
+        Pageable pageable = PageRequest.of(page_no - 1, size_no); // 페이지 번호는 0부터 시작하므로 -1
+        Page<LetterResponseDto> letters = letterService.getReceivedLetters(memberId, pageable);
+        return ResponseEntity.ok(letters);
     }
 
 }
