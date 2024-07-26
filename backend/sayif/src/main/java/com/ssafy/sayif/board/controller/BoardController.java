@@ -28,22 +28,22 @@ public class BoardController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> modifyPost(@PathVariable("id") int id,
-        @RequestBody ModifyPostRequestDto dto) {
+                                        @RequestBody ModifyPostRequestDto dto) {
         return ResponseEntity.ok(boardService.modifyPost(id, dto));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> removePost(@PathVariable("id") int id) {
         if (boardService.removePost(id)) {
-            return ResponseEntity.ok("»èÁ¦°¡ ¼º°øÀûÀ¸·Î µÇ¾ú½À´Ï´Ù.");
+            return ResponseEntity.ok("ì‚­ì œê°€ ì„±ê³µì ìœ¼ë¡œ ë˜ì—ˆìŠµë‹ˆë‹¤.");
         } else {
-            return ResponseEntity.ok("ÀÌ¹Ì »èÁ¦µÈ °Ô½Ã¹°ÀÔ´Ï´Ù.");
+            return ResponseEntity.ok("ì‚­ì œê°€ ì‹¤íŒ¨ í–ˆìŠµë‹ˆë‹¤.");
         }
     }
 
     @GetMapping("/{page}/{size}")
     public ResponseEntity<?> getPostList(@PathVariable("page") int page,
-        @PathVariable("size") int size) {
+                                         @PathVariable("size") int size) {
         return ResponseEntity.ok(boardService.getPostList(page, size));
     }
 

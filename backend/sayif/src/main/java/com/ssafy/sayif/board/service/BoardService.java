@@ -20,7 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 /**
- * °Ô½ÃÆÇ ¼­ºñ½º Å¬·¡½ºÀÔ´Ï´Ù.
+ * ê²Œì‹œíŒ ì„œë¹„ìŠ¤ í´ë˜ìŠ¤ì…ë‹ˆë‹¤.
  */
 @Service
 @Transactional
@@ -32,138 +32,138 @@ public class BoardService {
     private final MemberRepository memberRepository;
 
     /**
-     * °Ô½Ã±Û ÀÛ¼º
+     * ê²Œì‹œê¸€ ì‘ì„±
      *
-     * @param dto °Ô½Ã±Û ÀÛ¼º ¿äÃ» DTO
-     * @return ÀÛ¼ºµÈ °Ô½Ã±ÛÀÇ BoardResponseDto¸¦ Optional·Î ¹İÈ¯
+     * @param dto ê²Œì‹œê¸€ ì‘ì„± ìš”ì²­ DTO
+     * @return ì‘ì„±ëœ ê²Œì‹œê¸€ì˜ BoardResponseDtoë¥¼ Optionalë¡œ ë°˜í™˜
      */
     public Optional<BoardResponseDto> writePost(WritePostRequestDto dto) {
         for (Member member : memberRepository.findAll()) {
             log.info(member.toString());
         }
         Member member = memberRepository.findById(dto.getUsername())
-            .orElseThrow(
-                () -> new IllegalArgumentException("Invalid member ID: " + dto.getUsername()));
+                .orElseThrow(
+                        () -> new IllegalArgumentException("Invalid member ID: " + dto.getUsername()));
 
         Board board = Board.builder()
-            .file(dto.getFile())
-            .title(dto.getTitle())
-            .content(dto.getContent())
-            .type(dto.getType())
-            .isRemove(false)
-            .member(member)
-            .build();
+                .file(dto.getFile())
+                .title(dto.getTitle())
+                .content(dto.getContent())
+                .type(dto.getType())
+                .isRemove(false)
+                .member(member)
+                .build();
 
         Board savedBoard = boardRepository.save(board);
         return Optional.of(convertToDto(savedBoard));
     }
 
     /**
-     * °Ô½Ã±Û ¼öÁ¤
+     * ê²Œì‹œê¸€ ìˆ˜ì •
      *
-     * @param id  ¼öÁ¤ÇÒ °Ô½Ã±ÛÀÇ ID
-     * @param dto °Ô½Ã±Û ¼öÁ¤ ¿äÃ» DTO
-     * @return ¼öÁ¤µÈ °Ô½Ã±ÛÀÇ BoardResponseDto¸¦ Optional·Î ¹İÈ¯
+     * @param id  ìˆ˜ì •í•  ê²Œì‹œê¸€ì˜ ID
+     * @param dto ê²Œì‹œê¸€ ìˆ˜ì • ìš”ì²­ DTO
+     * @return ìˆ˜ì •ëœ ê²Œì‹œê¸€ì˜ BoardResponseDtoë¥¼ Optionalë¡œ ë°˜í™˜
      */
     public Optional<BoardResponseDto> modifyPost(int id, ModifyPostRequestDto dto) {
         Board existBoard = boardRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Invalid board ID: " + id));
+                .orElseThrow(() -> new IllegalArgumentException("Invalid board ID: " + id));
         Board updatedBoard = Board.builder()
-            .id(id)
-            .member(existBoard.getMember())
-            .createdAt(existBoard.getCreatedAt())
-            .modifiedAt(LocalDateTime.now())
-            .hitCount(existBoard.getHitCount())
-            .file(dto.getFile())
-            .title(dto.getTitle())
-            .content(dto.getContent())
-            .isRemove(false)
-            .type(dto.getType())
-            .build();
+                .id(id)
+                .member(existBoard.getMember())
+                .createdAt(existBoard.getCreatedAt())
+                .modifiedAt(LocalDateTime.now())
+                .hitCount(existBoard.getHitCount())
+                .file(dto.getFile())
+                .title(dto.getTitle())
+                .content(dto.getContent())
+                .isRemove(false)
+                .type(dto.getType())
+                .build();
 
         Board savedBoard = boardRepository.save(updatedBoard);
         return Optional.of(convertToDto(savedBoard));
     }
 
     /**
-     * °Ô½Ã±Û ³í¸®Àû »èÁ¦
+     * ê²Œì‹œê¸€ ë…¼ë¦¬ì  ì‚­ì œ
      *
-     * @param id »èÁ¦ÇÒ °Ô½Ã±ÛÀÇ ID
-     * @return »èÁ¦µÈ °Ô½Ã±ÛÀÇ BoardResponseDto¸¦ Optional·Î ¹İÈ¯, ÀÌ¹Ì »èÁ¦µÈ °Ô½Ã±ÛÀÎ °æ¿ì Optional.empty() ¹İÈ¯
+     * @param id ì‚­ì œí•  ê²Œì‹œê¸€ì˜ ID
+     * @return ì‚­ì œëœ ê²Œì‹œê¸€ì˜ BoardResponseDtoë¥¼ Optionalë¡œ ë°˜í™˜, ì´ë¯¸ ì‚­ì œëœ ê²Œì‹œê¸€ì¸ ê²½ìš° Optional.empty() ë°˜í™˜
      */
     public boolean removePost(int id) {
         Board board = boardRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Invalid board ID: " + id));
+                .orElseThrow(() -> new IllegalArgumentException("Invalid board ID: " + id));
 
         if (board.getIsRemove()) {
             return false;
         }
 
         Board updatedBoard = Board.builder()
-            .id(board.getId())
-            .member(board.getMember())
-            .title(board.getTitle())
-            .content(board.getContent())
-            .hitCount(board.getHitCount())
-            .type(board.getType())
-            .file(board.getFile())
-            .isRemove(true) // isRemove ÇÊµå¸¦ true·Î ¼³Á¤
-            .removeAt(LocalDateTime.now()) // removeAt ÇÊµå¸¦ ÇöÀç ½Ã°£À¸·Î ¼³Á¤
-            .createdAt(board.getCreatedAt())
-            .modifiedAt(board.getModifiedAt())
-            .build();
+                .id(board.getId())
+                .member(board.getMember())
+                .title(board.getTitle())
+                .content(board.getContent())
+                .hitCount(board.getHitCount())
+                .type(board.getType())
+                .file(board.getFile())
+                .isRemove(true) // isRemove í•„ë“œë¥¼ trueë¡œ ì„¤ì •
+                .removeAt(LocalDateTime.now()) // removeAt í•„ë“œë¥¼ í˜„ì¬ ì‹œê°„ìœ¼ë¡œ ì„¤ì •
+                .createdAt(board.getCreatedAt())
+                .modifiedAt(board.getModifiedAt())
+                .build();
 
-        boardRepository.save(updatedBoard); // º¯°æ »çÇ× ÀúÀå
+        boardRepository.save(updatedBoard); // ë³€ê²½ ì‚¬í•­ ì €ì¥
         return true;
     }
 
     /**
-     * °Ô½Ã±Û ¸ñ·Ï Á¶È¸
+     * ê²Œì‹œê¸€ ëª©ë¡ ì¡°íšŒ
      *
-     * @param page ÆäÀÌÁö ¹øÈ£
-     * @param size ÆäÀÌÁö Å©±â
-     * @return isRemove°¡ falseÀÎ °Ô½Ã±Û ¸ñ·ÏÀÇ BoardResponseDto ¸®½ºÆ®
+     * @param page í˜ì´ì§€ ë²ˆí˜¸
+     * @param size í˜ì´ì§€ í¬ê¸°
+     * @return isRemoveê°€ falseì¸ ê²Œì‹œê¸€ ëª©ë¡ì˜ BoardResponseDto ë¦¬ìŠ¤íŠ¸
      */
     public List<BoardResponseDto> getPostList(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Board> boardPage = boardRepository.findAll(pageable);
 
         return boardPage.stream()
-            .filter(board -> !board.getIsRemove()) // isRemove°¡ falseÀÎ °Ô½Ã±Û ÇÊÅÍ¸µ
-            .map(this::convertToDto)
-            .collect(Collectors.toList());
+                .filter(board -> !board.getIsRemove()) // isRemoveê°€ falseì¸ ê²Œì‹œê¸€ í•„í„°ë§
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 
     /**
-     * °Ô½Ã±Û »ó¼¼ Á¶È¸
+     * ê²Œì‹œê¸€ ìƒì„¸ ì¡°íšŒ
      *
-     * @param id Á¶È¸ÇÒ °Ô½Ã±ÛÀÇ ID
-     * @return °Ô½Ã±ÛÀÇ BoardResponseDto
+     * @param id ì¡°íšŒí•  ê²Œì‹œê¸€ì˜ ID
+     * @return ê²Œì‹œê¸€ì˜ BoardResponseDto
      */
     public BoardResponseDto getPostDetail(int id) {
         Board board = boardRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Invalid board ID: " + id));
+                .orElseThrow(() -> new IllegalArgumentException("Invalid board ID: " + id));
         return this.convertToDto(board);
     }
 
     /**
-     * Board ¿£Æ¼Æ¼¸¦ BoardResponseDto·Î º¯È¯
+     * Board ì—”í‹°í‹°ë¥¼ BoardResponseDtoë¡œ ë³€í™˜
      *
-     * @param board º¯È¯ÇÒ Board ¿£Æ¼Æ¼
-     * @return º¯È¯µÈ BoardResponseDto
+     * @param board ë³€í™˜í•  Board ì—”í‹°í‹°
+     * @return ë³€í™˜ëœ BoardResponseDto
      */
     private BoardResponseDto convertToDto(Board board) {
         return BoardResponseDto.builder()
-            .id(board.getId())
-            .title(board.getTitle())
-            .content(board.getContent())
-            .file(board.getFile())
-            .writer(board.getMember().getName())
-            .type(board.getType())
-            .hitCount(board.getHitCount())
-            .createdAt(board.getCreatedAt())
-            .modifiedAt(board.getModifiedAt())
-            .isRemove(board.getIsRemove())
-            .build();
+                .id(board.getId())
+                .title(board.getTitle())
+                .content(board.getContent())
+                .file(board.getFile())
+                .writer(board.getMember().getName())
+                .type(board.getType())
+                .hitCount(board.getHitCount())
+                .createdAt(board.getCreatedAt())
+                .modifiedAt(board.getModifiedAt())
+                .isRemove(board.getIsRemove())
+                .build();
     }
 }
