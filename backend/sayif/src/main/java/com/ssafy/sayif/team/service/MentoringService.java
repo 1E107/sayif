@@ -1,18 +1,13 @@
 package com.ssafy.sayif.team.service;
 
-import com.ssafy.sayif.member.entity.Member;
 import com.ssafy.sayif.member.entity.Role;
 import com.ssafy.sayif.member.repository.MemberRepository;
-import com.ssafy.sayif.team.dto.MentoringApplicationRequest;
-import com.ssafy.sayif.team.dto.MentoringRecruitRequest;
-import com.ssafy.sayif.team.dto.MentoringSearchRequest;
-import com.ssafy.sayif.team.dto.MentoringSearchResponse;
+import com.ssafy.sayif.member.repository.MentorRepository;
+import com.ssafy.sayif.team.dto.*;
 import com.ssafy.sayif.team.entity.Team;
 import com.ssafy.sayif.team.entity.TeamStatus;
-import com.ssafy.sayif.team.repository.MentoringRepository;
 import com.ssafy.sayif.team.repository.TeamRepository;
 import jakarta.transaction.Transactional;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -31,11 +26,12 @@ import java.util.stream.Collectors;
 public class MentoringService {
 
     @Autowired
-    MentoringRepository mentoringRepository;
-
+    TeamRepository teamRepository;
     @Autowired
     MemberRepository memberRepository;
 
+    @Autowired
+    MentorRepository mentorRepository;
 
     @Transactional
     public Team recruit(MentoringRecruitRequest mentoringRecruitRequest, String memberId) {
@@ -66,7 +62,7 @@ public class MentoringService {
                     .endDate(endDate)
                     .status(TeamStatus.Apply)
                     .build();
-            mentoringRepository.save(team);
+            teamRepository.save(team);
 
             // memberId, 다른멘토 아이디 찾아서 멘토링 팀 번호 매칭
             memberRepository.updateTeamIdForUserIdOrPairId(team.getId(), memberId, mentoringRecruitRequest.getId());
@@ -94,7 +90,7 @@ public class MentoringService {
         log.info(mentoringTime.toString());
 
         Pageable pageable = PageRequest.of(page_no, size_no);
-        Page<Team> teamsPage = mentoringRepository.findTeamsByStartDateBetweenAndMentoringTime(startDateFrom, startDateTo, mentoringTime, pageable);
+        Page<Team> teamsPage = teamRepository.findTeamsByStartDateBetweenAndMentoringTime(startDateFrom, startDateTo, mentoringTime, pageable);
 
         return teamsPage.stream()
                 .map(this::convertToDto)
@@ -105,9 +101,7 @@ public class MentoringService {
         List<String> mentorNicknames = memberRepository.findMentorNicknamesByTeamId(team.getId(), Role.Mentor);
         String member1Nickname = !mentorNicknames.isEmpty() ? mentorNicknames.get(0) : "";
         String member2Nickname = mentorNicknames.size() > 1 ? mentorNicknames.get(1) : "";
-        log.info("team-id: "+team.getId());
 
-        log.info(mentorNicknames.toString());
         // 멘티 카운트 가져오기
         int menteeCount = memberRepository.countMenteesByTeamId(team.getId(), Role.Mentee);
 
@@ -147,4 +141,6 @@ public class MentoringService {
         int teamId = mentoringApplicationRequest.getId();
         return memberRepository.updateMemberTeam(memberId, Role.Mentee, teamId);
     }
+
+
 }
