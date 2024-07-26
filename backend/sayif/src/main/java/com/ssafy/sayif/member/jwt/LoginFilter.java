@@ -1,6 +1,8 @@
 package com.ssafy.sayif.member.jwt;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.sayif.member.dto.CustomUserDetails;
+import com.ssafy.sayif.member.dto.LoginRequestDto;
 import com.ssafy.sayif.member.entity.Refresh;
 import com.ssafy.sayif.member.repository.RefreshRepository;
 import jakarta.servlet.FilterChain;
@@ -16,6 +18,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -32,11 +35,19 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     // 검증
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        String memberId = obtainMemberId(request);
-        String password = obtainPassword(request);
+        try {
+            // JSON 파싱
+            ObjectMapper objectMapper = new ObjectMapper();
+            LoginRequestDto loginRequest = objectMapper.readValue(request.getInputStream(), LoginRequestDto.class);
 
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(memberId, password, null);
-        return authenticationManager.authenticate(authToken);
+            String memberId = loginRequest.getMemberId();
+            String password = loginRequest.getPassword();
+
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(memberId, password, null);
+            return authenticationManager.authenticate(authToken);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     // 성공
