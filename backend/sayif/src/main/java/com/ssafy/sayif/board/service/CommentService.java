@@ -23,12 +23,12 @@ public class CommentService {
     }
 
 
-    public void modifyComment(int commentId, String memberId, CommentRequestDto dto) {
+    public void modifyComment(int commentId, String username, CommentRequestDto dto) {
         Comment comment =
             commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid comment ID"));
 
-        if (!memberId.equals(comment.getMember().getMemberId())) {
+        if (!username.equals(comment.getMember().getUsername())) {
             throw new IllegalArgumentException("Invalid member ID");
         }
 

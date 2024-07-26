@@ -1,10 +1,9 @@
 package com.ssafy.sayif.member.repository;
 
 import com.ssafy.sayif.member.entity.Refresh;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 public interface RefreshRepository extends JpaRepository<Refresh, Long> {
 
@@ -13,6 +12,7 @@ public interface RefreshRepository extends JpaRepository<Refresh, Long> {
     @Transactional
     void deleteByRefresh(String refresh);
 
-    List<Refresh> findByMemberId(String memberId);
-    void deleteByMemberId(String memberId);
+    List<Refresh> findByUsername(String username);
+
+    void deleteByUsername(String username);
 }

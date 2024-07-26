@@ -17,6 +17,6 @@ public class WritePostRequestDto {
     private String content;
     private String file;
     @JsonProperty("member_id")
-    private int memberId;
+    private int username;
     private BoardType type;
 }

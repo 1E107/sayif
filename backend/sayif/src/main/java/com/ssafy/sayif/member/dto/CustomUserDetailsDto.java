@@ -1,12 +1,11 @@
 package com.ssafy.sayif.member.dto;
 
 import com.ssafy.sayif.member.entity.Member;
+import java.util.ArrayList;
+import java.util.Collection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 @RequiredArgsConstructor
 public class CustomUserDetailsDto implements UserDetails {
@@ -34,7 +33,7 @@ public class CustomUserDetailsDto implements UserDetails {
 
     @Override
     public String getUsername() {
-        return member.getMemberId();
+        return member.getUsername();
     }
 
     @Override

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface LetterRepository extends JpaRepository<Letter, Integer> {
+
     Page<Letter> findByReceiveMemberIdOrderByCreatedAtDesc(int receiveMemberId, Pageable pageable);
 
 }

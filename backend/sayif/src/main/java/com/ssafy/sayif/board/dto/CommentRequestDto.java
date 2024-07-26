@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class CommentRequestDto {
 
     private String comment;
-    private String memberId;
+    private String username;
     private int boardId;
 
 }

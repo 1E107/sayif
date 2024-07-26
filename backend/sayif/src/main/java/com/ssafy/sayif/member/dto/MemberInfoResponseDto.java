@@ -1,6 +1,5 @@
 package com.ssafy.sayif.member.dto;
 
-import com.ssafy.sayif.team.entity.Team;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +10,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberInfoResponseDto {
-    private String memberId;
+
+    private String username;
     private String name;
     private String nickname;
     private String gender;

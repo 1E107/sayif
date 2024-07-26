@@ -26,8 +26,8 @@ public class CommentController {
     public void writeComment(@PathVariable("boardId") int boardId,
         @RequestBody CommentRequestDto dto,
         @RequestHeader("Authorization") String authorizationHeader) {
-        String memberId = jwtUtil.getMemberIdByHeader(authorizationHeader);
-        dto.setMemberId(memberId);
+        String username = jwtUtil.getUsernameByHeader(authorizationHeader);
+        dto.setUsername(username);
         dto.setBoardId(boardId);
         commentService.writeComment(dto);
     }
@@ -37,7 +37,7 @@ public class CommentController {
         @PathVariable("commentId") int commentId,
         @RequestBody CommentRequestDto dto,
         @RequestHeader("Authorization") String authorizationHeader) {
-        String memberId = jwtUtil.getMemberIdByHeader(authorizationHeader);
-        commentService.modifyComment(commentId, memberId, dto);
+        String username = jwtUtil.getUsernameByHeader(authorizationHeader);
+        commentService.modifyComment(commentId, username, dto);
     }
 }

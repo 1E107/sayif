@@ -4,20 +4,23 @@ import com.ssafy.sayif.member.dto.MemberInfoResponseDto;
 import com.ssafy.sayif.member.dto.MemberUpdateRequestDto;
 import com.ssafy.sayif.member.dto.MentoringRecordResponseDto;
 import com.ssafy.sayif.member.dto.RegisterRequestDto;
-import com.ssafy.sayif.member.entity.History;
-
 import java.util.List;
 
 public interface MemberService {
-    MemberInfoResponseDto getMemberInfo(String memberId);
+
+    MemberInfoResponseDto getMemberInfo(String username);
+
     Boolean registerMember(RegisterRequestDto registerRequestDto);
-    void updateMemberInfo(String memberId, MemberUpdateRequestDto updateRequestDto);
 
-    void deleteMember(String memberId);
-    void deleteRefreshTokens(String memberId);
+    void updateMemberInfo(String username, MemberUpdateRequestDto updateRequestDto);
 
-    List<MentoringRecordResponseDto> getMentoringRecords(String memberId);
+    void deleteMember(String username);
 
-    boolean isMemberExists(String memberId);
-    boolean updatePassword(String memberId, String newPwd, String newPwdCheck);
+    void deleteRefreshTokens(String username);
+
+    List<MentoringRecordResponseDto> getMentoringRecords(String username);
+
+    boolean isMemberExists(String username);
+
+    boolean updatePassword(String username, String newPwd, String newPwdCheck);
 }

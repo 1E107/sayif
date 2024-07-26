@@ -5,9 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberIdRequestDto {
-    private String memberId;
+public class UsernameRequestDto {
+
+    private String username;
 }

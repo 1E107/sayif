@@ -41,9 +41,9 @@ public class BoardService {
         for (Member member : memberRepository.findAll()) {
             log.info(member.toString());
         }
-        Member member = memberRepository.findById(dto.getMemberId())
+        Member member = memberRepository.findById(dto.getUsername())
             .orElseThrow(
-                () -> new IllegalArgumentException("Invalid member ID: " + dto.getMemberId()));
+                () -> new IllegalArgumentException("Invalid member ID: " + dto.getUsername()));
 
         Board board = Board.builder()
             .file(dto.getFile())
