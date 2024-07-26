@@ -5,7 +5,7 @@ import Button from '@mui/material/Button';
 const Container = styled.div`
     margin-top: 100px;
     margin-bottom: 100px;
-    min-width: 1100px;
+    min-width: 1000px;
     min-height : 700px;
     background-color: white;
     border-radius: 30px;
