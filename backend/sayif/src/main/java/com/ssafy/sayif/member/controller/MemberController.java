@@ -23,7 +23,7 @@ public class MemberController {
     private final JWTUtil jwtUtil;
 
     @PostMapping("/register")
-    public String register(RegisterRequestDto registerRequestDto) {
+    public String register(@RequestBody RegisterRequestDto registerRequestDto) {
         memberService.registerMember(registerRequestDto);
         return "success";
     }
