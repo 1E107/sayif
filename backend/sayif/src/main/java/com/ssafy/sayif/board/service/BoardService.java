@@ -4,8 +4,10 @@ import com.ssafy.sayif.board.dto.BoardResponseDto;
 import com.ssafy.sayif.board.dto.ModifyPostRequestDto;
 import com.ssafy.sayif.board.dto.WritePostRequestDto;
 import com.ssafy.sayif.board.entity.Board;
+import com.ssafy.sayif.board.exception.BoardNotFoundException;
 import com.ssafy.sayif.board.repository.BoardRepository;
 import com.ssafy.sayif.member.entity.Member;
+import com.ssafy.sayif.member.exception.MemberNotFoundException;
 import com.ssafy.sayif.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -38,12 +40,8 @@ public class BoardService {
      * @return 작성된 게시글의 BoardResponseDto를 Optional로 반환
      */
     public Optional<BoardResponseDto> writePost(WritePostRequestDto dto) {
-        for (Member member : memberRepository.findAll()) {
-            log.info(member.toString());
-        }
         Member member = memberRepository.findById(dto.getMemberId())
-            .orElseThrow(
-                () -> new IllegalArgumentException("Invalid member ID: " + dto.getMemberId()));
+            .orElseThrow(() -> new MemberNotFoundException(dto.getMemberId()));
 
         Board board = Board.builder()
             .file(dto.getFile())
@@ -52,6 +50,7 @@ public class BoardService {
             .type(dto.getType())
             .isRemove(false)
             .member(member)
+            .createdAt(LocalDateTime.now())
             .build();
 
         Board savedBoard = boardRepository.save(board);
@@ -67,18 +66,14 @@ public class BoardService {
      */
     public Optional<BoardResponseDto> modifyPost(int id, ModifyPostRequestDto dto) {
         Board existBoard = boardRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Invalid board ID: " + id));
-        Board updatedBoard = Board.builder()
-            .id(id)
-            .member(existBoard.getMember())
-            .createdAt(existBoard.getCreatedAt())
-            .modifiedAt(LocalDateTime.now())
-            .hitCount(existBoard.getHitCount())
-            .file(dto.getFile())
+            .orElseThrow(() -> new BoardNotFoundException(id));
+
+        Board updatedBoard = existBoard.toBuilder()
             .title(dto.getTitle())
             .content(dto.getContent())
-            .isRemove(false)
+            .file(dto.getFile())
             .type(dto.getType())
+            .modifiedAt(LocalDateTime.now())
             .build();
 
         Board savedBoard = boardRepository.save(updatedBoard);
@@ -89,31 +84,22 @@ public class BoardService {
      * 게시글 논리적 삭제
      *
      * @param id 삭제할 게시글의 ID
-     * @return 삭제된 게시글의 BoardResponseDto를 Optional로 반환, 이미 삭제된 게시글인 경우 Optional.empty() 반환
+     * @return 삭제 여부를 반환
      */
     public boolean removePost(int id) {
         Board board = boardRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Invalid board ID: " + id));
+            .orElseThrow(() -> new BoardNotFoundException(id));
 
         if (board.getIsRemove()) {
             return false;
         }
 
-        Board updatedBoard = Board.builder()
-            .id(board.getId())
-            .member(board.getMember())
-            .title(board.getTitle())
-            .content(board.getContent())
-            .hitCount(board.getHitCount())
-            .type(board.getType())
-            .file(board.getFile())
+        Board removedBoard = board.toBuilder()
             .isRemove(true) // isRemove 필드를 true로 설정
             .removeAt(LocalDateTime.now()) // removeAt 필드를 현재 시간으로 설정
-            .createdAt(board.getCreatedAt())
-            .modifiedAt(board.getModifiedAt())
             .build();
 
-        boardRepository.save(updatedBoard); // 변경 사항 저장
+        boardRepository.save(removedBoard); // 변경 사항 저장
         return true;
     }
 
@@ -129,7 +115,7 @@ public class BoardService {
         Page<Board> boardPage = boardRepository.findAll(pageable);
 
         return boardPage.stream()
-            .filter(board -> !board.getIsRemove()) // isRemove가 false인 게시글 필터링
+            .filter(board -> !board.getIsRemove())
             .map(this::convertToDto)
             .collect(Collectors.toList());
     }
@@ -142,8 +128,8 @@ public class BoardService {
      */
     public BoardResponseDto getPostDetail(int id) {
         Board board = boardRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Invalid board ID: " + id));
-        return this.convertToDto(board);
+            .orElseThrow(() -> new BoardNotFoundException(id));
+        return convertToDto(board);
     }
 
     /**
