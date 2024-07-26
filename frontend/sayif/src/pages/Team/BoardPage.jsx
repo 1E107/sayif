@@ -8,6 +8,8 @@ const Main = styled.div`
     display: flex;
     align-items: center;
     margin-top: 50px;
+    padding-left: 100px;
+    padding-right: 100px;
 `;
 
 const MainPage = () => {
