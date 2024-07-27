@@ -2,6 +2,7 @@ import TeamMain from "../../components/Team/TeamMain";
 import ShowMembers from "../../components/Team/ShowMembers";
 import Board from "../../components/Team/Board/BoardList";
 import QuizList from "../../components/Team/StudyQuiz/QuizList"
+import Story from "../../components/Team/Story";
 
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
@@ -24,6 +25,7 @@ const MainPage = () => {
             {location.pathname === '/team/team-member' && <ShowMembers/>}
             {location.pathname === '/team/board' && <Board/>}
             {location.pathname === '/team/quiz' && <QuizList/>}
+            {location.pathname === '/team/story-board' && <Story/>}
         </Main>
     )
 }
