@@ -62,6 +62,6 @@ public class CommentController {
     }
 
     private String extractMemberIdFromHeader(String authorizationHeader) {
-        return jwtUtil.getMemberIdByHeader(authorizationHeader);
+        return jwtUtil.getUsernameByHeader(authorizationHeader);
     }
 }

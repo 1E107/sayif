@@ -30,7 +30,7 @@ public class CommentService {
     }
 
     private boolean isAuthorizedUser(Comment comment, String memberId) {
-        return !memberId.equals(comment.getMember().getMemberId());
+        return !memberId.equals(comment.getMember().getUsername());
     }
 
     private Comment updateCommentContent(Comment comment, String content) {
@@ -47,7 +47,7 @@ public class CommentService {
             .id(comment.getId())
             .content(comment.getContent())
             .createdAt(comment.getCreatedAt())
-            .writer(comment.getMember().getMemberId())
+            .writer(comment.getMember().getUsername())
             .build();
     }
 
