@@ -30,8 +30,8 @@ public class CommentController {
         @PathVariable("boardId") int boardId,
         @RequestBody CommentRequestDto dto,
         @RequestHeader("Authorization") String authorizationHeader) {
-        String memberId = extractMemberIdFromHeader(authorizationHeader);
-        dto.setMemberId(memberId);
+        String username = jwtUtil.getUsernameByHeader(authorizationHeader);
+        dto.setUsername(username);
         dto.setBoardId(boardId);
         commentService.writeComment(dto);
         return ResponseEntity.ok("댓글 작성 성공");

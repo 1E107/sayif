@@ -46,13 +46,13 @@ public class BoardService {
                 () -> new IllegalArgumentException("Invalid member ID: " + dto.getUsername()));
 
         Board board = Board.builder()
-            .file(dto.getFile())
-            .title(dto.getTitle())
-            .content(dto.getContent())
-            .type(dto.getType())
-            .isRemove(false)
-            .member(member)
-            .build();
+                .file(dto.getFile())
+                .title(dto.getTitle())
+                .content(dto.getContent())
+                .type(dto.getType())
+                .isRemove(false)
+                .member(member)
+                .build();
 
         Board savedBoard = boardRepository.save(board);
         return Optional.of(convertToDto(savedBoard));
@@ -88,7 +88,7 @@ public class BoardService {
      */
     public boolean removePost(int id) {
         Board board = boardRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Invalid board ID: " + id));
+                .orElseThrow(() -> new IllegalArgumentException("Invalid board ID: " + id));
 
         if (board.getIsRemove()) {
             return false;
@@ -128,7 +128,7 @@ public class BoardService {
      */
     public BoardResponseDto getPostDetail(int id) {
         Board board = boardRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Invalid board ID: " + id));
+                .orElseThrow(() -> new IllegalArgumentException("Invalid board ID: " + id));
         return this.convertToDto(board);
     }
 
@@ -140,16 +140,16 @@ public class BoardService {
      */
     private BoardResponseDto convertToDto(Board board) {
         return BoardResponseDto.builder()
-            .id(board.getId())
-            .title(board.getTitle())
-            .content(board.getContent())
-            .file(board.getFile())
-            .writer(board.getMember().getName())
-            .type(board.getType())
-            .hitCount(board.getHitCount())
-            .createdAt(board.getCreatedAt())
-            .modifiedAt(board.getModifiedAt())
-            .isRemove(board.getIsRemove())
-            .build();
+                .id(board.getId())
+                .title(board.getTitle())
+                .content(board.getContent())
+                .file(board.getFile())
+                .writer(board.getMember().getName())
+                .type(board.getType())
+                .hitCount(board.getHitCount())
+                .createdAt(board.getCreatedAt())
+                .modifiedAt(board.getModifiedAt())
+                .isRemove(board.getIsRemove())
+                .build();
     }
 }

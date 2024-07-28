@@ -23,7 +23,7 @@ public class CommentConverter {
     private Result getResult(CommentRequestDto dto) {
         Board board = boardRepository.findById(dto.getBoardId())
             .orElseThrow(() -> new IllegalArgumentException("Invalid board ID"));
-        Member member = memberRepository.findByMemberId(dto.getMemberId());
+        Member member = memberRepository.findByUsername(dto.getUsername());
         if (member == null) {
             throw new IllegalArgumentException("Invalid member ID");
         }

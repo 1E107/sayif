@@ -10,7 +10,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PasswordChangeRequestDto {
-    private String memberId;
+
+    private String username;
     private String newPwd;
     private String newPwdCheck;
 

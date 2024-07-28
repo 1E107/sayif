@@ -28,22 +28,22 @@ public class BoardController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> modifyPost(@PathVariable("id") int id,
-        @RequestBody ModifyPostRequestDto dto) {
+                                        @RequestBody ModifyPostRequestDto dto) {
         return ResponseEntity.ok(boardService.modifyPost(id, dto));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> removePost(@PathVariable("id") int id) {
         if (boardService.removePost(id)) {
-            return ResponseEntity.ok("삭제 성공");
+            return ResponseEntity.ok("삭제가 성공적으로 되었습니다.");
         } else {
-            return ResponseEntity.ok("삭제 실패");
+            return ResponseEntity.ok("삭제가 실패 했습니다.");
         }
     }
 
     @GetMapping("/{page}/{size}")
     public ResponseEntity<?> getPostList(@PathVariable("page") int page,
-        @PathVariable("size") int size) {
+                                         @PathVariable("size") int size) {
         return ResponseEntity.ok(boardService.getPostList(page, size));
     }
 

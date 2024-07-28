@@ -7,20 +7,21 @@ import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-
 @Service
 @RequiredArgsConstructor
 public class TokenService {
+
     private final JWTUtil jwtUtil;
     private final RefreshRepository refreshRepository;
 
-    public ResponseEntity<?> reissueToken(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> reissueToken(HttpServletRequest request,
+        HttpServletResponse response) {
         // refresh 토큰 찾기
         String refresh = null;
         Cookie[] cookies = request.getCookies();
@@ -59,16 +60,16 @@ public class TokenService {
             return new ResponseEntity<>("invalid refresh token", HttpStatus.BAD_REQUEST);
         }
 
-        String memberId = jwtUtil.getMemberId(refresh);
+        String username = jwtUtil.getUsername(refresh);
         String role = jwtUtil.getRole(refresh);
 
         // 새로운 JWT 토큰 생성
-        String newAccess = jwtUtil.createJwt("access", memberId, role, 600000L);
-        String newRefresh = jwtUtil.createJwt("refresh", memberId, role, 86400000L);
+        String newAccess = jwtUtil.createJwt("access", username, role, 600000L);
+        String newRefresh = jwtUtil.createJwt("refresh", username, role, 86400000L);
 
         //Refresh 토큰 저장 DB에 기존의 Refresh 토큰 삭제 후 새 Refresh 토큰 저장
         refreshRepository.deleteByRefresh(refresh);
-        addRefreshEntity(memberId, newRefresh, 86400000L);
+        addRefreshEntity(username, newRefresh, 86400000L);
 
         // 응답
         response.setHeader("access", newAccess);
@@ -79,18 +80,19 @@ public class TokenService {
 
     private Cookie createCookie(String key, String value) {
         Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(24*60*60);
+        cookie.setMaxAge(24 * 60 * 60);
         //cookie.setSecure(true);
         //cookie.setPath("/");
         cookie.setHttpOnly(true);
         return cookie;
     }
+
     private void addRefreshEntity(String membreId, String refresh, Long expiredMs) {
 
         Date date = new Date(System.currentTimeMillis() + expiredMs);
 
         Refresh refreshEntity = new Refresh();
-        refreshEntity.setMemberId(membreId);
+        refreshEntity.setUsername(membreId);
         refreshEntity.setRefresh(refresh);
         refreshEntity.setExpiration(date.toString());
 

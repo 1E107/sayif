@@ -1,14 +1,14 @@
 package com.ssafy.sayif.team.dto;
 
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
 
 @Setter
 @Getter
 public class GetChatResponseDto {
-    private Integer memberId;
+
+    private Integer username;
     private String msgContent;
     private LocalDateTime sendAt;
 }

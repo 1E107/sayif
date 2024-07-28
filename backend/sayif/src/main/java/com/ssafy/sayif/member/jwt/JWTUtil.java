@@ -18,9 +18,9 @@ public class JWTUtil {
             Jwts.SIG.HS256.key().build().getAlgorithm());
     }
 
-    public String getMemberId(String token) {
+    public String getUsername(String token) {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload()
-            .get("memberId", String.class);
+            .get("username", String.class);
     }
 
     public String getRole(String token) {
@@ -38,11 +38,11 @@ public class JWTUtil {
             .getExpiration().before(new Date());
     }
 
-    public String createJwt(String category, String memberId, String role, Long expiredMs) {
+    public String createJwt(String category, String username, String role, Long expiredMs) {
 
         return Jwts.builder()
             .claim("category", category)
-            .claim("memberId", memberId)
+            .claim("username", username)
             .claim("role", role)
             .issuedAt(new Date(System.currentTimeMillis()))
             .expiration(new Date(System.currentTimeMillis() + expiredMs))
@@ -57,12 +57,12 @@ public class JWTUtil {
         return null;
     }
 
-    public String getMemberIdByHeader(String authorizationHeader) {
+    public String getUsernameByHeader(String authorizationHeader) {
         String token = this.resolveToken(authorizationHeader);
-        String memberId = "";
+        String username = "";
         if (token != null && !this.isExpired(token)) {
-            memberId = this.getMemberId(token);
+            username = this.getUsername(token);
         }
-        return memberId;
+        return username;
     }
 }
