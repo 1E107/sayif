@@ -6,6 +6,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -19,14 +20,14 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Entity
 @NoArgsConstructor
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public class Board extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
@@ -50,5 +51,12 @@ public class Board extends BaseTimeEntity {
 
     @Column(name = "remove_at")
     private LocalDateTime removeAt;
+
+    public void update(String title, String content, String file, BoardType type) {
+        this.title = title;
+        this.content = content;
+        this.file = file;
+        this.type = type;
+    }
 
 }

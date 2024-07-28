@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @Data
 public class CommentRequestDto {
 
-    private String comment;
-    private String username;
+    private String content;
+    private String memberId;
     private int boardId;
 
 }

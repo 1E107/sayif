@@ -1,20 +1,21 @@
 package com.ssafy.sayif.board.dto;
 
-import com.ssafy.sayif.board.entity.BoardType;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class WritePostRequestDto {
+@Data
+public class CommentResponseDto {
 
-    private String title;
+    private int id;
     private String content;
-    private String file;
-    private int username;
-    private BoardType type;
+    private String writer;
+    private LocalDateTime createdAt;
+
+
 }
