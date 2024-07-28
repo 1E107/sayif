@@ -45,7 +45,7 @@ public class CommentServiceTest {
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         member = new Member();
-        member.setMemberId("member1");
+        member.setUsername("member1");
 
         board = Board.builder().id(1).build();
 
@@ -62,7 +62,7 @@ public class CommentServiceTest {
     public void testWriteComment() {
         CommentRequestDto dto = new CommentRequestDto();
         dto.setContent("New comment");
-        dto.setMemberId("member1");
+        dto.setUsername("member1");
         dto.setBoardId(1);
 
         when(commentConverter.convertToEntity(dto)).thenReturn(comment);
