@@ -22,7 +22,6 @@ import lombok.Setter;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-@Setter
 public class Team {
 
     @Id
