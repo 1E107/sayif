@@ -10,6 +10,7 @@ import com.ssafy.sayif.member.exception.UnauthorizedAccessException;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -76,10 +77,11 @@ public class CommentService {
     }
 
     public List<CommentResponseDto> getCommentList(int boardId) {
-        return commentRepository
-            .findAllByBoardId(boardId)
-            .stream()
+        List<Comment> comments = commentRepository.findAll();
+        return comments.stream()
+            .filter(comment -> comment.getBoard().getId() == boardId)
             .map(this::convertToDto)
-            .toList();
+            .collect(Collectors.toList());
     }
+
 }

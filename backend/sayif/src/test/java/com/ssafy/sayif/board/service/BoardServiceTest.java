@@ -45,7 +45,7 @@ public class BoardServiceTest {
     @Test
     public void testWritePost() {
         WritePostRequestDto dto = new WritePostRequestDto();
-        dto.setMemberId(1);
+        dto.setUsername(1);
         dto.setTitle("Test Title");
         dto.setContent("Test Content");
         dto.setFile("Test File");
@@ -65,7 +65,7 @@ public class BoardServiceTest {
             .member(member)
             .build();
 
-        when(memberRepository.findById(dto.getMemberId())).thenReturn(Optional.of(member));
+        when(memberRepository.findById(dto.getUsername())).thenReturn(Optional.of(member));
         when(boardRepository.save(any(Board.class))).thenReturn(board);
 
         Optional<BoardResponseDto> result = boardService.writePost(dto);

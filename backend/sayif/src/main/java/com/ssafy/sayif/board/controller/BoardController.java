@@ -35,9 +35,9 @@ public class BoardController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> removePost(@PathVariable("id") int id) {
         if (boardService.removePost(id)) {
-            return ResponseEntity.ok("»èÁ¦°¡ ¼º°øÀûÀ¸·Î µÇ¾ú½À´Ï´Ù.");
+            return ResponseEntity.ok("ì‚­ì œ ì„±ê³µ");
         } else {
-            return ResponseEntity.ok("ÀÌ¹Ì »èÁ¦µÈ °Ô½Ã¹°ÀÔ´Ï´Ù.");
+            return ResponseEntity.ok("ì‚­ì œ ì‹¤íŒ¨");
         }
     }
 

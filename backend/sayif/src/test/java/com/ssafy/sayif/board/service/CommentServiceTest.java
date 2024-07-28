@@ -47,10 +47,7 @@ public class CommentServiceTest {
         member = new Member();
         member.setMemberId("member1");
 
-        board = Board
-            .builder()
-            .id(1)
-            .build();
+        board = Board.builder().id(1).build();
 
         comment = Comment.builder()
             .id(1)
@@ -141,5 +138,4 @@ public class CommentServiceTest {
         assertEquals("Test comment", result.get(0).getContent());
         assertEquals("Another comment", result.get(1).getContent());
     }
-
 }

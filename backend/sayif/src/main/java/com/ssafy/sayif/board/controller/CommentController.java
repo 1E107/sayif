@@ -34,7 +34,7 @@ public class CommentController {
         dto.setMemberId(memberId);
         dto.setBoardId(boardId);
         commentService.writeComment(dto);
-        return ResponseEntity.ok("瘩臂 崔扁 己傍");
+        return ResponseEntity.ok("雽撽竴 鞛戩劚 靹标车");
     }
 
     @PutMapping("/{commentId}")
@@ -44,7 +44,7 @@ public class CommentController {
         @RequestHeader("Authorization") String authorizationHeader) {
         String memberId = extractMemberIdFromHeader(authorizationHeader);
         commentService.modifyComment(commentId, memberId, dto);
-        return ResponseEntity.ok("荐沥 己傍");
+        return ResponseEntity.ok("雽撽竴 靾橃爼 靹标车");
     }
 
     @DeleteMapping("/{commentId}")
@@ -53,7 +53,7 @@ public class CommentController {
         @RequestHeader("Authorization") String authorizationHeader) {
         String memberId = extractMemberIdFromHeader(authorizationHeader);
         commentService.deleteComment(commentId, memberId);
-        return ResponseEntity.ok("昏力 己傍");
+        return ResponseEntity.ok("雽撽竴 靷牅 靹标车");
     }
 
     @GetMapping("/{boardId}")
