@@ -12,7 +12,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 
 function QuizDetail() {
-    const [isSelect, SetIsSelect] = useState(false);
+    const [isSelect, SetIsSelect] = useState("");
 
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);

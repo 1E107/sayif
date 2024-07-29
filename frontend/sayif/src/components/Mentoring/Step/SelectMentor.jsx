@@ -4,6 +4,8 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
+import { useEffect } from 'react';
+import { getMentorList } from '../../../api/MentoringApi';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: "#F5F5F5",
@@ -17,6 +19,19 @@ const Item = styled(Paper)(({ theme }) => ({
 
 
 function SelectMentor({formData, reSelectInfo, finishPage}) {
+    useEffect(()=>{
+        const callMentorList = async() => {
+            try {
+                const response = await SelectMentor(1,10, formData.startDate, formData.endDate, formData.TextAMPM, formData.time);
+                console.log(response);c
+            }catch(error) {
+                console.log(error);
+            }
+        }
+
+        callMentorList();
+    }, []);
+
     const handleReSelectBtn = () => {
         reSelectInfo();
     };

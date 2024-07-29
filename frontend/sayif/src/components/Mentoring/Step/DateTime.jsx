@@ -11,7 +11,6 @@ import { useState } from "react";
 
 
 const StyledButton = styled(Button)`
-    color: black !important;
     font-size: 20px !important;
     font-weight: 600 !important;
     padding: 0px 20px 0px 20px !important;
@@ -70,6 +69,7 @@ function DateTime({selectInfoSave})
     const [endDate, setEndDate] = useState("");
     const [time, setTime] = useState("");
     const [mentorList, setMentorList] = useState([]);
+    const [isSelect, SetIsSelect] = useState("");
 
     const handleAMPM = () => {
         if(TextAMPM === '오전') setTextAMPM("오후");
@@ -97,13 +97,15 @@ function DateTime({selectInfoSave})
     }
 
     const changeTime = (data) => {
+        SetIsSelect(data);
         setTime(data);
+        console.log(isSelect);
     }
 
     const DateTimeView = (
         <>
             <S.Container>
-                <div>  신청 아이콘 보여줌 </div>
+                <S.Icon/>
                 <div>
                     <S.DateTimeContainer>
                         <S.BOX>
@@ -118,6 +120,7 @@ function DateTime({selectInfoSave})
                             <S.ContainerText>희망하는 멘토링 시간이 언제인가요?</S.ContainerText>
                             <div style={{
                                 backgroundColor: "#F5F5F5",
+                                paddingTop: "20px",
                             }}>
                                 <IconButton aria-label="delete" size="large" style={{display: "inline-block", padding:"0px 5px 3px 0px"}} onClick={handleAMPM}>
                                     <ChevronLeftIcon />
@@ -129,24 +132,24 @@ function DateTime({selectInfoSave})
                             </div>
                             <S.TimeBlock>
                                     <S.TimeBtn>
-                                        <StyledButton onClick={() => {changeTime("01:00")}}>01:00</StyledButton>
-                                        <StyledButton onClick={() => {changeTime("02:00")}}>02:00</StyledButton>
-                                        <StyledButton onClick={() => {changeTime("03:00")}}>03:00</StyledButton>
+                                        <StyledButton onClick={() => {changeTime("01:00")}} style={{color: isSelect === "01:00" ? "#116530" : "black"}}>01:00</StyledButton>
+                                        <StyledButton onClick={() => {changeTime("02:00")}} style={{color: isSelect === "02:00" ? "#116530" : "black"}}>02:00</StyledButton>
+                                        <StyledButton onClick={() => {changeTime("03:00")}} style={{color: isSelect === "03:00" ? "#116530" : "black"}}>03:00</StyledButton>
                                     </S.TimeBtn>
                                     <S.TimeBtn>
-                                        <StyledButton onClick={() => {changeTime("04:00")}}>04:00</StyledButton>
-                                        <StyledButton onClick={() => {changeTime("05:00")}}>05:00</StyledButton>
-                                        <StyledButton onClick={() => {changeTime("06:00")}}>06:00</StyledButton>
+                                        <StyledButton onClick={() => {changeTime("04:00")}} style={{color: isSelect === "04:00" ? "#116530" : "black"}}>04:00</StyledButton>
+                                        <StyledButton onClick={() => {changeTime("05:00")}} style={{color: isSelect === "05:00" ? "#116530" : "black"}}>05:00</StyledButton>
+                                        <StyledButton onClick={() => {changeTime("06:00")}} style={{color: isSelect === "06:00" ? "#116530" : "black"}}>06:00</StyledButton>
                                     </S.TimeBtn>
                                     <S.TimeBtn>
-                                        <StyledButton onClick={() => {changeTime("07:00")}}>07:00</StyledButton>
-                                        <StyledButton onClick={() => {changeTime("08:00")}}>08:00</StyledButton>
-                                        <StyledButton onClick={() => {changeTime("09:00")}}>09:00</StyledButton>
+                                        <StyledButton onClick={() => {changeTime("07:00")}} style={{color: isSelect === "07:00" ? "#116530" : "black"}}>07:00</StyledButton>
+                                        <StyledButton onClick={() => {changeTime("08:00")}} style={{color: isSelect === "08:00" ? "#116530" : "black"}}>08:00</StyledButton>
+                                        <StyledButton onClick={() => {changeTime("09:00")}} style={{color: isSelect === "09:00" ? "#116530" : "black"}}>09:00</StyledButton>
                                     </S.TimeBtn>
                                     <S.TimeBtn>
-                                        <StyledButton onClick={() => {changeTime("10:00")}}>10:00</StyledButton>
-                                        <StyledButton onClick={() => {changeTime("11:00")}}>11:00</StyledButton>
-                                        <StyledButton onClick={() => {changeTime("12:00")}}>12:00</StyledButton>
+                                        <StyledButton onClick={() => {changeTime("10:00")}} style={{color: isSelect === "10:00" ? "#116530" : "black"}}>10:00</StyledButton>
+                                        <StyledButton onClick={() => {changeTime("11:00")}} style={{color: isSelect === "11:00" ? "#116530" : "black"}}>11:00</StyledButton>
+                                        <StyledButton onClick={() => {changeTime("12:00")}} style={{color: isSelect === "12:00" ? "#116530" : "black"}}>12:00</StyledButton>
                                     </S.TimeBtn>
                                 </S.TimeBlock>
                         </S.BOX>
