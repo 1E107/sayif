@@ -12,6 +12,7 @@ server:
       enabled: true
       charset: UTF-8
       force: true
+  port: 9090
 
 openvidu:
   url: https://localhost:4443
