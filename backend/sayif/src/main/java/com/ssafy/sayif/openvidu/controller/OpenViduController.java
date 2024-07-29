@@ -17,30 +17,22 @@ import java.util.Map;
 public class OpenViduController {
     private final OpenViduService openViduService;
 
-    @Value("${openvidu.url}")
-    private String OPENVIDU_URL;
-
-    @Value("${openvidu.secret}")
-    private String OPENVIDU_SECRET;
-
-
-    private OpenVidu openvidu;
-
-    @PostConstruct
-    public void init() {
-        this.openvidu = new OpenVidu(OPENVIDU_URL, OPENVIDU_SECRET);
-    }
-
     /**
      * @param params The Session properties
      * @return The Session ID
+     * Initialize a Session in OpenVidu Server.
+     * This is the very first operation to perform in OpenVidu workflow.
+     * After that, Connection objects can be generated for this Session and their token passed to the client-side,
+     * so clients can use it to connect to the Session.
      */
     @PostMapping("/api/sessions")
-    public ResponseEntity<String> initializeSession(@RequestBody(required = false) Map<String, Object> params)
-            throws OpenViduJavaClientException, OpenViduHttpException {
-        SessionProperties properties = SessionProperties.fromJson(params).build();
-        Session session = openvidu.createSession(properties);
-        return new ResponseEntity<>(session.getSessionId(), HttpStatus.OK);
+    public ResponseEntity<String> initializeSession(@RequestBody(required = false) Map<String, Object> params) {
+        try {
+            String sessionId = openViduService.createSession(params);
+            return new ResponseEntity<>(sessionId, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Failed to create session", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
@@ -50,24 +42,17 @@ public class OpenViduController {
      */
     @PostMapping("/api/sessions/{sessionId}/connections")
     public ResponseEntity<String> createConnection(@PathVariable("sessionId") String sessionId,
-                                                   @RequestBody(required = false) Map<String, Object> params)
-            throws OpenViduJavaClientException, OpenViduHttpException {
-        Session session = openvidu.getActiveSession(sessionId);
-        if (session == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                                                   @RequestBody(required = false) Map<String, Object> params) {
+        String token = openViduService.createConnection(sessionId, params);
+        return new ResponseEntity<>(token, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/api/sessions/{sessionId}")
+    public String closeSession(@PathVariable String sessionId) {
+        try {
+            return openViduService.closeSession(sessionId);
+        } catch (Exception e) {
+            return "Error: Failed to close session";
         }
-        ConnectionProperties properties = ConnectionProperties.fromJson(params).build();
-        Connection connection = session.createConnection(properties);
-        return new ResponseEntity<>(connection.getToken(), HttpStatus.OK);
-    }
-
-    @GetMapping("/api/session")
-    public String createSession() {
-        return openViduService.createSession();
-    }
-
-    @GetMapping("/api/token/{sessionId}")
-    public String createToken(@PathVariable("sessionId") String sessionId) {
-        return openViduService.createToken(sessionId);
     }
 }

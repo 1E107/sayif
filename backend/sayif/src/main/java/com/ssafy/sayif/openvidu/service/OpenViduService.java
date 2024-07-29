@@ -1,5 +1,9 @@
 package com.ssafy.sayif.openvidu.service;
 
+import io.openvidu.java.client.*;
+import jakarta.annotation.PostConstruct;
+import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
@@ -8,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Base64;
+import java.util.Map;
 
 @Service
 public class OpenViduService {
@@ -17,41 +22,35 @@ public class OpenViduService {
     @Value("${openvidu.secret}")
     private String secret;
 
-    private RestTemplate restTemplate = new RestTemplate();
-    private HttpHeaders createHeaders() {
-        return new HttpHeaders() {{
-            String auth = "OPENVIDUAPP:" + secret;
-            byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes());
-            String authHeader = "Basic " + new String(encodedAuth);
-            set("Authorization", authHeader);
-            set("Content-Type", "application/json");
-        }};
+    private OpenVidu openvidu;
+
+    @PostConstruct
+    public void init() {
+        this.openvidu = new OpenVidu(openviduUrl, secret);
     }
 
-    public String createSession() {
-        String url = openviduUrl + "/openvidu/api/sessions";
-        HttpEntity<String> entity = new HttpEntity<>("{}", createHeaders());
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
-        return parseResponse(response, "id");
+    @SneakyThrows
+    public String createSession(Map<String, Object> params) {
+            SessionProperties properties = SessionProperties.fromJson(params).build();
+            Session session = openvidu.createSession(properties);
+            return session.getSessionId();
+
     }
 
-    public String createToken(String sessionId) {
-        String url = openviduUrl + "/openvidu/api/sessions/" + sessionId + "/connection";
-        HttpEntity<String> entity = new HttpEntity<>("{}", createHeaders());
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
-        return parseResponse(response, "token");
+    @SneakyThrows
+    public String createConnection(String sessionId, Map<String, Object> params) {
+            Session session = openvidu.getActiveSession(sessionId);
+            ConnectionProperties properties = ConnectionProperties.fromJson(params).build();
+        Connection connection = session.createConnection(properties);
+        return connection.getToken();
+
+    }
+    @SneakyThrows
+    public String closeSession(String sessionId) {
+            Session session = openvidu.getActiveSession(sessionId);
+           session.close();
+           return "closed";
+
     }
 
-    private String parseResponse(ResponseEntity<String> response, String key) {
-        if (response.getStatusCode() == HttpStatus.OK) {
-            try {
-                JSONObject json = new JSONObject(response.getBody());
-                return json.getString(key);
-            } catch (Exception e) {
-                throw new RuntimeException("Failed to parse JSON response", e);
-            }
-        } else {
-            throw new RuntimeException("Failed to create session/token, status code: " + response.getStatusCode());
-        }
-    }
 }
