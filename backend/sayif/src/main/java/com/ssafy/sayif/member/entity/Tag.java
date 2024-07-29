@@ -1,26 +1,30 @@
 package com.ssafy.sayif.member.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
+import lombok.Getter;
 
 @Entity
+@Getter
 public class Tag {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
-    @Column(length = 40)
     private String content;
 
-    @ManyToOne
-    @JoinColumn(name = "mentor_id")
-    private Mentor mentor;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
-    private Boolean isRemove;
+    private boolean isRemove;
+
+    public void createTag(Member member, String content) {
+        this.member = member;
+        this.content = content;
+        isRemove = false;
+    }
+
+    public void setRemove(boolean isRemove) {
+        this.isRemove = isRemove;
+    }
 }
+

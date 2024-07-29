@@ -4,6 +4,7 @@ import com.ssafy.sayif.board.dto.BoardResponseDto;
 import com.ssafy.sayif.board.dto.ModifyPostRequestDto;
 import com.ssafy.sayif.board.dto.WritePostRequestDto;
 import com.ssafy.sayif.board.entity.Board;
+import com.ssafy.sayif.board.entity.BoardType;
 import com.ssafy.sayif.board.repository.BoardRepository;
 import com.ssafy.sayif.member.entity.Member;
 import com.ssafy.sayif.member.repository.MemberRepository;
@@ -20,7 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 /**
- * 게시판 서비스 클래스입니다.
+ * 게시판 서비스를 제공하는 클래스입니다. 게시글의 CRUD 작업 및 목록 조회와 관련된 비즈니스 로직을 처리합니다.
  */
 @Service
 @Transactional
@@ -33,19 +34,24 @@ public class BoardService {
     private final GoodService goodService;
 
     /**
-     * 게시글 작성
+     * 새로운 게시글을 작성합니다.
      *
-     * @param dto 게시글 작성 요청 DTO
-     * @return 작성된 게시글의 BoardResponseDto를 Optional로 반환
+     * @param dto 게시글 작성 요청을 담고 있는 DTO
+     * @return 작성된 게시글의 DTO를 감싼 Optional 객체
+     * @throws IllegalArgumentException 해당 ID의 멤버가 존재하지 않을 경우 예외를 던집니다.
      */
     public Optional<BoardResponseDto> writePost(WritePostRequestDto dto) {
+        // 모든 멤버 정보를 로그에 출력
         for (Member member : memberRepository.findAll()) {
             log.info(member.toString());
         }
+
+        // 작성 요청 DTO에서 멤버를 조회
         Member member = memberRepository.findById(dto.getUsername())
             .orElseThrow(
                 () -> new IllegalArgumentException("Invalid member ID: " + dto.getUsername()));
 
+        // 새로운 게시글 엔티티 생성
         Board board = Board.builder()
             .file(dto.getFile())
             .title(dto.getTitle())
@@ -55,20 +61,25 @@ public class BoardService {
             .member(member)
             .build();
 
+        // 게시글 저장 및 DTO로 변환하여 반환
         Board savedBoard = boardRepository.save(board);
         return Optional.of(convertToDto(savedBoard));
     }
 
     /**
-     * 게시글 수정
+     * 기존 게시글을 수정합니다.
      *
      * @param id  수정할 게시글의 ID
-     * @param dto 게시글 수정 요청 DTO
-     * @return 수정된 게시글의 BoardResponseDto를 Optional로 반환
+     * @param dto 게시글 수정 요청을 담고 있는 DTO
+     * @return 수정된 게시글의 DTO를 감싼 Optional 객체
+     * @throws IllegalArgumentException 해당 ID의 게시글이 존재하지 않을 경우 예외를 던집니다.
      */
     public Optional<BoardResponseDto> modifyPost(int id, ModifyPostRequestDto dto) {
+        // 수정할 게시글 조회
         Board existBoard = boardRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Invalid board ID: " + id));
+
+        // 게시글 수정
         Board updatedBoard = existBoard.toBuilder()
             .file(dto.getFile())
             .title(dto.getTitle())
@@ -77,64 +88,74 @@ public class BoardService {
             .type(dto.getType())
             .build();
 
+        // 수정된 게시글 저장 및 DTO로 변환하여 반환
         Board savedBoard = boardRepository.save(updatedBoard);
         return Optional.of(convertToDto(savedBoard));
     }
 
     /**
-     * 게시글 논리적 삭제
+     * 게시글을 논리적으로 삭제합니다.
      *
      * @param id 삭제할 게시글의 ID
-     * @return 삭제된 게시글의 BoardResponseDto를 Optional로 반환, 이미 삭제된 게시글인 경우 Optional.empty() 반환
+     * @return 삭제가 성공적으로 이루어졌으면 true, 이미 삭제된 게시글인 경우 false를 반환합니다.
+     * @throws IllegalArgumentException 해당 ID의 게시글이 존재하지 않을 경우 예외를 던집니다.
      */
     public boolean removePost(int id) {
+        // 삭제할 게시글 조회
         Board board = boardRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Invalid board ID: " + id));
 
+        // 게시글이 이미 삭제된 상태인지 확인
         if (board.getIsRemove()) {
             return false;
         }
 
+        // 게시글 삭제 처리
         Board updatedBoard = board.toBuilder()
-            .isRemove(true) // isRemove 필드를 true로 설정
-            .removeAt(LocalDateTime.now()) // removeAt 필드를 현재 시간으로 설정
+            .isRemove(true)
+            .removeAt(LocalDateTime.now())
             .build();
 
-        boardRepository.save(updatedBoard); // 변경 사항 저장
+        // 삭제된 게시글 저장
+        boardRepository.save(updatedBoard);
         return true;
     }
 
     /**
-     * 게시글 목록 조회
+     * 게시글 목록을 조회합니다.
      *
-     * @param page 페이지 번호
-     * @param size 페이지 크기
-     * @return isRemove가 false인 게시글 목록의 BoardResponseDto 리스트
+     * @param type 게시글의 타입 (예: 자유게시판, 공지사항 등)
+     * @param page 페이지 번호 (0부터 시작)
+     * @param size 페이지 크기 (한 페이지에 표시할 게시글 수)
+     * @return 삭제되지 않은(isRemove = false) 게시글 목록의 DTO 리스트
      */
-    public List<BoardResponseDto> getPostList(int page, int size) {
+    public List<BoardResponseDto> getPostList(BoardType type, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Board> boardPage = boardRepository.findAll(pageable);
+        Page<Board> boardPage = boardRepository.findAllByType(pageable, type);
 
-        return boardPage.stream()
-            .filter(board -> !board.getIsRemove()) // isRemove가 false인 게시글 필터링
+        // 삭제되지 않은 게시글만 필터링하여 DTO로 변환
+        return boardPage.getContent().stream()
+            .filter(board -> !board.getIsRemove())
             .map(this::convertToDto)
             .collect(Collectors.toList());
     }
 
     /**
-     * 게시글 상세 조회
+     * 게시글의 상세 정보를 조회합니다.
      *
      * @param id 조회할 게시글의 ID
-     * @return 게시글의 BoardResponseDto
+     * @return 게시글의 DTO
+     * @throws IllegalArgumentException 해당 ID의 게시글이 존재하지 않을 경우 예외를 던집니다.
      */
     public BoardResponseDto getPostDetail(int id) {
+        // 게시글 조회
         Board board = boardRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Invalid board ID: " + id));
         return this.convertToDto(board);
     }
 
     /**
-     * Board 엔티티를 BoardResponseDto로 변환
+     * Board 엔티티를 BoardResponseDto로 변환합니다.
      *
      * @param board 변환할 Board 엔티티
      * @return 변환된 BoardResponseDto
@@ -154,5 +175,4 @@ public class BoardService {
             .goodCount(goodService.getGoodCountByBoardId(board.getId()))
             .build();
     }
-
 }
