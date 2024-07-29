@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "qna_answer")
 public class QnaAnswer extends BaseTimeEntity {
 
     @Id
@@ -27,7 +29,7 @@ public class QnaAnswer extends BaseTimeEntity {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "teamboard_id")
+    @JoinColumn(name = "teamBoard_id")
     private TeamBoard teamBoard;
 
     @ManyToOne(fetch = FetchType.LAZY)
