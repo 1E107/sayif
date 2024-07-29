@@ -1,7 +1,9 @@
 package com.ssafy.sayif.board.controller;
 
+import com.ssafy.sayif.board.dto.UserGoodResponseDto;
 import com.ssafy.sayif.board.service.GoodService;
 import com.ssafy.sayif.member.jwt.JWTUtil;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -38,6 +40,18 @@ public class GoodController {
             return ResponseEntity.ok("좋아요 취소 완료");
         } else {
             return ResponseEntity.ok("좋아요 취소 실패");
+        }
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<?> getMemberLikedBoards(
+        @RequestHeader("Authorization") String authorizationHeader) {
+        String username = jwtUtil.getUsernameByHeader(authorizationHeader);
+        List<UserGoodResponseDto> goodBoards = goodService.getMemberGoodBoards(username);
+        if (!goodBoards.isEmpty()) {
+            return ResponseEntity.ok("좋아요 목록이 있습니다");
+        } else {
+            return ResponseEntity.ok("좋아요 목록이 없습니다.");
         }
     }
 

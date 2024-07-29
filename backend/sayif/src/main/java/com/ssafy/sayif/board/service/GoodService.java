@@ -1,5 +1,6 @@
 package com.ssafy.sayif.board.service;
 
+import com.ssafy.sayif.board.dto.UserGoodResponseDto;
 import com.ssafy.sayif.board.entity.Board;
 import com.ssafy.sayif.board.entity.Good;
 import com.ssafy.sayif.board.exception.BoardNotFoundException;
@@ -8,7 +9,9 @@ import com.ssafy.sayif.board.repository.GoodRepository;
 import com.ssafy.sayif.member.entity.Member;
 import com.ssafy.sayif.member.exception.MemberNotFoundException;
 import com.ssafy.sayif.member.repository.MemberRepository;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +37,8 @@ public class GoodService {
      */
     private Board findBoardById(int boardId) {
         return boardRepository.findById(boardId)
-            .orElseThrow(() -> new BoardNotFoundException(boardId));
+            .orElseThrow(
+                () -> new BoardNotFoundException(boardId));
     }
 
     /**
@@ -45,11 +49,9 @@ public class GoodService {
      * @throws MemberNotFoundException 주어진 사용자명으로 사용자를 찾을 수 없는 경우
      */
     private Member findMemberByUsername(String username) {
-        Member member = memberRepository.findByUsername(username);
-        if (member == null) {
-            throw new MemberNotFoundException(username);
-        }
-        return member;
+        return Optional.ofNullable(memberRepository.findByUsername(username))
+            .orElseThrow(
+                () -> new MemberNotFoundException(username));
     }
 
     /**
@@ -105,5 +107,25 @@ public class GoodService {
         existingGood.ifPresent(goodRepository::delete);
 
         return existingGood.isPresent();
+    }
+
+    /**
+     * 사용자가 좋아요를 누른 게시판 목록을 반환합니다.
+     *
+     * @param username 사용자의 사용자명
+     * @return UserGoodResponseDto 리스트
+     * @throws MemberNotFoundException 주어진 사용자명으로 사용자를 찾을 수 없는 경우
+     */
+    public List<UserGoodResponseDto> getMemberGoodBoards(String username) {
+        Member member = findMemberByUsername(username);
+        return goodRepository.findAllByMember(member)
+            .stream()
+            .map(good -> UserGoodResponseDto.builder()
+                .id(good.getId())
+                .boardId(good.getBoard().getId())
+                .title(good.getBoard().getTitle())
+                .goodCount(this.getGoodCountByBoardId(good.getBoard().getId()))
+                .build())
+            .collect(Collectors.toList());
     }
 }
