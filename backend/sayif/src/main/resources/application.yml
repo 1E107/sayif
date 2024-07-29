@@ -12,3 +12,7 @@ server:
       enabled: true
       charset: UTF-8
       force: true
+
+openvidu:
+  url: https://localhost:4443
+  secret: bangcutsoragodoongmeruohboksayif
