@@ -37,30 +37,6 @@ function Login() {
         setLoginPassword(event.target.value);
     };
 
-  
-        const callLogin = async () => {
-            try {
-                const response = await login(loginId, loginPassword);
-                const authToken = response.headers['access'];
-                dispatch(setToken(authToken));
-                alert('로그인에 성공하였습니다.');
-                navigate('/');
-            } catch (error) {
-                console.log(error);
-                setFailedLogin(true);
-            }
-        };
-        callLogin();
-    };
-
-    const handleId = event => {
-        setLoginId(event.target.value);
-    };
-
-    const handlePassword = event => {
-        setLoginPassword(event.target.value);
-    };
-
     const LoginView = (
         <S.Container style={{ height: failedLogin ? '350px' : '300px' }}>
             <S.Input placeholder="ID" onChange={handleId}></S.Input>
