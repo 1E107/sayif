@@ -1,18 +1,13 @@
 package com.ssafy.sayif.member.controller;
 
-import com.ssafy.sayif.member.dto.LetterRequestDto;
-import com.ssafy.sayif.member.dto.LetterResponseDto;
-import com.ssafy.sayif.member.dto.MemberInfoResponseDto;
-import com.ssafy.sayif.member.dto.MemberUpdateRequestDto;
-import com.ssafy.sayif.member.dto.MentoringRecordResponseDto;
-import com.ssafy.sayif.member.dto.PasswordChangeRequestDto;
-import com.ssafy.sayif.member.dto.RegisterRequestDto;
-import com.ssafy.sayif.member.dto.UsernameRequestDto;
+import com.ssafy.sayif.member.dto.*;
 import com.ssafy.sayif.member.exception.UnauthorizedException;
 import com.ssafy.sayif.member.jwt.JWTUtil;
-import com.ssafy.sayif.member.service.LetterServiceImpl;
-import com.ssafy.sayif.member.service.MemberServiceImpl;
+import com.ssafy.sayif.member.service.LetterService;
+import com.ssafy.sayif.member.service.MemberService;
 import java.util.List;
+
+import com.ssafy.sayif.member.service.TagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,8 +28,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class MemberController {
 
-    private final MemberServiceImpl memberService;
-    private final LetterServiceImpl letterService;
+    private final MemberService memberService;
+    private final LetterService letterService;
+    private final TagService tagService;
     private final JWTUtil jwtUtil;
 
     @PostMapping("/register")
@@ -131,6 +127,28 @@ public class MemberController {
         Pageable pageable = PageRequest.of(page_no - 1, size_no); // 페이지 번호는 0부터 시작하므로 -1
         Page<LetterResponseDto> letters = letterService.getReceivedLetters(username, pageable);
         return ResponseEntity.ok(letters);
+    }
+
+    @PostMapping("/tag")
+    public ResponseEntity<Void> addTags(@RequestBody TagRequestDto tagRequestDto, @RequestHeader("Authorization") String authorizationHeader) {
+        String username = jwtUtil.getUsernameByHeader(authorizationHeader);
+        tagService.saveTags(username, tagRequestDto);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/tag")
+    public ResponseEntity<TagResponseDto> getTagsForMember(@RequestHeader("Authorization") String authorizationHeader) {
+        String username = jwtUtil.getUsernameByHeader(authorizationHeader);
+        List<String> tagContents = tagService.getTagsForMember(username);
+        TagResponseDto response = new TagResponseDto(tagContents);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/tag")
+    public ResponseEntity<Void> deleteTag(@RequestBody TagDeleteRequestDto tagDeleteRequestDto, @RequestHeader("Authorization") String authorizationHeader) {
+        String username = jwtUtil.getUsernameByHeader(authorizationHeader);
+        tagService.deleteTag(tagDeleteRequestDto.getTagId(), username);
+        return ResponseEntity.ok().build();
     }
 
 }
