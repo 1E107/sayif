@@ -16,6 +16,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,38 +34,29 @@ public class MemberService {
         if (memberRepository.existsByUsername(username)) {
             return false;
         }
-        Member member = new Member();
-        member.setUsername(username);
-        member.setPassword(bCryptPasswordEncoder.encode(pwd));
-        member.setNickname(registerRequestDto.getNickname());
-        member.setGender(registerRequestDto.getGender());
-        member.setEmail(registerRequestDto.getEmail());
-        member.setPhone(registerRequestDto.getPhone());
-        member.setRole(Role.Mentee);
+        Member member = Member.builder()
+                .username(username)
+                .password(bCryptPasswordEncoder.encode(pwd))
+                .nickname(registerRequestDto.getNickname())
+                .gender(registerRequestDto.getGender())
+                .email(registerRequestDto.getEmail())
+                .phone(registerRequestDto.getPhone())
+                .role(Role.Mentee)
+                .build();
 
         memberRepository.save(member);
         return true;
     }
 
+    @Transactional
     public void updateMemberInfo(String username, MemberUpdateRequestDto updateRequestDto) {
-        Member member = memberRepository.findByUsername(username);
-        if (member != null) {
-            if (updateRequestDto.getNickname() != null) {
-                member.setNickname(updateRequestDto.getNickname());
-            }
-            if (updateRequestDto.getGender() != null) {
-                member.setGender(updateRequestDto.getGender());
-            }
-            if (updateRequestDto.getEmail() != null) {
-                member.setEmail(updateRequestDto.getEmail());
-            }
-            if (updateRequestDto.getPhone() != null) {
-                member.setPhone(updateRequestDto.getPhone());
-            }
-            memberRepository.save(member);
-        } else {
-            throw new RuntimeException("Member not found");
-        }
+        memberRepository.updateMember(
+                username,
+                updateRequestDto.getNickname(),
+                updateRequestDto.getGender(),
+                updateRequestDto.getEmail(),
+                updateRequestDto.getPhone()
+        );
     }
 
     public void deleteMember(String username) {
@@ -143,7 +135,7 @@ public class MemberService {
         }
 
         // 비밀번호 암호화
-        member.setPassword(bCryptPasswordEncoder.encode(newPwd));
+        member.updatePwd(bCryptPasswordEncoder.encode(newPwd));
         memberRepository.save(member);
         return true; // 비밀번호 변경됨
     }

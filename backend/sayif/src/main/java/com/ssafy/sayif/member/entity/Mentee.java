@@ -8,7 +8,6 @@ import lombok.*;
 
 @Entity
 @Getter
-@Setter
 @PrimaryKeyJoinColumn(name = "mentee_id")
 public class Mentee extends Member{
 
