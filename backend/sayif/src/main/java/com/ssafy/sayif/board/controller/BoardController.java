@@ -2,6 +2,7 @@ package com.ssafy.sayif.board.controller;
 
 import com.ssafy.sayif.board.dto.ModifyPostRequestDto;
 import com.ssafy.sayif.board.dto.WritePostRequestDto;
+import com.ssafy.sayif.board.entity.BoardType;
 import com.ssafy.sayif.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,7 @@ public class BoardController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> modifyPost(@PathVariable("id") int id,
-                                        @RequestBody ModifyPostRequestDto dto) {
+        @RequestBody ModifyPostRequestDto dto) {
         return ResponseEntity.ok(boardService.modifyPost(id, dto));
     }
 
@@ -41,10 +42,11 @@ public class BoardController {
         }
     }
 
-    @GetMapping("/{page}/{size}")
-    public ResponseEntity<?> getPostList(@PathVariable("page") int page,
-                                         @PathVariable("size") int size) {
-        return ResponseEntity.ok(boardService.getPostList(page, size));
+    @GetMapping("/{type}/{page}/{size}")
+    public ResponseEntity<?> getPostList(@PathVariable("type") BoardType type,
+        @PathVariable("page") int page,
+        @PathVariable("size") int size) {
+        return ResponseEntity.ok(boardService.getPostList(type, page, size));
     }
 
     @GetMapping("/detail/{id}")
