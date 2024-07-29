@@ -34,9 +34,14 @@ public class MemberController {
     private final JWTUtil jwtUtil;
 
     @PostMapping("/register")
-    public String register(@RequestBody RegisterRequestDto registerRequestDto) {
-        memberService.registerMember(registerRequestDto);
-        return "success";
+    public ResponseEntity<?> register(@RequestBody RegisterRequestDto registerRequestDto) {
+        // 회원가입 여부 확인
+        boolean isRegistered = memberService.registerMember(registerRequestDto);
+        if (isRegistered) {
+            return ResponseEntity.ok("회원가입 성공.");
+        } else {
+            return ResponseEntity.status(400).body("회원가입 실패. 이미 존재하는 ID 입니다.");
+        }
     }
 
     @GetMapping("/member-info")
