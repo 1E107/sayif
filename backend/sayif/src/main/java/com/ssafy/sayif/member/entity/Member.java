@@ -16,10 +16,9 @@ import lombok.*;
 
 @Entity
 @Getter
-@Setter
 @Builder(toBuilder = true)
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Member {
 
@@ -42,4 +41,13 @@ public class Member {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
     private Team team;
+
+    public void createMember(String username, Role role) {
+        this.username = username;
+        this.role = role;
+    }
+
+    public void updatePwd(String newPwd) {
+        this.password = newPwd;
+    }
 }
