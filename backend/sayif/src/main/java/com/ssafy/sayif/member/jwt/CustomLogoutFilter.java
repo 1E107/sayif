@@ -9,22 +9,25 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.filter.GenericFilterBean;
 
-import java.io.IOException;
-
 @RequiredArgsConstructor
 public class CustomLogoutFilter extends GenericFilterBean {
+
     private final JWTUtil jwtUtil;
     private final RefreshRepository refreshRepository;
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        doFilter((HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse, filterChain);
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
+        FilterChain filterChain) throws IOException, ServletException {
+        doFilter((HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse,
+            filterChain);
     }
 
-    private void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
+    private void doFilter(HttpServletRequest request, HttpServletResponse response,
+        FilterChain filterChain) throws IOException, ServletException {
 
         // 로그아웃 경로로 들어왔는지 확인
         String requestUri = request.getRequestURI();
