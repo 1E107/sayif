@@ -23,5 +23,6 @@ public class BoardResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
     private boolean isRemove;
+    private int goodCount;
 
 }

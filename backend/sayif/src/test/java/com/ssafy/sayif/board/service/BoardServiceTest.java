@@ -34,6 +34,8 @@ public class BoardServiceTest {
     private BoardRepository boardRepository;
     @Mock
     private MemberRepository memberRepository;
+    @Mock
+    private GoodService goodService;
     @InjectMocks
     private BoardService boardService;
 
@@ -42,6 +44,9 @@ public class BoardServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
+    /**
+     * 게시글 작성 테스트 메서드. 게시글이 올바르게 생성되고 반환된 DTO가 입력값과 일치하는지 검증합니다.
+     */
     @Test
     public void testWritePost() {
         WritePostRequestDto dto = new WritePostRequestDto();
@@ -77,6 +82,9 @@ public class BoardServiceTest {
         assertEquals(member.getName(), result.get().getWriter());
     }
 
+    /**
+     * 게시글 수정 테스트 메서드. 게시글이 올바르게 수정되고 반환된 DTO가 수정된 값과 일치하는지 검증합니다.
+     */
     @Test
     public void testModifyPost() {
         ModifyPostRequestDto dto = new ModifyPostRequestDto();
@@ -126,6 +134,9 @@ public class BoardServiceTest {
         assertEquals(dto.getFile(), result.get().getFile());
     }
 
+    /**
+     * 게시글 삭제 테스트 메서드. 게시글이 올바르게 삭제되고 반환된 결과가 true인지 검증합니다.
+     */
     @Test
     public void testRemovePost() {
         Member member = new Member();
@@ -153,6 +164,9 @@ public class BoardServiceTest {
         verify(boardRepository, times(1)).save(any(Board.class));
     }
 
+    /**
+     * 게시글 목록 조회 테스트 메서드. 게시글 목록이 올바르게 조회되고, 삭제되지 않은 게시글만 반환되는지 검증합니다.
+     */
     @Test
     public void testGetPostList() {
         Member member = new Member();
@@ -190,6 +204,9 @@ public class BoardServiceTest {
         assertEquals("Title 1", result.get(0).getTitle());
     }
 
+    /**
+     * 게시글 상세 조회 테스트 메서드. 게시글이 올바르게 조회되고 반환된 DTO가 예상 값과 일치하는지 검증합니다.
+     */
     @Test
     public void testGetPostDetail() {
         Member member = new Member();

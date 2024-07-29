@@ -1,12 +1,11 @@
 package com.ssafy.sayif.team.service;
 
+import com.ssafy.sayif.member.entity.Member;
+import com.ssafy.sayif.member.entity.Mentor;
 import com.ssafy.sayif.member.entity.Role;
 import com.ssafy.sayif.member.repository.MemberRepository;
 import com.ssafy.sayif.member.repository.MentorRepository;
-import com.ssafy.sayif.team.dto.MentoringApplicationRequest;
-import com.ssafy.sayif.team.dto.MentoringRecruitRequest;
-import com.ssafy.sayif.team.dto.MentoringSearchRequest;
-import com.ssafy.sayif.team.dto.MentoringSearchResponse;
+import com.ssafy.sayif.team.dto.*;
 import com.ssafy.sayif.team.entity.Team;
 import com.ssafy.sayif.team.entity.TeamStatus;
 import com.ssafy.sayif.team.repository.TeamRepository;
@@ -19,6 +18,7 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -154,4 +154,26 @@ public class MentoringService {
     }
 
 
+    @Transactional
+    public List<MentorProfileResponse> profile(int pageNo, int sizeNo) {
+        Pageable pageable = PageRequest.of(pageNo, sizeNo);
+        Page<Mentor> mentorPage = mentorRepository.findAll(pageable);
+        log.info(mentorPage.toString());
+        List<MentorProfileResponse> mentorProfileResponses = mentorPage.stream().map(mentor -> {
+            Member member = memberRepository.findById(mentor.getId()).orElseThrow(() -> new RuntimeException("Member not found"));
+            return new MentorProfileResponse(
+                    member.getId(),
+                    member.getNickname(),
+                    member.getName(),
+                    member.getEmail(),
+                    mentor.getMajor(),
+                    mentor.getTrack().toString(),
+                    member.getProfileImg(),
+                    mentor.getIntro(),
+                    mentor.getRegCode(),
+                    mentor.getSeq()
+            );
+        }).collect(Collectors.toList());
+        return mentorProfileResponses;
+    }
 }
