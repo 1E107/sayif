@@ -30,6 +30,7 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
+    private final GoodService goodService;
 
     /**
      * 게시글 작성
@@ -42,17 +43,17 @@ public class BoardService {
             log.info(member.toString());
         }
         Member member = memberRepository.findById(dto.getUsername())
-                .orElseThrow(
-                        () -> new IllegalArgumentException("Invalid member ID: " + dto.getUsername()));
+            .orElseThrow(
+                () -> new IllegalArgumentException("Invalid member ID: " + dto.getUsername()));
 
         Board board = Board.builder()
-                .file(dto.getFile())
-                .title(dto.getTitle())
-                .content(dto.getContent())
-                .type(dto.getType())
-                .isRemove(false)
-                .member(member)
-                .build();
+            .file(dto.getFile())
+            .title(dto.getTitle())
+            .content(dto.getContent())
+            .type(dto.getType())
+            .isRemove(false)
+            .member(member)
+            .build();
 
         Board savedBoard = boardRepository.save(board);
         return Optional.of(convertToDto(savedBoard));
@@ -67,19 +68,14 @@ public class BoardService {
      */
     public Optional<BoardResponseDto> modifyPost(int id, ModifyPostRequestDto dto) {
         Board existBoard = boardRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid board ID: " + id));
-        Board updatedBoard = Board.builder()
-                .id(id)
-                .member(existBoard.getMember())
-                .createdAt(existBoard.getCreatedAt())
-                .modifiedAt(LocalDateTime.now())
-                .hitCount(existBoard.getHitCount())
-                .file(dto.getFile())
-                .title(dto.getTitle())
-                .content(dto.getContent())
-                .isRemove(false)
-                .type(dto.getType())
-                .build();
+            .orElseThrow(() -> new IllegalArgumentException("Invalid board ID: " + id));
+        Board updatedBoard = existBoard.toBuilder()
+            .file(dto.getFile())
+            .title(dto.getTitle())
+            .content(dto.getContent())
+            .modifiedAt(LocalDateTime.now())
+            .type(dto.getType())
+            .build();
 
         Board savedBoard = boardRepository.save(updatedBoard);
         return Optional.of(convertToDto(savedBoard));
@@ -93,25 +89,16 @@ public class BoardService {
      */
     public boolean removePost(int id) {
         Board board = boardRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid board ID: " + id));
+            .orElseThrow(() -> new IllegalArgumentException("Invalid board ID: " + id));
 
         if (board.getIsRemove()) {
             return false;
         }
 
-        Board updatedBoard = Board.builder()
-                .id(board.getId())
-                .member(board.getMember())
-                .title(board.getTitle())
-                .content(board.getContent())
-                .hitCount(board.getHitCount())
-                .type(board.getType())
-                .file(board.getFile())
-                .isRemove(true) // isRemove 필드를 true로 설정
-                .removeAt(LocalDateTime.now()) // removeAt 필드를 현재 시간으로 설정
-                .createdAt(board.getCreatedAt())
-                .modifiedAt(board.getModifiedAt())
-                .build();
+        Board updatedBoard = board.toBuilder()
+            .isRemove(true) // isRemove 필드를 true로 설정
+            .removeAt(LocalDateTime.now()) // removeAt 필드를 현재 시간으로 설정
+            .build();
 
         boardRepository.save(updatedBoard); // 변경 사항 저장
         return true;
@@ -129,9 +116,9 @@ public class BoardService {
         Page<Board> boardPage = boardRepository.findAll(pageable);
 
         return boardPage.stream()
-                .filter(board -> !board.getIsRemove()) // isRemove가 false인 게시글 필터링
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
+            .filter(board -> !board.getIsRemove()) // isRemove가 false인 게시글 필터링
+            .map(this::convertToDto)
+            .collect(Collectors.toList());
     }
 
     /**
@@ -142,7 +129,7 @@ public class BoardService {
      */
     public BoardResponseDto getPostDetail(int id) {
         Board board = boardRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid board ID: " + id));
+            .orElseThrow(() -> new IllegalArgumentException("Invalid board ID: " + id));
         return this.convertToDto(board);
     }
 
@@ -154,16 +141,18 @@ public class BoardService {
      */
     private BoardResponseDto convertToDto(Board board) {
         return BoardResponseDto.builder()
-                .id(board.getId())
-                .title(board.getTitle())
-                .content(board.getContent())
-                .file(board.getFile())
-                .writer(board.getMember().getName())
-                .type(board.getType())
-                .hitCount(board.getHitCount())
-                .createdAt(board.getCreatedAt())
-                .modifiedAt(board.getModifiedAt())
-                .isRemove(board.getIsRemove())
-                .build();
+            .id(board.getId())
+            .title(board.getTitle())
+            .content(board.getContent())
+            .file(board.getFile())
+            .writer(board.getMember().getName())
+            .type(board.getType())
+            .hitCount(board.getHitCount())
+            .createdAt(board.getCreatedAt())
+            .modifiedAt(board.getModifiedAt())
+            .isRemove(board.getIsRemove())
+            .goodCount(goodService.getGoodCountByBoardId(board.getId()))
+            .build();
     }
+
 }
