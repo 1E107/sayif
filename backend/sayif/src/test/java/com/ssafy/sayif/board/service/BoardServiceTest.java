@@ -196,7 +196,7 @@ public class BoardServiceTest {
 //
 //        when(boardRepository.findAll(any(PageRequest.class))).thenReturn(boardPage);
 //
-//        List<BoardResponseDto> result = boardService.getPostList(BoardType.Free, 0, 10);
+//        List<BoardResponseDto> result = boardService.getTeamPostList(BoardType.Free, 0, 10);
 //
 //        assertNotNull(result, "Result should not be null");
 //        assertEquals(1, result.size());
