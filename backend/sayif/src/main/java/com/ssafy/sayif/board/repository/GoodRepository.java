@@ -12,4 +12,6 @@ public interface GoodRepository extends JpaRepository<Good, Integer> {
     List<Good> findAllByBoard(Board board);
 
     Optional<Good> findByBoardAndMember(Board board, Member member);
+
+    List<Good> findAllByMember(Member member);
 }
