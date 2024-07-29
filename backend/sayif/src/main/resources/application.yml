@@ -12,4 +12,3 @@ server:
       enabled: true
       charset: UTF-8
       force: true
-  port: 8010
