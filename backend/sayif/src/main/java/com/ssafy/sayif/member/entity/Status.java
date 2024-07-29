@@ -1,5 +1,5 @@
 package com.ssafy.sayif.member.entity;
 
-enum Status {
+public enum Status {
     Pending, Approved, Rejected
 }
