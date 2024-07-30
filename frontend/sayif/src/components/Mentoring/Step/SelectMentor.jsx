@@ -23,11 +23,11 @@ function SelectMentor({formData, reSelectInfo, finishPage}) {
         const callMentorList = async() => {
             try {
                 const response = await SelectMentor(1,10, formData.startDate, formData.endDate, formData.TextAMPM, formData.time);
-                console.log(response);c
+                console.log(response);
             }catch(error) {
                 console.log(error);
             }
-        }
+        }                               
 
         callMentorList();
     }, []);
@@ -43,7 +43,9 @@ function SelectMentor({formData, reSelectInfo, finishPage}) {
 
     const SelectMentorView = (
         <S.Container>
-            <div>신청 아이콘 보여줌</div>
+            <S.IconWrapper>
+                <S.Icon/>
+            </S.IconWrapper>
             {/* <div>{formData.endDate}</div> */}
             <S.Wrapper>
                 <Box sx={{ flexGrow: 1 }}>

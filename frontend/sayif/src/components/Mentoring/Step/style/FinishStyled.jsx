@@ -5,10 +5,14 @@ const Container = styled.div`
     margin-top: 50px;
     padding-right: 60px;
     padding-left: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 `;
 
 const ShowTextWrapper = styled.div`
-    margin: 50px;
+    margin: 0px 40px 40px 40px;
 `;
 
 const MainTitle = styled.div`
@@ -32,12 +36,20 @@ const SubTextHigh = styled.span`
     font-size: 13px;
 `
 
+const Icon = styled.div`
+    background-image: url('/img/Apply/apply-step4.png');
+    background-size: cover;
+    width: 900px;
+    height: 200px;
+`
+
 const S = {
     Container,
     ShowTextWrapper,
     MainTitle,
     SubText,
-    SubTextHigh
+    SubTextHigh,
+    Icon
 };
 
 export default S;
