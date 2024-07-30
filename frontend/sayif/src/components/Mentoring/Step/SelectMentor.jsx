@@ -4,8 +4,11 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { getMentorList } from '../../../api/MentoringApi';
+import Tooltip from '@mui/material/Tooltip';
+import Avatar from '@mui/material/Avatar';
+import IconButton from '@mui/material/IconButton';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: "#F5F5F5",
@@ -19,16 +22,17 @@ const Item = styled(Paper)(({ theme }) => ({
 
 
 function SelectMentor({formData, reSelectInfo, finishPage}) {
+    const [mentorList, setMentorList] = useState([]);
+
     useEffect(()=>{
-        const callMentorList = async() => {
+        const callMentorList = async () => {
             try {
-                const response = await SelectMentor(1,10, formData.startDate, formData.endDate, formData.TextAMPM, formData.time);
-                console.log(response);
+                const response = await getMentorList(0,10, formData.startDate, formData.endDate, formData.TextAMPM, formData.time);
+                setMentorList(response.data);
             }catch(error) {
                 console.log(error);
             }
-        }                               
-
+        };              
         callMentorList();
     }, []);
 
@@ -75,75 +79,56 @@ function SelectMentor({formData, reSelectInfo, finishPage}) {
                 </Box>
             </S.Wrapper>
             <S.Wrapper>
-                <Grid item xs={5} style={{margin:"15px 0px 15px 0px"}}>
-                    <S.MentorListBox>
-                        <S.MentorInfoBox>
-                            <S.MentorInfoTitle>시작일자&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;종료일자</S.MentorInfoTitle>
-                            <S.MentorInfoContent>07.03 ~ 08.09</S.MentorInfoContent>
-                        </S.MentorInfoBox>
-                        <S.MentorInfoBox>
-                            <S.MentorInfoTitle>시간</S.MentorInfoTitle>
-                            <S.MentorInfoContent>오후 11:00</S.MentorInfoContent>
-                        </S.MentorInfoBox>
-                        {/* <S.MentorInfoBox>
-                            <S.MentorInfoTitle>최소인원</S.MentorInfoTitle>
-                            <S.MentorInfoContent>2</S.MentorInfoContent>
-                        </S.MentorInfoBox> */}
-                        <S.MentorInfoBox>
-                            <S.MentorInfoTitle>팀 인원 현황</S.MentorInfoTitle>
-                            <S.MentorInfoContent>2/4</S.MentorInfoContent>
-                        </S.MentorInfoBox>
-                        <Button 
-                            variant="contained"
-                            style={{
-                                fontFamily: "ChosunGu",
-                                backgroundColor: "#116530",
-                                width: "110px",
-                                height: "35px",
-                                float: "right",
-                                borderRadius: "13px"
-                            }}
-                            onClick={handleApplyBtn}
-                        >
-                            신청
-                        </Button>
-                    </S.MentorListBox>
+                {mentorList.map(mentor => {
+                    return (
+                        <Grid key={mentor.id} item xs={5} style={{margin:"15px 0px 15px 0px"}}>
+                        <S.MentorListBox>
+                            <S.MentorInfoBox>
+                                <S.MentorProfileWrapper>
+                                    <Box sx={{ flexGrow: 0 }}>
+                                        <IconButton sx={{ p: 0 }}>
+                                            <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg"/>
+                                        </IconButton>
+                                    </Box>
+                                    <Box sx={{ flexGrow: 0 }}>
+                                        <IconButton sx={{ p: 0 }}>
+                                            <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg"/>
+                                        </IconButton>
+                                    </Box>
+                                </S.MentorProfileWrapper>
+                                <S.MentorInfoContent style={{marginBottom: "15px"}}>{mentor.mentor1_nickname} & {mentor.mentor2_nickname}</S.MentorInfoContent>
+                            </S.MentorInfoBox>
+                            <S.MentorInfoBox>
+                                <S.MentorInfoTitle>시작일자&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;종료일자</S.MentorInfoTitle>
+                                <S.MentorInfoContent>{mentor.start_date} ~ {mentor.end_date}</S.MentorInfoContent>
+                            </S.MentorInfoBox>
+                            <S.MentorInfoBox>
+                                <S.MentorInfoTitle>시간</S.MentorInfoTitle>
+                                <S.MentorInfoContent>{mentor.pmam} {mentor.time}</S.MentorInfoContent>
+                            </S.MentorInfoBox>
+                            <S.MentorInfoBox>
+                                <S.MentorInfoTitle>팀 인원 현황</S.MentorInfoTitle>
+                                <S.MentorInfoContent>{mentor.mentee_cnt}/4</S.MentorInfoContent>
+                            </S.MentorInfoBox>
+                            <Button 
+                                variant="contained"
+                                style={{
+                                    fontFamily: "ChosunGu",
+                                    backgroundColor: "#116530",
+                                    width: "110px",
+                                    height: "35px",
+                                    float: "right",
+                                    borderRadius: "13px"
+                                }}
+                                onClick={handleApplyBtn}
+                            >
+                                신청
+                            </Button>
+                        </S.MentorListBox>
                 </Grid>
-
-                {/* 나중에 아래 코드는 없어지고 서버에서 받아온 데이터로 반복문 돌릴 것 */}
-                <Grid item xs={5}> 
-                    <S.MentorListBox>
-                        <S.MentorInfoBox>
-                            <S.MentorInfoTitle>시작일자&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;종료일자</S.MentorInfoTitle>
-                            <S.MentorInfoContent>07.03 ~ 08.09</S.MentorInfoContent>
-                        </S.MentorInfoBox>
-                        <S.MentorInfoBox>
-                            <S.MentorInfoTitle>시간</S.MentorInfoTitle>
-                            <S.MentorInfoContent>오후 11:00</S.MentorInfoContent>
-                        </S.MentorInfoBox>
-                        {/* <S.MentorInfoBox>
-                            <S.MentorInfoTitle>최소인원</S.MentorInfoTitle>
-                            <S.MentorInfoContent>2</S.MentorInfoContent>
-                        </S.MentorInfoBox> */}
-                        <S.MentorInfoBox>
-                            <S.MentorInfoTitle>팀 인원 현황</S.MentorInfoTitle>
-                            <S.MentorInfoContent>2/4</S.MentorInfoContent>
-                        </S.MentorInfoBox>
-                        <Button 
-                        variant="contained"
-                        style={{
-                            fontFamily: "ChosunGu",
-                            backgroundColor: "#116530",
-                            width: "110px",
-                            height: "35px",
-                            float: "right",
-                            borderRadius: "13px"
-                        }}
-                        >
-                            신청
-                        </Button>
-                    </S.MentorListBox>
-                </Grid>
+                    )
+                })
+                }
             </S.Wrapper>
         </S.Container>
     )

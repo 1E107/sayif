@@ -36,6 +36,7 @@ const MentorListBox = styled.div`
   align-items: center;
   justify-content: center;
   border-radius: 5px;
+  padding: 5px;
 `
 
 const MentorInfoTitle = styled.div`
@@ -45,7 +46,7 @@ const MentorInfoTitle = styled.div`
 `
 
 const MentorInfoContent = styled.div`
-    font-size: 18px;
+    font-size: 16px;
     font-weight: bold;
     font-family: ChosunGu;
     margin-top: 10px;
@@ -68,6 +69,12 @@ const IconWrapper = styled.div`
     justify-content: center;
 `
 
+const MentorProfileWrapper = styled.div`
+    display: flex;
+    gap: 10px;
+    margin: 15px 5px 5px 5px;
+`
+
 const S = {
     Container,
     Wrapper,
@@ -78,7 +85,8 @@ const S = {
     MentorInfoContent,
     MentorInfoBox,
     Icon,
-    IconWrapper
+    IconWrapper,
+    MentorProfileWrapper
 };
 
 export default S;
