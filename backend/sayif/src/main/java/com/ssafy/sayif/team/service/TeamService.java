@@ -24,7 +24,7 @@ public class TeamService {
     private final SimpMessagingTemplate messagingTemplate;
     private final MemberRepository memberRepository;
 
-    public List<Member> getMembersByTeamId(Long teamId) {
+    public List<Member> getMembersByTeamId(Integer teamId) {
         return memberRepository.findByTeamId(teamId);
     }
 

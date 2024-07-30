@@ -6,6 +6,7 @@ import com.ssafy.sayif.member.jwt.JWTUtil;
 import com.ssafy.sayif.member.jwt.LoginFilter;
 import com.ssafy.sayif.member.repository.RefreshRepository;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -16,7 +17,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
@@ -58,7 +63,7 @@ public class SecurityConfig {
                         configuration.setAllowedHeaders(Collections.singletonList("*"));
                         configuration.setMaxAge(3600L);
 
-                        configuration.setExposedHeaders(Collections.singletonList("Authorization"));
+                        configuration.setExposedHeaders(Arrays.asList("Authorization", "access"));
 
                         return configuration;
                     }
@@ -78,7 +83,7 @@ public class SecurityConfig {
 
         http
             .authorizeHttpRequests((auth) -> auth
-                .requestMatchers("/login", "/**", "/member/register").permitAll()
+                .requestMatchers("/login", "/**", "/member/register", "/api/openvidu/**").permitAll()
                 .requestMatchers("/admin").hasRole("ADMIN")
                 .requestMatchers("/reissue").permitAll()
                 .requestMatchers("/ws/**").permitAll() // 웹소켓 엔드포인트 인증 허용
@@ -100,5 +105,15 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+        UserDetails user = User.withDefaultPasswordEncoder()
+                .username("customuser")
+                .password("custompassword")
+                .roles("USER")
+                .build();
+        return new InMemoryUserDetailsManager(user);
     }
 }

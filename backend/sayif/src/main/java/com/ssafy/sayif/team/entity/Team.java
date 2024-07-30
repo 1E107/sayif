@@ -49,4 +49,7 @@ public class Team {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private TeamStatus status;
+
+    @Column(name = "session_id")
+    private String sessionId;
 }

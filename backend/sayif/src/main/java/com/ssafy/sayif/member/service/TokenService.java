@@ -87,14 +87,12 @@ public class TokenService {
         return cookie;
     }
 
-    private void addRefreshEntity(String membreId, String refresh, Long expiredMs) {
+    private void addRefreshEntity(String username, String refresh, Long expiredMs) {
 
         Date date = new Date(System.currentTimeMillis() + expiredMs);
 
         Refresh refreshEntity = new Refresh();
-        refreshEntity.setUsername(membreId);
-        refreshEntity.setRefresh(refresh);
-        refreshEntity.setExpiration(date.toString());
+        refreshEntity.createRefresh(username, refresh, date.toString());
 
         refreshRepository.save(refreshEntity);
     }
