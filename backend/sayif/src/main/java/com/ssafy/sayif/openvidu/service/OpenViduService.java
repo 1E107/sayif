@@ -44,11 +44,11 @@ public class OpenViduService {
             session = openvidu.createSession(properties);
             // Member에서 username의 Team 가져오기
             // Team에서 team_id의 session_id 업데이트
-            Team team = memberRepository.findByUsername(username).getTeam();
-            log.info(username + "'s team id: " + team.getId());
-            team.updateSessionId(session.getSessionId());
-            log.info(team.toString());
-            teamRepository.save(team);
+//            Team team = memberRepository.findByUsername(username).getTeam();
+//            log.info(username + "'s team id: " + team.getId());
+//            team.updateSessionId(session.getSessionId());
+//            log.info(team.toString());
+//            teamRepository.save(team);
 
         } catch (OpenViduJavaClientException | OpenViduHttpException e) {
             throw new RuntimeException(e);
@@ -80,9 +80,9 @@ public class OpenViduService {
         }
 
         // 회의 열었던 멘토가 종료하면 그 사람 팀 세션 id 없애기
-        Team team = memberRepository.findByUsername(username).getTeam();
-        team.updateSessionId(null);
-        teamRepository.save(team);
+//        Team team = memberRepository.findByUsername(username).getTeam();
+//        team.updateSessionId(null);
+//        teamRepository.save(team);
 
         return "Session closed successfully";
     }
