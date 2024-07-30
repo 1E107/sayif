@@ -2,13 +2,16 @@ package com.ssafy.sayif.openvidu.controller;
 
 import com.ssafy.sayif.member.jwt.JWTUtil;
 import com.ssafy.sayif.openvidu.service.OpenViduService;
+import io.openvidu.java.client.Session;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/openvidu")
@@ -23,13 +26,15 @@ public class OpenViduController {
      * 이후에 이 세션에 대해 Connection 객체를 생성하고 클라이언트 측에 전달할 수 있는 토큰을 생성할 수 있습니다.
      * 클라이언트는 이 토큰을 사용하여 세션에 연결할 수 있습니다.
      */
-    @PostMapping("/api/sessions")
+    @PostMapping("")
     public ResponseEntity<?> initializeSession(@RequestHeader("Authorization") String authorizationHeader, @RequestBody(required = false) Map<String, Object> params) {
         try {
             String token = jwtUtil.resolveToken(authorizationHeader);
             String username = jwtUtil.getUsername(token);
-            String sessionId = openViduService.createSession(params, username);
-            return new ResponseEntity<>(sessionId, HttpStatus.OK);
+            log.info("Controller - initialize session");
+            Session session = openViduService.createSession(params, "mentor1");
+           System.out.println("sessionId: " + session.getSessionId());
+            return new ResponseEntity<>(session.getSessionId(), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Failed to create session", HttpStatus.BAD_REQUEST);
         }
@@ -63,7 +68,7 @@ public class OpenViduController {
         try {
             String token = jwtUtil.resolveToken(authorizationHeader);
             String username = jwtUtil.getUsername(token);
-            return new ResponseEntity<>(openViduService.closeSession(sessionId, username), HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(openViduService.closeSession(sessionId, "mentor1"), HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return new ResponseEntity<>("Failed to close session", HttpStatus.NOT_FOUND);
         }

@@ -6,11 +6,13 @@ import com.ssafy.sayif.team.repository.TeamRepository;
 import io.openvidu.java.client.*;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import java.util.Map;
 
+@Slf4j
 @Service
 public class OpenViduService {
     @Value("${openvidu.url}")
@@ -33,23 +35,24 @@ public class OpenViduService {
     }
 
     @Transactional
-    public String createSession(Map<String, Object> params, String username) {
+    public Session createSession(Map<String, Object> params, String username) {
             SessionProperties properties = SessionProperties.fromJson(params).build();
         Session session = null;
+        log.info("Service - createSession 입장");
         try {
             session = openvidu.createSession(properties);
+            // Member에서 username의 Team 가져오기
+            // Team에서 team_id의 session_id 업데이트
+            Team team = memberRepository.findByUsername(username).getTeam();
+            log.info(username + "'s team id: " + team.getId());
+            team.setSessionId(session.getSessionId());
+            log.info(team.toString());
+            teamRepository.save(team);
+
         } catch (OpenViduJavaClientException | OpenViduHttpException e) {
             throw new RuntimeException(e);
         }
-
-        // Member에서 username의 Team 가져오기
-        // Team에서 team_id의 session_id 업데이트
-//        Team team = memberRepository.findByUsername(username).getTeam();
-//        team.setSessionId(session.getSessionId());
-//        teamRepository.save(team);
-
-        return session.getSessionId();
-
+        return session;
     }
 
     public String createConnection(String sessionId, Map<String, Object> params) {
@@ -75,9 +78,9 @@ public class OpenViduService {
         }
 
         // 회의 열었던 멘토가 종료하면 그 사람 팀 세션 id 없애기
-//        Team team = memberRepository.findByUsername(username).getTeam();
-//        team.setSessionId(null);
-//        teamRepository.save(team);
+        Team team = memberRepository.findByUsername(username).getTeam();
+        team.setSessionId(null);
+        teamRepository.save(team);
 
         return "Session closed successfully";
     }
