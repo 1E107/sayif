@@ -6,6 +6,7 @@ import com.ssafy.sayif.member.jwt.JWTUtil;
 import com.ssafy.sayif.member.jwt.LoginFilter;
 import com.ssafy.sayif.member.repository.RefreshRepository;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -62,7 +63,7 @@ public class SecurityConfig {
                         configuration.setAllowedHeaders(Collections.singletonList("*"));
                         configuration.setMaxAge(3600L);
 
-                        configuration.setExposedHeaders(Collections.singletonList("Authorization"));
+                        configuration.setExposedHeaders(Arrays.asList("Authorization", "access"));
 
                         return configuration;
                     }
