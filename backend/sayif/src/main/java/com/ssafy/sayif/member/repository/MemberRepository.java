@@ -15,6 +15,10 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
 
     Member findByUsername(String username);
 
+    @Modifying
+    @Query("UPDATE Member m SET m.nickname = :nickname, m.gender = :gender, m.email = :email, m.phone = :phone WHERE m.username = :username")
+    void updateMember(@Param("username") String username, @Param("nickname") String nickname, @Param("gender") String gender, @Param("email") String email, @Param("phone") String phone);
+
     @Query("SELECT m.nickname FROM Member m WHERE m.team.id = :teamId AND m.role = :role")
     List<String> findMentorNicknamesByTeamId(@Param("teamId") int teamId, @Param("role") Role role);
 
@@ -33,5 +37,5 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
     int updateMemberTeam(@Param("username") String username, @Param("role") Role role,
         @Param("newTeamId") int newTeamId);
 
-    List<Member> findByTeamId(Long teamId);
+    List<Member> findByTeamId(Integer teamId);
 }

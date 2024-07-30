@@ -66,8 +66,7 @@ public class JWTFilter extends OncePerRequestFilter {
         String role = jwtUtil.getRole(accessToken);
 
         Member member = new Member();
-        member.setUsername(username);
-        member.setRole(Role.fromString(role));
+        member.createMember(username, Role.valueOf(role));
 
         CustomUserDetails customUserDetails = new CustomUserDetails(member);
 

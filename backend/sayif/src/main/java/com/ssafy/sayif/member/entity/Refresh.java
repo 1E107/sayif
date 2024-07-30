@@ -9,7 +9,6 @@ import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
 public class Refresh {
 
     @Id
@@ -19,4 +18,10 @@ public class Refresh {
     private String username;
     private String refresh;
     private String expiration;
+
+    public void createRefresh(String username, String refresh, String expiration) {
+        this.username = username;
+        this.refresh = refresh;
+        this.expiration = expiration;
+    }
 }
