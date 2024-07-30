@@ -14,7 +14,10 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,16 +27,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class MentoringService {
 
-    @Autowired
-    TeamRepository teamRepository;
-    @Autowired
-    MemberRepository memberRepository;
+    private final TeamRepository teamRepository;
+    private final MemberRepository memberRepository;
 
-    @Autowired
-    MentorRepository mentorRepository;
+    private final  MentorRepository mentorRepository;
 
     @Transactional
     public Team recruit(MentoringRecruitRequest mentoringRecruitRequest, String username) {
@@ -175,5 +176,14 @@ public class MentoringService {
             );
         }).collect(Collectors.toList());
         return mentorProfileResponses;
+    }
+
+    public TeamStatusResponse readStatus(Integer teamId) {
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new IllegalArgumentException("Team with ID " + teamId + " not found."));
+
+        return TeamStatusResponse.builder()
+                .status(team.getStatus())
+                .build();
     }
 }

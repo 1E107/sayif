@@ -69,4 +69,10 @@ public class MentoringController {
         return ResponseEntity.ok(mentorList);
     }
 
+    @GetMapping("/team/{id}")
+    public ResponseEntity<?> readStatus(@PathVariable Integer id) {
+        TeamStatusResponse status = mentoringService.readStatus(id);
+        return ResponseEntity.ok(status);
+    }
+
 }
