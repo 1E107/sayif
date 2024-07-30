@@ -2,7 +2,6 @@ package com.ssafy.sayif.member.service;
 
 import com.ssafy.sayif.member.dto.RegisterRequestDto;
 import com.ssafy.sayif.member.entity.Member;
-import com.ssafy.sayif.member.entity.Role;
 import com.ssafy.sayif.member.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
