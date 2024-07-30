@@ -83,12 +83,12 @@ function SelectMentor({formData, reSelectInfo, finishPage}) {
                         </S.MentorInfoBox>
                         <S.MentorInfoBox>
                             <S.MentorInfoTitle>시간</S.MentorInfoTitle>
-                            <S.MentorInfoContent>11:00</S.MentorInfoContent>
+                            <S.MentorInfoContent>오후 11:00</S.MentorInfoContent>
                         </S.MentorInfoBox>
-                        <S.MentorInfoBox>
+                        {/* <S.MentorInfoBox>
                             <S.MentorInfoTitle>최소인원</S.MentorInfoTitle>
                             <S.MentorInfoContent>2</S.MentorInfoContent>
-                        </S.MentorInfoBox>
+                        </S.MentorInfoBox> */}
                         <S.MentorInfoBox>
                             <S.MentorInfoTitle>팀 인원 현황</S.MentorInfoTitle>
                             <S.MentorInfoContent>2/4</S.MentorInfoContent>
@@ -119,12 +119,12 @@ function SelectMentor({formData, reSelectInfo, finishPage}) {
                         </S.MentorInfoBox>
                         <S.MentorInfoBox>
                             <S.MentorInfoTitle>시간</S.MentorInfoTitle>
-                            <S.MentorInfoContent>11:00</S.MentorInfoContent>
+                            <S.MentorInfoContent>오후 11:00</S.MentorInfoContent>
                         </S.MentorInfoBox>
-                        <S.MentorInfoBox>
+                        {/* <S.MentorInfoBox>
                             <S.MentorInfoTitle>최소인원</S.MentorInfoTitle>
                             <S.MentorInfoContent>2</S.MentorInfoContent>
-                        </S.MentorInfoBox>
+                        </S.MentorInfoBox> */}
                         <S.MentorInfoBox>
                             <S.MentorInfoTitle>팀 인원 현황</S.MentorInfoTitle>
                             <S.MentorInfoContent>2/4</S.MentorInfoContent>
