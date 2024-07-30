@@ -18,7 +18,7 @@ import lombok.experimental.SuperBuilder;
 
 @Entity
 @Getter
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "qna_answer")
@@ -29,7 +29,7 @@ public class QnaAnswer extends BaseTimeEntity {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "teamBoard_id")
+    @JoinColumn(name = "team_board_id")
     private TeamBoard teamBoard;
 
     @ManyToOne(fetch = FetchType.LAZY)
