@@ -15,5 +15,5 @@ server:
   port: 9090
 
 openvidu:
-  url: https://localhost:4443
+  url: http://localhost:4443
   secret: bangcutsoragodoongmeruohboksayif

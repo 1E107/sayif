@@ -6,6 +6,7 @@ import com.ssafy.sayif.team.repository.TeamRepository;
 import io.openvidu.java.client.*;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +15,7 @@ import java.util.Map;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class OpenViduService {
     @Value("${openvidu.url}")
     private String openviduUrl;
@@ -23,11 +25,9 @@ public class OpenViduService {
 
     private OpenVidu openvidu;
 
-    @Autowired
-    MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
-    @Autowired
-    TeamRepository teamRepository;
+    private final TeamRepository teamRepository;
 
     @PostConstruct
     public void init() {
@@ -36,7 +36,8 @@ public class OpenViduService {
 
     @Transactional
     public Session createSession(Map<String, Object> params, String username) {
-            SessionProperties properties = SessionProperties.fromJson(params).build();
+        SessionProperties properties = new SessionProperties.Builder().build();
+//        SessionProperties properties = SessionProperties.fromJson(params).build();
         Session session = null;
         log.info("Service - createSession 입장");
         try {
@@ -57,7 +58,8 @@ public class OpenViduService {
 
     public String createConnection(String sessionId, Map<String, Object> params) {
             Session session = openvidu.getActiveSession(sessionId);
-            ConnectionProperties properties = ConnectionProperties.fromJson(params).build();
+        ConnectionProperties properties = new ConnectionProperties.Builder().build();
+//            ConnectionProperties properties = ConnectionProperties.fromJson(params).build();
         Connection connection = null;
         try {
             connection = session.createConnection(properties);

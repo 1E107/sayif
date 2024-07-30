@@ -26,14 +26,11 @@ public class OpenViduController {
      * 이후에 이 세션에 대해 Connection 객체를 생성하고 클라이언트 측에 전달할 수 있는 토큰을 생성할 수 있습니다.
      * 클라이언트는 이 토큰을 사용하여 세션에 연결할 수 있습니다.
      */
-    @PostMapping("")
+    @PostMapping("/api/sessions")
     public ResponseEntity<?> initializeSession(@RequestHeader("Authorization") String authorizationHeader, @RequestBody(required = false) Map<String, Object> params) {
         try {
-            String token = jwtUtil.resolveToken(authorizationHeader);
-            String username = jwtUtil.getUsername(token);
             log.info("Controller - initialize session");
-            Session session = openViduService.createSession(params, "mentor1");
-           System.out.println("sessionId: " + session.getSessionId());
+            Session session = openViduService.createSession(params, "bhe0323");
             return new ResponseEntity<>(session.getSessionId(), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Failed to create session", HttpStatus.BAD_REQUEST);
@@ -64,11 +61,9 @@ public class OpenViduController {
      * 이 작업은 세션을 닫고, 세션에 연결된 모든 Connection을 종료합니다.
      */
     @DeleteMapping("/api/sessions/{sessionId}")
-    public ResponseEntity<?> closeSession(@RequestHeader("Authorization") String authorizationHeader, @PathVariable String sessionId) {
+    public ResponseEntity<?> closeSession(@PathVariable String sessionId) {
         try {
-            String token = jwtUtil.resolveToken(authorizationHeader);
-            String username = jwtUtil.getUsername(token);
-            return new ResponseEntity<>(openViduService.closeSession(sessionId, "mentor1"), HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(openViduService.closeSession(sessionId, "bhe0323"), HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return new ResponseEntity<>("Failed to close session", HttpStatus.NOT_FOUND);
         }
