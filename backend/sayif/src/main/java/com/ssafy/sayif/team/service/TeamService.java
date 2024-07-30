@@ -34,11 +34,11 @@ public class TeamService {
 
         for (Team team : applyTeams) {
             if (shouldUpdateToProceed(team)) {
-                team.setStatus(TeamStatus.Proceed);
+                team.updateStatus(TeamStatus.Proceed);
                 teamRepository.save(team);
                 messagingTemplate.convertAndSend("/topic/" + team.getId(), "채팅방이 생성되었습니다.");
             } else {
-                team.setStatus(TeamStatus.Cancel);
+                team.updateStatus(TeamStatus.Cancel);
                 teamRepository.save(team);
             }
         }
