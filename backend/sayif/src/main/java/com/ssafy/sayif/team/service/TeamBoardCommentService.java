@@ -58,13 +58,13 @@ public class TeamBoardCommentService {
      * @param content 새로운 댓글 내용
      * @return 수정된 댓글 엔티티
      */
-    private QnaAnswer updateCommentContent(QnaAnswer comment, String content) {
+    private TeamBoardCommentResponseDto updateCommentContent(QnaAnswer comment, String content) {
         QnaAnswer updatedComment = comment.toBuilder()
             .answer(content)
             .modifiedAt(LocalDateTime.now())
             .build();
         commentRepository.save(updatedComment);
-        return updatedComment;
+        return convertToDto(updatedComment);
     }
 
     /**
@@ -78,8 +78,9 @@ public class TeamBoardCommentService {
             .id(comment.getId())
             .content(comment.getAnswer())
             .createdAt(comment.getCreatedAt())
-            .username(comment.getMember().getUsername())
             .modifiedAt(comment.getModifiedAt())
+            .teamBoardId(comment.getTeamBoard().getId())
+            .username(comment.getMember().getUsername())
             .build();
     }
 
@@ -103,7 +104,8 @@ public class TeamBoardCommentService {
      * @throws UnauthorizedAccessException 댓글 작성자가 현재 사용자가 아닌 경우 예외를 던집니다.
      * @throws CommentNotFoundException    해당 ID의 댓글이 존재하지 않을 경우 예외를 던집니다.
      */
-    public QnaAnswer modifyComment(int commentId, String username, TeamBoardCommentRequestDto dto) {
+    public TeamBoardCommentResponseDto modifyComment(int commentId, String username,
+        TeamBoardCommentRequestDto dto) {
         QnaAnswer comment = findCommentById(commentId);
 
         if (isAuthorizedUser(comment, username)) {

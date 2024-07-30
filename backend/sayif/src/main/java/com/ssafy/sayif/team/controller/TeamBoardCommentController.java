@@ -2,7 +2,7 @@ package com.ssafy.sayif.team.controller;
 
 import com.ssafy.sayif.member.jwt.JWTUtil;
 import com.ssafy.sayif.team.dto.TeamBoardCommentRequestDto;
-import com.ssafy.sayif.team.entity.QnaAnswer;
+import com.ssafy.sayif.team.dto.TeamBoardCommentResponseDto;
 import com.ssafy.sayif.team.service.TeamBoardCommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -49,7 +49,8 @@ public class TeamBoardCommentController {
         @RequestHeader("Authorization") String authorizationHeader) {
         try {
             String username = extractUsernameFromHeader(authorizationHeader);
-            QnaAnswer updatedComment = commentService.modifyComment(commentId, username,
+            TeamBoardCommentResponseDto updatedComment = commentService.modifyComment(commentId,
+                username,
                 commentRequestDto);
             return ResponseEntity.ok("댓글 수정 성공");
         } catch (Exception e) {
