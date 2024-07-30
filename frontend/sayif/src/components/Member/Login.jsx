@@ -2,7 +2,7 @@ import { useDispatch } from 'react-redux';
 import { setToken, setMember } from '../../redux/modules/member';
 import S from './style/LoginStyled';
 import { useNavigate } from 'react-router-dom';
-import { login } from '../../api/MemberApi';
+import { login, getMemberInfo } from '../../api/MemberApi';
 import { useState } from 'react';
 import Alert from '@mui/material/Alert';
 
@@ -19,6 +19,10 @@ function Login() {
                 const response = await login(loginId, loginPassword);
                 const authToken = response.headers['access'];
                 dispatch(setToken(authToken));
+
+                const responseInfo = await getMemberInfo(authToken);
+                dispatch(setMember(responseInfo.data));
+
                 alert('로그인에 성공하였습니다.');
                 navigate('/');
             } catch (error) {
