@@ -54,9 +54,10 @@ public class BoardServiceTest {
         dto.setFile("Test File");
         dto.setType(BoardType.Free);
 
-        Member member = new Member();
-        member.setId(1);
-        member.setName("Test Member");
+        Member member = Member.builder()
+                .id(1)
+                .username("Test Member")
+                .build();
 
         Board board = Board.builder()
             .id(1)
@@ -91,9 +92,10 @@ public class BoardServiceTest {
         dto.setFile("Updated File");
         dto.setType(BoardType.Free);
 
-        Member member = new Member();
-        member.setId(1);
-        member.setName("Test Member");
+        Member member = Member.builder()
+                .id(1)
+                .username("Test Member")
+                .build();
 
         Board existingBoard = Board.builder()
             .id(1)
@@ -137,9 +139,10 @@ public class BoardServiceTest {
      */
     @Test
     public void testRemovePost() {
-        Member member = new Member();
-        member.setId(1);
-        member.setName("Test Member");
+        Member member = Member.builder()
+                .id(1)
+                .username("Test Member")
+                .build();
 
         Board board = Board.builder()
             .id(1)
@@ -208,9 +211,10 @@ public class BoardServiceTest {
      */
     @Test
     public void testGetPostDetail() {
-        Member member = new Member();
-        member.setId(1);
-        member.setName("Test Member");
+        Member member = Member.builder()
+                .id(1)
+                .username("Test Member")
+                .build();
 
         Board board = Board.builder()
             .id(1)

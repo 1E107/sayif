@@ -48,9 +48,10 @@ public class GoodServiceTest {
     @BeforeEach
     void setUp() {
         board = Board.builder().id(1).build();
-        member = new Member();
-        member.setId(1);
-        member.setUsername("testuser");
+        member = Member.builder()
+                .id(1)
+                .username("testuser")
+                .build();
     }
 
     /**
