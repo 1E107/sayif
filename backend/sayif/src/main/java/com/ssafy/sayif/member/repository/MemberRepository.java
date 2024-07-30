@@ -2,12 +2,13 @@ package com.ssafy.sayif.member.repository;
 
 import com.ssafy.sayif.member.entity.Member;
 import com.ssafy.sayif.member.entity.Role;
-import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 public interface MemberRepository extends JpaRepository<Member, Integer> {
 
@@ -38,4 +39,6 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
         @Param("newTeamId") int newTeamId);
 
     List<Member> findByTeamId(Integer teamId);
+
+    List<Member> findByRole(Role role);
 }

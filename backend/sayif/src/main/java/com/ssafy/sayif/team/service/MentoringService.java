@@ -10,21 +10,18 @@ import com.ssafy.sayif.team.entity.Team;
 import com.ssafy.sayif.team.entity.TeamStatus;
 import com.ssafy.sayif.team.repository.TeamRepository;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -185,5 +182,12 @@ public class MentoringService {
         return TeamStatusResponse.builder()
                 .status(team.getStatus())
                 .build();
+    }
+
+    public List<MentorNicknameResponse> getMentorNicknames() {
+        List<Member> memberList = memberRepository.findByRole(Role.Mentor);
+        return memberList.stream()
+                .map(member -> new MentorNicknameResponse(member.getNickname()))
+                .collect(Collectors.toList());
     }
 }
