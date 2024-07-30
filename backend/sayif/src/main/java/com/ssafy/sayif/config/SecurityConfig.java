@@ -83,7 +83,7 @@ public class SecurityConfig {
 
         http
             .authorizeHttpRequests((auth) -> auth
-                .requestMatchers("/login", "/**", "/member/register", "/api/openvidu/**").permitAll()
+                .requestMatchers("/login", "/**", "/member/register", "/openvidu/**").permitAll()
                 .requestMatchers("/admin").hasRole("ADMIN")
                 .requestMatchers("/reissue").permitAll()
                 .requestMatchers("/ws/**").permitAll() // 웹소켓 엔드포인트 인증 허용
@@ -107,13 +107,13 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails user = User.withDefaultPasswordEncoder()
-                .username("customuser")
-                .password("custompassword")
-                .roles("USER")
-                .build();
-        return new InMemoryUserDetailsManager(user);
-    }
+//    @Bean
+//    public UserDetailsService userDetailsService() {
+//        UserDetails user = User.withDefaultPasswordEncoder()
+//                .username("customuser")
+//                .password("custompassword")
+//                .roles("USER")
+//                .build();
+//        return new InMemoryUserDetailsManager(user);
+//    }
 }

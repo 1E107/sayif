@@ -2,6 +2,8 @@ package com.ssafy.sayif.team.service;
 import com.ssafy.sayif.member.entity.Member;
 import com.ssafy.sayif.member.repository.MemberRepository;
 import com.ssafy.sayif.member.repository.MenteeRepository;
+import com.ssafy.sayif.team.dto.PointResponseDto;
+import com.ssafy.sayif.team.dto.PointUpdateRequestDto;
 import com.ssafy.sayif.team.entity.Team;
 import com.ssafy.sayif.team.entity.TeamStatus;
 import com.ssafy.sayif.team.repository.TeamRepository;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -55,5 +58,26 @@ public class TeamService {
         int menteeCount = menteeRepository.countByTeamId(team.getId());
 
         return menteeCount >= TeamConstants.MINIMUM_REQUIRED_MENTEES;
+    }
+
+    public PointResponseDto getTeamExperienceById(Integer id) {
+        Team team = teamRepository.findById(id).orElse(null);
+        if (team != null) {
+            return new PointResponseDto(team.getPoint());
+        } else {
+            return null;
+        }
+    }
+
+    public PointResponseDto updateTeamExperienceById(Integer id, PointUpdateRequestDto request) {
+        Optional<Team> optionalTeam = teamRepository.findById(id);
+        if (optionalTeam.isPresent()) {
+            Team team = optionalTeam.get();
+            team.updatePoint(request.getPoint());
+            teamRepository.save(team);
+            return new PointResponseDto(team.getPoint());
+        } else {
+            return null;
+        }
     }
 }

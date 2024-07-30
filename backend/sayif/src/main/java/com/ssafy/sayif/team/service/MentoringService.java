@@ -80,7 +80,7 @@ public class MentoringService {
 
     public List<MentoringSearchResponse> search(MentoringSearchRequest mentoringSearchRequest,
         int page_no, int size_no) {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
         LocalDate startDateFrom = LocalDate.parse(mentoringSearchRequest.getStartDateFrom(),
