@@ -63,4 +63,8 @@ public class Team {
     public void updatePoint(Integer newPoint) {
         this.point += newPoint;
     }
+
+    public void changeName(String newName) {
+        this.name = newName;
+    }
 }
