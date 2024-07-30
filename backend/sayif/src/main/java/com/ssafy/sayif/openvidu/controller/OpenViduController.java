@@ -1,58 +1,76 @@
 package com.ssafy.sayif.openvidu.controller;
 
+import com.ssafy.sayif.member.jwt.JWTUtil;
 import com.ssafy.sayif.openvidu.service.OpenViduService;
-import io.openvidu.java.client.*;
-import jakarta.annotation.PostConstruct;
+import io.openvidu.java.client.Session;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/openvidu")
 public class OpenViduController {
     private final OpenViduService openViduService;
-
+    private final JWTUtil jwtUtil;
     /**
      * @param params The Session properties
      * @return The Session ID
-     * Initialize a Session in OpenVidu Server.
-     * This is the very first operation to perform in OpenVidu workflow.
-     * After that, Connection objects can be generated for this Session and their token passed to the client-side,
-     * so clients can use it to connect to the Session.
+     * OpenVidu 서버에서 세션을 초기화합니다.
+     * 이것은 OpenVidu 워크플로우에서 수행해야 할 첫 번째 작업입니다.
+     * 이후에 이 세션에 대해 Connection 객체를 생성하고 클라이언트 측에 전달할 수 있는 토큰을 생성할 수 있습니다.
+     * 클라이언트는 이 토큰을 사용하여 세션에 연결할 수 있습니다.
      */
-    @PostMapping("/api/sessions")
-    public ResponseEntity<String> initializeSession(@RequestBody(required = false) Map<String, Object> params) {
+    @PostMapping("")
+    public ResponseEntity<?> initializeSession(@RequestHeader("Authorization") String authorizationHeader, @RequestBody(required = false) Map<String, Object> params) {
         try {
-            String sessionId = openViduService.createSession(params);
-            return new ResponseEntity<>(sessionId, HttpStatus.CREATED);
+            String token = jwtUtil.resolveToken(authorizationHeader);
+            String username = jwtUtil.getUsername(token);
+            log.info("Controller - initialize session");
+            Session session = openViduService.createSession(params, "mentor1");
+           System.out.println("sessionId: " + session.getSessionId());
+            return new ResponseEntity<>(session.getSessionId(), HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("Failed to create session", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Failed to create session", HttpStatus.BAD_REQUEST);
         }
     }
 
     /**
-     * @param sessionId The Session in which to create the Connection
+     * @param sessionId Connection을 생성할 session ID
      * @param params    The Connection properties
-     * @return The Token associated to the Connection
+     * @return Connection에 연결된 token
+     * 세션에서 새로운 Connection을 생성합니다.
      */
-    @PostMapping("/api/sessions/{sessionId}/connections")
-    public ResponseEntity<String> createConnection(@PathVariable("sessionId") String sessionId,
+    @PostMapping("/api/sessions/{sessionId}/connection")
+    public ResponseEntity<?> createConnection(@PathVariable("sessionId") String sessionId,
                                                    @RequestBody(required = false) Map<String, Object> params) {
-        String token = openViduService.createConnection(sessionId, params);
-        return new ResponseEntity<>(token, HttpStatus.OK);
+        try {
+            String token = openViduService.createConnection(sessionId, params);
+            return new ResponseEntity<>(token, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Failed to create connection", HttpStatus.NOT_FOUND);
+        }
     }
 
+    /**
+     * @param sessionId 종료할 session ID
+     * @return ResponseEntity with status code
+     * OpenVidu 서버에서 세션을 종료합니다.
+     * 이 작업은 세션을 닫고, 세션에 연결된 모든 Connection을 종료합니다.
+     */
     @DeleteMapping("/api/sessions/{sessionId}")
-    public String closeSession(@PathVariable String sessionId) {
+    public ResponseEntity<?> closeSession(@RequestHeader("Authorization") String authorizationHeader, @PathVariable String sessionId) {
         try {
-            return openViduService.closeSession(sessionId);
+            String token = jwtUtil.resolveToken(authorizationHeader);
+            String username = jwtUtil.getUsername(token);
+            return new ResponseEntity<>(openViduService.closeSession(sessionId, "mentor1"), HttpStatus.NO_CONTENT);
         } catch (Exception e) {
-            return "Error: Failed to close session";
+            return new ResponseEntity<>("Failed to close session", HttpStatus.NOT_FOUND);
         }
     }
 }

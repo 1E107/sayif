@@ -52,4 +52,6 @@ public class Team {
 
     @Column(name = "session_id")
     private String sessionId;
+
+
 }
