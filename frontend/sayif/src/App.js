@@ -8,6 +8,7 @@ import TeamPage from './pages/Team/TeamPage';
 import TeamHeader from './components/Team/layouts/TeamHeader';
 import BoardPage from './pages/Team/BoardPage';
 import LoginPage from './pages/Member/LoginPage';
+import CreatePage from './pages/Mentoring/CreatePage';
 
 import './App.css';
 
@@ -31,6 +32,7 @@ function App() {
                 <Route path="/member">
                     <Route path="login" element={<LoginPage />}></Route>
                 </Route>
+                <Route path="/create-mentoring" element={<CreatePage/>}/>
             </Routes>
         </>
     );
