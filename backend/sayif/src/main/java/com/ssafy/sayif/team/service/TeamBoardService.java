@@ -74,9 +74,12 @@ public class TeamBoardService {
     private TeamPostResponseDto convertToDto(TeamBoard teamBoard) {
         log.debug("Converting TeamBoard to TeamPostResponseDto");
         return TeamPostResponseDto.builder()
+            .id(teamBoard.getId())
             .title(teamBoard.getTitle())
             .content(teamBoard.getContent())
             .writer(teamBoard.getMember().getUsername())
+            .createdAt(teamBoard.getCreatedAt())
+            .modifiedAt(teamBoard.getModifiedAt())
             .build();
     }
 
