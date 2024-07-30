@@ -2,7 +2,7 @@ package com.ssafy.sayif.team.controller;
 
 import com.ssafy.sayif.member.jwt.JWTUtil;
 import com.ssafy.sayif.team.dto.TeamBoardCommentRequestDto;
-import com.ssafy.sayif.team.entity.QnaAnswer;
+import com.ssafy.sayif.team.dto.TeamBoardCommentResponseDto;
 import com.ssafy.sayif.team.service.TeamBoardCommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,45 +22,68 @@ import org.springframework.web.bind.annotation.RestController;
 public class TeamBoardCommentController {
 
     private final JWTUtil jwtUtil;
-    private final TeamBoardCommentService teamBoardCommentService;
+    private final TeamBoardCommentService commentService;
 
+    // 댓글 작성
     @PostMapping("/{boardId}")
-    public ResponseEntity<?> writeTeamBoardComment(
+    public ResponseEntity<?> writeComment(
         @PathVariable("boardId") int boardId,
-        @RequestBody TeamBoardCommentRequestDto dto,
+        @RequestBody TeamBoardCommentRequestDto commentRequestDto,
         @RequestHeader("Authorization") String authorizationHeader) {
-        String username = extractMemberIdFromHeader(authorizationHeader);
-        dto.setUsername(username);
-        dto.setTeamBoardId(boardId);
-        teamBoardCommentService.writeComment(dto);
-        return ResponseEntity.ok("댓글 작성 성공");
+        try {
+            String username = extractUsernameFromHeader(authorizationHeader);
+            commentRequestDto.setUsername(username);
+            commentRequestDto.setTeamBoardId(boardId);
+            commentService.writeComment(commentRequestDto);
+            return ResponseEntity.ok("댓글 작성 성공");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("댓글 작성 실패: " + e.getMessage());
+        }
     }
 
+    // 댓글 수정
     @PutMapping("/{commentId}")
-    public ResponseEntity<?> modifyTeamBoardComment(
+    public ResponseEntity<?> modifyComment(
         @PathVariable("commentId") int commentId,
-        @RequestBody TeamBoardCommentRequestDto dto,
+        @RequestBody TeamBoardCommentRequestDto commentRequestDto,
         @RequestHeader("Authorization") String authorizationHeader) {
-        String username = extractMemberIdFromHeader(authorizationHeader);
-        QnaAnswer comment = teamBoardCommentService.modifyComment(commentId, username, dto);
-        return ResponseEntity.ok("댓글 작성 성공");
+        try {
+            String username = extractUsernameFromHeader(authorizationHeader);
+            TeamBoardCommentResponseDto updatedComment = commentService.modifyComment(commentId,
+                username,
+                commentRequestDto);
+            return ResponseEntity.ok("댓글 수정 성공");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("댓글 수정 실패: " + e.getMessage());
+        }
     }
 
+    // 댓글 삭제
     @DeleteMapping("/{commentId}")
     public ResponseEntity<?> deleteComment(
         @PathVariable("commentId") int commentId,
         @RequestHeader("Authorization") String authorizationHeader) {
-        String memberId = extractMemberIdFromHeader(authorizationHeader);
-        teamBoardCommentService.deleteComment(commentId, memberId);
-        return ResponseEntity.ok("댓글 삭제 성공");
+        try {
+            String username = extractUsernameFromHeader(authorizationHeader);
+            commentService.deleteComment(commentId, username);
+            return ResponseEntity.ok("댓글 삭제 성공");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("댓글 삭제 실패: " + e.getMessage());
+        }
     }
 
+    // 댓글 조회
     @GetMapping("/{boardId}")
-    public ResponseEntity<?> getComment(@PathVariable("boardId") int boardId) {
-        return ResponseEntity.ok(teamBoardCommentService.getCommentList(boardId));
+    public ResponseEntity<?> getComments(@PathVariable("boardId") int boardId) {
+        try {
+            return ResponseEntity.ok(commentService.getCommentList(boardId));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("댓글 조회 실패: " + e.getMessage());
+        }
     }
 
-    private String extractMemberIdFromHeader(String authorizationHeader) {
+    // 헤더에서 사용자 이름 추출
+    private String extractUsernameFromHeader(String authorizationHeader) {
         return jwtUtil.getUsernameByHeader(authorizationHeader);
     }
 }
