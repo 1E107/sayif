@@ -9,7 +9,7 @@ const Container = styled.div`
 `;
 
 const Wrapper = styled.div`
-    margin: 50px;
+    margin: 0px 60px 60px 60px;
 `;
 
 const explanText = styled.div`
@@ -56,6 +56,18 @@ const MentorInfoBox = styled.div`
     margin-right: 50px;
 `;
 
+const Icon = styled.div`
+    background-image: url('/img/Apply/apply-step3.png');
+    background-size: cover;
+    width: 900px;
+    height: 200px;
+`
+
+const IconWrapper = styled.div`
+    display: flex;
+    justify-content: center;
+`
+
 const S = {
     Container,
     Wrapper,
@@ -64,7 +76,9 @@ const S = {
     MentorListBox,
     MentorInfoTitle,
     MentorInfoContent,
-    MentorInfoBox
+    MentorInfoBox,
+    Icon,
+    IconWrapper
 };
 
 export default S;

@@ -24,16 +24,15 @@ const ApplyIconContainer = styled.div`
     justify-content: center;
 `;
 
-const ApplyIconStep1 = styled.div`
-    background-image: url('/img/Apply/apply-step1.png');
+const ApplyIconStep = styled.div`
+    background-image: url('/img/Apply/apply-step.png');
     background-size: cover;
-    width: 200px;
+    width: 800px;
     height: 200px;
     display: flex;
     align-items: center;
     justify-content: center;
     margin-top: 50px;
-    aligin-items: center;
 `;
 
 const ApplyIconText = styled.div`
@@ -46,7 +45,7 @@ const S = {
     Title,
     ExplainText,
     Container,
-    ApplyIconStep1,
+    ApplyIconStep,
     ApplyIconContainer,
     ApplyIconText,
 };

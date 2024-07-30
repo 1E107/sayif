@@ -12,7 +12,7 @@ function SelectMentor() {
 
     const SelectMentorView = (
         <S.Container>
-            <div>신청 아이콘 보여줌</div>
+            <S.Icon/>
             <S.ShowTextWrapper>
                 <DownloadDoneIcon style={{fontSize:"150PX", color:"#116530"}}></DownloadDoneIcon>
                 <S.MainTitle>멘토링 신청 완료</S.MainTitle>
