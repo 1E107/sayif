@@ -7,6 +7,7 @@ import com.ssafy.sayif.team.entity.Team;
 import com.ssafy.sayif.team.service.MentoringService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.web.PagedModel;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/mentoring")
@@ -29,7 +31,6 @@ public class MentoringController {
         String token = jwtUtil.resolveToken(authorizationHeader);
         if (token != null && !jwtUtil.isExpired(token)) {
             String username = jwtUtil.getUsername(token);
-
             Team res = mentoringService.recruit(mentoringRecruitRequest, username);
             return ResponseEntity.ok(res);
         } else {
