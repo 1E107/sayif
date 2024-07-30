@@ -4,6 +4,8 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
+import { useEffect } from 'react';
+import { getMentorList } from '../../../api/MentoringApi';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: "#F5F5F5",
@@ -17,6 +19,19 @@ const Item = styled(Paper)(({ theme }) => ({
 
 
 function SelectMentor({formData, reSelectInfo, finishPage}) {
+    useEffect(()=>{
+        const callMentorList = async() => {
+            try {
+                const response = await SelectMentor(1,10, formData.startDate, formData.endDate, formData.TextAMPM, formData.time);
+                console.log(response);
+            }catch(error) {
+                console.log(error);
+            }
+        }                               
+
+        callMentorList();
+    }, []);
+
     const handleReSelectBtn = () => {
         reSelectInfo();
     };
@@ -28,7 +43,9 @@ function SelectMentor({formData, reSelectInfo, finishPage}) {
 
     const SelectMentorView = (
         <S.Container>
-            <div>신청 아이콘 보여줌</div>
+            <S.IconWrapper>
+                <S.Icon/>
+            </S.IconWrapper>
             {/* <div>{formData.endDate}</div> */}
             <S.Wrapper>
                 <Box sx={{ flexGrow: 1 }}>
@@ -66,12 +83,12 @@ function SelectMentor({formData, reSelectInfo, finishPage}) {
                         </S.MentorInfoBox>
                         <S.MentorInfoBox>
                             <S.MentorInfoTitle>시간</S.MentorInfoTitle>
-                            <S.MentorInfoContent>11:00</S.MentorInfoContent>
+                            <S.MentorInfoContent>오후 11:00</S.MentorInfoContent>
                         </S.MentorInfoBox>
-                        <S.MentorInfoBox>
+                        {/* <S.MentorInfoBox>
                             <S.MentorInfoTitle>최소인원</S.MentorInfoTitle>
                             <S.MentorInfoContent>2</S.MentorInfoContent>
-                        </S.MentorInfoBox>
+                        </S.MentorInfoBox> */}
                         <S.MentorInfoBox>
                             <S.MentorInfoTitle>팀 인원 현황</S.MentorInfoTitle>
                             <S.MentorInfoContent>2/4</S.MentorInfoContent>
@@ -102,12 +119,12 @@ function SelectMentor({formData, reSelectInfo, finishPage}) {
                         </S.MentorInfoBox>
                         <S.MentorInfoBox>
                             <S.MentorInfoTitle>시간</S.MentorInfoTitle>
-                            <S.MentorInfoContent>11:00</S.MentorInfoContent>
+                            <S.MentorInfoContent>오후 11:00</S.MentorInfoContent>
                         </S.MentorInfoBox>
-                        <S.MentorInfoBox>
+                        {/* <S.MentorInfoBox>
                             <S.MentorInfoTitle>최소인원</S.MentorInfoTitle>
                             <S.MentorInfoContent>2</S.MentorInfoContent>
-                        </S.MentorInfoBox>
+                        </S.MentorInfoBox> */}
                         <S.MentorInfoBox>
                             <S.MentorInfoTitle>팀 인원 현황</S.MentorInfoTitle>
                             <S.MentorInfoContent>2/4</S.MentorInfoContent>

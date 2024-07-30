@@ -59,22 +59,7 @@ function Apply() {
                 {showApplyMain && (
                     <>
                         <S.ApplyIconContainer>
-                            <S.ApplyIconStep1>
-                                <S.ApplyIconText>
-                                    희망 시작일자 선택
-                                </S.ApplyIconText>
-                            </S.ApplyIconStep1>
-                            <S.ApplyIconStep1>
-                                <S.ApplyIconText>
-                                    희망 시간 선택
-                                </S.ApplyIconText>
-                            </S.ApplyIconStep1>
-                            <S.ApplyIconStep1>
-                                <S.ApplyIconText>멘토 선택</S.ApplyIconText>
-                            </S.ApplyIconStep1>
-                            <S.ApplyIconStep1>
-                                <S.ApplyIconText>멘토링 진행</S.ApplyIconText>
-                            </S.ApplyIconStep1>
+                            <S.ApplyIconStep/>
                         </S.ApplyIconContainer>
                         <Button
                             variant="contained"
@@ -85,6 +70,7 @@ function Apply() {
                                 backgroundColor: '#116530',
                                 width: '250px',
                                 height: '50px',
+                                marginBottom: '50px'
                             }}
                         >
                             멘토링 신청하러 가기
