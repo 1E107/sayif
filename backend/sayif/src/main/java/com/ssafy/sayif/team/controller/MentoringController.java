@@ -5,14 +5,12 @@ import com.ssafy.sayif.member.jwt.JWTUtil;
 import com.ssafy.sayif.team.dto.*;
 import com.ssafy.sayif.team.entity.Team;
 import com.ssafy.sayif.team.service.MentoringService;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.web.PagedModel;
-import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @Slf4j
@@ -74,5 +72,12 @@ public class MentoringController {
         TeamStatusResponse status = mentoringService.readStatus(id);
         return ResponseEntity.ok(status);
     }
+
+    @GetMapping("/mentor-nickname")
+    public ResponseEntity<?> getMentorNicknames() {
+        List<MentorNicknameResponse> nicknameList = mentoringService.getMentorNicknames();
+        return ResponseEntity.ok(nicknameList);
+    }
+
 
 }
