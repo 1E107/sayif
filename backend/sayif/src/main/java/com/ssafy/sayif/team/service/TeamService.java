@@ -8,6 +8,7 @@ import com.ssafy.sayif.team.entity.Team;
 import com.ssafy.sayif.team.entity.TeamStatus;
 import com.ssafy.sayif.team.repository.TeamRepository;
 import com.ssafy.sayif.team.util.TeamConstants;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -79,5 +80,13 @@ public class TeamService {
         } else {
             return null;
         }
+    }
+
+    @Transactional
+    public Team updateTeamName(Integer teamId, String newName) {
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new RuntimeException("Team not found"));
+        team.changeName(newName);
+        return teamRepository.save(team);
     }
 }
