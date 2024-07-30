@@ -61,10 +61,10 @@ public class TeamControllerTest {
                 .build();
 
         Mentor mentor = new Mentor();
-        mentor.setTeam(team);
+        mentor.updateTeam(team);
 
         Mentee mentee = new Mentee();
-        mentee.setTeam(team);
+        mentee.updateTeam(team);
 
         List<Member> members = List.of(mentor, mentee);
         when(teamService.getMembersByTeamId(1)).thenReturn(members);
