@@ -50,4 +50,8 @@ public class Member {
     public void updatePwd(String newPwd) {
         this.password = newPwd;
     }
+
+    public void updateTeam(Team team) {
+        this.team = team;
+    }
 }

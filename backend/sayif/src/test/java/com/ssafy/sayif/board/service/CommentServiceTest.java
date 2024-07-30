@@ -44,8 +44,9 @@ public class CommentServiceTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        member = new Member();
-        member.setUsername("member1");
+        member = Member.builder()
+                .username("member1")
+                .build();
 
         board = Board.builder().id(1).build();
 

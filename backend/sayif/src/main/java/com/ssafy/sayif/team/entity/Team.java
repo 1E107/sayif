@@ -18,7 +18,6 @@ import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
@@ -52,4 +51,8 @@ public class Team {
 
     @Column(name = "session_id")
     private String sessionId;
+
+    public void updateStatus(TeamStatus newStatus) {
+        this.status = newStatus;
+    }
 }
