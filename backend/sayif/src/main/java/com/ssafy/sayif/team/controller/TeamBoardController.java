@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -100,9 +101,12 @@ public class TeamBoardController {
     public ResponseEntity<?> getTeamPostList(
         @PathVariable("teamId") int teamId,
         @PathVariable("page") int page,
-        @PathVariable("size") int size) {
+        @PathVariable("size") int size,
+        @RequestParam(defaultValue = "", required = false) String key,
+        @RequestParam(defaultValue = "", required = false) String word) {
         try {
-            return ResponseEntity.ok(teamBoardService.getTeamPostList(teamId, page, size));
+            return ResponseEntity.ok(
+                teamBoardService.getTeamPostList(teamId, page, size, key, word));
         } catch (Exception e) {
             return ResponseEntity.status(500).body("게시글 목록 조회 실패: " + e.getMessage());
         }

@@ -43,5 +43,9 @@ public class TeamBoard extends BaseTimeEntity {
     @Column(name = "content")
     private String content;
 
+    public void update(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
 }
 
