@@ -6,6 +6,7 @@ import com.ssafy.sayif.member.entity.Member;
 import com.ssafy.sayif.member.entity.Role;
 import com.ssafy.sayif.member.repository.HistoryRepository;
 import com.ssafy.sayif.member.repository.MemberRepository;
+import com.ssafy.sayif.member.repository.MenteeRepository;
 import com.ssafy.sayif.member.repository.RefreshRepository;
 import com.ssafy.sayif.team.entity.Team;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,6 +32,9 @@ public class MemberServiceTest {
 
     @Mock
     private RefreshRepository refreshRepository;
+
+    @Mock
+    private MenteeRepository menteeRepository; // 추가된 부분
 
     @Mock
     private HistoryRepository historyRepository;
@@ -59,6 +63,10 @@ public class MemberServiceTest {
         registerRequestDto.setPhone("010-1234-5678");
         when(memberRepository.existsByUsername(anyString())).thenReturn(false);
         when(bCryptPasswordEncoder.encode(anyString())).thenReturn("encodedPassword");
+
+        // when 설정 이후에 로그를 추가
+        when(memberRepository.existsByUsername(anyString())).thenReturn(false);
+        System.out.println("existsByUsername result: " + memberRepository.existsByUsername("testuser"));
 
         // when
         Boolean result = memberService.registerMember(registerRequestDto);
