@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import Button from '@mui/material/Button';
-import '../../../styles/fonts.css'
+import '../../../../styles/fonts.css'
 
 const Main = styled.div`
 

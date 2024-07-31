@@ -37,3 +37,15 @@ export const getStoryList = async(teamId, token) => {
         throw error;
     }
 }
+
+export const postStory = async(teamId, token, content) => {
+    const data = {content : content};
+    try{
+        const response = await axios.post(`${API_BASE_URL}/team/${teamId}/story`, data, {
+            headers: {Authorization: `Bearer ${token}`}
+        })
+        return response;
+    }catch(error) {
+        throw error;
+    }
+}
