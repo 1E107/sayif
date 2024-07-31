@@ -15,5 +15,6 @@ public class ModifyPostRequestDto {
     private String title;
     private String content;
     private String file;
+    private String username;
     private BoardType type;
 }
