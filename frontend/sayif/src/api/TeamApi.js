@@ -26,3 +26,14 @@ export const getQuizList = async(chapter, token) => {
         throw error;
     }
 }
+
+export const getStoryList = async(teamId, token) => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/team/${teamId}/story`, {
+            headers: {Authorization: `Bearer ${token}`,}
+        });
+        return response;
+    }catch(error) {
+        throw error;
+    }
+}

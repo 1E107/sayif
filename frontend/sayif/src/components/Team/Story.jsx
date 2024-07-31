@@ -1,78 +1,82 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import S from './style/StoryStyled';
+import { getStoryList } from '../../api/TeamApi';
+import { useSelector } from 'react-redux';
 
-const writing = [
-    {
-        content_id: 1,
-        content:
-            '안녕하세요 단비님 오늘은 수업이 끝난 다음날이네요 아침 7시에 일어나 간단히 아침을 먹고 출근 준비를 했어요 이번 주말는 친구들을 만나 영화를 보면서 휴식을 취할 예정이랍니다. 단비님은 뭐하세용',
-        creat_at: '홍길동',
-    },
-    {
-        content_id: 2,
-        content:
-            '안녕하세요 단비님 오늘은 수업이 끝난 다음날이네요 아침 7시에 일어나 간단히 아침을 먹고 출근 준비를 했어요 이번 주말는 친구들을 만나 영화를 보면서 휴식을 취할 예정이랍니다. 단비님은 뭐하세용',
-        creat_at: '홍길동',
-    },
-    {
-        content_id: 3,
-        content:
-            '안녕하세요 단비님 오늘은 수업이 끝난 다음날이네요 아침 7시에 일어나 간단히 아침을 먹고 출근 준비를 했어요 이번 주말는 친구들을 만나 영화를 보면서 휴식을 취할 예정이랍니다. 단비님은 뭐하세용',
-        creat_at: '홍길동',
-    },
-    {
-        content_id: 4,
-        content:
-            '안녕하세요 단비님 오늘은 수업이 끝난 다음날이네요 아침 7시에 일어나 간단히 아침을 먹고 출근 준비를 했어요 이번 주말는 친구들을 만나 영화를 보면서 휴식을 취할 예정이랍니다. 단비님은 뭐하세용',
-        creat_at: '홍길동',
-    },
-    {
-        content_id: 5,
-        content:
-            '안녕하세요 단비님 오늘은 수업이 끝난 다음날이네요 아침 7시에 일어나 간단히 아침을 먹고 출근 준비를 했어요 이번 주말는 친구들을 만나 영화를 보면서 휴식을 취할 예정이랍니다. 단비님은 뭐하세용',
-        creat_at: '홍길동',
-    },
-    {
-        content_id: 6,
-        content:
-            '안녕하세요 단비님 오늘은 수업이 끝난 다음날이네요 아침 7시에 일어나 간단히 아침을 먹고 출근 준비를 했어요 이번 주말는 친구들을 만나 영화를 보면서 휴식을 취할 예정이랍니다. 단비님은 뭐하세용',
-        creat_at: '홍길동',
-    },
-    {
-        content_id: 7,
-        content:
-            '안녕하세요 단비님 오늘은 수업이 끝난 다음날이네요 아침 7시에 일어나 간단히 아침을 먹고 출근 준비를 했어요 이번 주말는 친구들을 만나 영화를 보면서 휴식을 취할 예정이랍니다. 단비님은 뭐하세용',
-        creat_at: '홍길동',
-    },
-    {
-        content_id: 8,
-        content:
-            '안녕하세요 단비님 오늘은 수업이 끝난 다음날이네요 아침 7시에 일어나 간단히 아침을 먹고 출근 준비를 했어요 이번 주말는 친구들을 만나 영화를 보면서 휴식을 취할 예정이랍니다. 단비님은 뭐하세용',
-        creat_at: '홍길동',
-    },
-    {
-        content_id: 9,
-        content:
-            '안녕하세요 단비님 오늘은 수업이 끝난 다음날이네요 아침 7시에 일어나 간단히 아침을 먹고 출근 준비를 했어요 이번 주말는 친구들을 만나 영화를 보면서 휴식을 취할 예정이랍니다. 단비님은 뭐하세용',
-        creat_at: '홍길동',
-    },
-    {
-        content_id: 10,
-        content:
-            '안녕하세요 단비님 오늘은 수업이 끝난 다음날이네요 아침 7시에 일어나 간단히 아침을 먹고 출근 준비를 했어요 이번 주말는 친구들을 만나 영화를 보면서 휴식을 취할 예정이랍니다. 단비님은 뭐하세용',
-        creat_at: '홍길동',
-    },
-];
-
-const rows = [];
-for (let i = 0; i < writing.length; i += 6) {
-    rows.push(writing.slice(i, i + 6));
-}
+// const writing = [
+//     {
+//         content_id: 1,
+//         content:
+//             '안녕하세요 단비님 오늘은 수업이 끝난 다음날이네요 아침 7시에 일어나 간단히 아침을 먹고 출근 준비를 했어요 이번 주말는 친구들을 만나 영화를 보면서 휴식을 취할 예정이랍니다. 단비님은 뭐하세용',
+//         creat_at: '홍길동',
+//     },
+//     {
+//         content_id: 2,
+//         content:
+//             '안녕하세요 단비님 오늘은 수업이 끝난 다음날이네요 아침 7시에 일어나 간단히 아침을 먹고 출근 준비를 했어요 이번 주말는 친구들을 만나 영화를 보면서 휴식을 취할 예정이랍니다. 단비님은 뭐하세용',
+//         creat_at: '홍길동',
+//     },
+//     {
+//         content_id: 3,
+//         content:
+//             '안녕하세요 단비님 오늘은 수업이 끝난 다음날이네요 아침 7시에 일어나 간단히 아침을 먹고 출근 준비를 했어요 이번 주말는 친구들을 만나 영화를 보면서 휴식을 취할 예정이랍니다. 단비님은 뭐하세용',
+//         creat_at: '홍길동',
+//     },
+//     {
+//         content_id: 4,
+//         content:
+//             '안녕하세요 단비님 오늘은 수업이 끝난 다음날이네요 아침 7시에 일어나 간단히 아침을 먹고 출근 준비를 했어요 이번 주말는 친구들을 만나 영화를 보면서 휴식을 취할 예정이랍니다. 단비님은 뭐하세용',
+//         creat_at: '홍길동',
+//     },
+//     {
+//         content_id: 5,
+//         content:
+//             '안녕하세요 단비님 오늘은 수업이 끝난 다음날이네요 아침 7시에 일어나 간단히 아침을 먹고 출근 준비를 했어요 이번 주말는 친구들을 만나 영화를 보면서 휴식을 취할 예정이랍니다. 단비님은 뭐하세용',
+//         creat_at: '홍길동',
+//     },
+//     {
+//         content_id: 6,
+//         content:
+//             '안녕하세요 단비님 오늘은 수업이 끝난 다음날이네요 아침 7시에 일어나 간단히 아침을 먹고 출근 준비를 했어요 이번 주말는 친구들을 만나 영화를 보면서 휴식을 취할 예정이랍니다. 단비님은 뭐하세용',
+//         creat_at: '홍길동',
+//     },
+//     {
+//         content_id: 7,
+//         content:
+//             '안녕하세요 단비님 오늘은 수업이 끝난 다음날이네요 아침 7시에 일어나 간단히 아침을 먹고 출근 준비를 했어요 이번 주말는 친구들을 만나 영화를 보면서 휴식을 취할 예정이랍니다. 단비님은 뭐하세용',
+//         creat_at: '홍길동',
+//     },
+//     {
+//         content_id: 8,
+//         content:
+//             '안녕하세요 단비님 오늘은 수업이 끝난 다음날이네요 아침 7시에 일어나 간단히 아침을 먹고 출근 준비를 했어요 이번 주말는 친구들을 만나 영화를 보면서 휴식을 취할 예정이랍니다. 단비님은 뭐하세용',
+//         creat_at: '홍길동',
+//     },
+//     {
+//         content_id: 9,
+//         content:
+//             '안녕하세요 단비님 오늘은 수업이 끝난 다음날이네요 아침 7시에 일어나 간단히 아침을 먹고 출근 준비를 했어요 이번 주말는 친구들을 만나 영화를 보면서 휴식을 취할 예정이랍니다. 단비님은 뭐하세용',
+//         creat_at: '홍길동',
+//     },
+//     {
+//         content_id: 10,
+//         content:
+//             '안녕하세요 단비님 오늘은 수업이 끝난 다음날이네요 아침 7시에 일어나 간단히 아침을 먹고 출근 준비를 했어요 이번 주말는 친구들을 만나 영화를 보면서 휴식을 취할 예정이랍니다. 단비님은 뭐하세용',
+//         creat_at: '홍길동',
+//     },
+// ];
 
 function Story() {
     const [selectPostIt, setSelectPostIt] = useState(false);
     const [imgNum, setImgNum] = useState(1);
     const [selectContent, setSelectContent] = useState('');
+    const {token, member} = useSelector(state => state.member);
+    const [writing, SetWriting] = useState([]);
+
+    const rows = [];
+    for (let i = 0; i < writing.length; i += 6) {
+        rows.push(writing.slice(i, i + 6));
+    }
 
     const showDetail = (row, col, num) => {
         console.log('click', rows[row][col].content);
@@ -84,6 +88,21 @@ function Story() {
     const closeDetail = () => {
         setSelectPostIt(false);
     };
+
+    useEffect(() => {
+        const callStoryList = async() => {
+            try {
+                const response = await getStoryList(member.team_id, token);
+                if(response.status == 200) {
+                    SetWriting(response.data);
+                }
+            }catch(error) {
+                console.log(error);
+            }
+        }
+
+        callStoryList();
+    }, []);
 
     const StoryView = (
         <S.Main>
