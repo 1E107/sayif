@@ -46,6 +46,9 @@ public class MemberServiceTest {
     private RefreshRepository refreshRepository;
 
     @Mock
+    private MenteeRepository menteeRepository; // 추가된 부분
+
+    @Mock
     private HistoryRepository historyRepository;
 
     @Mock
@@ -72,6 +75,10 @@ public class MemberServiceTest {
         registerRequestDto.setPhone("010-1234-5678");
         when(memberRepository.existsByUsername(anyString())).thenReturn(false);
         when(bCryptPasswordEncoder.encode(anyString())).thenReturn("encodedPassword");
+
+        // when 설정 이후에 로그를 추가
+        when(memberRepository.existsByUsername(anyString())).thenReturn(false);
+        System.out.println("existsByUsername result: " + memberRepository.existsByUsername("testuser"));
 
         // when
         Boolean result = memberService.registerMember(registerRequestDto);
