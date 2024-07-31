@@ -9,4 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MentorNicknameResponse {
     private String nickname;
+    private String username;
 }
