@@ -15,6 +15,6 @@ public class WritePostRequestDto {
     private String title;
     private String content;
     private String file;
-    private int username;
+    private String username;
     private BoardType type;
 }

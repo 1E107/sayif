@@ -7,6 +7,7 @@ import com.ssafy.sayif.board.entity.Board;
 import com.ssafy.sayif.board.entity.BoardType;
 import com.ssafy.sayif.board.repository.BoardRepository;
 import com.ssafy.sayif.member.entity.Member;
+import com.ssafy.sayif.member.exception.MemberNotFoundException;
 import com.ssafy.sayif.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -38,7 +39,7 @@ public class BoardService {
      *
      * @param dto 게시글 작성 요청을 담고 있는 DTO
      * @return 작성된 게시글의 DTO를 감싼 Optional 객체
-     * @throws IllegalArgumentException 해당 ID의 멤버가 존재하지 않을 경우 예외를 던집니다.
+     * @throws MemberNotFoundException 해당 ID의 멤버가 존재하지 않을 경우 예외를 던집니다.
      */
     public Optional<BoardResponseDto> writePost(WritePostRequestDto dto) {
         // 모든 멤버 정보를 로그에 출력
@@ -47,9 +48,10 @@ public class BoardService {
         }
 
         // 작성 요청 DTO에서 멤버를 조회
-        Member member = memberRepository.findById(dto.getUsername())
-            .orElseThrow(
-                () -> new IllegalArgumentException("Invalid member ID: " + dto.getUsername()));
+        Member member = memberRepository.findByUsername(dto.getUsername());
+        if (member == null) {
+            throw new MemberNotFoundException(dto.getUsername());
+        }
 
         // 새로운 게시글 엔티티 생성
         Board board = Board.builder()

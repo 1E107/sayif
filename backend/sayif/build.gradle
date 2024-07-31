@@ -65,6 +65,11 @@ dependencies {
     implementation 'org.json:json:20231013'
     implementation 'org.springframework.boot:spring-boot-starter-json'
     implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+
+    // minio 의존성 추가
+    implementation 'io.minio:minio:8.4.3'
+    // tika 의존성 추가
+    implementation 'org.apache.tika:tika-core:2.2.1'
 }
 
 tasks.named('test') {
