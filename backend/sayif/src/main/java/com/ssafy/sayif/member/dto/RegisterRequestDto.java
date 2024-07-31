@@ -14,4 +14,6 @@ public class RegisterRequestDto {
     private String gender;
     private String phone;
     private String email;
+
+    private String authFile;
 }

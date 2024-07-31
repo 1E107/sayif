@@ -12,11 +12,6 @@ import lombok.NoArgsConstructor;
 @PrimaryKeyJoinColumn(name = "mentor_id")
 public class Mentor extends Member {
 
-//    @Id
-//    @OneToOne
-//    @JoinColumn(name = "mentor_id")
-//    private Member member;
-
     @Column(length = 20)
     private String major;
 
