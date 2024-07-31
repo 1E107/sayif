@@ -37,7 +37,6 @@ public class OpenViduService {
     @Transactional
     public Session createSession(Map<String, Object> params, String username) {
         SessionProperties properties = new SessionProperties.Builder().build();
-//        SessionProperties properties = SessionProperties.fromJson(params).build();
         Session session = null;
         log.info("Service - createSession 입장");
         try {
