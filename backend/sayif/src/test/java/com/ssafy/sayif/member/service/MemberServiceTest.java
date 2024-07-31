@@ -1,33 +1,46 @@
 package com.ssafy.sayif.member.service;
 
-import com.ssafy.sayif.member.dto.*;
-import com.ssafy.sayif.member.entity.History;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.argThat;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import com.ssafy.sayif.member.dto.MemberInfoResponseDto;
+import com.ssafy.sayif.member.dto.MemberUpdateRequestDto;
+import com.ssafy.sayif.member.dto.MentoringRecordResponseDto;
+import com.ssafy.sayif.member.dto.RegisterRequestDto;
 import com.ssafy.sayif.member.entity.Member;
+import com.ssafy.sayif.member.entity.Mentee;
 import com.ssafy.sayif.member.entity.Role;
 import com.ssafy.sayif.member.repository.HistoryRepository;
 import com.ssafy.sayif.member.repository.MemberRepository;
+import com.ssafy.sayif.member.repository.MenteeRepository;
 import com.ssafy.sayif.member.repository.RefreshRepository;
-import com.ssafy.sayif.team.entity.Team;
+import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import java.util.Collections;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberServiceTest {
 
     @Mock
     private MemberRepository memberRepository;
+
+    @Mock
+    private MenteeRepository menteeRepository;
 
     @Mock
     private RefreshRepository refreshRepository;
@@ -65,14 +78,14 @@ public class MemberServiceTest {
 
         // then
         assertTrue(result);
-        verify(memberRepository, times(1)).save(any(Member.class));
-        verify(memberRepository).save(argThat(member ->
-                member.getUsername().equals("testuser") &&
-                        member.getPassword().equals("encodedPassword") &&
-                        member.getNickname().equals("nickname") &&
-                        member.getGender().equals("M") &&
-                        member.getEmail().equals("test@test.com") &&
-                        member.getPhone().equals("010-1234-5678")
+        verify(menteeRepository, times(1)).save(any(Mentee.class));
+        verify(menteeRepository).save(argThat(member ->
+            member.getUsername().equals("testuser") &&
+                member.getPassword().equals("encodedPassword") &&
+                member.getNickname().equals("nickname") &&
+                member.getGender().equals("M") &&
+                member.getEmail().equals("test@test.com") &&
+                member.getPhone().equals("010-1234-5678")
         ));
     }
 
@@ -92,11 +105,11 @@ public class MemberServiceTest {
 
         // then
         verify(memberRepository, times(1)).updateMember(
-                eq(username),
-                eq("newNickname"),
-                eq("F"),
-                eq("new@test.com"),
-                eq("010-8765-4321")
+            eq(username),
+            eq("newNickname"),
+            eq("F"),
+            eq("new@test.com"),
+            eq("010-8765-4321")
         );
     }
 
@@ -125,15 +138,15 @@ public class MemberServiceTest {
         // given
         String username = "testuser";
         Member member = Member.builder()
-                .username("testuser")
-                .name("Test User")
-                .nickname("nickname")
-                .gender("M")
-                .phone("010-1234-5678")
-                .email("test@test.com")
-                .profileImg("profile.jpg")
-                .role(Role.Mentee)
-                .build();
+            .username("testuser")
+            .name("Test User")
+            .nickname("nickname")
+            .gender("M")
+            .phone("010-1234-5678")
+            .email("test@test.com")
+            .profileImg("profile.jpg")
+            .role(Role.Mentee)
+            .build();
         when(memberRepository.findByUsername(anyString())).thenReturn(member);
 
         // when
@@ -199,7 +212,7 @@ public class MemberServiceTest {
         // then
         assertTrue(result);
         verify(memberRepository).save(argThat(updatedMember ->
-                updatedMember.getPassword().equals("encodedPassword")
+            updatedMember.getPassword().equals("encodedPassword")
         ));
     }
 }

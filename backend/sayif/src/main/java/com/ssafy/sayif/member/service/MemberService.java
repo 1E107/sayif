@@ -4,13 +4,14 @@ import com.ssafy.sayif.member.dto.MemberInfoResponseDto;
 import com.ssafy.sayif.member.dto.MemberUpdateRequestDto;
 import com.ssafy.sayif.member.dto.MentoringRecordResponseDto;
 import com.ssafy.sayif.member.dto.RegisterRequestDto;
-import com.ssafy.sayif.member.entity.History;
-import com.ssafy.sayif.member.entity.Member;
-import com.ssafy.sayif.member.entity.Role;
+import com.ssafy.sayif.member.entity.*;
 import com.ssafy.sayif.member.repository.HistoryRepository;
 import com.ssafy.sayif.member.repository.MemberRepository;
+import com.ssafy.sayif.member.repository.MenteeRepository;
 import com.ssafy.sayif.member.repository.RefreshRepository;
 import com.ssafy.sayif.team.entity.Team;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class MemberService {
     private final RefreshRepository refreshRepository;
     private final HistoryRepository historyRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final MenteeRepository menteeRepository;
 
     public Boolean registerMember(RegisterRequestDto registerRequestDto) {
         String username = registerRequestDto.getUsername();
@@ -34,17 +36,21 @@ public class MemberService {
         if (memberRepository.existsByUsername(username)) {
             return false;
         }
-        Member member = Member.builder()
+
+        Mentee mentee = Mentee.builder()
                 .username(username)
                 .password(bCryptPasswordEncoder.encode(pwd))
+                .name(registerRequestDto.getName())
                 .nickname(registerRequestDto.getNickname())
                 .gender(registerRequestDto.getGender())
                 .email(registerRequestDto.getEmail())
                 .phone(registerRequestDto.getPhone())
                 .role(Role.Mentee)
+                .authFile(registerRequestDto.getAuthFile())
+                .status(Status.Pending)
                 .build();
+        menteeRepository.save(mentee);
 
-        memberRepository.save(member);
         return true;
     }
 

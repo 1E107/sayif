@@ -5,6 +5,8 @@ import com.ssafy.sayif.team.dto.TeamPostRequestDto;
 import com.ssafy.sayif.team.service.TeamBoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,16 +31,16 @@ public class TeamBoardController {
      *
      * @param teamId              팀 ID
      * @param dto                 게시글 작성 요청 DTO
-     * @param authorizationHeader 인증 헤더
+     * @param userDetails         인증 Header
      * @return 작성된 게시글 정보
      */
     @PostMapping("/{teamId}")
     public ResponseEntity<?> writeTeamPost(
         @PathVariable("teamId") int teamId,
         @RequestBody TeamPostRequestDto dto,
-        @RequestHeader("Authorization") String authorizationHeader) {
+        @AuthenticationPrincipal UserDetails userDetails) {
         try {
-            String username = getUsernameFromHeader(authorizationHeader);
+            String username = userDetails.getUsername();
             return ResponseEntity.ok(teamBoardService.writeTeamPost(username, teamId, dto));
         } catch (Exception e) {
             return ResponseEntity.status(500).body("게시글 작성 실패: " + e.getMessage());
@@ -50,16 +52,16 @@ public class TeamBoardController {
      *
      * @param boardId             게시글 ID
      * @param dto                 게시글 수정 요청 DTO
-     * @param authorizationHeader 인증 헤더
+     * @param userDetails         인증 헤더
      * @return 수정된 게시글 정보
      */
     @PutMapping("/{boardId}")
     public ResponseEntity<?> modifyTeamPost(
         @PathVariable("boardId") int boardId,
         @RequestBody TeamPostRequestDto dto,
-        @RequestHeader("Authorization") String authorizationHeader) {
+        @AuthenticationPrincipal UserDetails userDetails) {
         try {
-            String username = getUsernameFromHeader(authorizationHeader);
+            String username = userDetails.getUsername();
             return ResponseEntity.ok(teamBoardService.modifyTeamPost(username, boardId, dto));
         } catch (Exception e) {
             return ResponseEntity.status(500).body("게시글 수정 실패: " + e.getMessage());
@@ -70,15 +72,15 @@ public class TeamBoardController {
      * 팀 게시글 삭제
      *
      * @param boardId             게시글 ID
-     * @param authorizationHeader 인증 헤더
+     * @param userDetails         인증 헤더
      * @return 삭제 결과 메시지
      */
     @DeleteMapping("/{boardId}")
     public ResponseEntity<?> removeTeamPost(
         @PathVariable("boardId") int boardId,
-        @RequestHeader("Authorization") String authorizationHeader) {
+        @AuthenticationPrincipal UserDetails userDetails) {
         try {
-            String username = getUsernameFromHeader(authorizationHeader);
+            String username = userDetails.getUsername();
             if (teamBoardService.removeTeamPost(boardId, username)) {
                 return ResponseEntity.ok("삭제가 성공적으로 되었습니다.");
             } else {
@@ -125,15 +127,5 @@ public class TeamBoardController {
         } catch (Exception e) {
             return ResponseEntity.status(500).body("게시글 상세 조회 실패: " + e.getMessage());
         }
-    }
-
-    /**
-     * 인증 헤더에서 사용자 이름 추출
-     *
-     * @param authorizationHeader 인증 헤더
-     * @return 사용자 이름
-     */
-    private String getUsernameFromHeader(String authorizationHeader) {
-        return jwtUtil.getUsernameByHeader(authorizationHeader);
     }
 }
