@@ -8,6 +8,8 @@ import com.ssafy.sayif.team.service.MentoringService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,16 +26,11 @@ public class MentoringController {
     private final JWTUtil jwtUtil;
 
     @PostMapping("/recruit")
-    public ResponseEntity<?> recruit(@RequestHeader("Authorization") String authorizationHeader,
-        @RequestBody MentoringRecruitRequest mentoringRecruitRequest) {
-        String token = jwtUtil.resolveToken(authorizationHeader);
-        if (token != null && !jwtUtil.isExpired(token)) {
-            String username = jwtUtil.getUsername(token);
-            Team res = mentoringService.recruit(mentoringRecruitRequest, username);
-            return ResponseEntity.ok(res);
-        } else {
-            throw new UnauthorizedException("유효하지 않은 토큰입니다.");
-        }
+    public ResponseEntity<?> recruit(@AuthenticationPrincipal UserDetails userDetails,
+                                     @RequestBody MentoringRecruitRequest mentoringRecruitRequest) {
+        String username = userDetails.getUsername();
+        Team res = mentoringService.recruit(mentoringRecruitRequest, username);
+        return ResponseEntity.ok(res);
 
     }
 
@@ -47,18 +44,11 @@ public class MentoringController {
     }
 
     @PostMapping("/application")
-    public ResponseEntity<?> application(@RequestHeader("Authorization") String authorizationHeader,
+    public ResponseEntity<?> application(@AuthenticationPrincipal UserDetails userDetails,
         @RequestBody MentoringApplicationRequest mentoringApplicationRequest) {
-        String token = jwtUtil.resolveToken(authorizationHeader);
-        if (token != null && !jwtUtil.isExpired(token)) {
-            String username = jwtUtil.getUsername(token);
-
-            int res = mentoringService.application(mentoringApplicationRequest, username);
-            return ResponseEntity.ok(res);
-        } else {
-            throw new UnauthorizedException("유효하지 않은 토큰입니다.");
-        }
-
+        String username = userDetails.getUsername();
+        int res = mentoringService.application(mentoringApplicationRequest, username);
+        return ResponseEntity.ok(res);
     }
 
     @GetMapping("/profile/{page_no}/{size_no}")
@@ -78,6 +68,4 @@ public class MentoringController {
         List<MentorNicknameResponse> nicknameList = mentoringService.getMentorNicknames();
         return ResponseEntity.ok(nicknameList);
     }
-
-
 }
