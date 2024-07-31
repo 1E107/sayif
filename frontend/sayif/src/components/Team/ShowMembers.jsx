@@ -65,7 +65,7 @@ function ShowMembers() {
                 {
                     mentorList.map((mentor) => {
                         return(
-                            <Card sx={{ minWidth: 400, minHeight: 200, borderRadius: '30px' }}>
+                            <Card sx={{ width: 400, height: 260, borderRadius: '30px', display: 'flex', flexDirection: 'column' }}>
                                 <CustomCardMedia>
                                     <div>
                                         <S.MentorNameText>{mentor.nickname}</S.MentorNameText>
@@ -93,7 +93,7 @@ function ShowMembers() {
                                         <S.TagBox>ISFJ</S.TagBox>
                                     </S.TagList>
                                 </CardContent>
-                                <CardActions>
+                                <CardActions sx={{marginTop: "auto"}}>
                                     <CustomButton size="small" endIcon={<SendIcon />}>
                                         쪽지 보내기 ··{' '}
                                     </CustomButton>
