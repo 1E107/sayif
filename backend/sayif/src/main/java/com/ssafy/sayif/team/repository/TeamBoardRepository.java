@@ -9,6 +9,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TeamBoardRepository extends JpaRepository<TeamBoard, Integer> {
 
+    Page<TeamBoard> findAllByTeamAndContentContaining(Pageable pageable, Team team, String word);
+
+    Page<TeamBoard> findAllByTeamAndTitleContaining(Pageable pageable, Team team, String word);
+
     Page<TeamBoard> findAllByTeam(Pageable pageable, Team team);
 
 }
