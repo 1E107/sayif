@@ -187,7 +187,8 @@ public class MentoringService {
     public List<MentorNicknameResponse> getMentorNicknames() {
         List<Member> memberList = memberRepository.findByRole(Role.Mentor);
         return memberList.stream()
-                .map(member -> new MentorNicknameResponse(member.getNickname()))
+                .map(member -> new MentorNicknameResponse(member.getNickname(), member.getUsername()))
                 .collect(Collectors.toList());
     }
+
 }
