@@ -10,7 +10,7 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=prod
     networks:
-      - sayif_network
+      - sayif_default
   
   frontend:
     image: leechanghojjang/sayif-frontend:latest
@@ -20,8 +20,7 @@ services:
     ports:
       - "3000:3000"
     networks:
-      - sayif_network
-      
+      - sayif_default
 networks:
-  sayif_network:
+  sayif_default:
     external: true
