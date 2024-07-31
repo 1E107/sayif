@@ -49,21 +49,5 @@ public class JWTUtil {
             .signWith(secretKey)
             .compact();
     }
-
-    public String resolveToken(String header) {
-        if (header != null && header.startsWith("Bearer ")) {
-            return header.substring(7);
-        }
-        return null;
-    }
-
-    public String getUsernameByHeader(String authorizationHeader) {
-        String token = this.resolveToken(authorizationHeader);
-        String username = "";
-        if (token != null && !this.isExpired(token)) {
-            username = this.getUsername(token);
-        }
-        return username;
-    }
 }
 

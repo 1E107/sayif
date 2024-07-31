@@ -6,6 +6,8 @@ import com.ssafy.sayif.team.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import com.ssafy.sayif.team.dto.PostStoryRequestDto;
 import com.ssafy.sayif.team.dto.GetStoryResponseDto;
@@ -33,11 +35,9 @@ public class StoryController {
 
     @PostMapping
     public ResponseEntity<GetStoryResponseDto> addStory(@PathVariable Integer teamId,
-                                                        @RequestHeader("Authorization") String authorizationHeader,
+                                                        @AuthenticationPrincipal UserDetails userDetails,
                                                         @RequestBody PostStoryRequestDto storyDto) {
-
-        String token = jwtUtil.resolveToken(authorizationHeader);
-        String username = jwtUtil.getUsername(token);
+        String username = userDetails.getUsername();
         Member member = memberRepository.findByUsername(username);
 
         Team team = teamRepository.findById(teamId)
