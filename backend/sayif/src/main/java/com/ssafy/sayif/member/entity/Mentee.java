@@ -1,27 +1,25 @@
 package com.ssafy.sayif.member.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
-import lombok.*;
-
 @Entity
 @Getter
+@SuperBuilder
 @PrimaryKeyJoinColumn(name = "mentee_id")
-public class Mentee extends Member{
+@NoArgsConstructor
+@AllArgsConstructor
+public class Mentee extends Member {
 
-//    @Id
-//    @OneToOne
-//    @JoinColumn(name = "mentee_id")
-//    private Member member;
-
-    @Column(nullable = false)
+    @Column
     private LocalDateTime applyDate;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Status status = Status.Pending;
+    private Status status;
 
     @Column(columnDefinition = "TEXT")
     private String authFile;

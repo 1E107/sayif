@@ -6,6 +6,8 @@ import com.ssafy.sayif.team.dto.TeamBoardCommentResponseDto;
 import com.ssafy.sayif.team.service.TeamBoardCommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,9 +31,9 @@ public class TeamBoardCommentController {
     public ResponseEntity<?> writeComment(
         @PathVariable("boardId") int boardId,
         @RequestBody TeamBoardCommentRequestDto commentRequestDto,
-        @RequestHeader("Authorization") String authorizationHeader) {
+        @AuthenticationPrincipal UserDetails userDetails) {
         try {
-            String username = extractUsernameFromHeader(authorizationHeader);
+            String username = userDetails.getUsername();
             commentRequestDto.setUsername(username);
             commentRequestDto.setTeamBoardId(boardId);
             commentService.writeComment(commentRequestDto);
@@ -46,9 +48,9 @@ public class TeamBoardCommentController {
     public ResponseEntity<?> modifyComment(
         @PathVariable("commentId") int commentId,
         @RequestBody TeamBoardCommentRequestDto commentRequestDto,
-        @RequestHeader("Authorization") String authorizationHeader) {
+        @AuthenticationPrincipal UserDetails userDetails) {
         try {
-            String username = extractUsernameFromHeader(authorizationHeader);
+            String username = userDetails.getUsername();
             TeamBoardCommentResponseDto updatedComment = commentService.modifyComment(commentId,
                 username,
                 commentRequestDto);
@@ -62,9 +64,9 @@ public class TeamBoardCommentController {
     @DeleteMapping("/{commentId}")
     public ResponseEntity<?> deleteComment(
         @PathVariable("commentId") int commentId,
-        @RequestHeader("Authorization") String authorizationHeader) {
+        @AuthenticationPrincipal UserDetails userDetails) {
         try {
-            String username = extractUsernameFromHeader(authorizationHeader);
+            String username = userDetails.getUsername();
             commentService.deleteComment(commentId, username);
             return ResponseEntity.ok("댓글 삭제 성공");
         } catch (Exception e) {
@@ -80,10 +82,5 @@ public class TeamBoardCommentController {
         } catch (Exception e) {
             return ResponseEntity.status(500).body("댓글 조회 실패: " + e.getMessage());
         }
-    }
-
-    // 헤더에서 사용자 이름 추출
-    private String extractUsernameFromHeader(String authorizationHeader) {
-        return jwtUtil.getUsernameByHeader(authorizationHeader);
     }
 }

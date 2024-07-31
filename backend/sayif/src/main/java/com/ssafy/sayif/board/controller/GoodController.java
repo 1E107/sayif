@@ -6,6 +6,8 @@ import com.ssafy.sayif.member.jwt.JWTUtil;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,8 +25,8 @@ public class GoodController {
 
     @GetMapping("/{boardId}")
     public ResponseEntity<?> pushGood(@PathVariable int boardId,
-        @RequestHeader("Authorization") String authorizationHeader) {
-        String username = jwtUtil.getUsernameByHeader(authorizationHeader);
+                                      @AuthenticationPrincipal UserDetails userDetails) {
+        String username = userDetails.getUsername();
         if (goodService.pushGood(boardId, username)) {
             return ResponseEntity.ok("좋아요 완료");
         } else {
@@ -34,8 +36,8 @@ public class GoodController {
 
     @DeleteMapping("/{boardId}")
     public ResponseEntity<?> removeGood(@PathVariable int boardId,
-        @RequestHeader("Authorization") String authorizationHeader) {
-        String username = jwtUtil.getUsernameByHeader(authorizationHeader);
+                                        @AuthenticationPrincipal UserDetails userDetails) {
+        String username = userDetails.getUsername();
         if (goodService.removeGood(boardId, username)) {
             return ResponseEntity.ok("좋아요 취소 완료");
         } else {
@@ -45,8 +47,8 @@ public class GoodController {
 
     @GetMapping("/list")
     public ResponseEntity<?> getMemberLikedBoards(
-        @RequestHeader("Authorization") String authorizationHeader) {
-        String username = jwtUtil.getUsernameByHeader(authorizationHeader);
+            @AuthenticationPrincipal UserDetails userDetails) {
+        String username = userDetails.getUsername();
         List<UserGoodResponseDto> goodBoards = goodService.getMemberGoodBoards(username);
         if (!goodBoards.isEmpty()) {
             return ResponseEntity.ok("좋아요 목록이 있습니다");

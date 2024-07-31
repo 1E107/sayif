@@ -21,11 +21,6 @@ const Container = styled.div`
     text-align: center;
 `
 
-const ChapterTitle = styled.div`
-    font-family: ChosunGu;
-    color: gray;
-    padding-top: 50px;
-`
 
 const TestTitle = styled.div`
     font-family: ChosunGu;
@@ -35,6 +30,8 @@ const TestTitle = styled.div`
     margin-top: 40px;
     font-weight: bold;
     margin-bottom: 40px;
+    padding-top: 50px;
+    font-size: 20px;
 `
 
 const CustomButton = styled(Button)({
@@ -47,7 +44,6 @@ const CustomButton = styled(Button)({
 const S = {
     title,
     Container,
-    ChapterTitle,
     TestTitle,
     CustomButton
 }
