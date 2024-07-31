@@ -1,28 +1,57 @@
 import { useNavigate } from 'react-router-dom';
 import S from './style/QuizListStyled';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import QuizDetail from './QuizDetail';
 import Box from '@mui/material/Box';
 import FormControl from '@mui/material/FormControl';
 import NativeSelect from '@mui/material/NativeSelect';
+import { getQuizList } from '../../../api/TeamApi';
+import { useSelector } from 'react-redux';
 
 function QuizList() {
     const [showDetail, setShowDetail] = useState(false);
-    const [chapter, SetChapter] = useState(1);
+    const { token } = useSelector(state => state.member);
+    const [quizList, SetQuizList] = useState([]);
+    const [quiz, SetQuiz] = useState();
 
-    const handleQuizBtn = () => {
-        setShowDetail(true); // QuizDetail 컴포넌트 출력할 때 클릭한 퀴즈에 대한 내용을 넘겨줌
+    const handleQuizBtn = data => {
+        SetQuiz(data);
+        console.log(data);
+        setShowDetail(true);
     };
 
     const handleChange = event => {
-        console.log(event.target.value);
-        SetChapter(event.target.value);
+        const callQuizList = async () => {
+            try {
+                const response = await getQuizList(event.target.value, token);
+                if (response.status == 200) {
+                    SetQuizList(response.data);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        callQuizList();
     };
+
+    useEffect(() => {
+        const callQuizList = async () => {
+            try {
+                const response = await getQuizList(1, token);
+                if (response.status == 200) {
+                    SetQuizList(response.data);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        callQuizList();
+    }, []);
 
     const QuizListView = (
         <S.Container>
             {showDetail ? (
-                <QuizDetail></QuizDetail>
+                <QuizDetail quiz={quiz}></QuizDetail>
             ) : (
                 <>
                     <div
@@ -56,24 +85,27 @@ function QuizList() {
                             </FormControl>
                         </Box>
                     </div>
-
-                    <S.QuizBox>
-                        <S.QuizWrapper>
-                            <S.QuizNumber>3</S.QuizNumber>
-                            <S.QuizTitle>코딩 기초</S.QuizTitle>
-                        </S.QuizWrapper>
-                        <S.QuizWrapper>
-                            <S.PointText>1OOP</S.PointText>
-                            <S.CustomBtn
-                                variant="outlined"
-                                onClick={handleQuizBtn}
-                            >
-                                퀴즈 풀기
-                            </S.CustomBtn>
-                        </S.QuizWrapper>
-                    </S.QuizBox>
-                    <S.QuizBox></S.QuizBox>
-                    <S.QuizBox></S.QuizBox>
+                    {quizList.map((quiz, index) => {
+                        return (
+                            <S.QuizBox>
+                                <S.QuizWrapper>
+                                    <S.QuizNumber>{index + 1}</S.QuizNumber>
+                                    <S.QuizTitle>{quiz.question}</S.QuizTitle>
+                                </S.QuizWrapper>
+                                <S.QuizWrapper>
+                                    <S.PointText>1OOP</S.PointText>
+                                    <S.CustomBtn
+                                        variant="outlined"
+                                        onClick={() => {
+                                            handleQuizBtn(quiz);
+                                        }}
+                                    >
+                                        퀴즈 풀기
+                                    </S.CustomBtn>
+                                </S.QuizWrapper>
+                            </S.QuizBox>
+                        );
+                    })}
                 </>
             )}
         </S.Container>
