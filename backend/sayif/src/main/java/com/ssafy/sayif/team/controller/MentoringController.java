@@ -58,8 +58,8 @@ public class MentoringController {
     }
 
     @GetMapping("/team/{id}")
-    public ResponseEntity<?> readStatus(@PathVariable Integer id) {
-        TeamStatusResponse status = mentoringService.readStatus(id);
+    public ResponseEntity<?> getTeamStatus(@PathVariable Integer id) {
+        TeamStatusResponse status = mentoringService.getTeamStatus(id);
         return ResponseEntity.ok(status);
     }
 
@@ -68,4 +68,11 @@ public class MentoringController {
         List<MentorNicknameResponse> nicknameList = mentoringService.getMentorNicknames();
         return ResponseEntity.ok(nicknameList);
     }
+
+    @GetMapping("/session/{id}")
+    public ResponseEntity<?> getTeamSession(@PathVariable Integer id) {
+        TeamSessionResponse sessionId = mentoringService.getTeamSession(id);
+        return ResponseEntity.ok(sessionId);
+    }
+
 }

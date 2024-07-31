@@ -175,7 +175,7 @@ public class MentoringService {
         return mentorProfileResponses;
     }
 
-    public TeamStatusResponse readStatus(Integer teamId) {
+    public TeamStatusResponse getTeamStatus(Integer teamId) {
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new IllegalArgumentException("Team with ID " + teamId + " not found."));
 
@@ -189,6 +189,15 @@ public class MentoringService {
         return memberList.stream()
                 .map(member -> new MentorNicknameResponse(member.getNickname(), member.getUsername()))
                 .collect(Collectors.toList());
+    }
+
+    public TeamSessionResponse getTeamSession(Integer teamId) {
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new IllegalArgumentException("Team with ID " + teamId + " not found."));
+
+        return TeamSessionResponse.builder()
+                .sessionId(team.getSessionId())
+                .build();
     }
 
 }
