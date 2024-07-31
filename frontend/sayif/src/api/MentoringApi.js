@@ -47,7 +47,7 @@ export const applyMentoring = async (id, token) => {
 };
 
 export const getTeamStatue = async(id, token) => {
-    const data = {id, id};
+    const data = {id: id};
 
     try {
         const response = await axios.get(`${API_BASE_URL}/mentoring/team/${id}`, {
@@ -58,6 +58,27 @@ export const getTeamStatue = async(id, token) => {
         return response;
     }
     catch(error) {
+        throw error;
+    }
+}
+
+export const submitMentoringGroup = async(start_date, day_of_week, time, pmam, id, token) => {
+    const data = {
+        start_date: start_date,
+        day_of_week: day_of_week,
+        time: time,
+        pmam: pmam,
+        id: id
+    };
+
+    try {
+        const response = await axios.post(`${API_BASE_URL}/mentoring/recruit`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        })
+        return response;
+    }catch(error) {
         throw error;
     }
 }
