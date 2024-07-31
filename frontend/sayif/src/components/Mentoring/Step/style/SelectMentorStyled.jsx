@@ -9,7 +9,7 @@ const Container = styled.div`
 `;
 
 const Wrapper = styled.div`
-    margin: 50px;
+    margin: 0px 60px 60px 60px;
 `;
 
 const explanText = styled.div`
@@ -36,6 +36,7 @@ const MentorListBox = styled.div`
   align-items: center;
   justify-content: center;
   border-radius: 5px;
+  padding: 5px;
 `
 
 const MentorInfoTitle = styled.div`
@@ -45,7 +46,7 @@ const MentorInfoTitle = styled.div`
 `
 
 const MentorInfoContent = styled.div`
-    font-size: 18px;
+    font-size: 16px;
     font-weight: bold;
     font-family: ChosunGu;
     margin-top: 10px;
@@ -56,6 +57,24 @@ const MentorInfoBox = styled.div`
     margin-right: 50px;
 `;
 
+const Icon = styled.div`
+    background-image: url('/img/Apply/apply-step3.png');
+    background-size: cover;
+    width: 900px;
+    height: 200px;
+`
+
+const IconWrapper = styled.div`
+    display: flex;
+    justify-content: center;
+`
+
+const MentorProfileWrapper = styled.div`
+    display: flex;
+    gap: 10px;
+    margin: 15px 5px 5px 5px;
+`
+
 const S = {
     Container,
     Wrapper,
@@ -64,7 +83,10 @@ const S = {
     MentorListBox,
     MentorInfoTitle,
     MentorInfoContent,
-    MentorInfoBox
+    MentorInfoBox,
+    Icon,
+    IconWrapper,
+    MentorProfileWrapper
 };
 
 export default S;

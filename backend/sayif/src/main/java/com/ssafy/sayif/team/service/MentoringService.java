@@ -10,30 +10,28 @@ import com.ssafy.sayif.team.entity.Team;
 import com.ssafy.sayif.team.entity.TeamStatus;
 import com.ssafy.sayif.team.repository.TeamRepository;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class MentoringService {
 
-    @Autowired
-    TeamRepository teamRepository;
-    @Autowired
-    MemberRepository memberRepository;
+    private final TeamRepository teamRepository;
+    private final MemberRepository memberRepository;
 
-    @Autowired
-    MentorRepository mentorRepository;
+    private final  MentorRepository mentorRepository;
 
     @Transactional
     public Team recruit(MentoringRecruitRequest mentoringRecruitRequest, String username) {
@@ -80,7 +78,7 @@ public class MentoringService {
 
     public List<MentoringSearchResponse> search(MentoringSearchRequest mentoringSearchRequest,
         int page_no, int size_no) {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
         LocalDate startDateFrom = LocalDate.parse(mentoringSearchRequest.getStartDateFrom(),
@@ -175,5 +173,21 @@ public class MentoringService {
             );
         }).collect(Collectors.toList());
         return mentorProfileResponses;
+    }
+
+    public TeamStatusResponse readStatus(Integer teamId) {
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new IllegalArgumentException("Team with ID " + teamId + " not found."));
+
+        return TeamStatusResponse.builder()
+                .status(team.getStatus())
+                .build();
+    }
+
+    public List<MentorNicknameResponse> getMentorNicknames() {
+        List<Member> memberList = memberRepository.findByRole(Role.Mentor);
+        return memberList.stream()
+                .map(member -> new MentorNicknameResponse(member.getNickname()))
+                .collect(Collectors.toList());
     }
 }

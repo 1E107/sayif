@@ -1,5 +1,6 @@
 package com.ssafy.sayif.team.entity;
 
+import com.ssafy.sayif.common.entity.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -19,7 +20,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class Material {
+public class Material extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +28,15 @@ public class Material {
 
     @Column(name = "chapter")
     private Integer chapter;
+
+    @Column(name = "title")
+    private String title;
+
+    @Column(name = "content")
+    private String content;
+
+    @Column(name = "hit")
+    private Integer hit;
 
     @Column(name = "file", length = 255)
     private String file;

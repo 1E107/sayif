@@ -15,6 +15,9 @@ import {useNavigate} from 'react-router-dom';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import '../../styles/fonts.css'
 import { useSelector } from 'react-redux';
+import { getMemberInfo } from '../../api/MemberApi';
+import { useState } from 'react';
+import NoTeamModal from '../Mentoring/NoTeamModal';
 
 const pages = ['새잎 소개', '멘토링', '소통 공간', '정보 공간'];
 const settings = {
@@ -27,7 +30,7 @@ const menuToPage = {
   '서비스 소개' : '/serviceIntroduction',
   '커리큘럼 로드맵' : '/',
   '공지사항' : '/',
-  '멘토링 그룹 생성' : '/',
+  '멘토링 그룹 생성' : '/create-mentoring',
   '멘토링 신청' : '/apply-mentoring',
   '멘토 프로필 조회' : '/',
   '멘토링 자료 공유' : '/',
@@ -37,12 +40,13 @@ const menuToPage = {
 
 function Header() {
   const navigate = useNavigate();
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElSubLow, setAnchorElSubLow] = React.useState(null); // 줄어든 화면
-  const [anchorElSubFull, setAnchorElSubFull] = React.useState(null); // 전체 화면
-  const [currentSettings, setCurrentSettings] = React.useState([]);
-  const { token } = useSelector(state => state.member);
-
+  const [anchorElNav, setAnchorElNav] = useState(null);
+  const [anchorElSubLow, setAnchorElSubLow] = useState(null); // 줄어든 화면
+  const [anchorElSubFull, setAnchorElSubFull] = useState(null); // 전체 화면
+  const [currentSettings, setCurrentSettings] = useState([]);
+  const [showNoTeamModal, setShowNoTeamModal] = useState(false);
+  const { token, member } = useSelector(state => state.member);
+  
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -75,7 +79,25 @@ function Header() {
     navigate("/member/login");
   }
 
+  const handleCloseNoTeamModal = () => {
+    setShowNoTeamModal(false);
+  }
+
   const handleTeamPage = () => {
+    const callGetStatus = async () => {
+      try {
+        const response = await getMemberInfo(member.team_id, token);
+        if(response.data === 'Proceed') {
+          navigate("/team");
+        }
+        else {
+          setShowNoTeamModal(true);
+        }
+      }catch(error) {
+        console.log(error);
+      }
+    };
+    //callGetStatus();
     navigate("/team")
   }
 
@@ -283,6 +305,7 @@ function Header() {
           </Box>
         </Toolbar>
       </Container>
+      {showNoTeamModal && <NoTeamModal onClose={handleCloseNoTeamModal}/>}
     </AppBar>
   );
 }

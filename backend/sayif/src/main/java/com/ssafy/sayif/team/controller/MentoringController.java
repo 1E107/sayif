@@ -5,15 +5,15 @@ import com.ssafy.sayif.member.jwt.JWTUtil;
 import com.ssafy.sayif.team.dto.*;
 import com.ssafy.sayif.team.entity.Team;
 import com.ssafy.sayif.team.service.MentoringService;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.web.PagedModel;
-import org.springframework.data.web.PagedResourcesAssembler;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 
+
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/mentoring")
@@ -29,7 +29,6 @@ public class MentoringController {
         String token = jwtUtil.resolveToken(authorizationHeader);
         if (token != null && !jwtUtil.isExpired(token)) {
             String username = jwtUtil.getUsername(token);
-
             Team res = mentoringService.recruit(mentoringRecruitRequest, username);
             return ResponseEntity.ok(res);
         } else {
@@ -37,6 +36,7 @@ public class MentoringController {
         }
 
     }
+
 
     @PostMapping("/search/{page_no}/{size_no}")
     public ResponseEntity<?> search(@RequestBody MentoringSearchRequest mentoringSearchRequest,
@@ -66,5 +66,18 @@ public class MentoringController {
         List<MentorProfileResponse> mentorList = mentoringService.profile(page_no, size_no);
         return ResponseEntity.ok(mentorList);
     }
+
+    @GetMapping("/team/{id}")
+    public ResponseEntity<?> readStatus(@PathVariable Integer id) {
+        TeamStatusResponse status = mentoringService.readStatus(id);
+        return ResponseEntity.ok(status);
+    }
+
+    @GetMapping("/mentor-nickname")
+    public ResponseEntity<?> getMentorNicknames() {
+        List<MentorNicknameResponse> nicknameList = mentoringService.getMentorNicknames();
+        return ResponseEntity.ok(nicknameList);
+    }
+
 
 }

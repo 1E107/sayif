@@ -55,4 +55,16 @@ public class Team {
     public void updateStatus(TeamStatus newStatus) {
         this.status = newStatus;
     }
+
+    public void updateSessionId(String newSessionId) {
+        this.sessionId = newSessionId;
+    }
+
+    public void updatePoint(Integer newPoint) {
+        this.point += newPoint;
+    }
+
+    public void changeName(String newName) {
+        this.name = newName;
+    }
 }
