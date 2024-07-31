@@ -9,8 +9,6 @@ services:
       - "9090:9090"
     environment:
       - SPRING_PROFILES_ACTIVE=prod
-    networks:
-      - sayif_default
   
   frontend:
     image: leechanghojjang/sayif-frontend:latest
@@ -19,8 +17,3 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
-    networks:
-      - sayif_default
-networks:
-  sayif_default:
-    external: true
