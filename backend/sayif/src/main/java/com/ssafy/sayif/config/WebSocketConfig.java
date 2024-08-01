@@ -38,15 +38,5 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.interceptors(new FilterChannelInterceptor(jwtUtil));
     }
-
-    @Override
-    public boolean configureMessageConverters(List<org.springframework.messaging.converter.MessageConverter> messageConverters) {
-        MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-        converter.setObjectMapper(objectMapper);
-        messageConverters.add(converter);
-        return false;
-    }
 }
 

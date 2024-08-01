@@ -32,8 +32,9 @@ const Chat = () => {
     // WebSocket 연결 및 구독
     webSocketService.connect(token);
     const subscription = webSocketService.subscribe(`/topic/${teamId}`, (message) => {
-      setMessages(prevMessages => [...prevMessages, message]);
-    });
+    console.log('Received message:', message); // 메시지를 받았는지 확인
+    setMessages(prevMessages => [...prevMessages, message]);
+  });
 
     // 페이지가 언마운트될 때 구독 해제
     return () => {

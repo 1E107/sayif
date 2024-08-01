@@ -63,7 +63,9 @@ class WebSocketService {
 
   subscribe(topic, callback) {
     if (this.client && this.client.connected) {
+      console.log('Subscribing to topic:', topic);
       return this.client.subscribe(topic, (message) => {
+        console.log('Received message:', message); // 메시지 내용 확인
         callback(JSON.parse(message.body));
       });
     }
