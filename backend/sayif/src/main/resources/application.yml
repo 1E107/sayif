@@ -17,3 +17,7 @@ server:
 openvidu:
   url: http://i11e107.p.ssafy.io:4443
   secret: bangcutsoragodoongmeruohboksayif
+
+logging:
+  level:
+    org.springframework.core.env: DEBUG
