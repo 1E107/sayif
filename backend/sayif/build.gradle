@@ -71,6 +71,9 @@ dependencies {
     implementation 'io.minio:minio:8.4.3'
     // tika 의존성 추가
     implementation 'org.apache.tika:tika-core:2.2.1'
+
+    // jackson 의존성 추가
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 }
 
 tasks.named('test') {
