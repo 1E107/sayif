@@ -10,17 +10,21 @@ const OpenViduApp = () => {
     const [message, setMessage] = useState('');
     const [sessionStatus, setSessionStatus] = useState(null);
     const [isConnected, setIsConnected] = useState(false);
+    const [isMuted, setIsMuted] = useState(false);
+    const [isVideoStopped, setIsVideoStopped] = useState(false);
     const videoContainerRef = useRef(null);
     const chatMessagesRef = useRef(null);
     const { token, member } = useSelector(state => state.member);
 
-    const serverUrl = 'http://localhost:9090';
+    const serverUrl = 'http://i11e107.p.ssafy.io:7777';
     const username = 'OPENVIDUAPP';
     const password = 'bangcutsoragodoongmeruohboksayif';
     const basicAuth = 'Basic ' + btoa(username + ':' + password);
 
     let OV = useRef(null); // Ref로 OV를 관리
     let session = useRef(null); // Ref로 session을 관리
+    let publisher = useRef(null); // 퍼블리셔도 Ref로 관리
+
 
     useEffect(() => {
         return () => {
@@ -137,8 +141,8 @@ const OpenViduApp = () => {
                     .connect(token)
                     .then(() => {
                         setIsConnected(true); // 사용자가 세션에 연결된 상태로 설정
-                        if (!document.querySelector('video.published')) {
-                            const publisher = OV.current.initPublisher(
+                        if (!publisher.current) {
+                            publisher.current = OV.current.initPublisher(
                                 videoContainerRef.current,
                                 {
                                     resolution: '640x480',
@@ -147,10 +151,10 @@ const OpenViduApp = () => {
                                     mirror: false,
                                 },
                             );
-                            publisher.once('videoElementCreated', event => {
+                            publisher.current.once('videoElementCreated', event => {
                                 event.element.classList.add('published');
                             });
-                            session.current.publish(publisher);
+                            session.current.publish(publisher.current);
                         }
                     })
                     .catch(error => {
@@ -196,6 +200,28 @@ const OpenViduApp = () => {
             .catch(error => console.error('Error sending message:', error));
     };
 
+    const toggleMute = () => {
+        if (publisher.current) {
+            if (isMuted) {
+                publisher.current.publishAudio(true);
+            } else {
+                publisher.current.publishAudio(false);
+            }
+            setIsMuted(!isMuted);
+        }
+    };
+
+    const toggleVideo = () => {
+        if (publisher.current) {
+            if (isVideoStopped) {
+                publisher.current.publishVideo(true);
+            } else {
+                publisher.current.publishVideo(false);
+            }
+            setIsVideoStopped(!isVideoStopped);
+        }
+    };
+
     const closeSession = () => {
         if (!currentSessionId) {
             console.error('No active session to close');
@@ -231,9 +257,9 @@ const OpenViduApp = () => {
             {!isConnected && (
                 <>
                     {sessionStatus === 'mentor' && (
-                        <button onClick={createNewSession}>
+                        <S.DiffBtn onClick={createNewSession}>
                             Create New Session
-                        </button>
+                        </S.DiffBtn>
                     )}
                     {sessionStatus === 'exists' && (
                         <>
@@ -243,9 +269,9 @@ const OpenViduApp = () => {
                                 onChange={e => setSessionId(e.target.value)}
                                 placeholder="Enter Session ID"
                             />
-                            <button onClick={() => joinSession(sessionId)}>
+                            <S.DiffBtn onClick={() => joinSession(sessionId)}>
                                 Join Session
-                            </button>
+                            </S.DiffBtn>
                         </>
                     )}
                 </>
@@ -262,21 +288,27 @@ const OpenViduApp = () => {
                     >
                         <h2>Chat</h2>
                         <div id="chat-messages" ref={chatMessagesRef}></div>
-                        <input
+                        <input 
                             type="text"
                             value={message}
                             onChange={e => setMessage(e.target.value)}
                             placeholder="Enter your message"
                         />
-                        <button onClick={sendMessage}>Send Message</button>
+                        <S.DiffBtn onClick={sendMessage}>Send Message</S.DiffBtn>
                     </S.ChatContainer>
                 </S.ContentContainer>
             )}
 
             {isConnected && (
                 <S.ButtonContainer $isConnected={isConnected}>
-                    <S.Button onClick={closeSession}>Close Session</S.Button>
-                    <S.Button onClick={startScreenShare}>Share Screen</S.Button>
+                    <S.CustomBtn onClick={closeSession}>Close Session</S.CustomBtn>
+                    <S.CustomBtn onClick={startScreenShare}>Share Screen</S.CustomBtn>
+                    <S.CustomBtn onClick={toggleMute}>
+                        {isMuted ? 'Unmute' : 'Mute'}
+                    </S.CustomBtn>
+                    <S.CustomBtn onClick={toggleVideo}>
+                        {isVideoStopped ? 'Start Video' : 'Stop Video'}
+                    </S.CustomBtn>
                 </S.ButtonContainer>
             )}
         </S.Container>

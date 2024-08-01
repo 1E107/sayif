@@ -17,11 +17,11 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class OpenViduService {
-//    @Value("${openvidu.url}")
-    private String openviduUrl="http://i11e107.p.ssafy.io:4443";
+    @Value("${openvidu.url}")
+    private String openviduUrl;
 
-//    @Value("${openvidu.secret}")
-    private String secret="bangcutsoragodoongmeruohboksayif";
+    @Value("${openvidu.secret}")
+    private String secret;
 
     private OpenVidu openvidu;
 
