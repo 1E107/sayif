@@ -25,8 +25,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ImageService {
 
-    private final MinioClient minioClient;
-    private final Tika tika = new Tika();
+    private final MinioClient minioClient; // Minio 클라이언트 객체
+    private final Tika tika = new Tika(); // Tika 객체를 통해 파일의 Content-Type을 감지
 
     /**
      * 로컬 디스크에 이미지를 저장합니다.
@@ -53,20 +53,20 @@ public class ImageService {
             // 버킷 존재 여부 확인 및 생성
             ensureBucketExists(bucketName);
 
-            // 파일 이름을 UUID로 설정
+            // 파일 이름을 UUID로 생성
             String filename = UUID.randomUUID().toString();
 
-            // Content-Type 감지
+            // 이미지 파일의 Content-Type 감지
             String contentType = tika.detect(imageContent);
 
-            // 이미지 파일을 Minio에 저장
+            // Minio에 이미지 파일을 저장
             try (ByteArrayInputStream bais = new ByteArrayInputStream(imageContent)) {
                 minioClient.putObject(
                     PutObjectArgs.builder()
                         .bucket(bucketName)
                         .object(filename)
-                        .stream(bais, bais.available(), -1)
-                        .contentType(contentType)
+                        .stream(bais, bais.available(), -1) // 스트림을 통한 업로드
+                        .contentType(contentType) // Content-Type 설정
                         .build()
                 );
             }
@@ -119,7 +119,7 @@ public class ImageService {
         try {
             return minioClient.getPresignedObjectUrl(
                 GetPresignedObjectUrlArgs.builder()
-                    .method(Method.GET)
+                    .method(Method.GET) // HTTP GET 메서드 사용
                     .bucket(bucketName)
                     .object(filename)
                     .expiry(60 * 60 * 24) // URL 만료 시간 (1일)
@@ -148,6 +148,21 @@ public class ImageService {
             minioClient.makeBucket(
                 MakeBucketArgs.builder().bucket(bucketName).build()
             );
+        }
+    }
+
+    /**
+     * 이미지 파일을 다운로드하여 바이트 배열로 반환합니다.
+     *
+     * @param filename   다운로드할 파일 이름
+     * @param bucketName 이미지가 저장된 Minio 버킷 이름
+     * @return 이미지 파일의 바이트 배열
+     */
+    public byte[] getImage(String filename, String bucketName) {
+        try {
+            return this.downloadImage(filename, bucketName);
+        } catch (IOException | NoSuchAlgorithmException | InvalidKeyException e) {
+            throw new ImageStorageException(e.getMessage());
         }
     }
 }
