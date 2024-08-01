@@ -92,9 +92,10 @@ public class MemberServiceTest {
 
     @Test
     @DisplayName("회원 정보 업데이트 테스트")
-    void testUpdateMemberInfo() {
+    void testUpdateMember() {
         // given
         MemberUpdateRequestDto updateRequestDto = new MemberUpdateRequestDto();
+        updateRequestDto.setName("newName");
         updateRequestDto.setNickname("newNickname");
         updateRequestDto.setGender("F");
         updateRequestDto.setEmail("new@test.com");
@@ -102,11 +103,12 @@ public class MemberServiceTest {
         String username = "testuser";
 
         // when
-        memberService.updateMemberInfo(username, updateRequestDto);
+        memberService.updateMember(username, updateRequestDto);
 
         // then
         verify(memberRepository, times(1)).updateMember(
             eq(username),
+            eq("newName"),
             eq("newNickname"),
             eq("F"),
             eq("new@test.com"),
