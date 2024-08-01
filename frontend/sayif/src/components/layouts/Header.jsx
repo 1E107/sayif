@@ -15,7 +15,7 @@ import {useNavigate} from 'react-router-dom';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import '../../styles/fonts.css'
 import { useSelector } from 'react-redux';
-import { getMemberInfo } from '../../api/MemberApi';
+import { getTeamStatue } from '../../api/MentoringApi'; 
 import { useState } from 'react';
 import NoTeamModal from '../Mentoring/NoTeamModal';
 
@@ -86,19 +86,20 @@ function Header() {
   const handleTeamPage = () => {
     const callGetStatus = async () => {
       try {
-        const response = await getMemberInfo(member.team_id, token);
-        if(response.data === 'Proceed') {
-          navigate("/team");
-        }
-        else {
-          setShowNoTeamModal(true);
+        const response = await getTeamStatue(member.team_id, token);
+        if(response.status === 200) {
+          if(response.data.status === 'Proceed') {
+            navigate("/team");
+          }
+          else {
+            setShowNoTeamModal(true);
+          }
         }
       }catch(error) {
         console.log(error);
       }
     };
-    //callGetStatus();
-    navigate("/team")
+    callGetStatus();
   }
 
   return (

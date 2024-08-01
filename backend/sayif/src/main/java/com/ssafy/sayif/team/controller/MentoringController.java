@@ -31,7 +31,6 @@ public class MentoringController {
         String username = userDetails.getUsername();
         Team res = mentoringService.recruit(mentoringRecruitRequest, username);
         return ResponseEntity.ok(res);
-
     }
 
 

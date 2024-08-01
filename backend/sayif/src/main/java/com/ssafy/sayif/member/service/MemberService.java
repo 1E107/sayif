@@ -5,15 +5,14 @@ import com.ssafy.sayif.member.dto.MemberUpdateRequestDto;
 import com.ssafy.sayif.member.dto.MentoringRecordResponseDto;
 import com.ssafy.sayif.member.dto.RegisterRequestDto;
 import com.ssafy.sayif.member.entity.*;
-import com.ssafy.sayif.member.repository.HistoryRepository;
-import com.ssafy.sayif.member.repository.MemberRepository;
-import com.ssafy.sayif.member.repository.MenteeRepository;
-import com.ssafy.sayif.member.repository.RefreshRepository;
+import com.ssafy.sayif.member.repository.*;
 import com.ssafy.sayif.team.entity.Team;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import com.ssafy.sayif.team.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,11 +27,13 @@ public class MemberService {
     private final HistoryRepository historyRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final MenteeRepository menteeRepository;
+    private final MentorRepository mentorRepository;
 
     public Boolean registerMember(RegisterRequestDto registerRequestDto) {
         String username = registerRequestDto.getUsername();
         String pwd = registerRequestDto.getPassword();
-
+        
+        // 중복 아이디 존재
         if (memberRepository.existsByUsername(username)) {
             return false;
         }
@@ -55,29 +56,57 @@ public class MemberService {
     }
 
     @Transactional
-    public void updateMemberInfo(String username, MemberUpdateRequestDto updateRequestDto) {
-        memberRepository.updateMember(
-                username,
-                updateRequestDto.getNickname(),
-                updateRequestDto.getGender(),
-                updateRequestDto.getEmail(),
-                updateRequestDto.getPhone()
-        );
+    public void updateMember(String username, MemberUpdateRequestDto updateRequestDto) {
+        Member member = memberRepository.findByUsername(username);
+        if (member == null) {
+            throw new RuntimeException("Member not found");
+        }
+
+        if (member.getRole() == Role.Mentee) {
+            Optional<Mentee> mentee = menteeRepository.findById(member.getId());
+            if (mentee.isPresent()) {
+                Mentee loginedMentee = mentee.get();
+                Mentee updatedMentee = loginedMentee.toBuilder()
+                        .name(updateRequestDto.getName() != null ? updateRequestDto.getName() : member.getName())
+                        .nickname(updateRequestDto.getNickname() != null ? updateRequestDto.getNickname() : member.getNickname())
+                        .gender(updateRequestDto.getGender() != null ? updateRequestDto.getGender() : member.getGender())
+                        .email(updateRequestDto.getEmail() != null ? updateRequestDto.getEmail() : member.getEmail())
+                        .phone(updateRequestDto.getPhone() != null ? updateRequestDto.getPhone() : member.getPhone())
+                        .build();
+                menteeRepository.save(updatedMentee);
+            }
+        }
+        else if (member.getRole() == Role.Mentor) {
+            Optional<Mentor> mentor = mentorRepository.findById(member.getId());
+            if (mentor.isPresent()) {
+                Mentor loginedMentor = mentor.get();
+                Mentor updatedMentor = loginedMentor.toBuilder()
+                        .name(updateRequestDto.getName() != null ? updateRequestDto.getName() : loginedMentor.getName())
+                        .nickname(updateRequestDto.getNickname() != null ? updateRequestDto.getNickname() : loginedMentor.getNickname())
+                        .gender(updateRequestDto.getGender() != null ? updateRequestDto.getGender() : loginedMentor.getGender())
+                        .email(updateRequestDto.getEmail() != null ? updateRequestDto.getEmail() : loginedMentor.getEmail())
+                        .phone(updateRequestDto.getPhone() != null ? updateRequestDto.getPhone() : loginedMentor.getPhone())
+                        .build();
+                mentorRepository.save(updatedMentor);
+            }
+        }
+
+
     }
 
     public void deleteMember(String username) {
         Member member = memberRepository.findByUsername(username);
         if (member != null) {
             memberRepository.delete(member);
-//            deleteRefreshTokens(username);
+            deleteRefreshTokens(username);
         } else {
-            throw new RuntimeException("Member not found");
+            throw new RuntimeException("존재하지 않는 회원입니다.");
         }
     }
 
     public void deleteRefreshTokens(String username) {
         System.out.println(username);
-        refreshRepository.deleteByUsername(username);
+        refreshRepository.deleteAllByUsername(username);
     }
 
 
@@ -96,7 +125,6 @@ public class MemberService {
                 member.getTeam() != null ? member.getTeam().getId() : null
             );
         } else {
-            // 예외 처리 로직 추가 (예: 회원을 찾을 수 없을 때)
             throw new RuntimeException("Member not found");
         }
     }

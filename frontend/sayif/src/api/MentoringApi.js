@@ -46,9 +46,7 @@ export const applyMentoring = async (id, token) => {
     }
 };
 
-export const getTeamStatue = async (id, token) => {
-    const data = { id: id };
-
+export const getTeamStatue = async(id, token) => {
     try {
         const response = await axios.get(
             `${API_BASE_URL}/mentoring/team/${id}`,
@@ -116,3 +114,14 @@ export const getTeamSessionId = async (id, token) => {
         throw error;
     }
 };
+
+export const getTotalMentor = async(token) => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/mentoring/mentor-nickname`, {
+            headers: { Authorization: `Bearer ${token}`}
+        });
+        return response;
+    }catch(error) {
+        throw error;
+    }
+}

@@ -11,7 +11,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class MemberUpdateRequestDto {
 
-    private String username;
     private String name;
     private String nickname;
     private String gender;

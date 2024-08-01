@@ -2,7 +2,7 @@ import S from './style/CreateStyled'
 import Box from '@mui/material/Box';
 import FormControl from '@mui/material/FormControl';
 import NativeSelect from '@mui/material/NativeSelect';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -11,11 +11,11 @@ import '../../styles/fonts.css';
 import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { submitMentoringGroup } from '../../api/MentoringApi';
+import { submitMentoringGroup, getTotalMentor } from '../../api/MentoringApi';
 import CreateFinish from './CreateFinish';
 
 function Create() {
-    const [otherMentor, SetOtherMentor] = useState("오복");
+    const [otherMentor, SetOtherMentor] = useState("");
     const [selectDays, SetSelectDays] = useState([]);
     const [selectDate, SetSelectDate] = useState("");
     const [selectTime, SetSelectTime] = useState("");
@@ -24,6 +24,7 @@ function Create() {
     const {token} = useSelector(state => state.member);
     const [showFinish, SetShowFinish] = useState(false);
     const [showApply, SetShowApply] = useState(true);
+    const [mentorList, SetMentorList] = useState([]);
 
     const handleClick = (day) => {
         SetSelectDays(prevDays => {
@@ -60,7 +61,7 @@ function Create() {
         
         const callSubmitGroupd = async () => {
             try {
-                const response = await submitMentoringGroup(selectDate, daysString, selectTime, selectPMAM, "user1", token);
+                const response = await submitMentoringGroup(selectDate, daysString, selectTime, selectPMAM, otherMentor, token);
                 if(response.status == 200) {
                     alert("멘토링 그룹 신청이 완료되었습니다.");
                     SetShowApply(false);
@@ -88,6 +89,21 @@ function Create() {
         {value: "12:00", label: "12:00"},
     ]
 
+    useEffect(() => {
+        const callTotalMentor = async () => {
+            try {
+                const response = await getTotalMentor(token);
+                if(response.status === 200) {
+                    SetMentorList(response.data);
+                }
+            }catch(error) {
+                console.log(error);
+            }
+        };
+
+        callTotalMentor();
+    }, []);
+
     const CreateView = (
         <> 
              <S.Title>멘토 그룹 생성</S.Title>
@@ -112,11 +128,18 @@ function Create() {
                                                 style={{fontFamily: "ChosunGu"}}
                                             >
                                                 {/* 나중에 반복문 돌림 멘토 리스트 받아와서 */}
-                                                <option value={"오복"}>오복</option>
+                                                {
+                                                    mentorList.map((mentor)=>{
+                                                        return(
+                                                            <option value={mentor.username}>{mentor.nickname}</option>
+                                                        )
+                                                    })
+                                                }
+                                                {/* <option value={"오복"}>오복</option>
                                                 <option value={"컷"}>컷</option>
                                                 <option value={"뱅"}>뱅</option>
                                                 <option value={"소라"}>소라</option>
-                                                <option value={"고동"}>고동</option>
+                                                <option value={"고동"}>고동</option> */}
                                             </NativeSelect>
                                         </FormControl>
                                     </Box>

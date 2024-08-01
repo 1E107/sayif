@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.naming.Name;
 import java.util.List;
 
 public interface MemberRepository extends JpaRepository<Member, Integer> {
@@ -17,8 +18,8 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
     Member findByUsername(String username);
 
     @Modifying
-    @Query("UPDATE Member m SET m.nickname = :nickname, m.gender = :gender, m.email = :email, m.phone = :phone WHERE m.username = :username")
-    void updateMember(@Param("username") String username, @Param("nickname") String nickname, @Param("gender") String gender, @Param("email") String email, @Param("phone") String phone);
+    @Query("UPDATE Member m SET m.name = :name, m.nickname = :nickname, m.gender = :gender, m.email = :email, m.phone = :phone WHERE m.username = :username")
+    void updateMember(@Param("username") String username, @Param("name") String name, @Param("nickname") String nickname, @Param("gender") String gender, @Param("email") String email, @Param("phone") String phone);
 
     @Query("SELECT m.nickname FROM Member m WHERE m.team.id = :teamId AND m.role = :role")
     List<String> findMentorNicknamesByTeamId(@Param("teamId") int teamId, @Param("role") Role role);
