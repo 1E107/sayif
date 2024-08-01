@@ -1,7 +1,6 @@
 package com.ssafy.sayif.member.controller;
 
 import com.ssafy.sayif.member.dto.*;
-import com.ssafy.sayif.member.exception.UnauthorizedException;
 import com.ssafy.sayif.member.jwt.JWTUtil;
 import com.ssafy.sayif.member.service.LetterService;
 import com.ssafy.sayif.member.service.MemberService;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

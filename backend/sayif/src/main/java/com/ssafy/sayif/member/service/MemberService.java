@@ -32,7 +32,8 @@ public class MemberService {
     public Boolean registerMember(RegisterRequestDto registerRequestDto) {
         String username = registerRequestDto.getUsername();
         String pwd = registerRequestDto.getPassword();
-
+        
+        // 중복 아이디 존재
         if (memberRepository.existsByUsername(username)) {
             return false;
         }
@@ -71,7 +72,7 @@ public class MemberService {
             memberRepository.delete(member);
 //            deleteRefreshTokens(username);
         } else {
-            throw new RuntimeException("Member not found");
+            throw new RuntimeException("존재하지 않는 회원입니다.");
         }
     }
 
@@ -96,7 +97,6 @@ public class MemberService {
                 member.getTeam() != null ? member.getTeam().getId() : null
             );
         } else {
-            // 예외 처리 로직 추가 (예: 회원을 찾을 수 없을 때)
             throw new RuntimeException("Member not found");
         }
     }
