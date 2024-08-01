@@ -5,18 +5,19 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import SendIcon from '@mui/icons-material/Send';
 import webSocketService from '../../api/WebSocketService';
 import axios from 'axios';
+import { API_BASE_URL } from '../../api/config';
 import { useSelector } from 'react-redux';
 
 const Chat = () => {
   const { token, member } = useSelector(state => state.member);
-  const teamId = member.team_id;
-  const currentUserId = member.member_id; 
+  const teamId = member.teamId;
+  const currentUsername = member.username; 
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
 
   useEffect(() => {
     // 서버에서 채팅 기록 가져오기
-    axios.get(`/team/${teamId}/chat`, {
+    axios.get(`${API_BASE_URL}/team/${teamId}/chat`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -56,7 +57,7 @@ const Chat = () => {
     <S.Container>
       <S.ChatContentWrapper>
         {messages.map((msg, index) => (
-          msg.userId === currentUserId ? (
+          msg.userId === currentUsername ? (
             <S.ChatMy key={index}>
               <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <S.MyInfoText style={{ alignSelf: 'flex-end' }}>

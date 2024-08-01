@@ -15,7 +15,7 @@ class WebSocketService {
     this.token = token;
 
     this.client = new Client({
-      brokerURL: 'ws://localhost:9090/ws', // WebSocket 서버 URL
+      brokerURL: 'ws://localhost:8080/ws', // WebSocket 서버 URL
       connectHeaders: {
         Authorization: `Bearer ${token}` // WebSocket 연결 시 헤더에 토큰 포함
       },
@@ -25,7 +25,7 @@ class WebSocketService {
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
-      webSocketFactory: () => new SockJS('http://localhost:9090/ws') // WebSocket 엔드포인트 URL
+      webSocketFactory: () => new SockJS(`http://localhost:8080/ws`) // WebSocket 엔드포인트 URL
     });
 
     this.client.onConnect = () => {
