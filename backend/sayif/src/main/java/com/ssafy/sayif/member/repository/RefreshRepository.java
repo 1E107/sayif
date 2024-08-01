@@ -14,5 +14,6 @@ public interface RefreshRepository extends JpaRepository<Refresh, Long> {
 
     List<Refresh> findByUsername(String username);
 
-    void deleteByUsername(String username);
+    @Transactional
+    void deleteAllByUsername(String username);
 }
