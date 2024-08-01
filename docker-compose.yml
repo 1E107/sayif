@@ -9,7 +9,7 @@ services:
       - "7777:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=secret
-      - SPRING_PROFILES_ACTIVE=prod
+      - openvidu.url=http://i11e107.p.ssafy.io:4443
         
   frontend:
     image: leechanghojjang/sayif-frontend:latest
