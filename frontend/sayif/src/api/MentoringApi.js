@@ -47,8 +47,6 @@ export const applyMentoring = async (id, token) => {
 };
 
 export const getTeamStatue = async(id, token) => {
-    const data = {id: id};
-
     try {
         const response = await axios.get(`${API_BASE_URL}/mentoring/team/${id}`, {
             headers: {
