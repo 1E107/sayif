@@ -1,5 +1,6 @@
 // MeetingStyled.jsx
 import styled from 'styled-components';
+import Button from '@mui/material/Button';
 import '../../../styles/fonts.css';
 
 const Container = styled.div`
@@ -47,9 +48,25 @@ const ButtonContainer = styled.div`
     margin-top: 20px;
 `;
 
-const Button = styled.button`
-    margin: 0 10px;
-`;
+const CustomBtn = styled(Button)({
+    border: "1px solid #116530 !important",
+    color: "#116530 !important",
+    borderRadius: "15px !important",
+    fontFamily: "ChosunGu !important",
+    marginRight: "20px !important",
+    width: "180px !important",
+    margin: "0 10px"
+})
+const DiffBtn = styled(Button)({
+    border: "1px solid #116530 !important",
+    backgroundColor: "#116530 !important", // 글자색을 배경색으로 설정
+    color: "#ffffff !important", // 텍스트를 흰색으로 설정
+    borderRadius: "15px !important",
+    fontFamily: "ChosunGu !important",
+    marginRight: "20px !important",
+    width: "180px !important",
+    margin: "0 10px"
+});
 
 const S = {
     Container,
@@ -58,7 +75,8 @@ const S = {
     VideoContainer,
     ChatContainer,
     ButtonContainer,
-    Button,
+    CustomBtn,
+    DiffBtn
 };
 
 export default S;
