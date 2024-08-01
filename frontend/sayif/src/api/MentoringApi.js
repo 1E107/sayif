@@ -82,3 +82,14 @@ export const submitMentoringGroup = async(start_date, day_of_week, time, pmam, i
         throw error;
     }
 }
+
+export const getTotalMentor = async(token) => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/mentoring/mentor-nickname`, {
+            headers: { Authorization: `Bearer ${token}`}
+        });
+        return response;
+    }catch(error) {
+        throw error;
+    }
+}
