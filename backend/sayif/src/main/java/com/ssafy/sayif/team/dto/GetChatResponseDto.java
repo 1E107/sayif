@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 public class GetChatResponseDto {
 
-    private Integer username;
+    private String username;
     private String msgContent;
     private LocalDateTime sendAt;
 }

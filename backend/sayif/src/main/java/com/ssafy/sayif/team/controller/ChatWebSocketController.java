@@ -3,7 +3,6 @@ package com.ssafy.sayif.team.controller;
 import com.ssafy.sayif.member.entity.Member;
 import com.ssafy.sayif.member.jwt.JWTUtil;
 import com.ssafy.sayif.member.repository.MemberRepository;
-import com.ssafy.sayif.team.dto.GetChatResponseDto;
 import com.ssafy.sayif.team.dto.PostChatRequestDto;
 import com.ssafy.sayif.team.entity.Team;
 import com.ssafy.sayif.team.entity.TeamMsg;
@@ -11,7 +10,6 @@ import com.ssafy.sayif.team.repository.TeamMsgRepository;
 import com.ssafy.sayif.team.repository.TeamRepository;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -22,18 +20,13 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 @Controller
 @RequiredArgsConstructor
-public class ChatController {
+public class ChatWebSocketController {
 
     private final MemberRepository memberRepository;
     private final TeamMsgRepository teamMsgRepository;
@@ -83,20 +76,5 @@ public class ChatController {
         teamMsgRepository.save(message);
 
         messagingTemplate.convertAndSend("/topic/" + teamId, message);
-    }
-
-    @GetMapping("/team/{teamId}/chat")
-    public List<GetChatResponseDto> getTeamMessages(@PathVariable("teamId") Integer teamId) {
-        List<TeamMsg> teamMsgs = teamMsgRepository.findByTeamIdOrderBySendAtAsc(teamId);
-
-        return teamMsgs.stream()
-            .map(msg -> {
-                GetChatResponseDto chatResponseDto = new GetChatResponseDto();
-                chatResponseDto.setUsername(msg.getMember().getId());
-                chatResponseDto.setMsgContent(msg.getMsgContent());
-                chatResponseDto.setSendAt(msg.getSendAt());
-                return chatResponseDto;
-            })
-            .collect(Collectors.toList());
     }
 }
