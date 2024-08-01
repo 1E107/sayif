@@ -5,6 +5,7 @@ import QuizList from "../../components/Team/StudyQuiz/QuizList"
 import Story from "../../components/Team/Story/Story";
 import Chat from "../../components/Team/Chat";
 import CreateStory from "../../components/Team/Story/CreateStory";
+import Meeting from "../../components/Team/Meeting"
 
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
@@ -30,6 +31,7 @@ const MainPage = () => {
             {location.pathname === '/team/story-board' && <Story/>}
             {location.pathname === '/team/message' && <Chat/>}
             {location.pathname === '/team/create-story' && <CreateStory/>}
+            {location.pathname === '/team/meeting' && <Meeting/>}
         </Main>
     )
 }
