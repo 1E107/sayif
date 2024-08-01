@@ -7,11 +7,14 @@ services:
       dockerfile: Dockerfile
     ports:
       - "7777:8080"
+    volumes:
+      - /var/jenkins_home/workspace/sayif/backend/sayif/src/main/resources/application-secret.yml:/app/config/application-secret.yml
     environment:
       - SPRING_PROFILES_ACTIVE=secret
       - openvidu.url=${OPENVIDU_URL}
       - openvidu.secret=${OPENVIDU_SECRET}
-        
+      - spring.config.additional-location=/app/config/application-secret.yml
+  
   frontend:
     image: leechanghojjang/sayif-frontend:latest
     build:
