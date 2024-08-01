@@ -109,7 +109,7 @@ function Header() {
 
   return (
     <AppBar position="fixed">
-      <Container maxWidth="xl" style={{backgroundColor: 'white'}}>
+      <Container style={{backgroundColor: 'white', margin: "0px", width: "100%", padding: "0px 30px 0px 30px", maxWidth: 'none'}}>
         <Toolbar disableGutters>
           
           <Typography
