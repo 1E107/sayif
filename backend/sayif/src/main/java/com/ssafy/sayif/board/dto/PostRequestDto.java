@@ -10,10 +10,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ModifyPostRequestDto {
+public class PostRequestDto {
 
     private String title;
     private String content;
     private String file;
+    private String username;
     private BoardType type;
 }
