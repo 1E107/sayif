@@ -18,6 +18,7 @@ import { useSelector } from 'react-redux';
 import { getTeamStatue } from '../../api/MentoringApi'; 
 import { useState } from 'react';
 import NoTeamModal from '../Mentoring/NoTeamModal';
+import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 
 const pages = ['새잎 소개', '멘토링', '소통 공간', '정보 공간'];
 const settings = {
@@ -79,6 +80,10 @@ function Header() {
     navigate("/member/login");
   }
 
+  const handleRegistPage = () => {
+    navigate("/member/regist");
+  }
+
   const handleCloseNoTeamModal = () => {
     setShowNoTeamModal(false);
   }
@@ -105,7 +110,7 @@ function Header() {
 
   return (
     <AppBar position="fixed">
-      <Container maxWidth="xl" style={{backgroundColor: 'white'}}>
+      <Container style={{backgroundColor: 'white', margin: "0px", width: "100%", padding: "0px 30px 0px 30px", maxWidth: 'none'}}>
         <Toolbar disableGutters>
           
           <Typography
@@ -298,11 +303,18 @@ function Header() {
               </div>
              
             ) : (
-              <Tooltip title="로그인">
-              <IconButton sx={{ p: 0 }} onClick={handleLoginPage}>
-                <PersonOutlineIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-              </IconButton>
-            </Tooltip>
+              <>
+                 <Tooltip title="로그인">
+                  <IconButton sx={{ p: 0 }} onClick={handleLoginPage}>
+                    <PersonOutlineIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="회원가입">
+                  <IconButton sx={{ p: 0 }} onClick={handleRegistPage}>
+                    <PersonAddAltIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+                  </IconButton>
+                </Tooltip>
+              </>
             )}
           </Box>
         </Toolbar>

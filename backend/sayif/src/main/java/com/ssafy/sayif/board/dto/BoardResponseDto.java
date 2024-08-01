@@ -16,7 +16,7 @@ public class BoardResponseDto {
     private int id;
     private String title;
     private String content;
-    private String file;
+    private byte[] file;
     private String writer;
     private BoardType type;
     private int hitCount;

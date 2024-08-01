@@ -1,7 +1,6 @@
 package com.ssafy.sayif.board.controller;
 
-import com.ssafy.sayif.board.dto.ModifyPostRequestDto;
-import com.ssafy.sayif.board.dto.WritePostRequestDto;
+import com.ssafy.sayif.board.dto.PostRequestDto;
 import com.ssafy.sayif.board.entity.BoardType;
 import com.ssafy.sayif.board.service.BoardService;
 import com.ssafy.sayif.common.exception.ImageStorageException;
@@ -41,7 +40,7 @@ public class BoardController {
      * @return 생성된 게시물에 대한 응답
      */
     @PostMapping
-    public ResponseEntity<?> writePost(@RequestPart("post") WritePostRequestDto dto,
+    public ResponseEntity<?> writePost(@RequestPart("post") PostRequestDto dto,
         @RequestPart("file") MultipartFile file) {
         try {
             byte[] imageContent = file.getBytes();
@@ -71,7 +70,7 @@ public class BoardController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<?> modifyPost(@PathVariable("id") int id,
-        @RequestBody ModifyPostRequestDto dto) {
+        @RequestBody PostRequestDto dto) {
         return ResponseEntity.ok(boardService.modifyPost(id, dto));
     }
 
