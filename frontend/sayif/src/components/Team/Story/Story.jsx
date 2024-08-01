@@ -27,10 +27,9 @@ function Story() {
     }
 
     useEffect(() => {
-        console.log(member.team_id);
         const callStoryList = async () => {
             try {
-                const response = await getStoryList(member.team_id, token);
+                const response = await getStoryList(member.teamId, token);
                 if (response.status == 200) {
                     const storyList = response.data;
                     {
@@ -72,7 +71,7 @@ function Story() {
 
                         return (
                             <S.CustomImg
-                                key={write.content_id}
+                                key={write.contentId}
                                 src={`/img/Story/Post-it${write.randomValue}.png`}
                                 style={style}
                                 onClick={() => {

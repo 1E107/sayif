@@ -91,7 +91,7 @@ function Header() {
   const handleTeamPage = () => {
     const callGetStatus = async () => {
       try {
-        const response = await getTeamStatue(member.team_id, token);
+        const response = await getTeamStatue(member.teamId, token);
         if(response.status === 200) {
           if(response.data.status === 'Proceed') {
             navigate("/team");
@@ -110,7 +110,7 @@ function Header() {
 
   return (
     <AppBar position="fixed">
-      <Container style={{backgroundColor: 'white', margin: "0px", width: "100%", padding: "0px 30px 0px 30px", maxWidth: 'none'}}>
+      <Container style={{backgroundColor: 'white', margin: "0px", width: "100%", padding: "0px 30px 0px 3git0px", maxWidth: 'none'}}>
         <Toolbar disableGutters>
           
           <Typography
@@ -309,11 +309,11 @@ function Header() {
                     <PersonOutlineIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
                   </IconButton>
                 </Tooltip>
-                <Tooltip title="회원가입">
+                {/* <Tooltip title="회원가입">
                   <IconButton sx={{ p: 0 }} onClick={handleRegistPage}>
                     <PersonAddAltIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
                   </IconButton>
-                </Tooltip>
+                </Tooltip> */}
               </>
             )}
           </Box>

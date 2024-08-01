@@ -41,6 +41,10 @@ function Login() {
         setLoginPassword(event.target.value);
     };
 
+    const handleRegist = () => {
+        navigate("/member/regist");
+    }
+
     const LoginView = (
         <S.Container style={{ height: failedLogin ? '350px' : '300px' }}>
             <S.Input placeholder="ID" onChange={handleId}></S.Input>
@@ -50,7 +54,7 @@ function Login() {
                 onChange={handlePassword}
             ></S.Input>
             <S.LoginButton onClick={handleLogin}>로그인</S.LoginButton>
-            <S.RegistButton>회원가입</S.RegistButton>
+            <S.RegistButton onClick={handleRegist}>회원가입</S.RegistButton>
             {failedLogin && (
                 <Alert severity="error" style={{ width: '380px' }}>
                     로그인에 실패했습니다.
