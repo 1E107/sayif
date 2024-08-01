@@ -1,11 +1,11 @@
 package com.ssafy.sayif.board.service;
 
 import com.ssafy.sayif.board.dto.BoardResponseDto;
-import com.ssafy.sayif.board.dto.ModifyPostRequestDto;
-import com.ssafy.sayif.board.dto.WritePostRequestDto;
+import com.ssafy.sayif.board.dto.PostRequestDto;
 import com.ssafy.sayif.board.entity.Board;
 import com.ssafy.sayif.board.entity.BoardType;
 import com.ssafy.sayif.board.repository.BoardRepository;
+import com.ssafy.sayif.common.service.ImageService;
 import com.ssafy.sayif.member.entity.Member;
 import com.ssafy.sayif.member.exception.MemberNotFoundException;
 import com.ssafy.sayif.member.repository.MemberRepository;
@@ -30,9 +30,12 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class BoardService {
 
+    private final String bucketName = "board-images";
+
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
     private final GoodService goodService;
+    private final ImageService imageService;
 
     /**
      * 새로운 게시글을 작성합니다.
@@ -41,7 +44,7 @@ public class BoardService {
      * @return 작성된 게시글의 DTO를 감싼 Optional 객체
      * @throws MemberNotFoundException 해당 ID의 멤버가 존재하지 않을 경우 예외를 던집니다.
      */
-    public Optional<BoardResponseDto> writePost(WritePostRequestDto dto) {
+    public Optional<BoardResponseDto> writePost(PostRequestDto dto) {
         // 모든 멤버 정보를 로그에 출력
         for (Member member : memberRepository.findAll()) {
             log.info(member.toString());
@@ -76,7 +79,7 @@ public class BoardService {
      * @return 수정된 게시글의 DTO를 감싼 Optional 객체
      * @throws IllegalArgumentException 해당 ID의 게시글이 존재하지 않을 경우 예외를 던집니다.
      */
-    public Optional<BoardResponseDto> modifyPost(int id, ModifyPostRequestDto dto) {
+    public Optional<BoardResponseDto> modifyPost(int id, PostRequestDto dto) {
         // 수정할 게시글 조회
         Board existBoard = boardRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Invalid board ID: " + id));
@@ -167,7 +170,7 @@ public class BoardService {
             .id(board.getId())
             .title(board.getTitle())
             .content(board.getContent())
-            .file(board.getFile())
+            .file(imageService.getImage(board.getFile(), bucketName))
             .writer(board.getMember().getName())
             .type(board.getType())
             .hitCount(board.getHitCount())
