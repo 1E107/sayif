@@ -9,4 +9,9 @@ public class TestController {
     public String dockerTest() {
         return "hello docker!";
     }
+
+    @GetMapping("/api/abc")
+    public String abctest() {
+        return "hello abc!";
+    }
 }
