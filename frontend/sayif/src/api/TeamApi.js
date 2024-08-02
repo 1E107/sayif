@@ -49,3 +49,25 @@ export const postStory = async(teamId, token, content) => {
         throw error;
     }
 }
+
+export const getQnAList = async(teamId, token, page, size) => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/team/board/${teamId}/${page}/${size}`, {
+            headers: {Authorization: `Bearer ${token}`}
+        })
+        return response;
+    } catch(error) {
+        throw error;
+    }
+}
+
+export const getQnADetail = async(boardId, token) => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/team/board/detail/${boardId}`, {
+            headers: {Authorization: `Bearer ${token}`}
+        })
+        return response;
+    }catch(error) {
+        throw error;
+    }
+}

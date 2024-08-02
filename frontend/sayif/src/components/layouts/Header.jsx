@@ -90,19 +90,22 @@ function Header() {
 
   const handleTeamPage = () => {
     const callGetStatus = async () => {
-      try {
-        const response = await getTeamStatue(member.teamId, token);
-        if(response.status === 200) {
-          if(response.data.status === 'Proceed') {
-            navigate("/team");
+      if(member.teamId) {
+        try {
+          const response = await getTeamStatue(member.teamId, token);
+          if(response.status === 200) {
+            if(response.data.status === 'Proceed') {
+              navigate("/team");
+            }
+            else {
+              setShowNoTeamModal(true);
+            }
           }
-          else {
-            setShowNoTeamModal(true);
-          }
+        }catch(error) {
+          console.log(error);
         }
-      }catch(error) {
-        console.log("error!");
-        console.log(error);
+      } else {
+        setShowNoTeamModal(true);
       }
     };
     callGetStatus();
