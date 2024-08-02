@@ -5,7 +5,7 @@ import com.ssafy.sayif.board.dto.PostRequestDto;
 import com.ssafy.sayif.board.entity.Board;
 import com.ssafy.sayif.board.entity.BoardType;
 import com.ssafy.sayif.board.repository.BoardRepository;
-import com.ssafy.sayif.common.service.ImageService;
+import com.ssafy.sayif.common.service.FileService;
 import com.ssafy.sayif.member.entity.Member;
 import com.ssafy.sayif.member.exception.MemberNotFoundException;
 import com.ssafy.sayif.member.repository.MemberRepository;
@@ -35,7 +35,7 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
     private final GoodService goodService;
-    private final ImageService imageService;
+    private final FileService fileService;
 
     /**
      * 새로운 게시글을 작성합니다.
@@ -170,7 +170,7 @@ public class BoardService {
             .id(board.getId())
             .title(board.getTitle())
             .content(board.getContent())
-            .file(imageService.getImage(board.getFile(), bucketName))
+            .fileUrl(fileService.getFileUrl(board.getFile(), bucketName))
             .writer(board.getMember().getName())
             .type(board.getType())
             .hitCount(board.getHitCount())
@@ -179,5 +179,6 @@ public class BoardService {
             .isRemove(board.getIsRemove())
             .goodCount(goodService.getGoodCountByBoardId(board.getId()))
             .build();
+
     }
 }

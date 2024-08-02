@@ -21,6 +21,8 @@ const OpenViduApp = () => {
     const password = 'bangcutsoragodoongmeruohboksayif';
     const basicAuth = 'Basic ' + btoa(username + ':' + password);
 
+    const wsUrl = 'ws://i11e107.p.ssafy.io:4443/openvidu';
+
     let OV = useRef(null); // Ref로 OV를 관리
     let session = useRef(null); // Ref로 session을 관리
     let publisher = useRef(null); // 퍼블리셔도 Ref로 관리
@@ -137,7 +139,7 @@ const OpenViduApp = () => {
             })
             .then(token => {
                 session.current
-                    .connect(token)
+                    .connect(token, { wsUri: wsUrl })
                     .then(() => {
                         setIsConnected(true); // 사용자가 세션에 연결된 상태로 설정
                         if (!publisher.current) {
