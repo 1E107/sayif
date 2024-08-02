@@ -1,4 +1,4 @@
-import S from './InformationStyled'
+import S from './style/InformationStyled'
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
@@ -49,7 +49,6 @@ function Information() {
         if (infoList.length > 0) { 
             gridDisplay();
         }
-        console.log(rows);
     }, [infoList]); 
 
     const formatDateTime = (dateTime) => {

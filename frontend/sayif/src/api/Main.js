@@ -13,3 +13,14 @@ export const getSupportInfo = async (page, size, token) => {
         throw error;
     }
 }
+
+export const GetDetailSupportInfo = async(id, token) => {
+    try{
+        const response  = await axios.get(`${API_BASE_URL}/spt-info/detail/${id}`, {
+            headers: {Authorization: `Bearer ${token}`}
+        });
+        return response;
+    }catch(error) {
+        throw error;
+    }
+}

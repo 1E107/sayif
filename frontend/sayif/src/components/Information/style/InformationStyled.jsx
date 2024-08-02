@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import Typography from '@mui/material/Typography';
-import '../../styles/fonts.css'
+import '../../../styles/fonts.css'
 
 const Container = styled.div`
     display: flex;
