@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @PrimaryKeyJoinColumn(name = "mentee_id")
 @NoArgsConstructor
 @AllArgsConstructor

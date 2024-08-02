@@ -57,7 +57,7 @@ function QuizDetail({ quiz }) {
                 >
                     <nav aria-label="secondary mailbox folders">
                         <List sx={{ textAlign: 'center' }}>
-                            {quiz.quiz_choice_dto.map((item, index) => (
+                            {quiz.quizChoiceDto.map((item, index) => (
                                 <ListItem
                                     key={index}
                                     disablePadding
@@ -72,7 +72,7 @@ function QuizDetail({ quiz }) {
                                                     : 'gray',
                                         }}
                                         onClick={() =>
-                                            handleSelect(index, item.is_answer)
+                                            handleSelect(index, item.isAnswer)
                                         }
                                     >
                                         <ListItemText
@@ -82,7 +82,7 @@ function QuizDetail({ quiz }) {
                                                         fontFamily: 'ChosunGu',
                                                     }}
                                                 >
-                                                    {item.content}
+                                                    {index+1}. {item.content}
                                                 </Typography>
                                             }
                                         />

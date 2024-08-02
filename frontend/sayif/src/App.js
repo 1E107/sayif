@@ -9,7 +9,9 @@ import TeamHeader from './components/Team/layouts/TeamHeader';
 import BoardPage from './pages/Team/BoardPage';
 import LoginPage from './pages/Member/LoginPage';
 import CreatePage from './pages/Mentoring/CreatePage';
-
+import RegisterPage from './pages/Member/RegisterPage';
+import InformationPage from './pages/Information/InformationPage';
+import InformationDetailPage from './pages/Information/InformationDetailPage';
 import './App.css';
 
 function App() {
@@ -30,9 +32,12 @@ function App() {
                 <Route path="/team/*" element={<TeamPage />} />
                 <Route path="/team/board/detail/:id" element={<BoardPage />} />
                 <Route path="/member">
-                    <Route path="login" element={<LoginPage />}></Route>
+                    <Route path="login" element={<LoginPage />}/>
+                    <Route path="regist/*" element={<RegisterPage/>}/>
                 </Route>
                 <Route path="/create-mentoring" element={<CreatePage/>}/>
+                <Route path="/support-information" element={<InformationPage/>}/>
+                <Route path="/support-information/:id" element={<InformationDetailPage/>}/>
             </Routes>
         </>
     );

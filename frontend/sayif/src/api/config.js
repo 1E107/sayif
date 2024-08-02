@@ -1,1 +1,1 @@
-export const API_BASE_URL = 'http://localhost:9090';
+export const API_BASE_URL = 'http://i11e107.p.ssafy.io:7777';
