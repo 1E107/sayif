@@ -1,8 +1,10 @@
 package com.ssafy.sayif.team.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.sayif.member.entity.Member;
 import com.ssafy.sayif.member.jwt.JWTUtil;
 import com.ssafy.sayif.member.repository.MemberRepository;
+import com.ssafy.sayif.team.dto.GetChatResponseDto;
 import com.ssafy.sayif.team.dto.PostChatRequestDto;
 import com.ssafy.sayif.team.entity.Team;
 import com.ssafy.sayif.team.entity.TeamMsg;
@@ -43,7 +45,6 @@ public class ChatWebSocketController {
 
         if (username != null) {
             sessions.put(sessionId, username);
-            System.out.println(sessions);
         }
     }
 
@@ -58,14 +59,10 @@ public class ChatWebSocketController {
                             @Payload PostChatRequestDto chatRequestDto,
                             SimpMessageHeaderAccessor accessor) {
         String username = sessions.get(accessor.getSessionId());
-        System.out.println(username);
         Member currentUser = memberRepository.findByUsername(username);
 
         Team team = teamRepository.findById(teamId)
             .orElseThrow(() -> new RuntimeException("해당 팀을 찾을 수 없습니다."));
-
-        System.out.println(currentUser.getName());
-        System.out.println(team.getId());
 
         if (!currentUser.getTeam().getId().equals(teamId)) {
             throw new RuntimeException("사용자가 속한 팀이 아닙니다.");
@@ -80,7 +77,12 @@ public class ChatWebSocketController {
 
         teamMsgRepository.save(message);
 
-        messagingTemplate.convertAndSend("/topic/" + teamId, message);
-        System.out.println("Message sent to /topic/" + teamId + ": " + message);
+        GetChatResponseDto chatResponseDto = new GetChatResponseDto();
+        chatResponseDto.setUsername(message.getMember().getUsername());
+        chatResponseDto.setMsgContent(message.getMsgContent());
+        chatResponseDto.setSendAt(message.getSendAt());
+
+        messagingTemplate.convertAndSend("/topic/" + teamId, chatResponseDto);
+        System.out.println("Message sent to /topic/" + teamId + ": " + chatResponseDto);
     }
 }
