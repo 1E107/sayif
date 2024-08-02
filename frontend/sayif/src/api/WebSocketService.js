@@ -5,6 +5,8 @@ class WebSocketService {
   constructor() {
     this.client = null;
     this.token = null;
+    this.onConnectCallbacks = [];
+    this.subscriptions = new Map(); // 구독 상태를 추적하기 위한 맵
   }
 
   connect(token) {
@@ -15,21 +17,23 @@ class WebSocketService {
     this.token = token;
 
     this.client = new Client({
-      brokerURL: 'ws://localhost:8080/ws', // WebSocket 서버 URL
+      brokerURL: 'ws://localhost:8080/ws',
       connectHeaders: {
-        Authorization: `Bearer ${token}` // WebSocket 연결 시 헤더에 토큰 포함
+        Authorization: `Bearer ${token}`
       },
       debug: function (str) {
-        console.log(str);
+        console.log('STOMP: ' + str);
       },
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
-      webSocketFactory: () => new SockJS(`http://localhost:8080/ws`) // WebSocket 엔드포인트 URL
+      webSocketFactory: () => new SockJS(`http://localhost:8080/ws`)
     });
 
-    this.client.onConnect = () => {
+    this.client.onConnect = (frame) => {
       console.log('Connected to WebSocket server');
+      console.log('Server frame:', frame);
+      this.onConnectCallbacks.forEach(callback => callback());
     };
 
     this.client.onStompError = (frame) => {
@@ -53,9 +57,10 @@ class WebSocketService {
         destination: topic,
         body: JSON.stringify(message),
         headers: {
-          Authorization: `Bearer ${this.token}` // 메시지 전송 시 헤더에 토큰 포함
+          Authorization: `Bearer ${this.token}`
         }
       });
+      console.log('Message sent to topic:', topic, 'Message:', message);
     } else {
       console.error('Unable to send message, WebSocket client is not connected');
     }
@@ -63,11 +68,26 @@ class WebSocketService {
 
   subscribe(topic, callback) {
     if (this.client && this.client.connected) {
-      console.log('Subscribing to topic:', topic);
-      return this.client.subscribe(topic, (message) => {
-        console.log('Received message:', message); // 메시지 내용 확인
-        callback(JSON.parse(message.body));
-      });
+      if (!this.subscriptions.has(topic)) {
+        console.log('Subscribing to topic:', topic);
+        const subscription = this.client.subscribe(topic, (message) => {
+          console.log('Raw message received:', message);
+          console.log('Message body:', message.body);
+          try {
+            const parsedBody = JSON.parse(message.body);
+            console.log('Parsed message:', parsedBody);
+            callback(parsedBody);
+          } catch (error) {
+            console.error('Error parsing message:', error);
+          }
+        });
+        this.subscriptions.set(topic, subscription); // 구독 상태 저장
+      } else {
+        console.log('Already subscribed to topic:', topic);
+      }
+    } else {
+      console.error('WebSocket is not connected. Unable to subscribe.');
+      this.onConnectCallbacks.push(() => this.subscribe(topic, callback));
     }
     return null;
   }
