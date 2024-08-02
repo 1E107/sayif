@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,17 +42,9 @@ public class BoardController {
     public ResponseEntity<?> writePost(@RequestPart("post") PostRequestDto dto,
         @RequestPart("file") MultipartFile file) {
         try {
-            byte[] imageContent = file.getBytes();
-            String filename = fileService.saveFileToMinio(imageContent, bucketName);
+            saveFileAndSetFilename(dto, file);
 
-            if (filename == null) {
-                throw new ImageStorageException("Failed to save file.");
-            }
-
-            // 이미지 파일 이름을 게시물 DTO에 설정
-            dto.setFile(filename);
-
-            // 게시물 작성 서비스 호출
+            // 게시물 수정 서비스 호출
             ResponseEntity.ok(boardService.writePost(dto));
             return ResponseEntity.ok("Post created successfully with image");
         } catch (IOException e) {
@@ -64,14 +55,36 @@ public class BoardController {
     /**
      * 게시물을 수정합니다.
      *
-     * @param id  수정할 게시물의 ID
-     * @param dto 게시물 수정 요청 데이터
+     * @param id   수정할 게시물의 ID
+     * @param dto  게시물 수정 요청 데이터
+     * @param file 업로드할 이미지 파일
      * @return 수정된 게시물에 대한 응답
      */
     @PutMapping("/{id}")
     public ResponseEntity<?> modifyPost(@PathVariable("id") int id,
-        @RequestBody PostRequestDto dto) {
-        return ResponseEntity.ok(boardService.modifyPost(id, dto));
+        @RequestPart("post") PostRequestDto dto,
+        @RequestPart("file") MultipartFile file) {
+        try {
+            saveFileAndSetFilename(dto, file);
+
+            // 게시물 작성 서비스 호출
+            ResponseEntity.ok(boardService.modifyPost(id, dto));
+            return ResponseEntity.ok("Post created successfully with image");
+        } catch (IOException e) {
+            return ResponseEntity.ok("Failed to create post: " + e.getMessage());
+        }
+    }
+
+    private void saveFileAndSetFilename(PostRequestDto dto, MultipartFile file) throws IOException {
+        byte[] fileContent = file.getBytes();
+        String filename = fileService.saveFileToMinio(fileContent, bucketName);
+
+        if (filename == null) {
+            throw new ImageStorageException("Failed to save file.");
+        }
+
+        // 이미지 파일 이름을 게시물 DTO에 설정
+        dto.setFile(filename);
     }
 
     /**
