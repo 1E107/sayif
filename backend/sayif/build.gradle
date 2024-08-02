@@ -31,6 +31,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.springframework:spring-websocket'
+    implementation 'org.springframework.security:spring-security-messaging'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -42,6 +43,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate5-jakarta'
 
     // JWT 의존성 추가
     implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
@@ -70,6 +72,9 @@ dependencies {
     implementation 'io.minio:minio:8.4.3'
     // tika 의존성 추가
     implementation 'org.apache.tika:tika-core:2.2.1'
+
+    // jackson 의존성 추가
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 }
 
 tasks.named('test') {

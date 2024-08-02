@@ -1,5 +1,8 @@
 package com.ssafy.sayif.team.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.ssafy.sayif.member.entity.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,11 +14,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Getter
@@ -32,7 +33,11 @@ public class TeamMsg {
     @Column(columnDefinition = "TEXT")
     private String msgContent;
 
+    @Setter
     @Column(name = "send_at")
+    @JsonProperty("sendAt")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @DateTimeFormat(pattern = "yyyy-MM-dd kk:mm:ss")
     private LocalDateTime sendAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -42,4 +47,5 @@ public class TeamMsg {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
     private Team team;
+
 }
