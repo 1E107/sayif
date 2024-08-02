@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 public class TestController {
-    @GetMapping("/")
+    @GetMapping("/api")
     public String dockerTest() {
         return "hello docker!";
     }
