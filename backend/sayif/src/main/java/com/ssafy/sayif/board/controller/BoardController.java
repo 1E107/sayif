@@ -4,7 +4,7 @@ import com.ssafy.sayif.board.dto.PostRequestDto;
 import com.ssafy.sayif.board.entity.BoardType;
 import com.ssafy.sayif.board.service.BoardService;
 import com.ssafy.sayif.common.exception.ImageStorageException;
-import com.ssafy.sayif.common.service.ImageService;
+import com.ssafy.sayif.common.service.FileService;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -29,11 +29,11 @@ import org.springframework.web.multipart.MultipartFile;
 public class BoardController {
 
     private final BoardService boardService;
-    private final ImageService imageService;
+    private final FileService fileService;
     private final String bucketName = "board-images";
 
     /**
-     * 게시물을 작성합니다. 게시물과 이미지를 함께 업로드할 수 있습니다.
+     * 게시물을 작성합니다. 게시물과 파일을 함께 업로드할 수 있습니다.
      *
      * @param dto  게시물 작성 요청 데이터
      * @param file 업로드할 이미지 파일
@@ -44,10 +44,10 @@ public class BoardController {
         @RequestPart("file") MultipartFile file) {
         try {
             byte[] imageContent = file.getBytes();
-            String filename = imageService.saveImageToMinio(imageContent, bucketName);
+            String filename = fileService.saveFileToMinio(imageContent, bucketName);
 
             if (filename == null) {
-                throw new ImageStorageException("Failed to save image.");
+                throw new ImageStorageException("Failed to save file.");
             }
 
             // 이미지 파일 이름을 게시물 DTO에 설정
@@ -125,7 +125,7 @@ public class BoardController {
     public ResponseEntity<byte[]> getImage(@PathVariable String filename) {
         String bucketName = "board-images";
         try {
-            byte[] imageData = imageService.downloadImage(filename, bucketName);
+            byte[] imageData = fileService.downloadFile(filename, bucketName);
             return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION,
                     "attachment; filename=\"" + filename + "\"")
