@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { OpenVidu } from 'openvidu-browser';
 import { useSelector } from 'react-redux';
-import { getTeamSessionId } from '../../api/MentoringApi';
+import { createSession, createConnection, closeSession } from '../../api/OpenViduApi';
+import {getTeamSessionId} from '../../api/MentoringApi';
 import S from './style/MeetingStyled';
+import { API_BASE_URL } from '../../api/config';
 
 const OpenViduApp = () => {
     const [sessionId, setSessionId] = useState('');
@@ -16,16 +18,15 @@ const OpenViduApp = () => {
     const chatMessagesRef = useRef(null);
     const { token, member } = useSelector(state => state.member);
 
-    const serverUrl = 'http://i11e107.p.ssafy.io:7777';
-    const username = 'OPENVIDUAPP';
-    const password = 'bangcutsoragodoongmeruohboksayif';
-    const basicAuth = 'Basic ' + btoa(username + ':' + password);
+    // OpenVidu 서버의 주소를 http 또는 https로 설정
+    const openViduUrl = 'http://i11e107.p.ssafy.io:4443';
 
-    const wsUrl = 'ws://i11e107.p.ssafy.io:4443';
+    // WebSocket URL을 ws 또는 wss로 설정
+    const wsUrl = 'wss://i11e107.p.ssafy.io:4443';
 
-    let OV = useRef(null); // Ref로 OV를 관리
-    let session = useRef(null); // Ref로 session을 관리
-    let publisher = useRef(null); // 퍼블리셔도 Ref로 관리
+    let OV = useRef(null);
+    let session = useRef(null);
+    let publisher = useRef(null);
 
     useEffect(() => {
         return () => {
@@ -38,63 +39,42 @@ const OpenViduApp = () => {
     useEffect(() => {
         const checkSessionStatus = async () => {
             try {
-                console.log('member 정보:', member);
-
                 const response = await getTeamSessionId(member.teamId, token);
-                console.log(response);
                 const teamSessionId = response.sessionId;
                 setSessionId(teamSessionId);
-                console.log(teamSessionId);
                 if (teamSessionId === null) {
-                    setSessionStatus(
-                        member.role === 'Mentor' ? 'mentor' : 'mentee',
-                    );
+                    setSessionStatus(member.role === 'Mentor' ? 'mentor' : 'mentee');
                 } else {
                     setSessionStatus('exists');
                 }
             } catch (error) {
-                console.error(
-                    'Error fetching session ID:',
-                    error.response ? error.response.data : error.message,
-                );
+                console.error('Error fetching session ID:', error.response ? error.response.data : error.message);
             }
         };
 
         checkSessionStatus();
     }, [token, member.teamId, member.role]);
 
-    const createNewSession = () => {
-        fetch(`${serverUrl}/openvidu/api/sessions`, {
-            method: 'POST',
-            headers: {
-                Authorization: basicAuth,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({}),
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to create session');
-                }
-                return response.text(); // JSON이 아닌 텍스트로 응답 처리
-            })
-            .then(newSessionId => {
-                setCurrentSessionId(newSessionId);
-                setSessionId(newSessionId);
-                joinSession(newSessionId);
-            })
-            .catch(error => {
-                console.error('Error creating session:', error);
-            });
+    const handleCreateNewSession = async () => {
+        try {
+            const newSessionId = await createSession();  //openvidu/api/sessions
+            setCurrentSessionId(newSessionId);
+            setSessionId(newSessionId);
+            joinSession(newSessionId);
+        } catch (error) {
+            console.error('Error creating session:', error);
+        }
     };
 
-    const joinSession = sessionId => {
+    const joinSession = async (sessionId) => {
         if (!sessionId) {
             console.error('No session ID provided');
             return;
         }
 
-        OV.current = new OpenVidu();
+        OV.current = new OpenVidu({
+            url: openViduUrl,
+        });
         session.current = OV.current.initSession();
 
         session.current.on('streamDestroyed', event => {
@@ -123,51 +103,31 @@ const OpenViduApp = () => {
             chatMessages.scrollTop = chatMessages.scrollHeight;
         });
 
-        fetch(`${serverUrl}/openvidu/api/sessions/${sessionId}/connection`, {
-            method: 'POST',
-            headers: {
-                Authorization: basicAuth,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({}),
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to create connection');
-                }
-                return response.text(); // JSON이 아닌 텍스트로 응답 처리
-            })
-            .then(token => {
-                session.current
-                    .connect(token, { wsUri: wsUrl })
-                    .then(() => {
-                        setIsConnected(true); // 사용자가 세션에 연결된 상태로 설정
-                        if (!publisher.current) {
-                            publisher.current = OV.current.initPublisher(
-                                videoContainerRef.current,
-                                {
-                                    resolution: '640x480',
-                                    frameRate: 30,
-                                    insertMode: 'APPEND',
-                                    mirror: false,
-                                },
-                            );
-                            publisher.current.once(
-                                'videoElementCreated',
-                                event => {
-                                    event.element.classList.add('published');
-                                },
-                            );
-                            session.current.publish(publisher.current);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error connecting to session:', error);
-                    });
-            })
-            .catch(error => {
-                console.error('Error fetching token:', error);
-            });
+        try {
+            const token = await createConnection(sessionId);    //openvidu/api/sessions/{sessionId}/connection
+            await session.current.connect(token, { wsUri: wsUrl });
+            setIsConnected(true);
+            if (!publisher.current) {
+                publisher.current = OV.current.initPublisher(
+                    videoContainerRef.current,
+                    {
+                        resolution: '640x480',
+                        frameRate: 30,
+                        insertMode: 'APPEND',
+                        mirror: false,
+                    },
+                );
+                publisher.current.once(
+                    'videoElementCreated',
+                    event => {
+                        event.element.classList.add('published');
+                    },
+                );
+                session.current.publish(publisher.current);
+            }
+        } catch (error) {
+            console.error('Error connecting to session:', error);
+        }
     };
 
     const startScreenShare = () => {
@@ -226,33 +186,19 @@ const OpenViduApp = () => {
         }
     };
 
-    const closeSession = () => {
+    const handleCloseSession = async () => {
         if (!currentSessionId) {
             console.error('No active session to close');
             return;
         }
 
-        fetch(`${serverUrl}/openvidu/api/sessions/${currentSessionId}`, {
-            method: 'DELETE',
-            headers: {
-                Authorization: basicAuth,
-                'Content-Type': 'application/json',
-            },
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to close session');
-                }
-                return response.text();
-            })
-            .then(message => {
-                console.log(message);
-                setCurrentSessionId(null);
-                setIsConnected(false); // 사용자가 세션에서 연결 해제된 상태로 설정
-            })
-            .catch(error => {
-                console.error('Error closing session:', error);
-            });
+        try {
+            await closeSession(currentSessionId);
+            setCurrentSessionId(null);
+            setIsConnected(false);
+        } catch (error) {
+            console.error('Error closing session:', error);
+        }
     };
 
     return (
@@ -261,7 +207,7 @@ const OpenViduApp = () => {
             {!isConnected && (
                 <>
                     {sessionStatus === 'mentor' && (
-                        <S.DiffBtn onClick={createNewSession}>
+                        <S.DiffBtn onClick={handleCreateNewSession}>
                             Create New Session
                         </S.DiffBtn>
                     )}
@@ -307,7 +253,7 @@ const OpenViduApp = () => {
 
             {isConnected && (
                 <S.ButtonContainer $isConnected={isConnected}>
-                    <S.CustomBtn onClick={closeSession}>
+                    <S.CustomBtn onClick={handleCloseSession}>
                         Close Session
                     </S.CustomBtn>
                     <S.CustomBtn onClick={startScreenShare}>
