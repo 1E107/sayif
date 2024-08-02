@@ -26,6 +26,7 @@ const InfoTitle = styled(Typography)({
     fontFamily: "ChosunGu !important",
     fontSize: "18px !important",
     padding: "10px !important",
+    width: "200px !important",
 });
 
 const InfoContent = styled(Typography)({
