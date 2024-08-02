@@ -21,7 +21,7 @@ const OpenViduApp = () => {
     const password = 'bangcutsoragodoongmeruohboksayif';
     const basicAuth = 'Basic ' + btoa(username + ':' + password);
 
-    const wsUrl = 'ws://i11e107.p.ssafy.io:4443/openvidu';
+    const wsUrl = 'ws://i11e107.p.ssafy.io:4443';
 
     let OV = useRef(null); // Ref로 OV를 관리
     let session = useRef(null); // Ref로 session을 관리
