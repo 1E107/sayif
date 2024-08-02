@@ -4,46 +4,62 @@ import FormControl from '@mui/material/FormControl';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import SendIcon from '@mui/icons-material/Send';
 import webSocketService from '../../api/WebSocketService';
-import axios from 'axios';
 import { API_BASE_URL } from '../../api/config';
+import axios from 'axios';
 import { useSelector } from 'react-redux';
 
 const Chat = () => {
-  const { token, member } = useSelector(state => state.member);
+  const { token, member } = useSelector((state) => state.member);
   const teamId = member.teamId;
-  const currentUsername = member.username; 
+  const currentUserName = member.username; // 확인
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
 
   useEffect(() => {
+    let isSubscribed = true;
+
     // 서버에서 채팅 기록 가져오기
-    axios.get(`${API_BASE_URL}/team/${teamId}/chat`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
-    .then(response => {
-      setMessages(response.data);
-    })
-    .catch(error => {
-      console.error('Failed to fetch messages', error);
-    });
+    axios
+      .get(`${API_BASE_URL}/team/${teamId}/chat`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        if (isSubscribed) {
+          setMessages(response.data);
+        }
+      })
+      .catch((error) => {
+        console.error('Failed to fetch messages', error);
+      });
 
     // WebSocket 연결 및 구독
     webSocketService.connect(token);
-    const subscription = webSocketService.subscribe(`/topic/${teamId}`, (message) => {
-    console.log('Received message:', message); // 메시지를 받았는지 확인
-    setMessages(prevMessages => [...prevMessages, message]);
-  });
 
-    // 페이지가 언마운트될 때 구독 해제
+    const subscription = webSocketService.subscribe(`/topic/${teamId}`, (message) => {
+      console.log('Received message:', message);
+      setMessages((prevMessages) => {
+        if (
+          !prevMessages.some(
+            (msg) =>
+              msg.sendAt === message.sendAt && msg.msgContent === message.msgContent
+          )
+        ) {
+          return [...prevMessages, message];
+        }
+        return prevMessages;
+      });
+    });
+
     return () => {
+      isSubscribed = false;
       if (subscription) {
         subscription.unsubscribe();
       }
       webSocketService.disconnect();
     };
-  }, [teamId, token]);
+  }, [teamId, token, currentUserName]);
 
   const handleSendBtn = () => {
     const message = {
@@ -57,14 +73,16 @@ const Chat = () => {
   return (
     <S.Container>
       <S.ChatContentWrapper>
-        {messages.map((msg, index) => (
-          msg.userId === currentUsername ? (
+        {messages.map((msg, index) =>
+          msg.username === currentUserName ? (
             <S.ChatMy key={index}>
               <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <S.MyInfoText style={{ alignSelf: 'flex-end' }}>
                   {msg.username} - {new Date(msg.sendAt).toLocaleTimeString()}
                 </S.MyInfoText>
-                <S.ChatContent style={{ backgroundColor: '#116530', color: 'white' }}>
+                <S.ChatContent
+                  style={{ backgroundColor: '#116530', color: 'white' }}
+                >
                   {msg.msgContent}
                 </S.ChatContent>
               </div>
@@ -77,13 +95,11 @@ const Chat = () => {
                 <S.OtherInfoText>
                   {msg.username} - {new Date(msg.sendAt).toLocaleTimeString()}
                 </S.OtherInfoText>
-                <S.ChatContent>
-                  {msg.msgContent}
-                </S.ChatContent>
+                <S.ChatContent>{msg.msgContent}</S.ChatContent>
               </div>
             </S.ChatOther>
           )
-        ))}
+        )}
       </S.ChatContentWrapper>
       <FormControl>
         <S.SendChatWrapper>
