@@ -40,7 +40,7 @@ const OpenViduApp = () => {
 
                 const response = await getTeamSessionId(member.teamId, token);
                 console.log(response);
-                const teamSessionId = response.session_id;
+                const teamSessionId = response.sessionId;
                 setSessionId(teamSessionId);
                 console.log(teamSessionId);
                 if (teamSessionId === null) {
