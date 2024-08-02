@@ -36,7 +36,7 @@ const menuToPage = {
   '멘토 프로필 조회' : '/',
   '멘토링 자료 공유' : '/',
   '자유 게시판' : '/community',
-  '자립 지원 정보' : '/info'
+  '자립 지원 정보' : '/support-information'
 } 
 
 function Header() {

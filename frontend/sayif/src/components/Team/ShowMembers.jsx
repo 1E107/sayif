@@ -69,7 +69,7 @@ function ShowMembers() {
                                 <CustomCardMedia>
                                     <div>
                                         <S.MentorNameText>{mentor.nickname}</S.MentorNameText>
-                                        <S.MentorInfoText>{campus[mentor.reg_code]} {mentor.seq}기 {mentor.track}</S.MentorInfoText>
+                                        <S.MentorInfoText>{campus[mentor.regCode]} {mentor.seq}기 {mentor.track}</S.MentorInfoText>
                                     </div>
                                     <div>
                                         <Box sx={{ flexGrow: 0 }}>
