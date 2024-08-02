@@ -22,7 +22,7 @@ function CreateStory() {
     const submitStory = () => {
         const callPostStory = async () => {
             try {
-                const response = await postStory(member.team_id, token, storyContent);
+                const response = await postStory(member.teamId, token, storyContent);
                 console.log(response);
             }catch(error) {
                 console.log(error);

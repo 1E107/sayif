@@ -8,6 +8,7 @@ import Typography from '@mui/material/Typography';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 function Information() {
     const navigate = useNavigate();
@@ -15,6 +16,10 @@ function Information() {
     const handleShowDetail = (id) => {
         navigate(`/support-information/${id}`)
     }
+
+    useEffect(() => {
+        
+    }, []);
 
     const InformationView = (
         <S.Container>
