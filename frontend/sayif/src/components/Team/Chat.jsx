@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import S from './style/ChatStyled';
 import FormControl from '@mui/material/FormControl';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -15,6 +15,9 @@ const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
 
+  // chatContentEndRef를 추가하여 대화창 끝부분을 참조
+  const chatContentEndRef = useRef(null); // 변경된 부분
+  
   useEffect(() => {
     let isSubscribed = true;
 
@@ -61,6 +64,13 @@ const Chat = () => {
     };
   }, [teamId, token, currentUserName]);
 
+  useEffect(() => {
+    if (chatContentEndRef.current) { // 변경된 부분
+      chatContentEndRef.current.scrollIntoView({ behavior: 'smooth' }); // 변경된 부분
+    }
+  }, [messages]); // messages가 변경될 때마다 실행
+
+
   const handleSendBtn = () => {
     const message = {
       msgContent: newMessage,
@@ -100,6 +110,7 @@ const Chat = () => {
             </S.ChatOther>
           )
         )}
+        <div ref={chatContentEndRef} />
       </S.ChatContentWrapper>
       <FormControl>
         <S.SendChatWrapper>
