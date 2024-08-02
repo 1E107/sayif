@@ -25,7 +25,6 @@ const OpenViduApp = () => {
     let session = useRef(null); // Ref로 session을 관리
     let publisher = useRef(null); // 퍼블리셔도 Ref로 관리
 
-
     useEffect(() => {
         return () => {
             if (session.current) {
@@ -39,7 +38,7 @@ const OpenViduApp = () => {
             try {
                 console.log('member 정보:', member);
 
-                const response = await getTeamSessionId(member.team_id, token);
+                const response = await getTeamSessionId(member.teamId, token);
                 console.log(response);
                 const teamSessionId = response.session_id;
                 setSessionId(teamSessionId);
@@ -60,7 +59,7 @@ const OpenViduApp = () => {
         };
 
         checkSessionStatus();
-    }, [token, member.team_id, member.role]);
+    }, [token, member.teamId, member.role]);
 
     const createNewSession = () => {
         fetch(`${serverUrl}/openvidu/api/sessions`, {
@@ -151,9 +150,12 @@ const OpenViduApp = () => {
                                     mirror: false,
                                 },
                             );
-                            publisher.current.once('videoElementCreated', event => {
-                                event.element.classList.add('published');
-                            });
+                            publisher.current.once(
+                                'videoElementCreated',
+                                event => {
+                                    event.element.classList.add('published');
+                                },
+                            );
                             session.current.publish(publisher.current);
                         }
                     })
@@ -288,21 +290,27 @@ const OpenViduApp = () => {
                     >
                         <h2>Chat</h2>
                         <div id="chat-messages" ref={chatMessagesRef}></div>
-                        <input 
+                        <input
                             type="text"
                             value={message}
                             onChange={e => setMessage(e.target.value)}
                             placeholder="Enter your message"
                         />
-                        <S.DiffBtn onClick={sendMessage}>Send Message</S.DiffBtn>
+                        <S.DiffBtn onClick={sendMessage}>
+                            Send Message
+                        </S.DiffBtn>
                     </S.ChatContainer>
                 </S.ContentContainer>
             )}
 
             {isConnected && (
                 <S.ButtonContainer $isConnected={isConnected}>
-                    <S.CustomBtn onClick={closeSession}>Close Session</S.CustomBtn>
-                    <S.CustomBtn onClick={startScreenShare}>Share Screen</S.CustomBtn>
+                    <S.CustomBtn onClick={closeSession}>
+                        Close Session
+                    </S.CustomBtn>
+                    <S.CustomBtn onClick={startScreenShare}>
+                        Share Screen
+                    </S.CustomBtn>
                     <S.CustomBtn onClick={toggleMute}>
                         {isMuted ? 'Unmute' : 'Mute'}
                     </S.CustomBtn>
