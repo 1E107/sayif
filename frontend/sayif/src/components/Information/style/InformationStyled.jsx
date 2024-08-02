@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import Typography from '@mui/material/Typography';
-import '../../styles/fonts.css'
+import '../../../styles/fonts.css'
 
 const Container = styled.div`
     display: flex;
@@ -26,6 +26,7 @@ const InfoTitle = styled(Typography)({
     fontFamily: "ChosunGu !important",
     fontSize: "18px !important",
     padding: "10px !important",
+    width: "200px !important",
 });
 
 const InfoContent = styled(Typography)({
