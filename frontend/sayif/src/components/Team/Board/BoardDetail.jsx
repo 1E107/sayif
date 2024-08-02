@@ -1,13 +1,15 @@
 import { useParams } from "react-router-dom";
 import S from "./style/BoardDetail";
 import { useEffect, useState } from "react";
-import { getQnADetail } from "../../../api/TeamApi";
+import { getQnADetail, getQnAComment, postQnAComment } from "../../../api/TeamApi";
 import { useSelector } from "react-redux";
 
 function BoardDetail() {
     const { id } = useParams();
     const {token, member} = useSelector(state => state.member);
     const [content, SetContent] = useState();
+    const [comment, SetComment] = useState();
+    const [writeComment, SetWriteComment] = useState();
 
     useEffect(() => {
         const callDetail = async() => {
@@ -21,8 +23,39 @@ function BoardDetail() {
             }
         }
 
+        const callCommentList = async() => {
+            try {
+                const response = await getQnAComment(id, token);
+                if(response.status === 200) {
+                    SetComment(response.data);
+                }
+            }catch(error) {
+                console.log(error);
+            }
+        }
+
         callDetail();
+        callCommentList();
     }, [id, token]);
+
+    const handleWriteComment = (event) => {
+        SetWriteComment(event.target.value);
+    }
+
+    const SubmitComment = () => {
+        const callPostComment = async() => {
+            try {
+                const response = await postQnAComment(id, token, writeComment);
+                if(response.status === 200) {
+                    alert("댓글이 성공적으로 등록되었습니다!");
+                    window.location.reload();
+                }
+            }catch(error) {
+                console.log(error);
+            }
+        }
+        callPostComment();
+    }
 
     const DetailView = (
         <S.Container>
@@ -38,16 +71,16 @@ function BoardDetail() {
                 <S.CustomHr/>
                 <S.CommentBox>
                     <S.CommentList>
-                        <S.CommentItem>
-                            <span style={{fontWeight:"bold"}}>고둥</span> <S.CommentDate>2024.07.30</S.CommentDate>
-                            <S.CommentContent>메모리 주소를 나타내며, 포인터 변수가 이 주소를 가리킬 수 있습니다. <br/>
-                            포인터가 가리키는 주소에 저장된 값을 나타내며 이 값을 읽거나 쓸 수 있습니다.
-                            </S.CommentContent>
-                        </S.CommentItem>
+                        {comment.map((data, index) => (
+                            <S.CommentItem>
+                                <span style={{fontWeight:"bold"}}>{data.username}</span> <S.CommentDate>2024.07.30</S.CommentDate>
+                                <S.CommentContent> {data.content} </S.CommentContent>
+                            </S.CommentItem>
+                        ))}
                     </S.CommentList>
                     <div style={{display: "flex", alignItems:"center"}}>
-                        <S.CommentWriteBox/>
-                        <S.CustomButton variant="contained">등록</S.CustomButton>
+                        <S.CommentWriteBox onChange={handleWriteComment}/>
+                        <S.CustomButton variant="contained" onClick={SubmitComment}>등록</S.CustomButton>
                     </div>
                 </S.CommentBox>
             </>) : (

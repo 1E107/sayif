@@ -71,3 +71,27 @@ export const getQnADetail = async(boardId, token) => {
         throw error;
     }
 }
+
+export const getQnAComment = async(boardId, token) => {
+    try{
+        const response = await axios.get(`${API_BASE_URL}/team/board/comment/${boardId}`, {
+            headers: {Authorization: `Bearer ${token}`}
+        }) 
+        return response;
+    }catch(error) {
+        throw error;
+    }
+}
+
+export const postQnAComment = async(boardId, token, comment) => {
+    const data = {content: comment};
+
+    try{
+        const response = await axios.post(`${API_BASE_URL}/team/board/comment/${boardId}`, data, {
+            headers: {Authorization: `Bearer ${token}`}
+        })
+        return response;
+    }catch(error) {
+        throw error;
+    }
+}
