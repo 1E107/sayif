@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,9 +28,9 @@ public class TeamBoardController {
     /**
      * 팀 게시글 작성
      *
-     * @param teamId              팀 ID
-     * @param dto                 게시글 작성 요청 DTO
-     * @param userDetails         인증 Header
+     * @param teamId      팀 ID
+     * @param dto         게시글 작성 요청 DTO
+     * @param userDetails 인증 Header
      * @return 작성된 게시글 정보
      */
     @PostMapping("/{teamId}")
@@ -50,9 +49,9 @@ public class TeamBoardController {
     /**
      * 팀 게시글 수정
      *
-     * @param boardId             게시글 ID
-     * @param dto                 게시글 수정 요청 DTO
-     * @param userDetails         인증 헤더
+     * @param boardId     게시글 ID
+     * @param dto         게시글 수정 요청 DTO
+     * @param userDetails 인증 헤더
      * @return 수정된 게시글 정보
      */
     @PutMapping("/{boardId}")
@@ -71,8 +70,8 @@ public class TeamBoardController {
     /**
      * 팀 게시글 삭제
      *
-     * @param boardId             게시글 ID
-     * @param userDetails         인증 헤더
+     * @param boardId     게시글 ID
+     * @param userDetails 인증 헤더
      * @return 삭제 결과 메시지
      */
     @DeleteMapping("/{boardId}")
@@ -117,13 +116,13 @@ public class TeamBoardController {
     /**
      * 팀 게시글 상세 조회
      *
-     * @param id 게시글 ID
+     * @param boardId 게시글 ID
      * @return 팀 게시글 상세 정보
      */
-    @GetMapping("/detail/{id}")
-    public ResponseEntity<?> getTeamPostDetail(@PathVariable("id") int id) {
+    @GetMapping("/detail/{boardId}")
+    public ResponseEntity<?> getTeamPostDetail(@PathVariable("boardId") int boardId) {
         try {
-            return ResponseEntity.ok(teamBoardService.getTeamPostDetail(id));
+            return ResponseEntity.ok(teamBoardService.getTeamPostDetail(boardId));
         } catch (Exception e) {
             return ResponseEntity.status(500).body("게시글 상세 조회 실패: " + e.getMessage());
         }
