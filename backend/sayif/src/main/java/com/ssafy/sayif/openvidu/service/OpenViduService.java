@@ -32,6 +32,7 @@ public class OpenViduService {
     @PostConstruct
     public void init() {
         this.openvidu = new OpenVidu(openviduUrl, secret);
+        log.info("OpenVidu URL: " + openviduUrl);  // Log the OpenVidu URL
     }
 
     @Transactional
