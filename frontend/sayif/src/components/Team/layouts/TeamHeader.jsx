@@ -68,7 +68,7 @@ function ResponsiveAppBar() {
                 navigate('/team/meeting');
                 break;
             case '멘토링 자료':
-                navigate('/team/document');
+                navigate('/team/material');
                 break;
             case 'Q&A 게시판':
                 navigate('/team/board');

@@ -13,6 +13,7 @@ import RegisterPage from './pages/Member/RegisterPage';
 import InformationPage from './pages/Information/InformationPage';
 import InformationDetailPage from './pages/Information/InformationDetailPage';
 import MyPage from './pages/Member/MyPage';
+import MaterialPage from './pages/Team/MaterialPage';
 import './App.css';
 import useTokenExpiration from './hooks/useTokenExpiration';
 
@@ -34,6 +35,7 @@ function App() {
                 <Route path="/apply-mentoring" element={<ApplyPage />} />
                 <Route path="/team/*" element={<TeamPage />} />
                 <Route path="/team/board/detail/:id" element={<BoardPage />} />
+                <Route path="/team/material/detail/:id" element={<MaterialPage/>} />
                 <Route path="/member">
                     <Route path="login" element={<LoginPage />}/>
                     <Route path="regist/*" element={<RegisterPage/>}/>
