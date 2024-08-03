@@ -10,7 +10,7 @@ public class WebSocketCorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/openvidu/**")
-                .allowedOrigins("http://localhost:3000", "http://i11e107.p.ssafy.io:3000", "https://i11e107.p.ssafy.io")
+                .allowedOrigins("*")
                 .allowedMethods("*")
                 .allowedHeaders("*")
                 .allowCredentials(true);
