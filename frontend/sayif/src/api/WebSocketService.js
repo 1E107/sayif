@@ -18,7 +18,7 @@ class WebSocketService {
     this.token = token;
 
     this.client = new Client({
-      brokerURL: 'wss://i11e107.p.ssafy.io/ws',
+      brokerURL: 'ws://i11e107.p.ssafy.io:7777/ws',
       connectHeaders: {
         Authorization: `Bearer ${token}`
       },
