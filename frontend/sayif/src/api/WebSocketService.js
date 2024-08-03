@@ -28,7 +28,7 @@ class WebSocketService {
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
-      webSocketFactory: () => new SockJS(`${API_BASE_URL}/ws`)
+      webSocketFactory: () => new SockJS(`http://i11e107.p.ssafy.io:7777/ws`)
     });
 
     this.client.onConnect = (frame) => {
