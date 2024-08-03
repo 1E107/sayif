@@ -95,3 +95,26 @@ export const postQnAComment = async(boardId, token, comment) => {
         throw error;
     }
 }
+
+export const getMaterialList = async(teamId, token, page, size) => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/team/material/${page}/${size}`, {
+            headers: {Authorization: `Bearer ${token}`}
+        })
+        return response;
+    }catch(error) {
+        throw error;
+    }
+}
+
+export const getMaterialDetail = async(materialId, token) => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/team/material/detail/${materialId}`, {
+            headers: {Authorization: `Bearer ${token}`}
+        })
+        return response;
+    }
+    catch(error) {
+        throw error;
+    }
+}

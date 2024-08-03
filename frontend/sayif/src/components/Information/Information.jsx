@@ -27,6 +27,7 @@ function Information() {
             try {
                 const response = await getSupportInfo(0,6,token);
                 if(response.status === 200) {
+                    console.log(response.data);
                     SetInfoList(response.data);
                 }
             }catch(error){
@@ -67,8 +68,8 @@ function Information() {
                 rows.map((row, rowIndex) => (
                     <div key={rowIndex} style={{display: "flex", marginBottom: "30px"}}> {
                         row.map((col, colIndex) => {
-                        const {date: startDate, time: startTime} = formatDateTime(col.recruitStart);
-                        const {date: endDate, time: endTime} = formatDateTime(col.recruitEnd);
+                        // const {date: startDate, time: startTime} = formatDateTime(col.recruitStart);
+                        // const {date: endDate, time: endTime} = formatDateTime(col.recruitEnd);
                         return(
                             <Card key={colIndex} sx={{ maxWidth: 300, borderRadius: 7}} style={{marginLeft: "30px"}} onClick={() => {handleShowDetail(col.id)}}>
                                 <CardMedia
@@ -80,7 +81,7 @@ function Information() {
                                     <S.InfoTitle gutterBottom variant="h5" component="div">
                                     {col.title}
                                     </S.InfoTitle>
-                                    <S.InfoContent variant="body2" color="text.secondary">{startDate} ~ {endDate}</S.InfoContent>
+                                    <S.InfoContent variant="body2" color="text.secondary">날짜 들어감</S.InfoContent>
                                     <S.InfoContent variant="body2" color="text.secondary">{col.region}</S.InfoContent>
                                 </CardContent>
                             </Card>
