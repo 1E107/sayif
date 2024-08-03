@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { OpenVidu } from 'openvidu-browser';
 import { useSelector } from 'react-redux';
-import { createSession, createConnection, closeSession } from '../../api/OpenViduApi';
-import {getTeamSessionId} from '../../api/MentoringApi';
+import {
+    createSession,
+    createConnection,
+    closeSession,
+} from '../../api/OpenViduApi';
+import { getTeamSessionId } from '../../api/MentoringApi';
 import S from './style/MeetingStyled';
-import { API_BASE_URL } from '../../api/config';
-
 const OpenViduApp = () => {
     const [sessionId, setSessionId] = useState('');
     const [currentSessionId, setCurrentSessionId] = useState(null);
@@ -19,10 +21,10 @@ const OpenViduApp = () => {
     const { token, member } = useSelector(state => state.member);
 
     // OpenVidu 서버의 주소를 http 또는 https로 설정
-    const openViduUrl = 'http://i11e107.p.ssafy.io:4443';
+    // const openViduUrl = 'http://i11e107.p.ssafy.io:4443';
 
     // WebSocket URL을 ws 또는 wss로 설정
-    const wsUrl = 'wss://i11e107.p.ssafy.io:4443';
+    const wsUrl = 'ws://i11e107.p.ssafy.io:4443/openvidu';
 
     let OV = useRef(null);
     let session = useRef(null);
@@ -43,12 +45,17 @@ const OpenViduApp = () => {
                 const teamSessionId = response.sessionId;
                 setSessionId(teamSessionId);
                 if (teamSessionId === null) {
-                    setSessionStatus(member.role === 'Mentor' ? 'mentor' : 'mentee');
+                    setSessionStatus(
+                        member.role === 'Mentor' ? 'mentor' : 'mentee',
+                    );
                 } else {
                     setSessionStatus('exists');
                 }
             } catch (error) {
-                console.error('Error fetching session ID:', error.response ? error.response.data : error.message);
+                console.error(
+                    'Error fetching session ID:',
+                    error.response ? error.response.data : error.message,
+                );
             }
         };
 
@@ -57,7 +64,7 @@ const OpenViduApp = () => {
 
     const handleCreateNewSession = async () => {
         try {
-            const newSessionId = await createSession();  //openvidu/api/sessions
+            const newSessionId = await createSession(); //openvidu/api/sessions
             setCurrentSessionId(newSessionId);
             setSessionId(newSessionId);
             joinSession(newSessionId);
@@ -66,14 +73,14 @@ const OpenViduApp = () => {
         }
     };
 
-    const joinSession = async (sessionId) => {
+    const joinSession = async sessionId => {
         if (!sessionId) {
             console.error('No session ID provided');
             return;
         }
 
         OV.current = new OpenVidu({
-            url: openViduUrl,
+            url: wsUrl,
         });
         session.current = OV.current.initSession();
 
@@ -104,8 +111,10 @@ const OpenViduApp = () => {
         });
 
         try {
-            const token = await createConnection(sessionId);    //openvidu/api/sessions/{sessionId}/connection
+            const token = await createConnection(sessionId); //openvidu/api/sessions/{sessionId}/connection
+            console.log('wsUrl: ' + wsUrl);
             await session.current.connect(token, { wsUri: wsUrl });
+            console.log('wsUrl: ' + wsUrl);
             setIsConnected(true);
             if (!publisher.current) {
                 publisher.current = OV.current.initPublisher(
@@ -117,12 +126,9 @@ const OpenViduApp = () => {
                         mirror: false,
                     },
                 );
-                publisher.current.once(
-                    'videoElementCreated',
-                    event => {
-                        event.element.classList.add('published');
-                    },
-                );
+                publisher.current.once('videoElementCreated', event => {
+                    event.element.classList.add('published');
+                });
                 session.current.publish(publisher.current);
             }
         } catch (error) {
