@@ -1,4 +1,5 @@
 import { Client } from '@stomp/stompjs';
+import { API_BASE_URL } from './config';
 import SockJS from 'sockjs-client';
 
 class WebSocketService {
@@ -17,7 +18,7 @@ class WebSocketService {
     this.token = token;
 
     this.client = new Client({
-      brokerURL: 'wss://i11e107.p.ssafy.io:7777/ws',
+      brokerURL: 'wss://i11e107.p.ssafy.io/api/ws',
       connectHeaders: {
         Authorization: `Bearer ${token}`
       },
@@ -27,7 +28,7 @@ class WebSocketService {
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
-      webSocketFactory: () => new SockJS(`https://i11e107.p.ssafy.io:7777/ws`)
+      webSocketFactory: () => new SockJS(`${API_BASE_URL}/ws`)
     });
 
     this.client.onConnect = (frame) => {
