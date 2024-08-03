@@ -30,10 +30,8 @@ function Story() {
         const callStoryList = async () => {
             try {
                 const response = await getStoryList(member.teamId, token);
-                console.log(member.teamId);
                 if (response.status == 200) {
                     const storyList = response.data;
-                    console.log(storyList);
                     {
                         storyList.map(story => {
                             const randomValue =

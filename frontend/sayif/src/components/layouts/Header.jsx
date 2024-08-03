@@ -80,12 +80,12 @@ function Header() {
     navigate("/member/login");
   }
 
-  const handleRegistPage = () => {
-    navigate("/member/regist");
-  }
-
   const handleCloseNoTeamModal = () => {
     setShowNoTeamModal(false);
+  }
+
+  const handleMyPage = () => {
+    navigate("/my-page");
   }
 
   const handleTeamPage = () => {
@@ -220,7 +220,7 @@ function Header() {
               textDecoration: 'none',
             }}
           >
-            <img src="logo.png"></img>
+            <img src="/logo.png"></img>
           </Typography>
 
           {/* 전체 화면 */}
@@ -297,6 +297,7 @@ function Header() {
               <Tooltip title="마이페이지">
                   <IconButton
                       sx={{ p: 0, my: 2, mx: 1 }}
+                      onClick={handleMyPage}
                   >
                       <Avatar
                           alt="Remy Sharp"
@@ -314,11 +315,6 @@ function Header() {
                     <PersonOutlineIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
                   </IconButton>
                 </Tooltip>
-                {/* <Tooltip title="회원가입">
-                  <IconButton sx={{ p: 0 }} onClick={handleRegistPage}>
-                    <PersonAddAltIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-                  </IconButton>
-                </Tooltip> */}
               </>
             )}
           </Box>
