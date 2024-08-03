@@ -17,7 +17,7 @@ class WebSocketService {
     this.token = token;
 
     this.client = new Client({
-      brokerURL: 'ws://i11e107.p.ssafy.io:7777/ws',
+      brokerURL: 'wss://i11e107.p.ssafy.io:7777/ws',
       connectHeaders: {
         Authorization: `Bearer ${token}`
       },
@@ -27,7 +27,7 @@ class WebSocketService {
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
-      webSocketFactory: () => new SockJS(`http://i11e107.p.ssafy.io:7777/ws`)
+      webSocketFactory: () => new SockJS(`https://i11e107.p.ssafy.io:7777/ws`)
     });
 
     this.client.onConnect = (frame) => {
