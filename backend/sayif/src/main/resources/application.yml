@@ -2,7 +2,6 @@ spring:
   profiles:
     active: secret
   jackson:
-    property-naming-strategy: SNAKE_CASE
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
   jwt:

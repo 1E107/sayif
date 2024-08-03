@@ -48,7 +48,7 @@ public class OpenViduService {
 //            team.updateSessionId(session.getSessionId());
 //            log.info(team.toString());
 //            teamRepository.save(team);
-
+            log.info(session.getSessionId());
         } catch (OpenViduJavaClientException | OpenViduHttpException e) {
             throw new RuntimeException(e);
         }
@@ -58,10 +58,12 @@ public class OpenViduService {
     public String createConnection(String sessionId, Map<String, Object> params) {
             Session session = openvidu.getActiveSession(sessionId);
         ConnectionProperties properties = new ConnectionProperties.Builder().build();
-//            ConnectionProperties properties = ConnectionProperties.fromJson(params).build();
+//        params.put("token", openviduUrl);
+//        ConnectionProperties properties = ConnectionProperties.fromJson(params).build();
         Connection connection = null;
         try {
             connection = session.createConnection(properties);
+            log.info(connection.getToken());
         } catch (OpenViduJavaClientException | OpenViduHttpException e) {
             throw new RuntimeException(e);
         }

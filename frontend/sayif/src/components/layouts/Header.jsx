@@ -89,10 +89,12 @@ function Header() {
   }
 
   const handleTeamPage = () => {
+    console.log(member);
     const callGetStatus = async () => {
       if(member.teamId) {
         try {
           const response = await getTeamStatue(member.teamId, token);
+          console.log(response);
           if(response.status === 200) {
             if(response.data.status === 'Proceed') {
               navigate("/team");
