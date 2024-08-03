@@ -40,7 +40,6 @@ function Board() {
     };
 
     const moveDetailPage = id => {
-        console.log("hello", id);
         navigate(`/team/board/detail/${id}`);
     }
 
@@ -48,7 +47,6 @@ function Board() {
         const callBoardList = async() => {
             try{
                 const response = await getQnAList(member.teamId, token, page, 10);
-                console.log(response);
                 if(response.status === 200) {
                     SetRows(response.data);
                 }

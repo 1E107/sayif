@@ -12,9 +12,12 @@ import CreatePage from './pages/Mentoring/CreatePage';
 import RegisterPage from './pages/Member/RegisterPage';
 import InformationPage from './pages/Information/InformationPage';
 import InformationDetailPage from './pages/Information/InformationDetailPage';
+import MyPage from './pages/Member/MyPage';
 import './App.css';
+import useTokenExpiration from './hooks/useTokenExpiration';
 
 function App() {
+    useTokenExpiration();
     const location = useLocation();
 
     return (
@@ -38,6 +41,7 @@ function App() {
                 <Route path="/create-mentoring" element={<CreatePage/>}/>
                 <Route path="/support-information" element={<InformationPage/>}/>
                 <Route path="/support-information/:id" element={<InformationDetailPage/>}/>
+                <Route path="/my-page" element={<MyPage/>} />
             </Routes>
         </>
     );
