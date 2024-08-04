@@ -1,5 +1,7 @@
 import base64
+import json
 import os
+import uuid
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -13,13 +15,24 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
+from minio import Minio
+from minio.error import S3Error
 
 # 페이지 로드 대기 시간
 LOAD_TIME = 1
 
-# db_config.json 파일 읽기
-# with open("db_config.json", "r") as config_file:
-#     db_config = json.load(config_file)
+# JSON 파일에서 Minio 설정 로드
+with open("minio_config.json", "r") as config_file:
+    minio_config = json.load(config_file)
+
+minio_client = Minio(
+    minio_config["endpoint"],
+    access_key=minio_config["access_key"],
+    secret_key=minio_config["secret_key"],
+    secure=minio_config["secure"],
+)
+
+bucket_name = "your-bucket-name"
 
 # ChromeDriverManager를 통해 ChromeDriver를 자동으로 설치하고, Service 객체를 설정합니다.
 service = Service(ChromeDriverManager().install())
@@ -29,35 +42,69 @@ options = webdriver.ChromeOptions()
 options.add_argument("--headless")  # 브라우저 창을 표시하지 않음
 driver = webdriver.Chrome(service=service, options=options)
 
-
 def is_image_url(url):
+    """
+    주어진 URL이 이미지 파일인지 확인합니다.
+
+    :param url: 파일의 URL
+    :return: 이미지 파일이면 True, 그렇지 않으면 False
+    """
     return url.lower().endswith((".png", ".jpg", ".jpeg", ".gif", ".bmp"))
 
+def get_filename(index, file_extension):
+    """
+    인덱스와 파일 확장자를 사용하여 파일 이름을 생성합니다.
 
-def get_unique_filename(folder, index, file_extension):
-    file_name = f"image_{index}"
-    return os.path.join(folder, f"{file_name}.{file_extension}").replace("\\", "/")
+    :param index: 파일의 인덱스
+    :param file_extension: 파일의 확장자
+    :return: 생성된 파일 이름
+    """
+    return f"image_{index}.{file_extension}"
 
+def upload_image_to_minio(data, index, file_extension):
+    """
+    이미지 데이터를 Minio 버킷에 업로드합니다.
 
-def download_base64_image(data_url, folder, index):
+    :param data: 이미지 데이터
+    :param index: 파일의 인덱스
+    :param file_extension: 파일의 확장자
+    :return: 업로드된 파일의 이름
+    """
+    try:
+        filename = get_filename(index, file_extension)
+        minio_client.put_object(bucket_name, filename, data, len(data), content_type=f"image/{file_extension}")
+        print(f"Uploaded to Minio: {filename}")
+        return filename
+    except S3Error as e:
+        print(f"Error uploading to Minio: {e}")
+    return None
+
+def download_base64_image(data_url, index):
+    """
+    Base64로 인코딩된 이미지 데이터를 디코딩하여 Minio 버킷에 업로드합니다.
+
+    :param data_url: Base64 인코딩된 이미지 데이터 URL
+    :param index: 파일의 인덱스
+    :return: 업로드된 파일의 이름
+    """
     try:
         header, encoded = data_url.split(",", 1)
         data = base64.b64decode(encoded)
         file_extension = header.split(";")[0].split("/")[1]
-        file_path = get_unique_filename(folder, index, file_extension)
-        if os.path.exists(file_path):
-            print(f"File already exists: {file_path}")
-            return file_path
-        with open(file_path, "wb") as file:
-            file.write(data)
-        print(f"Downloaded: {file_path}")
-        return file_path
+        return upload_image_to_minio(data, index, file_extension)
     except Exception as e:
         print(f"Error downloading base64 image: {e}")
     return None
 
-
 def extract_item(soup, class_name, default="No data"):
+    """
+    HTML에서 주어진 클래스 이름을 가진 항목을 추출합니다.
+
+    :param soup: BeautifulSoup 객체
+    :param class_name: 찾을 항목의 클래스 이름
+    :param default: 항목을 찾지 못했을 때 반환할 기본 값
+    :return: 추출된 항목의 텍스트
+    """
     item = soup.find("li", class_=class_name)
     if item:
         text_wrap = item.find("div", class_="text_wrap")
@@ -65,9 +112,30 @@ def extract_item(soup, class_name, default="No data"):
             return text_wrap.string.strip()
     return default
 
+def object_exists_in_minio(filename):
+    """
+    Minio 버킷에 주어진 파일이 존재하는지 확인합니다.
+
+    :param filename: 확인할 파일 이름
+    :return: 파일이 존재하면 True, 그렇지 않으면 False
+    """
+    try:
+        minio_client.stat_object(bucket_name, filename)
+        return True
+    except S3Error as e:
+        if e.code == "NoSuchKey":
+            return False
+        print(f"Error checking if object exists in Minio: {e}")
+        return False
 
 # SQL 쿼리를 파일에 저장
 def save_query(data, sql_file):
+    """
+    주어진 데이터를 사용하여 SQL INSERT 쿼리를 생성하고 파일에 저장합니다.
+
+    :param data: SQL 쿼리에 사용할 데이터 튜플
+    :param sql_file: 쿼리를 저장할 파일 경로
+    """
     data = tuple(d.replace("'", "''") if isinstance(d, str) else d for d in data)
     query = f"""
     INSERT INTO spt_info (id, title, ranged, region, recruit_start, recruit_end, hit_count, method, img)
@@ -76,14 +144,8 @@ def save_query(data, sql_file):
     with open(sql_file, "a") as file:
         file.write(query + "\n")
 
-
-# 이미지 저장 폴더
-folder = "images/"
-if not os.path.exists(folder):
-    os.makedirs(folder)
-
 # SQL 쿼리를 저장할 파일 경로
-sql_file = "sql/insert_queries.sql"
+sql_file = "insert_queries.sql"
 
 # 파일이 존재하면 삭제
 if os.path.exists(sql_file):
@@ -91,8 +153,9 @@ if os.path.exists(sql_file):
 
 try:
     for i in range(800, -1, -1):
-        # 인덱스 폴더가 존재하면 continue
-        if os.path.exists(os.path.join(folder, f"image_{i}.png").replace("\\", "/")):
+        # Minio 버킷에 이미지가 존재하면 continue
+        filename = get_filename(i, "png")  # 파일 이름 생성
+        if object_exists_in_minio(filename):
             print(f"Index {i} already processed, skipping...")
             continue
 
@@ -107,7 +170,7 @@ try:
                 alert.accept()
                 print("Alert was present and accepted.")
             except NoAlertPresentException:
-                pass  # No alert found, continue processing
+                pass  # 경고창이 없으면 계속 진행
             except UnexpectedAlertPresentException:
                 print("Unexpected alert found and accepted.")
                 Alert(driver).accept()
@@ -123,13 +186,12 @@ try:
             # BeautifulSoup을 사용하여 HTML 파싱
             soup = BeautifulSoup(page_source, "html.parser")
 
-            # 모집 상태
+            # 모집 상태 확인
             tag_type = soup.find("div", class_="tag_box")
             type_tag = tag_type.text.strip() if tag_type else "No title found"
 
             # "모집중"인 경우에만 정보와 이미지를 저장
             if type_tag == "모집중":
-                # print(f"Type: {type_tag}")
                 detail_view_div = soup.find("div", class_="detail_view")
                 # 제목 추출
                 title = detail_view_div.find("div", class_="title")
@@ -148,17 +210,15 @@ try:
                 img_urls = [
                     img["src"]
                     for img in img_tags
-                    if "src" in img.attrs
-                       and (
-                           is_image_url(img["src"]) or img["src"].startswith("data:image")
-                       )
+                    if "src" in img.attrs and (
+                        is_image_url(img["src"]) or img["src"].startswith("data:image")
+                    )
                 ]
 
                 image_path = None
                 for img_url in img_urls:
-                    file_name = img_url.split("/")[-1].split(".")[0]
                     if img_url.startswith("data:image"):
-                        image_path = download_base64_image(img_url, folder, i)
+                        image_path = download_base64_image(img_url, i)
 
                 # 데이터 저장
                 data = (
