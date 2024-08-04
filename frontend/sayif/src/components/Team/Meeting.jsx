@@ -5,9 +5,11 @@ import {
     createSession,
     createConnection,
     closeSession,
+    deleteConnection,
 } from '../../api/OpenViduApi';
 import { getTeamSessionId } from '../../api/MentoringApi';
 import S from './style/MeetingStyled';
+
 const OpenViduApp = () => {
     const [sessionId, setSessionId] = useState('');
     const [currentSessionId, setCurrentSessionId] = useState(null);
@@ -16,6 +18,8 @@ const OpenViduApp = () => {
     const [isConnected, setIsConnected] = useState(false);
     const [isMuted, setIsMuted] = useState(false);
     const [isVideoStopped, setIsVideoStopped] = useState(false);
+    const [isScreenSharing, setIsScreenSharing] = useState(false); // 화면 공유 상태 추가
+    const [subscribers, setSubscribers] = useState([]); // 추가: 구독자 관리 상태
     const videoContainerRef = useRef(null);
     const chatMessagesRef = useRef(null);
     const { token, member } = useSelector(state => state.member);
@@ -24,11 +28,12 @@ const OpenViduApp = () => {
     // const openViduUrl = 'http://i11e107.p.ssafy.io:4443';
 
     // WebSocket URL을 ws 또는 wss로 설정
-    const wsUrl = 'ws://i11e107.p.ssafy.io:4443/openvidu';
+    const wsUrl = 'wss://i11e107.p.ssafy.io:4443/openvidu';
 
     let OV = useRef(null);
     let session = useRef(null);
     let publisher = useRef(null);
+    let connectionId;
 
     useEffect(() => {
         return () => {
@@ -89,6 +94,10 @@ const OpenViduApp = () => {
             if (stream) {
                 stream.remove();
             }
+            const newSubscribers = subscribers.filter(
+                sub => sub.stream !== event.stream,
+            );
+            setSubscribers(newSubscribers); // 구독자 상태 갱신
         });
 
         session.current.on('streamCreated', event => {
@@ -100,6 +109,7 @@ const OpenViduApp = () => {
                 event.element.style.width = '200px';
                 event.element.style.height = '150px';
             });
+            setSubscribers(prevSubscribers => [...prevSubscribers, subscriber]); // 구독자 추가
         });
 
         session.current.on('signal:chat', event => {
@@ -111,8 +121,10 @@ const OpenViduApp = () => {
         });
 
         try {
-            const token = await createConnection(sessionId); //openvidu/api/sessions/{sessionId}/connection
-            console.log('wsUrl: ' + wsUrl);
+            const conn = await createConnection(sessionId); //openvidu/api/sessions/{sessionId}/connection
+            const token = conn.token;
+            connectionId = conn.connectionId;
+            console.log('connectionId: ' + connectionId);
             await session.current.connect(token, { wsUri: wsUrl });
             console.log('wsUrl: ' + wsUrl);
             setIsConnected(true);
@@ -136,19 +148,33 @@ const OpenViduApp = () => {
         }
     };
 
-    const startScreenShare = () => {
-        navigator.mediaDevices
-            .getDisplayMedia({ video: true })
-            .then(stream => {
-                const screenPublisher = OV.current.initPublisher(undefined, {
-                    videoSource: stream.getVideoTracks()[0],
-                    publishAudio: true,
-                    publishVideo: true,
-                });
+    const startScreenShare = async () => {
+        // 중복 호출 방지
+        if (isScreenSharing) {
+            return;
+        }
+        setIsScreenSharing(true);
 
-                session.current.publish(screenPublisher);
-            })
-            .catch(error => console.error('Error sharing the screen:', error));
+        try {
+            const stream = await navigator.mediaDevices.getDisplayMedia({
+                video: true,
+            });
+            const screenPublisher = OV.current.initPublisher(undefined, {
+                videoSource: stream.getVideoTracks()[0],
+                publishAudio: true,
+                publishVideo: true,
+            });
+
+            session.current.publish(screenPublisher);
+        } catch (error) {
+            if (error.name === 'NotAllowedError') {
+                console.error('Screen sharing permission denied:', error);
+            } else {
+                console.error('Error sharing the screen:', error);
+            }
+        } finally {
+            setIsScreenSharing(false);
+        }
     };
 
     const sendMessage = () => {
@@ -183,10 +209,15 @@ const OpenViduApp = () => {
 
     const toggleVideo = () => {
         if (publisher.current) {
+            const videoTracks = publisher.current.stream
+                .getMediaStream()
+                .getVideoTracks();
             if (isVideoStopped) {
                 publisher.current.publishVideo(true);
+                videoTracks.forEach(track => (track.enabled = true));
             } else {
                 publisher.current.publishVideo(false);
+                videoTracks.forEach(track => (track.enabled = false));
             }
             setIsVideoStopped(!isVideoStopped);
         }
@@ -207,19 +238,33 @@ const OpenViduApp = () => {
         }
     };
 
+    const handleDeleteConnection = async () => {
+        if (!connectionId) {
+            console.error('No active connection to delete');
+            return;
+        }
+
+        try {
+            await deleteConnection(sessionId, connectionId);
+            setIsConnected(false);
+        } catch (error) {
+            console.error('Error deleting connection:', error);
+        }
+    };
+
     return (
         <S.Container>
-            <S.Logo src="/logo.png" alt="Logo" />
             {!isConnected && (
-                <>
+                <S.CenteredContainer>
+                    <S.Logo src="/logo.png" alt="Logo" />
                     {sessionStatus === 'mentor' && (
                         <S.DiffBtn onClick={handleCreateNewSession}>
                             Create New Session
                         </S.DiffBtn>
                     )}
                     {sessionStatus === 'exists' && (
-                        <>
-                            <input
+                        <S.HorizontalContainer>
+                            <S.Input
                                 type="text"
                                 value={sessionId}
                                 onChange={e => setSessionId(e.target.value)}
@@ -228,50 +273,59 @@ const OpenViduApp = () => {
                             <S.DiffBtn onClick={() => joinSession(sessionId)}>
                                 Join Session
                             </S.DiffBtn>
-                        </>
+                        </S.HorizontalContainer>
                     )}
-                </>
+                </S.CenteredContainer>
             )}
             <S.VideoContainer
                 ref={videoContainerRef}
                 $isConnected={isConnected}
             ></S.VideoContainer>
             {isConnected && (
-                <S.ContentContainer>
+                <>
                     <S.ChatContainer
                         id="chat-container"
                         $isConnected={isConnected}
                     >
                         <h2>Chat</h2>
-                        <div id="chat-messages" ref={chatMessagesRef}></div>
-                        <input
-                            type="text"
-                            value={message}
-                            onChange={e => setMessage(e.target.value)}
-                            placeholder="Enter your message"
-                        />
-                        <S.DiffBtn onClick={sendMessage}>
-                            Send Message
-                        </S.DiffBtn>
+                        <S.ChatMessages
+                            id="chat-messages"
+                            ref={chatMessagesRef}
+                        ></S.ChatMessages>
+                        <S.ChatInputContainer>
+                            <S.Input
+                                type="text"
+                                value={message}
+                                onChange={e => setMessage(e.target.value)}
+                                placeholder="Enter your message"
+                            />
+                            <S.DiffBtn onClick={sendMessage}>
+                                Send Message
+                            </S.DiffBtn>
+                        </S.ChatInputContainer>
                     </S.ChatContainer>
-                </S.ContentContainer>
-            )}
 
-            {isConnected && (
-                <S.ButtonContainer $isConnected={isConnected}>
-                    <S.CustomBtn onClick={handleCloseSession}>
-                        Close Session
-                    </S.CustomBtn>
-                    <S.CustomBtn onClick={startScreenShare}>
-                        Share Screen
-                    </S.CustomBtn>
-                    <S.CustomBtn onClick={toggleMute}>
-                        {isMuted ? 'Unmute' : 'Mute'}
-                    </S.CustomBtn>
-                    <S.CustomBtn onClick={toggleVideo}>
-                        {isVideoStopped ? 'Start Video' : 'Stop Video'}
-                    </S.CustomBtn>
-                </S.ButtonContainer>
+                    <S.ButtonContainer $isConnected={isConnected}>
+                        {sessionStatus === 'mentor' ? (
+                            <S.CustomBtn onClick={handleCloseSession}>
+                                Close Session
+                            </S.CustomBtn>
+                        ) : (
+                            <S.CustomBtn onClick={handleDeleteConnection}>
+                                Delete Connection
+                            </S.CustomBtn>
+                        )}
+                        <S.CustomBtn onClick={startScreenShare}>
+                            Share Screen
+                        </S.CustomBtn>
+                        <S.CustomBtn onClick={toggleMute}>
+                            {isMuted ? 'Unmute' : 'Mute'}
+                        </S.CustomBtn>
+                        <S.CustomBtn onClick={toggleVideo}>
+                            {isVideoStopped ? 'Start Video' : 'Stop Video'}
+                        </S.CustomBtn>
+                    </S.ButtonContainer>
+                </>
             )}
         </S.Container>
     );
