@@ -10,7 +10,7 @@ public class CorsMvcConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry corsRegistry) {
 
-        corsRegistry.addMappaing("/**")
+        corsRegistry.addMapping("/**")
                 .allowedOrigins("http://localhost:3000","https://i11e107.p.ssafy.io")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*") //클라이언트 측의 CORS 요청에 허용되는 헤더 지정
