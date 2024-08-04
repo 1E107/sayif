@@ -33,7 +33,8 @@ public class OpenViduController {
             Session session = openViduService.createSession(params, "bhe0323");
             return new ResponseEntity<>(session.getSessionId(), HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("Failed to create session", HttpStatus.BAD_REQUEST);
+            log.error("Unexpected error: ", e);
+            return new ResponseEntity<>("Unexpected error occurred", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -50,6 +51,7 @@ public class OpenViduController {
             String token = openViduService.createConnection(sessionId, params);
             return new ResponseEntity<>(token, HttpStatus.OK);
         } catch (Exception e) {
+            log.error("Unexpected connection error: ", e);
             return new ResponseEntity<>("Failed to create connection", HttpStatus.NOT_FOUND);
         }
     }
