@@ -89,4 +89,19 @@ public class OpenViduService {
         return "Session closed successfully";
     }
 
+    @Transactional
+    public String deleteConnection(String sessionId, String connectionId) {
+        try {
+            Session session = openvidu.getActiveSession(sessionId);
+            if (session != null) {
+                session.forceDisconnect(connectionId);
+            } else {
+                throw new RuntimeException("Session not found");
+            }
+        } catch (OpenViduJavaClientException | OpenViduHttpException e) {
+            throw new RuntimeException(e);
+        }
+        return "Connection deleted successfully";
+    }
+
 }

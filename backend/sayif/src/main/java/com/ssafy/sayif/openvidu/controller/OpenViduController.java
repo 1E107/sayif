@@ -68,4 +68,14 @@ public class OpenViduController {
             return new ResponseEntity<>("Failed to close session", HttpStatus.NOT_FOUND);
         }
     }
+
+    @DeleteMapping("/api/sessions/{sessionId}/connection/{connectionId}")
+    public ResponseEntity<?> deleteConnection(@PathVariable String sessionId, @PathVariable String connectionId) {
+        try{
+            return new ResponseEntity<>(openViduService.deleteConnection(sessionId, connectionId), HttpStatus.NO_CONTENT);
+        }catch (Exception e){
+            return new ResponseEntity<>("Failed to delete connection", HttpStatus.NOT_FOUND);
+        }
+    }
+
 }

@@ -62,3 +62,20 @@ export const closeSession = async sessionId => {
         throw error;
     }
 };
+
+export const deleteConnection = async (sessionId, connectionId) => {
+    try {
+        await axios.delete(
+            `${API_BASE_URL}/openvidu/api/sessions/${sessionId}/connection/${connectionId}`,
+            {
+                headers: {
+                    Authorization: basicAuth,
+                    'Content-Type': 'application/json',
+                },
+            },
+        );
+    } catch (error) {
+        console.error('Error closing session:', error);
+        throw error;
+    }
+};
