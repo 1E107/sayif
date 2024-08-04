@@ -1,11 +1,10 @@
-import { useParams } from "react-router-dom";
-import S from "./style/BoardDetail";
-import { useEffect, useState } from "react";
-import { getQnADetail, getQnAComment, postQnAComment } from "../../../api/TeamApi";
-import { useSelector } from "react-redux";
+import { useParams } from 'react-router-dom';
+import S from './style/CommunityDetailStyled'
+import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 
-function BoardDetail() {
+function CommunityDetail() {
     const { id } = useParams();
     const {token, member} = useSelector(state => state.member);
     const [content, SetContent] = useState([]);
@@ -15,10 +14,7 @@ function BoardDetail() {
     useEffect(() => {
         const callDetail = async() => {
             try{
-                const response = await getQnADetail(id, token);
-                if(response.status === 200) {
-                    SetContent(response.data);
-                }
+               
             }catch(error) {
                 console.log(error);
             }
@@ -26,17 +22,12 @@ function BoardDetail() {
 
         const callCommentList = async() => {
             try {
-                const response = await getQnAComment(id, token);
-                if(response.status === 200) {
-                    SetComment(response.data);
-                }
+                
             }catch(error) {
                 console.log(error);
             }
         }
 
-        callDetail();
-        callCommentList();
     }, [id, token]);
 
     const handleWriteComment = (event) => {
@@ -44,18 +35,7 @@ function BoardDetail() {
     }
 
     const SubmitComment = () => {
-        const callPostComment = async() => {
-            try {
-                const response = await postQnAComment(id, token, writeComment);
-                if(response.status === 200) {
-                    alert("댓글이 성공적으로 등록되었습니다!");
-                    window.location.reload();
-                }
-            }catch(error) {
-                console.log(error);
-            }
-        }
-        callPostComment();
+        
     }
 
     const commentLength = comment.length;
@@ -87,7 +67,7 @@ function BoardDetail() {
                     </div>
                 </S.CommentBox>
             </>) : (
-                 <>
+                <>
                     <S.LoadingText>게시글이 곧 나타나요! 잠시만 기다려 주세요.</S.LoadingText>
                     <CircularProgress style={{color: "#116530"}}/>
                 </>
@@ -99,5 +79,4 @@ function BoardDetail() {
     return DetailView;
 }
 
-export default BoardDetail;
-
+export default CommunityDetail;

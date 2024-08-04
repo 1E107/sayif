@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import '../../../../styles/fonts.css';
+import '../../../styles/fonts.css';
 import Button from '@mui/material/Button';
 
 const Container = styled.div`
