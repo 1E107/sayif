@@ -28,7 +28,7 @@ const OpenViduApp = () => {
     // const openViduUrl = 'http://i11e107.p.ssafy.io:4443';
 
     // WebSocket URL을 ws 또는 wss로 설정
-    const wsUrl = 'wss://i11e107.p.ssafy.io:4443/openvidu';
+    const wsUrl = 'wss://i11e107.p.ssafy.io/api/openvidu';
 
     let OV = useRef(null);
     let session = useRef(null);
