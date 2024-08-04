@@ -24,3 +24,15 @@ export const GetDetailSupportInfo = async(id, token) => {
         throw error;
     }
 }
+
+export const GetCommunityList = async(token, type, page, size) => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/board/${type}/${page}/${size}`, {
+            headers: {Authorization: `Bearer ${token}`}
+        });
+        return response;
+    }
+    catch(error) {
+        throw error;
+    }
+}

@@ -1,4 +1,4 @@
-import Community from "../../components/Community/Community";
+import CommunityDetail from "../../components/Community/CommunityDetail";
 import styled from "styled-components";
 
 const Main = styled.div`
@@ -8,12 +8,12 @@ const Main = styled.div`
     height: 1000px;
 `
 
-const CommunityPage = () => {
+const CommunityDetailPage = () => {
     return (
         <Main>
-            <Community></Community>
+            <CommunityDetail></CommunityDetail>
         </Main>
     )
 }
 
-export default CommunityPage;
+export default CommunityDetailPage;

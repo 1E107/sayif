@@ -14,6 +14,7 @@ import InformationPage from './pages/Information/InformationPage';
 import InformationDetailPage from './pages/Information/InformationDetailPage';
 import MyPage from './pages/Member/MyPage';
 import MaterialPage from './pages/Team/MaterialPage';
+import CommunityDetailPage from './pages/Community/CoomunityDetailPage';
 import './App.css';
 import useTokenExpiration from './hooks/useTokenExpiration';
 
@@ -32,6 +33,7 @@ function App() {
                 <Route path="/" element={<MainPage />}></Route>
                 <Route path="/serviceIntroduction" element={<IntroPage />} />
                 <Route path="/community" element={<CommunityPage />} />
+                <Route path="/community/detail/:id" element={<CommunityDetailPage/>}/>
                 <Route path="/apply-mentoring" element={<ApplyPage />} />
                 <Route path="/team/*" element={<TeamPage />} />
                 <Route path="/team/board/detail/:id" element={<BoardPage />} />
