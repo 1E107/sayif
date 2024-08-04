@@ -5,12 +5,12 @@ const username = 'OPENVIDUAPP';
 const password = 'bangcutsoragodoongmeruohboksayif';
 const basicAuth = 'Basic ' + btoa(username + ':' + password);
 
-export const createSession = async () => {
+export const createSession = async (sessionId) => {
     try {
         console.log('OpenViduApi.js createSession ---');
         const response = await axios.post(
             `${API_BASE_URL}/openvidu/api/sessions`,
-            {},
+            {customSessionId: sessionId},
             {
                 headers: {
                     Authorization: basicAuth,
@@ -50,23 +50,6 @@ export const closeSession = async sessionId => {
     try {
         await axios.delete(
             `${API_BASE_URL}/openvidu/api/sessions/${sessionId}`,
-            {
-                headers: {
-                    Authorization: basicAuth,
-                    'Content-Type': 'application/json',
-                },
-            },
-        );
-    } catch (error) {
-        console.error('Error closing session:', error);
-        throw error;
-    }
-};
-
-export const deleteConnection = async (sessionId, connectionId) => {
-    try {
-        await axios.delete(
-            `${API_BASE_URL}/openvidu/api/sessions/${sessionId}/connection/${connectionId}`,
             {
                 headers: {
                     Authorization: basicAuth,
