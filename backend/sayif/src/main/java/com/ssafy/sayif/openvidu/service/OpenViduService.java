@@ -56,7 +56,7 @@ public class OpenViduService {
         return session;
     }
 
-    public String createConnection(String sessionId, Map<String, Object> params) {
+    public Connection createConnection(String sessionId, Map<String, Object> params) {
             Session session = openvidu.getActiveSession(sessionId);
         ConnectionProperties properties = new ConnectionProperties.Builder().build();
 //        params.put("token", openviduUrl);
@@ -64,11 +64,11 @@ public class OpenViduService {
         Connection connection = null;
         try {
             connection = session.createConnection(properties);
-            log.info(connection.getToken());
+            log.info("connectionToken: " + connection.getToken());
         } catch (OpenViduJavaClientException | OpenViduHttpException e) {
             throw new RuntimeException(e);
         }
-        return connection.getToken();
+        return connection;
 
     }
 

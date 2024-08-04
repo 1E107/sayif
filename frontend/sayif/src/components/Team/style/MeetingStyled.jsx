@@ -7,18 +7,30 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    height: 100vh;
     width: 100%;
+`;
+
+const CenteredContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+`;
+const HorizontalContainer = styled.div`
+    display: flex;
+    align-items: center;
+`;
+
+const Input = styled.input`
+    margin-right: 10px;
 `;
 
 const Logo = styled.img`
     display: block;
-    margin: 0 auto;
-`;
-
-const ContentContainer = styled.div`
-    display: flex;
-    width: 100%;
-    justify-content: center;
+    margin: 0 auto 20px auto;
+    width: 80px;
+    height: auto;
 `;
 
 const VideoContainer = styled.div`
@@ -31,13 +43,25 @@ const VideoContainer = styled.div`
 `;
 
 const ChatContainer = styled.div`
-    display: ${props => (props.$isConnected ? 'block' : 'none')};
+    display: ${props => (props.$isConnected ? 'flex' : 'none')};
+    flex-direction: column;
     width: 25%;
     height: 70vh;
     overflow-y: scroll;
     border: 1px solid #ccc;
     padding: 5px;
     margin-bottom: 10px;
+`;
+
+const ChatMessages = styled.div`
+    flex: 1;
+    overflow-y: auto;
+`;
+
+const ChatInputContainer = styled.div`
+    display: flex;
+    align-items: center;
+    margin-top: auto;
 `;
 
 const ButtonContainer = styled.div`
@@ -70,10 +94,14 @@ const DiffBtn = styled(Button)({
 
 const S = {
     Container,
+    CenteredContainer,
+    HorizontalContainer,
+    Input,
     Logo,
-    ContentContainer,
     VideoContainer,
     ChatContainer,
+    ChatMessages,
+    ChatInputContainer,
     ButtonContainer,
     CustomBtn,
     DiffBtn

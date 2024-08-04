@@ -2,6 +2,7 @@ package com.ssafy.sayif.openvidu.controller;
 
 import com.ssafy.sayif.member.jwt.JWTUtil;
 import com.ssafy.sayif.openvidu.service.OpenViduService;
+import io.openvidu.java.client.Connection;
 import io.openvidu.java.client.Session;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,8 +49,8 @@ public class OpenViduController {
     public ResponseEntity<?> createConnection(@PathVariable("sessionId") String sessionId,
                                                    @RequestBody(required = false) Map<String, Object> params) {
         try {
-            String token = openViduService.createConnection(sessionId, params);
-            return new ResponseEntity<>(token, HttpStatus.OK);
+            Connection conn = openViduService.createConnection(sessionId, params);
+            return new ResponseEntity<>(conn, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Unexpected connection error: ", e);
             return new ResponseEntity<>("Failed to create connection", HttpStatus.NOT_FOUND);
