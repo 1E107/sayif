@@ -11,6 +11,8 @@ import com.ssafy.sayif.team.entity.TeamMsg;
 import com.ssafy.sayif.team.repository.TeamMsgRepository;
 import com.ssafy.sayif.team.repository.TeamRepository;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 
 import jakarta.transaction.Transactional;
@@ -72,7 +74,7 @@ public class ChatWebSocketController {
             .msgContent(chatRequestDto.getMsgContent())
             .member(currentUser)
             .team(team)
-            .sendAt(LocalDateTime.now())
+            .sendAt(ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime())
             .build();
 
         teamMsgRepository.save(message);
