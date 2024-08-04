@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
@@ -37,18 +39,19 @@ public class OpenViduService {
 
     @Transactional
     public Session createSession(Map<String, Object> params, String username) {
-        SessionProperties properties = new SessionProperties.Builder().build();
+//        SessionProperties properties = new SessionProperties.Builder().build();
+        SessionProperties properties = SessionProperties.fromJson(params).build();
         Session session = null;
         log.info("Service - createSession 입장");
         try {
             session = openvidu.createSession(properties);
             // Member에서 username의 Team 가져오기
             // Team에서 team_id의 session_id 업데이트
-//            Team team = memberRepository.findByUsername(username).getTeam();
-//            log.info(username + "'s team id: " + team.getId());
-//            team.updateSessionId(session.getSessionId());
-//            log.info(team.toString());
-//            teamRepository.save(team);
+            Team team = memberRepository.findByUsername(username).getTeam();
+            log.info(username + "'s team id: " + team.getId());
+            team.updateSessionId(session.getSessionId());
+            log.info(team.toString());
+            teamRepository.save(team);
             log.info(session.getSessionId());
         } catch (OpenViduJavaClientException | OpenViduHttpException e) {
             throw new RuntimeException(e);
@@ -56,7 +59,7 @@ public class OpenViduService {
         return session;
     }
 
-    public Connection createConnection(String sessionId, Map<String, Object> params) {
+    public String createConnection(String sessionId, Map<String, Object> params) {
             Session session = openvidu.getActiveSession(sessionId);
         ConnectionProperties properties = new ConnectionProperties.Builder().build();
 //        params.put("token", openviduUrl);
@@ -68,7 +71,7 @@ public class OpenViduService {
         } catch (OpenViduJavaClientException | OpenViduHttpException e) {
             throw new RuntimeException(e);
         }
-        return connection;
+        return connection.getToken();
 
     }
 
@@ -82,9 +85,9 @@ public class OpenViduService {
         }
 
         // 회의 열었던 멘토가 종료하면 그 사람 팀 세션 id 없애기
-//        Team team = memberRepository.findByUsername(username).getTeam();
-//        team.updateSessionId(null);
-//        teamRepository.save(team);
+        Team team = memberRepository.findByUsername(username).getTeam();
+        team.updateSessionId(null);
+        teamRepository.save(team);
 
         return "Session closed successfully";
     }

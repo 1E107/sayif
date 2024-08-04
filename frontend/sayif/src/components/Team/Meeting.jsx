@@ -5,7 +5,6 @@ import {
     createSession,
     createConnection,
     closeSession,
-    deleteConnection,
 } from '../../api/OpenViduApi';
 import { getTeamSessionId } from '../../api/MentoringApi';
 import S from './style/MeetingStyled';
@@ -23,12 +22,6 @@ const OpenViduApp = () => {
     const videoContainerRef = useRef(null);
     const chatMessagesRef = useRef(null);
     const { token, member } = useSelector(state => state.member);
-
-    // OpenVidu 서버의 주소를 http 또는 https로 설정
-    // const openViduUrl = 'http://i11e107.p.ssafy.io:4443';
-
-    // WebSocket URL을 ws 또는 wss로 설정
-    const wsUrl = 'wss://i11e107.p.ssafy.io:4443/openvidu';
 
     let OV = useRef(null);
     let session = useRef(null);
@@ -69,7 +62,7 @@ const OpenViduApp = () => {
 
     const handleCreateNewSession = async () => {
         try {
-            const newSessionId = await createSession(); //openvidu/api/sessions
+            const newSessionId = await createSession(sessionId); //openvidu/api/sessions
             setCurrentSessionId(newSessionId);
             setSessionId(newSessionId);
             joinSession(newSessionId);
@@ -84,9 +77,7 @@ const OpenViduApp = () => {
             return;
         }
 
-        OV.current = new OpenVidu({
-            url: wsUrl,
-        });
+        OV.current = new OpenVidu();
         session.current = OV.current.initSession();
 
         session.current.on('streamDestroyed', event => {
@@ -121,12 +112,8 @@ const OpenViduApp = () => {
         });
 
         try {
-            const conn = await createConnection(sessionId); //openvidu/api/sessions/{sessionId}/connection
-            const token = conn.token;
-            connectionId = conn.connectionId;
-            console.log('connectionId: ' + connectionId);
-            await session.current.connect(token, { wsUri: wsUrl });
-            console.log('wsUrl: ' + wsUrl);
+            const token = await createConnection(sessionId); //openvidu/api/sessions/{sessionId}/connection
+            await session.current.connect(token);
             setIsConnected(true);
             if (!publisher.current) {
                 publisher.current = OV.current.initPublisher(
@@ -238,29 +225,22 @@ const OpenViduApp = () => {
         }
     };
 
-    const handleDeleteConnection = async () => {
-        if (!connectionId) {
-            console.error('No active connection to delete');
-            return;
-        }
-
-        try {
-            await deleteConnection(sessionId, connectionId);
-            setIsConnected(false);
-        } catch (error) {
-            console.error('Error deleting connection:', error);
-        }
-    };
-
     return (
         <S.Container>
             {!isConnected && (
                 <S.CenteredContainer>
                     <S.Logo src="/logo.png" alt="Logo" />
                     {sessionStatus === 'mentor' && (
+                        <>
+                        <S.Input
+                            type="text"
+                            onChange={e => setSessionId(e.target.value)}
+                            placeholder="Enter Session ID"
+                        />
                         <S.DiffBtn onClick={handleCreateNewSession}>
                             Create New Session
                         </S.DiffBtn>
+                        </>
                     )}
                     {sessionStatus === 'exists' && (
                         <S.HorizontalContainer>
@@ -306,13 +286,9 @@ const OpenViduApp = () => {
                     </S.ChatContainer>
 
                     <S.ButtonContainer $isConnected={isConnected}>
-                        {sessionStatus === 'mentor' ? (
+                        {sessionStatus === 'mentor' && (
                             <S.CustomBtn onClick={handleCloseSession}>
                                 Close Session
-                            </S.CustomBtn>
-                        ) : (
-                            <S.CustomBtn onClick={handleDeleteConnection}>
-                                Delete Connection
                             </S.CustomBtn>
                         )}
                         <S.CustomBtn onClick={startScreenShare}>

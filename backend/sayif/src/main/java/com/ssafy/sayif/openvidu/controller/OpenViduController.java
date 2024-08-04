@@ -1,9 +1,11 @@
 package com.ssafy.sayif.openvidu.controller;
 
 import com.ssafy.sayif.member.jwt.JWTUtil;
+import com.ssafy.sayif.openvidu.dto.PostOpenViduSessionRequest;
 import com.ssafy.sayif.openvidu.service.OpenViduService;
 import io.openvidu.java.client.Connection;
 import io.openvidu.java.client.Session;
+import io.openvidu.java.client.SessionProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -28,10 +30,10 @@ public class OpenViduController {
      * 클라이언트는 이 토큰을 사용하여 세션에 연결할 수 있습니다.
      */
     @PostMapping("/api/sessions")
-    public ResponseEntity<?> initializeSession(@RequestHeader("Authorization") String authorizationHeader, @RequestBody(required = false) Map<String, Object> params) {
+    public ResponseEntity<?> initializeSession(@RequestHeader("Authorization") String authorizationHeader, @RequestBody(required = false)Map<String, Object> params) {
         try {
             log.info("Controller - initialize session");
-            Session session = openViduService.createSession(params, "bhe0323");
+            Session session = openViduService.createSession(params, "sora1234");
             return new ResponseEntity<>(session.getSessionId(), HttpStatus.OK);
         } catch (Exception e) {
             log.error("Unexpected error: ", e);
@@ -49,8 +51,8 @@ public class OpenViduController {
     public ResponseEntity<?> createConnection(@PathVariable("sessionId") String sessionId,
                                                    @RequestBody(required = false) Map<String, Object> params) {
         try {
-            Connection conn = openViduService.createConnection(sessionId, params);
-            return new ResponseEntity<>(conn, HttpStatus.OK);
+            String token = openViduService.createConnection(sessionId, params);
+            return new ResponseEntity<>(token, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Unexpected connection error: ", e);
             return new ResponseEntity<>("Failed to create connection", HttpStatus.NOT_FOUND);
@@ -66,7 +68,7 @@ public class OpenViduController {
     @DeleteMapping("/api/sessions/{sessionId}")
     public ResponseEntity<?> closeSession(@PathVariable String sessionId) {
         try {
-            return new ResponseEntity<>(openViduService.closeSession(sessionId, "bhe0323"), HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(openViduService.closeSession(sessionId, "sora1234"), HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return new ResponseEntity<>("Failed to close session", HttpStatus.NOT_FOUND);
         }
