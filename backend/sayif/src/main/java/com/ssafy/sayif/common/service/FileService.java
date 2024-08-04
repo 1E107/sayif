@@ -42,19 +42,21 @@ public class FileService {
     }
 
     /**
-     * Minio 서버에 파일을 저장합니다. 저장할 때 파일 이름은 UUID로 생성됩니다.
+     * Minio 서버에 파일을 저장합니다. 저장할 때 파일 이름은 원본 이름과 UUID로 생성됩니다.
      *
-     * @param fileContent 파일의 바이트 배열
-     * @param bucketName  파일이 저장될 Minio 버킷 이름
-     * @return 저장된 파일의 파일 이름(UUID)
+     * @param fileContent      파일의 바이트 배열
+     * @param bucketName       파일이 저장될 Minio 버킷 이름
+     * @param originalFilename 파일의 원본 이름
+     * @return 저장된 파일의 파일 이름(원본 이름 + UUID)
      */
-    public String saveFileToMinio(byte[] fileContent, String bucketName) {
+    public String saveFileToMinio(byte[] fileContent, String bucketName, String originalFilename) {
         try {
             // 버킷 존재 여부 확인 및 생성
             ensureBucketExists(bucketName);
 
-            // 파일 이름을 UUID로 생성
-            String filename = UUID.randomUUID().toString();
+            // 파일 이름을 원본 이름과 UUID로 생성
+            String uuid = UUID.randomUUID().toString();
+            String filename = originalFilename + "-" + uuid;
 
             // 파일의 Content-Type 감지
             String contentType = tika.detect(fileContent);
@@ -77,6 +79,7 @@ public class FileService {
             throw new FileStorageException("Failed to save file to Minio", e);
         }
     }
+
 
     /**
      * Minio 서버에서 파일을 다운로드하여 바이트 배열로 반환합니다.

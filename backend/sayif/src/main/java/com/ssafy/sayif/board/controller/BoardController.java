@@ -96,8 +96,11 @@ public class BoardController {
         // MultipartFile 객체에서 파일의 바이트 배열을 가져옵니다.
         byte[] fileContent = file.getBytes();
 
+        // MultipartFile 객체에서 원본 파일 이름을 가져옵니다.
+        String originalFilename = file.getOriginalFilename();
+
         // Minio 서버에 파일을 저장하고, 저장된 파일의 이름을 반환받습니다.
-        String filename = fileService.saveFileToMinio(fileContent, bucketName);
+        String filename = fileService.saveFileToMinio(fileContent, bucketName, originalFilename);
 
         // 파일이 제대로 저장되지 않았거나, 반환된 파일 이름이 null인 경우 예외를 발생시킵니다.
         if (filename == null) {
