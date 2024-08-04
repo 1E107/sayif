@@ -14,7 +14,7 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/openvidu")
+@RequestMapping("/api/openvidu")
 public class OpenViduController {
     private final OpenViduService openViduService;
     private final JWTUtil jwtUtil;
