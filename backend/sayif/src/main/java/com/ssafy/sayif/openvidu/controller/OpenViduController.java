@@ -52,7 +52,7 @@ public class OpenViduController {
                                                    @RequestBody(required = false) Map<String, Object> params) {
         try {
             String token = openViduService.createConnection(sessionId, params);
-            String modifiedToken = token.replace("ws://localhost:4443", "wss://i11e107.p.ssafy.io/openvidu");
+            String modifiedToken = token.replace("ws://localhost:4443", "ws://i11e107.p.ssafy.io/openvidu");
             log.info(modifiedToken);
             return new ResponseEntity<>(modifiedToken, HttpStatus.OK);
         } catch (Exception e) {
