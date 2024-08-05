@@ -9,7 +9,7 @@ export const createSession = async (token, sessionId) => {
     try {
         console.log('OpenViduApi.js createSession ---');
         const response = await axios.post(
-            `${API_BASE_URL}/openvidu/api/sessions`,
+            `http://i11e107.p.ssafy.io/api/openvidu/api/sessions`,
             { customSessionId: sessionId },
             {
                 headers: {
@@ -30,7 +30,7 @@ export const createSession = async (token, sessionId) => {
 export const createConnection = async (token, sessionId) => {
     try {
         const response = await axios.post(
-            `${API_BASE_URL}/openvidu/api/sessions/${sessionId}/connection`,
+            `http://i11e107.p.ssafy.io/api/openvidu/api/sessions/${sessionId}/connection`,
             {},
             {
                 headers: {
@@ -51,7 +51,7 @@ export const createConnection = async (token, sessionId) => {
 export const closeSession = async (token, sessionId) => {
     try {
         await axios.delete(
-            `${API_BASE_URL}/openvidu/api/sessions/${sessionId}`,
+            `http://i11e107.p.ssafy.io/api/openvidu/api/sessions/${sessionId}`,
             {
                 headers: {
                     Authorization: basicAuth,
