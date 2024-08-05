@@ -19,6 +19,8 @@ function MyPageComponent() {
     const dispatch = useDispatch();
     const [changeInfo, SetChangeInfo] = useState(false);
     const [showMentoringModal, SetShowMentoringModal] = useState(false);
+    const [phoneError, SetPhoneError] = useState('');
+    const [emailError, SetEmailError] = useState('');
     const [newMember, SetNewMember] = useState({
         name: member.name,
         phone: member.phone,
@@ -27,7 +29,26 @@ function MyPageComponent() {
     });
 
     const handleInputChange = field => e => {
-        SetNewMember({ ...newMember, [field]: e.target.value });
+        console.log(field);
+        if (field === 'phone') {
+            const phonePattern = /^\d{3}-\d{4}-\d{4}$/;
+            if (!phonePattern.test(e.target.value)) {
+                SetPhoneError('유효하지 않은 전화번호 형식입니다.');
+            } else {
+                SetPhoneError('');
+                SetNewMember({ ...newMember, [field]: e.target.value });
+            }
+        } else if (field === 'email') {
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(e.target.value)) {
+                SetEmailError('유효하지 않은 이메일 형식입니다.');
+            } else {
+                SetEmailError('');
+                SetNewMember({ ...newMember, [field]: e.target.value });
+            }
+        } else {
+            SetNewMember({ ...newMember, [field]: e.target.value });
+        }
     };
 
     const logout = () => {
@@ -96,7 +117,11 @@ function MyPageComponent() {
             }
         };
 
-        callUpdateInfo();
+        if (phoneError === '' && emailError === '') {
+            callUpdateInfo();
+        } else {
+            alert('입력한 정보가 올바른지 확인해 주세요!');
+        }
     };
 
     const handleKeyDown = event => {
@@ -179,6 +204,7 @@ function MyPageComponent() {
                             onKeyDown={handleKeyDown}
                         ></S.CustomInput>
                     </div>
+                    {phoneError && <S.ErrorMsg>{phoneError}</S.ErrorMsg>}
                     <div
                         style={{
                             display: 'flex',
@@ -194,6 +220,7 @@ function MyPageComponent() {
                             onKeyDown={handleKeyDown}
                         ></S.CustomInput>
                     </div>
+                    {emailError && <S.ErrorMsg>{emailError}</S.ErrorMsg>}
                 </div>
             </div>
 
