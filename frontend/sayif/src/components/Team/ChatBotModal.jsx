@@ -223,16 +223,17 @@ const ChatbotModal = ({ open, handleClose }) => {
                                     bgcolor:
                                         msg.sender === 'user'
                                             ? '#0B4619'
-                                            : '#F0F0F0',
+                                            : '#FFFFFF',
                                     color:
                                         msg.sender === 'user'
                                             ? 'white'
                                             : 'black',
-                                    p: 1.5,
+                                    p: 2,
                                     borderRadius: 2,
                                     maxWidth: '70%',
                                     wordBreak: 'break-word',
                                     position: 'relative',
+                                    boxShadow: 1,
                                     // 마크다운 스타일 적용
                                     '& p': {
                                         margin: 0,
