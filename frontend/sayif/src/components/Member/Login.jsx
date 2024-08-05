@@ -1,5 +1,9 @@
 import { useDispatch } from 'react-redux';
-import { setToken, setMember, setExpirationdate } from '../../redux/modules/member';
+import {
+    setToken,
+    setMember,
+    setExpirationdate,
+} from '../../redux/modules/member';
 import S from './style/LoginStyled';
 import { useNavigate } from 'react-router-dom';
 import { login, getMemberInfo } from '../../api/MemberApi';
@@ -23,7 +27,9 @@ function Login() {
                 const responseInfo = await getMemberInfo(authToken);
                 dispatch(setMember(responseInfo.data));
 
-                const expirationDate = new Date(new Date().getTime() + 30 * 1000 * 60);
+                const expirationDate = new Date(
+                    new Date().getTime() + 30 * 1000 * 60,
+                );
                 dispatch(setExpirationdate(expirationDate));
 
                 alert('로그인에 성공하였습니다.');
@@ -45,14 +51,14 @@ function Login() {
     };
 
     const handleRegist = () => {
-        navigate("/member/regist");
-    }
+        navigate('/member/regist');
+    };
 
-    const handleKeyDown = (event) => {
-        if(event.key === 'Enter') {
+    const handleKeyDown = event => {
+        if (event.key === 'Enter') {
             handleLogin();
         }
-    }
+    };
 
     const LoginView = (
         <S.Container style={{ height: failedLogin ? '350px' : '300px' }}>

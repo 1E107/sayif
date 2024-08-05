@@ -47,6 +47,12 @@ const CustomInput = styled.input`
     font-family: ChosunGu;
 `
 
+const UpdateText = styled.div`
+    margin-top: 30px;
+    font-family: ChosunGu;
+    font-size: 13px;
+`
+
 const ProfileUpdateBtn = styled(Button)({
     fontFamily: "ChosunGu !important",
     color: "#E8E8CC !important",
@@ -68,7 +74,8 @@ const S = {
     CustomInput,
     NickNameText,
     ProfileUpdateBtn,
-    LogoutBtn
+    LogoutBtn,
+    UpdateText
 };
 
 export default S;

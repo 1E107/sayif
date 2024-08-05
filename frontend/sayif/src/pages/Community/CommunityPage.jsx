@@ -5,7 +5,7 @@ const Main = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 1000px;
+    height: 850px;
 `
 
 const CommunityPage = () => {
