@@ -43,6 +43,7 @@ const MentorList = () => {
                     profileImg={mentor.profileImg}
                     major={mentor.major}
                     nickname={mentor.nickname}
+                    tags={mentor.tags}
                 />
             ))}
         </ListContainer>
