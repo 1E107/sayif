@@ -80,6 +80,12 @@ const Chat = () => {
     setNewMessage('');
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') { 
+      handleSendBtn();
+    }
+  };
+
   return (
     <S.Container>
       <S.ChatContentWrapper>
@@ -119,6 +125,7 @@ const Chat = () => {
             placeholder="메시지를 입력하세요."
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
+            onKeyDown={handleKeyDown} // Add onKeyDown event handler
             style={{ border: '1px solid #116530CC', width: '1000px' }}
           />
           <SendIcon
