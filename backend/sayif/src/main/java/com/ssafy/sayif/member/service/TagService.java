@@ -1,41 +1,41 @@
 package com.ssafy.sayif.member.service;
 
 import com.ssafy.sayif.member.dto.TagRequestDto;
-import com.ssafy.sayif.member.entity.Member;
+import com.ssafy.sayif.member.entity.Mentor;
 import com.ssafy.sayif.member.entity.Tag;
 import com.ssafy.sayif.member.exception.UnauthorizedException;
 import com.ssafy.sayif.member.repository.MemberRepository;
+import com.ssafy.sayif.member.repository.MentorRepository;
 import com.ssafy.sayif.member.repository.TagRepository;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import org.hibernate.internal.util.collections.ReadOnlyMap;
-import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class TagService {
+
     private final TagRepository tagRepository;
     private final MemberRepository memberRepository;
+    private final MentorRepository mentorRepository;
 
     @Transactional
     public void saveTags(String username, TagRequestDto tagContents) {
-        Member member = memberRepository.findByUsername(username);
+        Mentor mentor = mentorRepository.findByUsername(username);
         for (String tagContent : tagContents.getContents()) {
             Tag tag = new Tag();
-            tag.createTag(member, tagContent);
+            tag.createTag(mentor, tagContent);
             tagRepository.save(tag);
         }
     }
 
     @Transactional
     public List<String> getTagsForMember(String username) {
-        Member member = memberRepository.findByUsername(username);
-        List<Tag> tags = tagRepository.findByMemberAndIsRemoveFalse(member);
+        Mentor mentor = mentorRepository.findByUsername(username);
+        List<Tag> tags = tagRepository.findByMentorAndIsRemoveFalse(mentor);
         List<String> collect = new ArrayList<>();
         for (Tag tag : tags) {
             String content = tag.getContent();
@@ -49,7 +49,7 @@ public class TagService {
         Optional<Tag> optionalTag = tagRepository.findById(tagId);
         if (optionalTag.isPresent()) {
             Tag tag = optionalTag.get();
-            if (tag.getMember().getUsername().equals(username)) {
+            if (tag.getMentor().getUsername().equals(username)) {
                 tag.setRemove(true);
                 tagRepository.save(tag);
             } else {
