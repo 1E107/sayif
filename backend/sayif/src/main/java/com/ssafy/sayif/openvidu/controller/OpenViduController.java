@@ -30,7 +30,7 @@ public class OpenViduController {
     public ResponseEntity<?> initializeSession(@RequestHeader("Authorization") String authorizationHeader, @RequestBody(required = false)Map<String, Object> params) {
         try {
             log.info("Controller - initialize session");
-            Session session = openViduService.createSession(params, "sora1234");
+            Session session = openViduService.createSession(params, "ssafy");
             return new ResponseEntity<>(session.getSessionId(), HttpStatus.OK);
         } catch (Exception e) {
             log.error("Unexpected error: ", e);
@@ -65,7 +65,7 @@ public class OpenViduController {
     @DeleteMapping("/api/sessions/{sessionId}")
     public ResponseEntity<?> closeSession(@PathVariable String sessionId) {
         try {
-            return new ResponseEntity<>(openViduService.closeSession(sessionId, "sora1234"), HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(openViduService.closeSession(sessionId, "ssafy"), HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return new ResponseEntity<>("Failed to close session", HttpStatus.NOT_FOUND);
         }
