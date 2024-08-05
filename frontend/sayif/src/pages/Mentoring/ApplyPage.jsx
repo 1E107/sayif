@@ -1,5 +1,5 @@
-import Apply from "../../components/Mentoring/Apply";
-import styled from "styled-components";
+import Apply from '../../components/Mentoring/Apply';
+import styled from 'styled-components';
 
 const Main = styled.div`
     margin-top: 110px;
@@ -11,7 +11,7 @@ const ApplyPage = () => {
         <Main>
             <Apply></Apply>
         </Main>
-    )
-}
+    );
+};
 
 export default ApplyPage;
