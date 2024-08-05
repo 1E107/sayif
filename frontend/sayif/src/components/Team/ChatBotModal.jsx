@@ -5,7 +5,6 @@ import {
     Typography,
     TextField,
     IconButton,
-    CircularProgress,
     Tooltip,
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
@@ -31,6 +30,7 @@ const ChatbotModal = ({ open, handleClose }) => {
 
     // 메시지 영역의 참조를 위한 ref
     const messagesEndRef = useRef(null);
+    const textFieldRef = useRef(null); // TextField에 대한 참조 추가
 
     const handleSendMessage = async () => {
         if (!message.trim()) {
@@ -121,8 +121,36 @@ const ChatbotModal = ({ open, handleClose }) => {
         }
     }, [messages]);
 
-    const insertMarkdown = syntax => {
-        setMessage(prev => prev + syntax);
+    const insertMarkdown = (syntax, wrap = false) => {
+        const textField = textFieldRef.current;
+        const start = textField.selectionStart;
+        const end = textField.selectionEnd;
+        const selectedText = message.slice(start, end);
+        let newText;
+
+        if (wrap) {
+            newText =
+                message.slice(0, start) +
+                syntax +
+                selectedText +
+                syntax +
+                message.slice(end);
+        } else {
+            newText =
+                message.slice(0, start) +
+                syntax +
+                selectedText +
+                message.slice(end);
+        }
+
+        setMessage(newText);
+        setTimeout(() => {
+            textField.focus();
+            textField.setSelectionRange(
+                start + syntax.length,
+                end + syntax.length,
+            );
+        }, 0);
     };
 
     return (
@@ -254,6 +282,7 @@ const ChatbotModal = ({ open, handleClose }) => {
                         onKeyDown={handleKeyPress}
                         sx={{ mr: 2 }}
                         multiline
+                        inputRef={textFieldRef} // TextField에 대한 참조 설정
                     />
                     <Box
                         sx={{
@@ -264,21 +293,21 @@ const ChatbotModal = ({ open, handleClose }) => {
                     >
                         <Tooltip title="굵은 글씨">
                             <IconButton
-                                onClick={() => insertMarkdown('**굵은 글씨**')}
+                                onClick={() => insertMarkdown('**', true)}
                             >
                                 <FormatBoldIcon />
                             </IconButton>
                         </Tooltip>
                         <Tooltip title="기울임 글씨">
                             <IconButton
-                                onClick={() => insertMarkdown('*기울임 글씨*')}
+                                onClick={() => insertMarkdown('*', true)}
                             >
                                 <FormatItalicIcon />
                             </IconButton>
                         </Tooltip>
                         <Tooltip title="코드">
                             <IconButton
-                                onClick={() => insertMarkdown('`코드`')}
+                                onClick={() => insertMarkdown('`', true)}
                             >
                                 <CodeIcon />
                             </IconButton>
@@ -286,7 +315,10 @@ const ChatbotModal = ({ open, handleClose }) => {
                         <Tooltip title="링크">
                             <IconButton
                                 onClick={() =>
-                                    insertMarkdown('[링크](http://example.com)')
+                                    insertMarkdown(
+                                        '[링크](http://example.com)',
+                                        false,
+                                    )
                                 }
                             >
                                 <LinkIcon />
@@ -294,7 +326,7 @@ const ChatbotModal = ({ open, handleClose }) => {
                         </Tooltip>
                         <Tooltip title="인용문">
                             <IconButton
-                                onClick={() => insertMarkdown('> 인용문')}
+                                onClick={() => insertMarkdown('> ', false)}
                             >
                                 <FormatQuoteIcon />
                             </IconButton>
