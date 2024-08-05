@@ -36,3 +36,39 @@ export const GetCommunityList = async(token, type, page, size) => {
         throw error;
     }
 }
+
+export const GetCommunityDetail = async(token, id) => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/board/detail/${id}`, {
+            headers: {Authorization: `Bearer ${token}`}
+        });
+        return response;
+    }catch(error) {
+        throw error;
+    }
+}
+
+export const GetCommunityComment = async(token, id) => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/comment/${id}`, {
+            headers: {Authorization: `Bearer ${token}`}
+        });
+        return response;
+    }catch(error) {
+        throw error;
+    }
+}
+
+export const PostCommunityComment = async(token, id, comment) => {
+    const data = {comment: comment};
+
+    try {
+        const response = await axios.post(`${API_BASE_URL}/comment/${id}`, data, {
+            headers: {Authorization: `Bearer ${token}`}
+        });
+        return response;
+    }
+    catch(error) {
+        throw error;
+    }
+}

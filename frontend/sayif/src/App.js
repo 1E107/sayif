@@ -33,7 +33,7 @@ function App() {
                 <Route path="/" element={<MainPage />}></Route>
                 <Route path="/serviceIntroduction" element={<IntroPage />} />
                 <Route path="/community" element={<CommunityPage />} />
-                <Route path="/community/detail/:id" element={<CommunityDetailPage/>}/>
+                <Route path="/community/datail/:id" element={<CommunityDetailPage/>}/>
                 <Route path="/apply-mentoring" element={<ApplyPage />} />
                 <Route path="/team/*" element={<TeamPage />} />
                 <Route path="/team/board/detail/:id" element={<BoardPage />} />

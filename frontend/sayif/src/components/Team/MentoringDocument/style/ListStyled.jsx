@@ -4,7 +4,7 @@ import TextField from '@mui/material/TextField';
 import '../../../../styles/fonts.css';
 
 const Container = styled.div`
-    margin: 20px;
+    margin: 70px 20px 50px 20px;
 `;
 
 const CustomButton = styled(Button)({

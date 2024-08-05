@@ -10,10 +10,11 @@ const Container = styled.div`
     background-color: white;
     border-radius: 30px;
     text-align: center;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 `;
 
 const Title = styled.div`
-    margin-top: 100px;
+    margin-top: 50px;
     font-size: 35px;
     font-family: ChosunGu;
     font-weight: bold;
