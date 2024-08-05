@@ -46,9 +46,7 @@ class VideoRoomComponent extends Component {
         this.updateLayout = this.updateLayout.bind(this);
         this.camStatusChanged = this.camStatusChanged.bind(this);
         this.micStatusChanged = this.micStatusChanged.bind(this);
-        this.nicknameChanged = this.nicknameChanged.bind(this);
         this.toggleFullscreen = this.toggleFullscreen.bind(this);
-        this.switchCamera = this.switchCamera.bind(this);
         this.screenShare = this.screenShare.bind(this);
         this.stopScreenShare = this.stopScreenShare.bind(this);
         this.closeDialogExtension = this.closeDialogExtension.bind(this);
@@ -99,22 +97,22 @@ class VideoRoomComponent extends Component {
             document.getElementById('layout'),
             openViduLayoutOptions,
         );
-        this.setState({myUserName: this.props.member.nickname});
-        // window.addEventListener('beforeunload', this.onbeforeunload);
-        // window.addEventListener('resize', this.updateLayout);
-        // window.addEventListener('resize', this.checkSize);
+        this.setState({ myUserName: this.props.member.nickname });
+        window.addEventListener('beforeunload', this.onbeforeunload);
+        window.addEventListener('resize', this.updateLayout);
+        window.addEventListener('resize', this.checkSize);
         // this.joinSession();
     }
 
     componentWillUnmount() {
-        // window.removeEventListener('beforeunload', this.onbeforeunload);
-        // window.removeEventListener('resize', this.updateLayout);
-        // window.removeEventListener('resize', this.checkSize);
-        // this.leaveSession();
+        window.removeEventListener('beforeunload', this.onbeforeunload);
+        window.removeEventListener('resize', this.updateLayout);
+        window.removeEventListener('resize', this.checkSize);
+        this.leaveSession();
     }
 
     onbeforeunload(event) {
-        // this.leaveSession();
+        this.leaveSession();
     }
 
     joinSession() {
@@ -271,17 +269,17 @@ class VideoRoomComponent extends Component {
         }
 
         try {
-            await closeSession(this.props.userToken, mySessionId);
             // setCurrentSessionId(null);
             // setIsConnected(false);
-        //     this.OV = null;
-        // this.setState({
-        //     session: undefined,
-        //     subscribers: [],
-        //     mySessionId: 'SessionInit',
-        //     myUserName: this.props.member.nickname,
-        //     localUser: undefined,
-        // });
+            this.OV = null;
+            this.setState({
+                session: undefined,
+                subscribers: [],
+                mySessionId: 'SessionInit',
+                myUserName: this.props.member.nickname,
+                localUser: undefined,
+            });
+            // await closeSession(this.props.userToken, mySessionId);
         } catch (error) {
             console.error('Error closing session:', error);
         }
@@ -307,14 +305,14 @@ class VideoRoomComponent extends Component {
         this.setState({ localUser: localUser });
     }
 
-    nicknameChanged(nickname) {
-        let localUser = this.state.localUser;
-        localUser.setNickname(nickname);
-        this.setState({ localUser: localUser });
-        this.sendSignalUserChanged({
-            nickname: this.state.localUser.getNickname(),
-        });
-    }
+    // nicknameChanged(nickname) {
+    //     let localUser = this.state.localUser;
+    //     localUser.setNickname(nickname);
+    //     this.setState({ localUser: localUser });
+    //     this.sendSignalUserChanged({
+    //         nickname: this.state.localUser.getNickname(),
+    //     });
+    // }
 
     deleteSubscriber(stream) {
         const remoteUsers = this.state.subscribers;
@@ -401,7 +399,8 @@ class VideoRoomComponent extends Component {
 
     updateLayout() {
         setTimeout(() => {
-            if (this.layout){ // null 체크
+            if (this.state.session) {
+                // null 체크
                 this.layout.updateLayout();
             } else {
                 console.error('Layout object is not defined.');
@@ -448,47 +447,47 @@ class VideoRoomComponent extends Component {
         }
     }
 
-    async switchCamera() {
-        try {
-            const devices = await this.OV.getDevices();
-            var videoDevices = devices.filter(
-                device => device.kind === 'videoinput',
-            );
+    // async switchCamera() {
+    //     try {
+    //         const devices = await this.OV.getDevices();
+    //         var videoDevices = devices.filter(
+    //             device => device.kind === 'videoinput',
+    //         );
 
-            if (videoDevices && videoDevices.length > 1) {
-                var newVideoDevice = videoDevices.filter(
-                    device =>
-                        device.deviceId !==
-                        this.state.currentVideoDevice.deviceId,
-                );
+    //         if (videoDevices && videoDevices.length > 1) {
+    //             var newVideoDevice = videoDevices.filter(
+    //                 device =>
+    //                     device.deviceId !==
+    //                     this.state.currentVideoDevice.deviceId,
+    //             );
 
-                if (newVideoDevice.length > 0) {
-                    // Creating a new publisher with specific videoSource
-                    // In mobile devices the default and first camera is the front one
-                    var newPublisher = this.OV.initPublisher(undefined, {
-                        audioSource: undefined,
-                        videoSource: newVideoDevice[0].deviceId,
-                        publishAudio: localUser.isAudioActive(),
-                        publishVideo: localUser.isVideoActive(),
-                        mirror: true,
-                    });
+    //             if (newVideoDevice.length > 0) {
+    //                 // Creating a new publisher with specific videoSource
+    //                 // In mobile devices the default and first camera is the front one
+    //                 var newPublisher = this.OV.initPublisher(undefined, {
+    //                     audioSource: undefined,
+    //                     videoSource: newVideoDevice[0].deviceId,
+    //                     publishAudio: localUser.isAudioActive(),
+    //                     publishVideo: localUser.isVideoActive(),
+    //                     mirror: true,
+    //                 });
 
-                    //newPublisher.once("accessAllowed", () => {
-                    await this.state.session.unpublish(
-                        this.state.localUser.getStreamManager(),
-                    );
-                    await this.state.session.publish(newPublisher);
-                    this.state.localUser.setStreamManager(newPublisher);
-                    this.setState({
-                        currentVideoDevice: newVideoDevice,
-                        localUser: localUser,
-                    });
-                }
-            }
-        } catch (e) {
-            console.error(e);
-        }
-    }
+    //                 //newPublisher.once("accessAllowed", () => {
+    //                 await this.state.session.unpublish(
+    //                     this.state.localUser.getStreamManager(),
+    //                 );
+    //                 await this.state.session.publish(newPublisher);
+    //                 this.state.localUser.setStreamManager(newPublisher);
+    //                 this.setState({
+    //                     currentVideoDevice: newVideoDevice,
+    //                     localUser: localUser,
+    //                 });
+    //             }
+    //         }
+    //     } catch (e) {
+    //         console.error(e);
+    //     }
+    // }
 
     screenShare() {
         const videoSource =
@@ -597,26 +596,22 @@ class VideoRoomComponent extends Component {
         });
     }
     checkSize() {
-        const layoutElement = document.getElementById('layout');
-        if (layoutElement) { // null 체크
+        if (this.state.session) {
             if (
-                layoutElement.offsetWidth <= 700 &&
+                document.getElementById('layout').offsetWidth <= 700 &&
                 !this.hasBeenUpdated
             ) {
                 this.toggleChat('none');
                 this.hasBeenUpdated = true;
             }
             if (
-                layoutElement.offsetWidth > 700 &&
+                document.getElementById('layout').offsetWidth > 700 &&
                 this.hasBeenUpdated
             ) {
                 this.hasBeenUpdated = false;
             }
-        } else {
-            console.error('Element with id "layout" not found.');
         }
     }
-    
 
     render() {
         const mySessionId = this.state.mySessionId;
@@ -636,16 +631,14 @@ class VideoRoomComponent extends Component {
                         screenShare={this.screenShare}
                         stopScreenShare={this.stopScreenShare}
                         toggleFullscreen={this.toggleFullscreen}
-                        switchCamera={this.switchCamera}
                         leaveSession={this.leaveSession}
                         toggleChat={this.toggleChat}
                     />
 
-                    <DialogExtensionComponent
+                    {/* <DialogExtensionComponent
                         showDialog={this.state.showExtensionDialog}
                         cancelClicked={this.closeDialogExtension}
-                    />
-
+                    /> */}
                     <div id="layout" className="bounds">
                         {localUser !== undefined &&
                             localUser.getStreamManager() !== undefined && (
@@ -653,10 +646,7 @@ class VideoRoomComponent extends Component {
                                     className="OT_root OT_publisher custom-class"
                                     id="localUser"
                                 >
-                                    <StreamComponent
-                                        user={localUser}
-                                        handleNickname={this.nicknameChanged}
-                                    />
+                                    <StreamComponent user={localUser} />
                                 </div>
                             )}
                         {this.state.subscribers.map((sub, i) => (
@@ -701,45 +691,46 @@ class VideoRoomComponent extends Component {
                         margin: '0 auto 20px auto',
                     }}
                 />
-                {this.state.sessionStatus === 'mentor' && (
-                    <>
-                        <OutlinedInput
-                            type="text"
-                            onChange={e =>
-                                this.setState({ mySessionId: e.target.value })
-                            }
-                            placeholder="Enter Session ID"
-                            style={{
-                                border: '1px solid #116530CC',
-                                width: '100%',
-                                marginBottom: '15px',
-                            }}
-                        />
-                        <Button onClick={this.joinSession}>
-                            회의실 생성
-                        </Button>
-                    </>
-                )}
-                {this.state.sessionStatus === 'exists' && (
-                    <>
-                        <OutlinedInput
-                            type="text"
-                            value={mySessionId}
-                            onChange={e =>
-                                this.setState({ mySessionId: e.target.value })
-                            }
-                            placeholder="Enter Session ID"
-                            style={{
-                                border: '1px solid #116530CC',
-                                width: '100%',
-                                marginBottom: '15px',
-                            }}
-                        />
-                        <Button onClick={this.joinSession}>
-                            회의실 입장
-                        </Button>
-                    </>
-                )}
+                <div id="layout" className="bounds">
+                    {this.state.sessionStatus === 'mentor' && (
+                        <>
+                            <OutlinedInput
+                                type="text"
+                                onChange={e =>
+                                    this.setState({
+                                        mySessionId: e.target.value,
+                                    })
+                                }
+                                placeholder="Enter Session ID"
+                                style={{
+                                    border: '1px solid #116530CC',
+                                    width: '100%',
+                                    marginBottom: '15px',
+                                }}
+                            />
+                            <Button onClick={this.joinSession}>
+                                회의실 생성
+                            </Button>
+                        </>
+                    )}
+                    {this.state.sessionStatus === 'exists' && (
+                        <>
+                            <OutlinedInput
+                                readOnly
+                                type="text"
+                                value={mySessionId}
+                                style={{
+                                    border: '1px solid #116530CC',
+                                    width: '100%',
+                                    marginBottom: '15px',
+                                }}
+                            />
+                            <Button onClick={this.joinSession}>
+                                회의실 입장
+                            </Button>
+                        </>
+                    )}
+                </div>
             </div>
         );
     }

@@ -12,7 +12,6 @@ import Videocam from '@mui/icons-material/Videocam';
 import VideocamOff from '@mui/icons-material/VideocamOff';
 import Fullscreen from '@mui/icons-material/Fullscreen';
 import FullscreenExit from '@mui/icons-material/FullscreenExit';
-import SwitchVideoIcon from '@mui/icons-material/SwitchVideo';
 import PictureInPicture from '@mui/icons-material/PictureInPicture';
 import ScreenShare from '@mui/icons-material/ScreenShare';
 import StopScreenShare from '@mui/icons-material/StopScreenShare';
@@ -28,11 +27,9 @@ export default class ToolbarComponent extends Component {
         this.screenShare = this.screenShare.bind(this);
         this.stopScreenShare = this.stopScreenShare.bind(this);
         this.toggleFullscreen = this.toggleFullscreen.bind(this);
-        this.switchCamera = this.switchCamera.bind(this);
         this.leaveSession = this.leaveSession.bind(this);
         this.toggleChat = this.toggleChat.bind(this);
     }
-
 
     micStatusChanged() {
         this.props.micStatusChanged();
@@ -55,10 +52,6 @@ export default class ToolbarComponent extends Component {
         this.props.toggleFullscreen();
     }
 
-    switchCamera() {
-        this.props.switchCamera();
-    }
-
     leaveSession() {
         this.props.leaveSession();
     }
@@ -74,52 +67,92 @@ export default class ToolbarComponent extends Component {
             <AppBar className="toolbar" id="header">
                 <Toolbar className="toolbar">
                     <div id="navSessionInfo">
-                        <img
-                            id="header_img"
-                            alt="OpenVidu Logo"
-                            src="/logo.png"
-                        />
-
-                        {this.props.sessionId && <div id="titleContent">
-                            <span id="session-title">{mySessionId}</span>
-                        </div>}
+                        {this.props.sessionId && (
+                            <div id="titleContent">
+                                <span id="session-title">{mySessionId}</span>
+                            </div>
+                        )}
                     </div>
 
                     <div className="buttonsContent">
-                        <IconButton color="inherit" className="navButton" id="navMicButton" onClick={this.micStatusChanged}>
-                            {localUser !== undefined && localUser.isAudioActive() ? <Mic /> : <MicOff color="secondary" />}
+                        <IconButton
+                            color="inherit"
+                            className="navButton"
+                            id="navMicButton"
+                            onClick={this.micStatusChanged}
+                        >
+                            {localUser !== undefined &&
+                            localUser.isAudioActive() ? (
+                                <Mic />
+                            ) : (
+                                <MicOff color="secondary" />
+                            )}
                         </IconButton>
 
-                        <IconButton color="inherit" className="navButton" id="navCamButton" onClick={this.camStatusChanged}>
-                            {localUser !== undefined && localUser.isVideoActive() ? (
+                        <IconButton
+                            color="inherit"
+                            className="navButton"
+                            id="navCamButton"
+                            onClick={this.camStatusChanged}
+                        >
+                            {localUser !== undefined &&
+                            localUser.isVideoActive() ? (
                                 <Videocam />
                             ) : (
                                 <VideocamOff color="secondary" />
                             )}
                         </IconButton>
 
-                        <IconButton color="inherit" className="navButton" onClick={this.screenShare}>
-                            {localUser !== undefined && localUser.isScreenShareActive() ? <PictureInPicture /> : <ScreenShare />}
+                        <IconButton
+                            color="inherit"
+                            className="navButton"
+                            onClick={this.screenShare}
+                        >
+                            {localUser !== undefined &&
+                            localUser.isScreenShareActive() ? (
+                                <PictureInPicture />
+                            ) : (
+                                <ScreenShare />
+                            )}
                         </IconButton>
 
                         {localUser !== undefined &&
                             localUser.isScreenShareActive() && (
-                                <IconButton onClick={this.stopScreenShare} id="navScreenButton">
+                                <IconButton
+                                    onClick={this.stopScreenShare}
+                                    id="navScreenButton"
+                                >
                                     <StopScreenShare color="secondary" />
                                 </IconButton>
                             )}
-
-                        <IconButton color="inherit" className="navButton" onClick={this.switchCamera}>
-                            <SwitchVideoIcon />
+                        <IconButton
+                            color="inherit"
+                            className="navButton"
+                            onClick={this.toggleFullscreen}
+                        >
+                            {localUser !== undefined &&
+                            this.state.fullscreen ? (
+                                <FullscreenExit />
+                            ) : (
+                                <Fullscreen />
+                            )}
                         </IconButton>
-                        <IconButton color="inherit" className="navButton" onClick={this.toggleFullscreen}>
-                            {localUser !== undefined && this.state.fullscreen ? <FullscreenExit /> : <Fullscreen />}
-                        </IconButton>
-                        <IconButton color="secondary" className="navButton" onClick={this.leaveSession} id="navLeaveButton">
+                        <IconButton
+                            color="secondary"
+                            className="navButton"
+                            onClick={this.leaveSession}
+                            id="navLeaveButton"
+                        >
                             <PowerSettingsNew />
                         </IconButton>
-                         <IconButton color="inherit" onClick={this.toggleChat} id="navChatButton">
-                            {this.props.showNotification && <div id="point" className="" />}
+                        <IconButton
+                            color="inherit"
+                            onClick={this.toggleChat}
+                            id="navChatButton"
+                        >
+                            {this.props.showNotification && (
+                                <div id="point" className="" />
+                            )}
                             <Tooltip title="Chat">
                                 <QuestionAnswer />
                             </Tooltip>
