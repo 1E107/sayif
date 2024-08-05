@@ -16,6 +16,7 @@ import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
 import axios from 'axios';
 import { API_BASE_URL } from '../../api/config';
 import ReactMarkdown from 'react-markdown';
+import '../../styles/fonts.css';
 import remarkGfm from 'remark-gfm'; // GitHub 스타일 마크다운 플러그인
 
 const ChatbotModal = ({ open, handleClose }) => {
@@ -159,6 +160,7 @@ const ChatbotModal = ({ open, handleClose }) => {
             onClose={handleClose}
             sx={{
                 display: 'flex',
+                fontFamily: 'ChosunGu',
                 alignItems: 'center',
                 justifyContent: 'center',
                 backdropFilter: 'blur(4px)', // 배경 흐리게 하기
@@ -184,6 +186,7 @@ const ChatbotModal = ({ open, handleClose }) => {
                     sx={{
                         backgroundColor: '#0B4619',
                         color: 'white',
+                        fontFamily: 'ChosunGu',
                         p: 2,
                         borderRadius: '10px 10px 0 0',
                         textAlign: 'center',
@@ -211,6 +214,7 @@ const ChatbotModal = ({ open, handleClose }) => {
                                         ? 'flex-end'
                                         : 'flex-start',
                                 mb: 2,
+                                lineHeight: '140%',
                                 position: 'relative',
                                 alignItems: 'flex-start', // 상단 정렬
                             }}
@@ -281,7 +285,7 @@ const ChatbotModal = ({ open, handleClose }) => {
                         value={message}
                         onChange={e => setMessage(e.target.value)}
                         onKeyDown={handleKeyPress}
-                        sx={{ mr: 2 }}
+                        sx={{ mr: 2, fontFamily: 'ChosunGu' }}
                         multiline
                         inputRef={textFieldRef} // TextField에 대한 참조 설정
                     />
