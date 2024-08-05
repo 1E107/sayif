@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -10,21 +11,22 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
+import Modal from '@mui/material/Modal';
 import { useNavigate } from 'react-router-dom';
 import TeamSideMenu from './TeamSideMenu';
 import Drawer from '@mui/material/Drawer';
-
+import ChatbotModal from '../ChatBotModal';
 import '../../../styles/fonts.css';
-import { useState } from 'react';
 
 const pages = ['AI 새잎 클로버', '새잎 홈페이지'];
-function ResponsiveAppBar() {
+
+function TeamHeader() {
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
-    const navigate = useNavigate();
-
     const [showSide, setShowSide] = useState(false);
     const [selectSideMenu, setSelectSideMenu] = useState('');
+    const [openModal, setOpenModal] = useState(false);
+    const navigate = useNavigate();
 
     const handleOpenNavMenu = event => {
         setAnchorElNav(event.currentTarget);
@@ -43,7 +45,11 @@ function ResponsiveAppBar() {
     };
 
     const handleAIClover = () => {
-        navigate('/'); // 나중에 경로 수정
+        setOpenModal(true);
+    };
+
+    const handleCloseAIClover = () => {
+        setOpenModal(false);
     };
 
     const handleGoMain = () => {
@@ -51,12 +57,10 @@ function ResponsiveAppBar() {
     };
 
     const handleShowSideMenu = () => {
-        if (showSide) setShowSide(false);
-        else setShowSide(true);
+        setShowSide(!showSide);
     };
 
     const handleShowPage = select => {
-        // 사이드 메뉴에서 선택한 메뉴에 따라 어떤 컴포넌트 보여줄 지 선택
         switch (select) {
             case '홈':
                 navigate('/team');
@@ -81,6 +85,8 @@ function ResponsiveAppBar() {
                 break;
             case '사연함':
                 navigate('/team/story-board');
+                break;
+            default:
                 break;
         }
     };
@@ -251,7 +257,9 @@ function ResponsiveAppBar() {
                     </Drawer>
                 </Toolbar>
             </Container>
+            <ChatbotModal open={openModal} handleClose={handleCloseAIClover} />
         </AppBar>
     );
 }
-export default ResponsiveAppBar;
+
+export default TeamHeader;

@@ -1,12 +1,16 @@
 package com.ssafy.sayif.board.service;
 
-import com.ssafy.sayif.board.converter.CommentConverter;
 import com.ssafy.sayif.board.dto.CommentRequestDto;
 import com.ssafy.sayif.board.dto.CommentResponseDto;
+import com.ssafy.sayif.board.entity.Board;
 import com.ssafy.sayif.board.entity.Comment;
+import com.ssafy.sayif.board.exception.BoardNotFoundException;
 import com.ssafy.sayif.board.exception.CommentNotFoundException;
+import com.ssafy.sayif.board.repository.BoardRepository;
 import com.ssafy.sayif.board.repository.CommentRepository;
+import com.ssafy.sayif.member.entity.Member;
 import com.ssafy.sayif.member.exception.UnauthorizedAccessException;
+import com.ssafy.sayif.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,8 +20,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /**
- * 댓글과 관련된 비즈니스 로직을 처리하는 서비스 클래스입니다. 댓글의 작성, 수정, 삭제, 조회 기능을 제공하며, 댓글 작성자는 댓글의 작성자만이 수정 및 삭제를 할 수 있도록
- * 권한을 검증합니다.
+ * 댓글과 관련된 비즈니스 로직을 처리하는 서비스 클래스입니다. 이 클래스는 댓글의 작성, 수정, 삭제 및 조회 기능을 제공하며, 댓글 작성자는 댓글의 작성자만이 수정 및 삭제를
+ * 할 수 있도록 권한을 검증합니다.
  */
 @Slf4j
 @Service
@@ -26,14 +30,15 @@ import org.springframework.stereotype.Service;
 public class CommentService {
 
     private final CommentRepository commentRepository;
-    private final CommentConverter commentConverter;
+    private final BoardRepository boardRepository;
+    private final MemberRepository memberRepository;
 
     /**
      * 주어진 ID로 댓글을 조회합니다.
      *
      * @param commentId 조회할 댓글의 ID
      * @return 댓글 엔티티
-     * @throws CommentNotFoundException 댓글이 존재하지 않을 경우 예외를 던집니다.
+     * @throws CommentNotFoundException 댓글이 존재하지 않을 경우 발생합니다.
      */
     private Comment findCommentById(int commentId) {
         return commentRepository.findById(commentId)
@@ -41,7 +46,7 @@ public class CommentService {
     }
 
     /**
-     * 댓글 작성자가 현재 사용자가 맞는지 확인합니다.
+     * 현재 사용자가 댓글의 작성자인지 확인합니다.
      *
      * @param comment  조회한 댓글
      * @param memberId 현재 사용자 ID
@@ -63,8 +68,7 @@ public class CommentService {
             .content(content)
             .modifiedAt(LocalDateTime.now())
             .build();
-        commentRepository.save(updatedComment);
-        return updatedComment;
+        return commentRepository.save(updatedComment);
     }
 
     /**
@@ -85,11 +89,20 @@ public class CommentService {
     /**
      * 새로운 댓글을 작성합니다.
      *
-     * @param dto 댓글 작성 요청을 담고 있는 DTO
+     * @param dto      댓글 작성 요청을 담고 있는 DTO
+     * @param boardId  댓글이 작성될 게시글의 ID
+     * @param username 댓글 작성자의 사용자 이름
      */
-    public void writeComment(CommentRequestDto dto) {
-        Comment comment = commentConverter.convertToEntity(dto);
-        commentRepository.save(comment);
+    public void writeComment(CommentRequestDto dto, int boardId, String username) {
+        Board board = boardRepository.findById(boardId)
+            .orElseThrow(() -> new BoardNotFoundException(boardId));
+        Member member = memberRepository.findByUsername(username);
+        commentRepository.save(Comment
+            .builder()
+            .member(member)
+            .board(board)
+            .content(dto.getContent())
+            .build());
     }
 
     /**
@@ -99,8 +112,8 @@ public class CommentService {
      * @param memberId  댓글 작성자의 ID
      * @param dto       댓글 수정 요청을 담고 있는 DTO
      * @return 수정된 댓글 엔티티
-     * @throws UnauthorizedAccessException 댓글 작성자가 현재 사용자가 아닌 경우 예외를 던집니다.
-     * @throws CommentNotFoundException    해당 ID의 댓글이 존재하지 않을 경우 예외를 던집니다.
+     * @throws UnauthorizedAccessException 댓글 작성자가 현재 사용자가 아닌 경우 발생합니다.
+     * @throws CommentNotFoundException    해당 ID의 댓글이 존재하지 않을 경우 발생합니다.
      */
     public Comment modifyComment(int commentId, String memberId, CommentRequestDto dto) {
         Comment comment = findCommentById(commentId);
@@ -117,8 +130,8 @@ public class CommentService {
      *
      * @param commentId 삭제할 댓글의 ID
      * @param memberId  댓글 작성자의 ID
-     * @throws UnauthorizedAccessException 댓글 작성자가 현재 사용자가 아닌 경우 예외를 던집니다.
-     * @throws CommentNotFoundException    해당 ID의 댓글이 존재하지 않을 경우 예외를 던집니다.
+     * @throws UnauthorizedAccessException 댓글 작성자가 현재 사용자가 아닌 경우 발생합니다.
+     * @throws CommentNotFoundException    해당 ID의 댓글이 존재하지 않을 경우 발생합니다.
      */
     public void deleteComment(int commentId, String memberId) {
         Comment comment = findCommentById(commentId);
