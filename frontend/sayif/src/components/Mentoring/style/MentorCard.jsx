@@ -2,65 +2,93 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-const MentorCardContainer = styled.div`
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 16px;
-    margin: 16px;
-    background-color: #f9f9f9;
-`;
-
-const MentorName = styled.h3`
-    margin-top: 0;
-`;
-
-const MentorCohort = styled.p``;
-
-const MentorDescription = styled.p``;
-
-const MentorMbti = styled.p``;
-
-const TagsContainer = styled.div`
+const Card = styled.div`
+    background-color: #e7ede5;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 10px;
     display: flex;
-    gap: 8px;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+`;
+
+const Avatar = styled.img`
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+`;
+
+const Name = styled.h3`
+    margin: 10px 0 5px 0;
+`;
+
+const Cohort = styled.p``;
+
+const Description = styled.p`
+    background-color: #f7f7f7;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 10px 0;
+`;
+
+const MBTI = styled.p`
+    margin: 5px 0;
+`;
+
+const Tags = styled.div`
+    display: flex;
+    gap: 10px;
+    margin: 10px 0;
 `;
 
 const Tag = styled.span`
-    background-color: #ddd;
-    border-radius: 4px;
-    padding: 4px 8px;
+    background-color: #a0a7a5;
+    border-radius: 5px;
+    padding: 5px 10px;
 `;
 
-const Link = styled.a`
-    display: block;
-    margin-top: 16px;
+const MessageLink = styled.a`
+    margin-top: 10px;
     color: #007bff;
     text-decoration: none;
 `;
 
-const MentorCard = ({ name, cohort, description, mbti, tags }) => {
+const MentorCard = ({
+    seq,
+    name,
+    intro,
+    track,
+    profileImg,
+    major,
+    regCode,
+    nickname,
+}) => {
     return (
-        <MentorCardContainer>
-            <MentorName>{name}</MentorName>
-            <MentorCohort>{cohort}</MentorCohort>
-            <MentorDescription>{description}</MentorDescription>
-            <MentorMbti>{mbti}</MentorMbti>
-            <TagsContainer>
-                {tags.map((tag, index) => (
-                    <Tag key={index}>{tag}</Tag>
-                ))}
-            </TagsContainer>
-            <Link href="#">쪽지 보내기</Link>
-        </MentorCardContainer>
+        <Card>
+            <Avatar src={profileImg} alt={`${name} avatar`} />
+            <Name>{name}</Name>
+            <Cohort>
+                {seq}기_{regCode}_{track}
+            </Cohort>
+            <Description>{intro}</Description>
+            <MBTI>{major}</MBTI>
+            <Tags>
+                <Tag>{nickname}</Tag>
+            </Tags>
+            <MessageLink href="#">쪽지 보내기</MessageLink>
+        </Card>
     );
 };
 
 MentorCard.propTypes = {
     name: PropTypes.string.isRequired,
-    cohort: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
-    mbti: PropTypes.string.isRequired,
-    tags: PropTypes.arrayOf(PropTypes.string).isRequired,
+    intro: PropTypes.string.isRequired,
+    track: PropTypes.string.isRequired,
+    profileImg: PropTypes.string.isRequired,
+    major: PropTypes.string.isRequired,
+    nickname: PropTypes.string.isRequired,
 };
 
 export default MentorCard;

@@ -1,17 +1,26 @@
-import styled from 'styled-components';
+import React from 'react';
 import MentorList from '../../components/Mentoring/MentorList';
+import styled from 'styled-components';
+// import '../../../styles/fonts.css';
 
-const Main = styled.div`
-    margin-top: 170px;
-    padding-left: 50px;
+const AppContainer = styled.div`
+    font-family: Arial, sans-serif;
+    padding: 20px;
 `;
 
-const CreatePage = () => {
+const Title = styled.h1`
+    text-align: center;
+    margin-top: 70px;
+    margin-bottom: 20px;
+`;
+
+const Profile = () => {
     return (
-        <Main>
-            <MentorList></MentorList>
-        </Main>
+        <AppContainer>
+            <Title>멘토 프로필</Title>
+            <MentorList />
+        </AppContainer>
     );
 };
 
-export default CreatePage;
+export default Profile;
