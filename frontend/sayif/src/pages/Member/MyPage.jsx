@@ -1,19 +1,20 @@
-import MyPageComponent from '../../components/Member/MyPage'
+import MyPageComponent from '../../components/Member/MyPage';
 import styled from 'styled-components';
 
 const Main = styled.div`
-    height: 1000px;
+    margin-top: 60px;
+    height: 700px;
     display: flex;
     justify-content: center;
     align-items: center;
-`
+`;
 
 const MyPage = () => {
-    return(
+    return (
         <Main>
-            <MyPageComponent/>
+            <MyPageComponent />
         </Main>
-    )   
-}
+    );
+};
 
 export default MyPage;

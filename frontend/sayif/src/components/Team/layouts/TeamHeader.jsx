@@ -32,8 +32,8 @@ function TeamHeader() {
         setAnchorElNav(event.currentTarget);
     };
 
-    const handleOpenUserMenu = event => {
-        setAnchorElUser(event.currentTarget);
+    const handleOpenUserMenu = () => {
+        navigate('/my-page');
     };
 
     const handleCloseNavMenu = () => {
