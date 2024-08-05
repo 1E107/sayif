@@ -2,7 +2,6 @@ package com.ssafy.sayif.board.controller;
 
 import com.ssafy.sayif.board.dto.CommentRequestDto;
 import com.ssafy.sayif.board.service.CommentService;
-import com.ssafy.sayif.member.jwt.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,17 +23,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class CommentController {
 
     private final CommentService commentService;
-    private final JWTUtil jwtUtil;
 
     @PostMapping("/{boardId}")
     public ResponseEntity<?> writeComment(
-            @PathVariable("boardId") int boardId,
-            @RequestBody CommentRequestDto dto,
-            @AuthenticationPrincipal UserDetails userDetails) {
+        @PathVariable("boardId") int boardId,
+        @RequestBody CommentRequestDto dto,
+        @AuthenticationPrincipal UserDetails userDetails) {
         String username = userDetails.getUsername();
-        dto.setUsername(username);
-        dto.setBoardId(boardId);
-        commentService.writeComment(dto);
+        commentService.writeComment(dto, boardId, username);
         return ResponseEntity.ok("댓글 작성 성공");
     }
 
