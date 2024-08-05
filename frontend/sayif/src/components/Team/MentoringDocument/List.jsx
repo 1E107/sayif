@@ -9,7 +9,7 @@ import TableRow from '@mui/material/TableRow';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 import { useEffect, useState } from 'react';
-import S from './style/ListStyled'
+import S from './style/ListStyled';
 import '../../../styles/fonts.css';
 import { useNavigate } from 'react-router-dom';
 import { getMaterialList } from '../../../api/TeamApi';
@@ -27,7 +27,7 @@ function MaterialList() {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(7);
     const [rows, SetRows] = useState([]);
-    const {token, member} = useSelector(state => state.member);
+    const { token, member } = useSelector(state => state.member);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -40,129 +40,136 @@ function MaterialList() {
 
     const moveDetailPage = id => {
         navigate(`/team/material/detail/${id}`);
-    }
+    };
 
     useEffect(() => {
-        const callMaterialList = async() => {
-            try{
-                const response = await getMaterialList(member.teamId, token, page, 10);
-                if(response.status === 200) {
+        const callMaterialList = async () => {
+            try {
+                const response = await getMaterialList(
+                    member.teamId,
+                    token,
+                    page,
+                    10,
+                );
+                if (response.status === 200) {
                     console.log(response.data.content);
                     SetRows(response.data.content);
                 }
-            }catch(error) {
+            } catch (error) {
                 console.log(error);
             }
-        }
+        };
 
         callMaterialList();
     }, []);
 
     const ListView = (
         <S.Container>
-        <div style={{ textAlign: 'center' }}>
-            <S.CustomTextField
-                id="input-with-icon-textfield"
-                InputProps={{
-                    startAdornment: (
-                        <InputAdornment position="start">
-                            <SearchIcon style={{ color: '#116530' }} />
-                        </InputAdornment>
-                    ),
+            <div style={{ textAlign: 'center' }}>
+                <S.CustomTextField
+                    id="input-with-icon-textfield"
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                <SearchIcon style={{ color: '#116530' }} />
+                            </InputAdornment>
+                        ),
+                    }}
+                />
+                <S.SearchButton variant="contained">검색</S.SearchButton>
+            </div>
+            <Paper
+                sx={{
+                    width: '100%',
+                    overflow: 'hidden',
+                    height: '500px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    borderRadius: '20px',
                 }}
-            />
-            <S.SearchButton variant="contained">검색</S.SearchButton>
-        </div>
-        <Paper
-            sx={{
-                width: '100%',
-                overflow: 'hidden',
-                height: '500px',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                borderRadius: '20px',
-            }}
-        >
-            <TableContainer sx={{ maxHeight: 440 }}>
-                <Table
-                    stickyHeader
-                    aria-label="sticky table"
-                    style={{ padding: '0px 30px 0px 30px' }}
-                >
-                    <TableHead>
-                        <TableRow>
-                            {columns.map(column => (
-                                <TableCell
-                                    key={column.id}
-                                    align={column.align}
-                                    style={{
-                                        minWidth: column.minWidth,
-                                        fontFamily: 'ChosunGu',
-                                        color: '#116530',
-                                        fontWeight: 'bold',
-                                    }}
-                                >
-                                    {column.label}
-                                </TableCell>
-                            ))}
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {rows
-                            .slice(
-                                page * rowsPerPage,
-                                page * rowsPerPage + rowsPerPage,
-                            )
-                            .map(row => {
-                                return (
-                                    <TableRow
-                                        hover
-                                        role="checkbox"
-                                        tabIndex={-1}
-                                        key={row.writingId}
-                                        onClick = {() => moveDetailPage(row.id)}
+            >
+                <TableContainer sx={{ maxHeight: 440 }}>
+                    <Table
+                        stickyHeader
+                        aria-label="sticky table"
+                        style={{ padding: '0px 30px 0px 30px' }}
+                    >
+                        <TableHead>
+                            <TableRow>
+                                {columns.map(column => (
+                                    <TableCell
+                                        key={column.id}
+                                        align={column.align}
+                                        style={{
+                                            minWidth: column.minWidth,
+                                            fontFamily: 'ChosunGu',
+                                            color: '#116530',
+                                            fontWeight: 'bold',
+                                        }}
                                     >
-                                        {columns.map(column => {
-                                            const value = row[column.id];
-                                            return (
-                                                <TableCell
-                                                    key={column.id}
-                                                    align={column.align}
-                                                    style={{
-                                                        fontFamily:
-                                                            'ChosunGu',
-                                                    }}
-                                                >
-                                                    {column.format &&
-                                                    typeof value ===
-                                                        'number'
-                                                        ? column.format(
-                                                              value,
-                                                        )
-                                                        : value}
-                                                </TableCell>
-                                            );
-                                        })}
-                                    </TableRow>
-                                );
-                            })}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            <TablePagination
-                rowsPerPageOptions={[7, 10, 15]}
-                component="div"
-                count={rows.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-                style={{ color: '#116530', fontWeight: 'bold' }}
-            />
-        </Paper>
-    </S.Container>
-    )
+                                        {column.label}
+                                    </TableCell>
+                                ))}
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {rows
+                                .slice(
+                                    page * rowsPerPage,
+                                    page * rowsPerPage + rowsPerPage,
+                                )
+                                .map(row => {
+                                    return (
+                                        <TableRow
+                                            hover
+                                            role="checkbox"
+                                            tabIndex={-1}
+                                            key={row.writingId}
+                                            onClick={() =>
+                                                moveDetailPage(row.id)
+                                            }
+                                        >
+                                            {columns.map(column => {
+                                                const value = row[column.id];
+                                                return (
+                                                    <TableCell
+                                                        key={column.id}
+                                                        align={column.align}
+                                                        style={{
+                                                            fontFamily:
+                                                                'ChosunGu',
+                                                        }}
+                                                    >
+                                                        {column.format &&
+                                                        typeof value ===
+                                                            'number'
+                                                            ? column.format(
+                                                                  value,
+                                                              )
+                                                            : value}
+                                                    </TableCell>
+                                                );
+                                            })}
+                                        </TableRow>
+                                    );
+                                })}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                <TablePagination
+                    rowsPerPageOptions={[7, 10, 15]}
+                    component="div"
+                    count={rows.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                    style={{ color: '#116530', fontWeight: 'bold' }}
+                />
+            </Paper>
+        </S.Container>
+    );
 
     return ListView;
 }

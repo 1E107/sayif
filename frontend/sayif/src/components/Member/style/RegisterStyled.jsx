@@ -28,10 +28,15 @@ const Text = styled.div`
     width: 60px;
 `
 
-const CustomTextField = styled(TextField)({
+const CustomTextField = styled(TextField)(({hasError}) => ({
     width: "350px",
     backgroundColor: "#E8E8CCB2",
-});
+    '& .MuiFormHelperText-root': {
+        backgroundColor: 'white', 
+        width: '350px',
+        margin: '0px',
+    },
+}));
 
 const CustomBtn = styled(Button)({
     width: "130px",

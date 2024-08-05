@@ -48,6 +48,12 @@ function Login() {
         navigate("/member/regist");
     }
 
+    const handleKeyDown = (event) => {
+        if(event.key === 'Enter') {
+            handleLogin();
+        }
+    }
+
     const LoginView = (
         <S.Container style={{ height: failedLogin ? '350px' : '300px' }}>
             <S.Input placeholder="ID" onChange={handleId}></S.Input>
@@ -55,6 +61,7 @@ function Login() {
                 placeholder="Password"
                 type="password"
                 onChange={handlePassword}
+                onKeyDown={handleKeyDown}
             ></S.Input>
             <S.LoginButton onClick={handleLogin}>로그인</S.LoginButton>
             <S.RegistButton onClick={handleRegist}>회원가입</S.RegistButton>
