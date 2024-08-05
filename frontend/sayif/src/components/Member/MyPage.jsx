@@ -3,7 +3,9 @@ import S from './style/MyPageStyled'
 import { useNavigate } from 'react-router-dom';
 import { setExpirationdate, setMember, setToken } from '../../redux/modules/member';
 import useTokenExpiration from '../../hooks/useTokenExpiration';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import MentoringModal from './MentoringModal';
+import { getTeamStatue } from '../../api/MentoringApi';
 
 function MyPageComponent() {
     const navigate = useNavigate();
@@ -11,14 +13,40 @@ function MyPageComponent() {
     const role = member.role;
     const gender = member.gender;
     const dispatch = useDispatch();
+    const [showMentoringModal, SetShowMentoringModal] = useState(false);
 
-    const logout = () => {
+    const logout = () => { 
         localStorage.removeItem('persist:root');
         dispatch(setToken(null));
         dispatch(setMember({}));
         dispatch(setExpirationdate(null));
         alert("로그아웃 되었습니다.")
         navigate('/');
+    }
+
+    const handleCloseMentoringModal = () => {
+        SetShowMentoringModal(false);
+    }
+
+    const handleOpenMentoringModal = () => {
+        const CallMentoringStatue = async () => {
+            try {
+                const response = await getTeamStatue(member.teamId, token);
+                if(response.status === 200) {
+                    if(response.data.status === 'Apply') {
+                        SetShowMentoringModal(true);
+                    }
+                    else {
+                        alert("신청한 멘토링이 없거나 현재 멘토링이 진행 중이에요!");
+                    }
+                }
+                console.log(response);
+            }catch(error) {
+                console.log(error);
+            }
+        };
+
+        CallMentoringStatue();
     }
 
     const MyPageView = (
@@ -53,8 +81,9 @@ function MyPageComponent() {
         
             <div>
                 <S.ProfileUpdateBtn>프로필 수정</S.ProfileUpdateBtn>
-                <S.ProfileUpdateBtn>멘토링 신청 현황</S.ProfileUpdateBtn>
+                <S.ProfileUpdateBtn onClick={handleOpenMentoringModal}>멘토링 신청 현황</S.ProfileUpdateBtn>
             </div>
+        {showMentoringModal && <MentoringModal onClose={handleCloseMentoringModal}/>}
         </S.Container>
     ) 
     return MyPageView;
