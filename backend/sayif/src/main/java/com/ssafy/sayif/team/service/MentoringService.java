@@ -10,6 +10,7 @@ import com.ssafy.sayif.member.repository.TagRepository;
 import com.ssafy.sayif.team.dto.MentorNicknameResponse;
 import com.ssafy.sayif.team.dto.MentorProfileResponse;
 import com.ssafy.sayif.team.dto.MentoringApplicationRequest;
+import com.ssafy.sayif.team.dto.MentoringInfoResponseDto;
 import com.ssafy.sayif.team.dto.MentoringRecruitRequest;
 import com.ssafy.sayif.team.dto.MentoringSearchRequest;
 import com.ssafy.sayif.team.dto.MentoringSearchResponse;
@@ -23,6 +24,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -212,6 +214,38 @@ public class MentoringService {
         return TeamSessionResponse.builder()
             .sessionId(team.getSessionId())
             .build();
+    }
+
+    @Transactional
+    public MentoringInfoResponseDto getMentoringInfo(Integer teamId) {
+        MentoringInfoResponseDto mentoringInfoResponseDto = new MentoringInfoResponseDto();
+        // 멤버 정보 가져오기
+        List<Member> teamMember = memberRepository.findByTeamId(teamId);
+        for (Member member : teamMember) {
+            if (member.getRole() == Role.Mentor) {
+                if (mentoringInfoResponseDto.getMentor1Nickname() == null) {
+                    mentoringInfoResponseDto.setMentor1Nickname(member.getNickname());
+                } else {
+                    mentoringInfoResponseDto.setMentor2Nickname(member.getNickname());
+                }
+
+            } else {
+                mentoringInfoResponseDto.increaseMentee();
+            }
+        }
+
+        // 멘토링 정보 가져오기
+        Optional<Team> findTeam = teamRepository.findById(teamId);
+        if (findTeam.isPresent()) {
+            Team team = findTeam.get();
+            LocalDate startDate = team.getStartDate();
+            LocalDate deadlineDate = startDate.minusDays(3);
+
+            mentoringInfoResponseDto.setId(team.getId());
+            mentoringInfoResponseDto.setStartDate(startDate.toString());
+            mentoringInfoResponseDto.setDeadlineDate(deadlineDate.toString());
+        }
+        return mentoringInfoResponseDto;
     }
 
 }
