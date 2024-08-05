@@ -11,6 +11,8 @@ function Register() {
     const [nickname, SetNickname] = useState("");
     const [phone, SetPhone] = useState("");
     const [email, SetEmail] = useState("");
+    const [phoneError, SetPhoneError] = useState("");
+    const [emailError, SetEmailError] = useState("");
     const navigate = useNavigate();
 
     const handleClickGender = (data) => {
@@ -20,6 +22,26 @@ function Register() {
     const gender = {
         "여자" : "F",
         "남자" : "M",
+    }
+
+    const validateEmail = (email) => {
+        const emailPattern =  /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(email)) {
+            SetEmailError("유효하지 않은 이메일 형식입니다.");
+            return false;
+        } else {
+            SetEmailError('');
+            return true;
+        }
+    }
+
+    const validatePhone = (phone) => {
+        const phonePattern = /^\d{3}-\d{4}-\d{4}$/;
+        if(!phonePattern.test(phone)) {
+            SetPhoneError("유효하지 않은 전화번호 형식입니다.");
+        } else {
+            SetPhoneError('');
+        }
     }
 
     const handleNextButton = () => {
@@ -44,7 +66,20 @@ function Register() {
                 console.log(error);
             }
         }
-        CallRegist();
+        
+        if(phoneError === '' && emailError === '') {
+            CallRegist();
+        } else {
+            alert("입력한 정보가 올바른지 확인해 주세요!");
+        }
+    }
+
+    const handleKeyDown = (event) => {
+        if(event.key === 'Enter') {
+            if(validateEmail(email)) {
+                handleNextButton();
+            }
+        }
     }
 
     const RegisterView = (
@@ -83,11 +118,24 @@ function Register() {
             </S.ItemWrapper>
             <S.ItemWrapper>
                 <S.Text>전화번호</S.Text>
-                <S.CustomTextField  variant="outlined" onChange={(e) => SetPhone(e.target.value)} />
+                <S.CustomTextField  
+                    variant="outlined" 
+                    onChange={(e) => SetPhone(e.target.value)} 
+                    onBlur={()=>validatePhone(phone)}
+                    helperText={phoneError}
+                    error={!!phoneError}
+                />
             </S.ItemWrapper>
             <S.ItemWrapper>
                 <S.Text>이메일</S.Text>
-                <S.CustomTextField  variant="outlined" onChange={(e) => SetEmail(e.target.value)}/>
+                <S.CustomTextField  
+                    variant="outlined" 
+                    onChange={(e) => SetEmail(e.target.value)} 
+                    onKeyDown={handleKeyDown}
+                    helperText={emailError}
+                    error={!!emailError}
+                    onBlur={()=>validateEmail(email)}
+                />
             </S.ItemWrapper>
 
             <S.RegistBtn variant="contained" onClick={handleNextButton}>다음</S.RegistBtn>
