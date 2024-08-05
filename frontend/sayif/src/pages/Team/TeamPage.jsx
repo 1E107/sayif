@@ -6,9 +6,11 @@ import Story from "../../components/Team/Story/Story";
 import Chat from "../../components/Team/Chat";
 import CreateStory from "../../components/Team/Story/CreateStory";
 import Meeting from "../../components/Team/Meeting"
+import VideoRoomComponent from "../../components/Team/MeetingCustom/VideoRoomComponent";
 import MaterialList from "../../components/Team/MentoringDocument/List";
 
 import { useLocation } from "react-router-dom";
+import { useSelector } from 'react-redux';
 import styled from "styled-components";
 
 const Main = styled.div`
@@ -22,7 +24,7 @@ const Main = styled.div`
 
 const MainPage = () => {
     const location = useLocation();
-
+    const { token, member } = useSelector(state => state.member);
     return (
         <Main>
             {location.pathname === '/team' && <TeamMain/>}
@@ -32,7 +34,7 @@ const MainPage = () => {
             {location.pathname === '/team/story-board' && <Story/>}
             {location.pathname === '/team/message' && <Chat/>}
             {location.pathname === '/team/create-story' && <CreateStory/>}
-            {location.pathname === '/team/meeting' && <Meeting/>}
+            {location.pathname === '/team/meeting' && <VideoRoomComponent userToken={token} member={member} />}
             {location.pathname === '/team/material' && <MaterialList/>}
         </Main>
     )
