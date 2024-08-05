@@ -52,6 +52,7 @@ public class OpenViduController {
                                                    @RequestBody(required = false) Map<String, Object> params) {
         try {
             String token = openViduService.createConnection(sessionId, params);
+            log.info(token);
             return new ResponseEntity<>(token, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Unexpected connection error: ", e);
