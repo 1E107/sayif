@@ -112,7 +112,7 @@ const OpenViduApp = () => {
 
         try {
             const connectionToken = await createConnection(token, sessionId); //openvidu/api/sessions/{sessionId}/connection
-            await session.current.connect(connectionToken);
+            await session.current.connect(connectionToken,{ clientData: member.nickname });
             setIsConnected(true);
             if (!publisher.current) {
                 publisher.current = OV.current.initPublisher(

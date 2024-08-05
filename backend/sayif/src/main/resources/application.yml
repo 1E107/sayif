@@ -16,7 +16,7 @@ server:
   port: 8080
 
 openvidu:
-  url: http://localhost:4443
+  url: https://i11e107.p.ssafy.io/openvidu
   secret: bangcutsoragodoongmeruohboksayif
 
 logging:
