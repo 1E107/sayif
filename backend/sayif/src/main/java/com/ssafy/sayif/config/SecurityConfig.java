@@ -1,9 +1,6 @@
 package com.ssafy.sayif.config;
 
-import com.ssafy.sayif.member.jwt.CustomLogoutFilter;
-import com.ssafy.sayif.member.jwt.JWTFilter;
-import com.ssafy.sayif.member.jwt.JWTUtil;
-import com.ssafy.sayif.member.jwt.LoginFilter;
+import com.ssafy.sayif.member.jwt.*;
 import com.ssafy.sayif.member.repository.RefreshRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Arrays;
@@ -32,6 +29,7 @@ public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JWTUtil jwtUtil;
     private final RefreshRepository refreshRepository;
+    private final CustomAuthTokenFilter customAuthTokenFilter;
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -98,6 +96,8 @@ public class SecurityConfig {
         http
                 .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshRepository),
                         LogoutFilter.class);
+        // Custom 인증 필터 추가
+        http.addFilterBefore(customAuthTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
         //세션 설정
         http
