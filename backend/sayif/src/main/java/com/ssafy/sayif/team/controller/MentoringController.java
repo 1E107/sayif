@@ -74,4 +74,9 @@ public class MentoringController {
         return ResponseEntity.ok(sessionId);
     }
 
+    @GetMapping("/team-info/{id}")
+    public ResponseEntity<?> getTeamInfo(@PathVariable Integer id) {
+        return ResponseEntity.ok(mentoringService.getMentoringInfo(id));
+    }
+
 }

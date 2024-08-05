@@ -6,6 +6,14 @@ const Title = styled.div`
     font-size: 25px;
 `;
 
+const MainWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 70vh;
+`;
+
 const Container = styled.div`
     text-align: center;
 `;
@@ -39,6 +47,8 @@ const ApplyIconText = styled.div`
     font-family: ChosunGu;
     font-weight: bold;
     font-size: 15px;
+    transform: translate(-50%, -50%);
+    text-align: center;
 `;
 
 const S = {
@@ -48,6 +58,7 @@ const S = {
     ApplyIconStep,
     ApplyIconContainer,
     ApplyIconText,
+    MainWrapper,
 };
 
 export default S;
