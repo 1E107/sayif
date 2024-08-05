@@ -18,6 +18,7 @@ import { useSelector } from 'react-redux';
 import { getTeamStatue } from '../../api/MentoringApi'; 
 import { useState } from 'react';
 import NoTeamModal from '../Mentoring/NoTeamModal';
+import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 
 const pages = ['새잎 소개', '멘토링', '소통 공간', '정보 공간'];
 const settings = {
@@ -35,7 +36,7 @@ const menuToPage = {
   '멘토 프로필 조회' : '/',
   '멘토링 자료 공유' : '/',
   '자유 게시판' : '/community',
-  '자립 지원 정보' : '/info'
+  '자립 지원 정보' : '/support-information'
 } 
 
 function Header() {
@@ -83,20 +84,30 @@ function Header() {
     setShowNoTeamModal(false);
   }
 
+  const handleMyPage = () => {
+    navigate("/my-page");
+  }
+
   const handleTeamPage = () => {
+    console.log(member);
     const callGetStatus = async () => {
-      try {
-        const response = await getTeamStatue(member.team_id, token);
-        if(response.status === 200) {
-          if(response.data.status === 'Proceed') {
-            navigate("/team");
+      if(member.teamId) {
+        try {
+          const response = await getTeamStatue(member.teamId, token);
+          console.log(response);
+          if(response.status === 200) {
+            if(response.data.status === 'Proceed') {
+              navigate("/team");
+            }
+            else {
+              setShowNoTeamModal(true);
+            }
           }
-          else {
-            setShowNoTeamModal(true);
-          }
+        }catch(error) {
+          console.log(error);
         }
-      }catch(error) {
-        console.log(error);
+      } else {
+        setShowNoTeamModal(true);
       }
     };
     callGetStatus();
@@ -104,7 +115,7 @@ function Header() {
 
   return (
     <AppBar position="fixed">
-      <Container maxWidth="xl" style={{backgroundColor: 'white'}}>
+      <Container style={{backgroundColor: 'white', margin: "0px", width: "100%", padding: "0px 30px 0px 3git0px", maxWidth: 'none'}}>
         <Toolbar disableGutters>
           
           <Typography
@@ -209,7 +220,7 @@ function Header() {
               textDecoration: 'none',
             }}
           >
-            <img src="logo.png"></img>
+            <img src="/logo.png"></img>
           </Typography>
 
           {/* 전체 화면 */}
@@ -286,6 +297,7 @@ function Header() {
               <Tooltip title="마이페이지">
                   <IconButton
                       sx={{ p: 0, my: 2, mx: 1 }}
+                      onClick={handleMyPage}
                   >
                       <Avatar
                           alt="Remy Sharp"
@@ -297,11 +309,13 @@ function Header() {
               </div>
              
             ) : (
-              <Tooltip title="로그인">
-              <IconButton sx={{ p: 0 }} onClick={handleLoginPage}>
-                <PersonOutlineIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-              </IconButton>
-            </Tooltip>
+              <>
+                 <Tooltip title="로그인">
+                  <IconButton sx={{ p: 0 }} onClick={handleLoginPage}>
+                    <PersonOutlineIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+                  </IconButton>
+                </Tooltip>
+              </>
             )}
           </Box>
         </Toolbar>

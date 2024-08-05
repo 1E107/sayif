@@ -6,7 +6,10 @@ import com.ssafy.sayif.team.converter.TeamBoardCommentConverter;
 import com.ssafy.sayif.team.dto.TeamBoardCommentRequestDto;
 import com.ssafy.sayif.team.dto.TeamBoardCommentResponseDto;
 import com.ssafy.sayif.team.entity.QnaAnswer;
+import com.ssafy.sayif.team.entity.TeamBoard;
+import com.ssafy.sayif.team.exception.TeamBoardNotFoundException;
 import com.ssafy.sayif.team.repository.TeamBoardCommentRepository;
+import com.ssafy.sayif.team.repository.TeamBoardRepository;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,6 +30,7 @@ public class TeamBoardCommentService {
 
     private final TeamBoardCommentRepository commentRepository;
     private final TeamBoardCommentConverter commentConverter;
+    private final TeamBoardRepository teamBoardRepository;
 
     /**
      * 주어진 ID로 댓글을 조회합니다.
@@ -140,9 +144,9 @@ public class TeamBoardCommentService {
      * @return 게시글에 대한 모든 댓글의 DTO 리스트
      */
     public List<TeamBoardCommentResponseDto> getCommentList(int boardId) {
-        List<QnaAnswer> comments = commentRepository.findAll();
-        return comments.stream()
-            .filter(comment -> comment.getTeamBoard().getId() == boardId)
+        TeamBoard teamBoard = teamBoardRepository.findById(boardId)
+            .orElseThrow(() -> new TeamBoardNotFoundException(boardId));
+        return commentRepository.getAllByTeamBoard(teamBoard).stream()
             .map(this::convertToDto)
             .collect(Collectors.toList());
     }

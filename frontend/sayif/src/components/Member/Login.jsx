@@ -1,5 +1,5 @@
 import { useDispatch } from 'react-redux';
-import { setToken, setMember } from '../../redux/modules/member';
+import { setToken, setMember, setExpirationdate } from '../../redux/modules/member';
 import S from './style/LoginStyled';
 import { useNavigate } from 'react-router-dom';
 import { login, getMemberInfo } from '../../api/MemberApi';
@@ -23,6 +23,9 @@ function Login() {
                 const responseInfo = await getMemberInfo(authToken);
                 dispatch(setMember(responseInfo.data));
 
+                const expirationDate = new Date(new Date().getTime() + 30 * 1000 * 60);
+                dispatch(setExpirationdate(expirationDate));
+
                 alert('로그인에 성공하였습니다.');
                 navigate('/');
             } catch (error) {
@@ -41,6 +44,16 @@ function Login() {
         setLoginPassword(event.target.value);
     };
 
+    const handleRegist = () => {
+        navigate("/member/regist");
+    }
+
+    const handleKeyDown = (event) => {
+        if(event.key === 'Enter') {
+            handleLogin();
+        }
+    }
+
     const LoginView = (
         <S.Container style={{ height: failedLogin ? '350px' : '300px' }}>
             <S.Input placeholder="ID" onChange={handleId}></S.Input>
@@ -48,9 +61,10 @@ function Login() {
                 placeholder="Password"
                 type="password"
                 onChange={handlePassword}
+                onKeyDown={handleKeyDown}
             ></S.Input>
             <S.LoginButton onClick={handleLogin}>로그인</S.LoginButton>
-            <S.RegistButton>회원가입</S.RegistButton>
+            <S.RegistButton onClick={handleRegist}>회원가입</S.RegistButton>
             {failedLogin && (
                 <Alert severity="error" style={{ width: '380px' }}>
                     로그인에 실패했습니다.

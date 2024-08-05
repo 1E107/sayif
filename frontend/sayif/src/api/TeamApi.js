@@ -49,3 +49,72 @@ export const postStory = async(teamId, token, content) => {
         throw error;
     }
 }
+
+export const getQnAList = async(teamId, token, page, size) => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/team/board/${teamId}/${page}/${size}`, {
+            headers: {Authorization: `Bearer ${token}`}
+        })
+        return response;
+    } catch(error) {
+        throw error;
+    }
+}
+
+export const getQnADetail = async(boardId, token) => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/team/board/detail/${boardId}`, {
+            headers: {Authorization: `Bearer ${token}`}
+        })
+        return response;
+    }catch(error) {
+        throw error;
+    }
+}
+
+export const getQnAComment = async(boardId, token) => {
+    try{
+        const response = await axios.get(`${API_BASE_URL}/team/board/comment/${boardId}`, {
+            headers: {Authorization: `Bearer ${token}`}
+        }) 
+        return response;
+    }catch(error) {
+        throw error;
+    }
+}
+
+export const postQnAComment = async(boardId, token, comment) => {
+    const data = {content: comment};
+
+    try{
+        const response = await axios.post(`${API_BASE_URL}/team/board/comment/${boardId}`, data, {
+            headers: {Authorization: `Bearer ${token}`}
+        })
+        return response;
+    }catch(error) {
+        throw error;
+    }
+}
+
+export const getMaterialList = async(teamId, token, page, size) => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/team/material/${page}/${size}`, {
+            headers: {Authorization: `Bearer ${token}`}
+        })
+        return response;
+    }catch(error) {
+        throw error;
+    }
+}
+
+export const getMaterialDetail = async(materialId, token) => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/team/material/detail/${materialId}`, {
+            headers: {Authorization: `Bearer ${token}`}
+        })
+        return response;
+    }
+    catch(error) {
+        throw error;
+    }
+}

@@ -28,3 +28,13 @@ export const getMemberInfo = async(token) => {
         throw error;
     }
 }
+
+export const createMember = async(data) => {
+    try {
+        const response = await axios.post(`${API_BASE_URL}/member/register`, data);
+        return response;
+    }
+    catch(error) {
+        throw error;
+    }
+}

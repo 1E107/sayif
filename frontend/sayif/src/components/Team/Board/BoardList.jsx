@@ -8,106 +8,27 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import S from './style/BoardListStyled';
 import '../../../styles/fonts.css';
 import { useNavigate } from 'react-router-dom';
+import { getQnAList } from '../../../api/TeamApi';
+import { useSelector } from 'react-redux';
 
 const columns = [
     { id: 'title', label: '제목', minWidth: 250, align: 'center' },
     { id: 'writer', label: '작성자', minWidth: 100, align: 'center' },
-    { id: 'writeDate', label: '작성일', minWidth: 170, align: 'center' },
+    { id: 'createdAt', label: '작성일', minWidth: 170, align: 'center' },
     { id: 'comment', label: '댓글', minWidth: 50, align: 'center' },
-    { id: 'read', label: '조회수', minWidth: 50, align: 'center' },
-];
-
-const rows = [
-    {
-        writingId : 1,
-        title: 'React의 기초',
-        writer: '홍길동',
-        writeDate: '2024-07-01',
-        comment: 12,
-        read: 150,
-    },
-    {
-        writingId : 2,
-        title: '자바스크립트 심화',
-        writer: '이몽룡',
-        writeDate: '2024-07-05',
-        comment: 5,
-        read: 200,
-    },
-    {
-        writingId : 3,
-        title: 'CSS Flexbox 이해하기',
-        writer: '성춘향',
-        writeDate: '2024-07-10',
-        comment: 8,
-        read: 120,
-    },
-    {
-        writingId : 4,
-        title: 'Node.js 시작하기',
-        writer: '김철수',
-        writeDate: '2024-07-15',
-        comment: 3,
-        read: 90,
-    },
-    {
-        writingId : 5,
-        title: '프론트엔드와 백엔드의 차이',
-        writer: '박영희',
-        writeDate: '2024-07-20',
-        comment: 15,
-        read: 300,
-    },
-    {
-        writingId : 6,
-        title: 'API와 데이터 통신',
-        writer: '최민수',
-        writeDate: '2024-07-22',
-        comment: 7,
-        read: 180,
-    },
-    {
-        writingId : 7,
-        title: '웹 접근성의 중요성',
-        writer: '이순신',
-        writeDate: '2024-07-25',
-        comment: 0,
-        read: 60,
-    },
-    {
-        writingId : 8,
-        title: '리액트 라우터 사용법',
-        writer: '강감찬',
-        writeDate: '2024-07-27',
-        comment: 10,
-        read: 220,
-    },
-    {
-        writingId : 9,
-        title: '모바일 웹 최적화',
-        writer: '유관순',
-        writeDate: '2024-07-30',
-        comment: 4,
-        read: 110,
-    },
-    {
-        writingId : 10,
-        title: '서버 사이드 렌더링',
-        writer: '장보고',
-        writeDate: '2024-08-01',
-        comment: 6,
-        read: 130,
-    },
+    // { id: 'read', label: '조회수', minWidth: 50, align: 'center' },
 ];
 
 function Board() {
     const navigate = useNavigate();
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(7);
+    const [rows, SetRows] = useState([]);
+    const {token, member} = useSelector(state => state.member);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -119,9 +40,23 @@ function Board() {
     };
 
     const moveDetailPage = id => {
-        console.log("hello", id);
         navigate(`/team/board/detail/${id}`);
     }
+
+    useEffect(() => {
+        const callBoardList = async() => {
+            try{
+                const response = await getQnAList(member.teamId, token, page, 10);
+                if(response.status === 200) {
+                    SetRows(response.data);
+                }
+            }catch(error) {
+                console.log(error);
+            }
+        }
+
+        callBoardList();
+    }, []);
 
     const BoardView = (
         <S.Container>
@@ -186,7 +121,7 @@ function Board() {
                                             role="checkbox"
                                             tabIndex={-1}
                                             key={row.writingId}
-                                            onClick = {() => moveDetailPage(row.writingId)}
+                                            onClick = {() => moveDetailPage(row.id)}
                                         >
                                             {columns.map(column => {
                                                 const value = row[column.id];

@@ -20,7 +20,7 @@ const ItemText = styled.div`
     font-size: 65px;
     font-family: Freesentation-9Black;
     letter-spacing: 5px;
-    margin-left: 20px;
+    margin-left: 50px;
 `
 
 const ItemGroup = styled.div`

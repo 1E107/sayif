@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { OpenVidu } from 'openvidu-browser';
 import { useSelector } from 'react-redux';
+import {
+    createSession,
+    createConnection,
+    closeSession,
+} from '../../api/OpenViduApi';
 import { getTeamSessionId } from '../../api/MentoringApi';
 import S from './style/MeetingStyled';
 
@@ -10,17 +15,17 @@ const OpenViduApp = () => {
     const [message, setMessage] = useState('');
     const [sessionStatus, setSessionStatus] = useState(null);
     const [isConnected, setIsConnected] = useState(false);
+    const [isMuted, setIsMuted] = useState(false);
+    const [isVideoStopped, setIsVideoStopped] = useState(false);
+    const [isScreenSharing, setIsScreenSharing] = useState(false); // 화면 공유 상태 추가
+    const [subscribers, setSubscribers] = useState([]); // 추가: 구독자 관리 상태
     const videoContainerRef = useRef(null);
     const chatMessagesRef = useRef(null);
     const { token, member } = useSelector(state => state.member);
 
-    const serverUrl = 'http://localhost:9090';
-    const username = 'OPENVIDUAPP';
-    const password = 'bangcutsoragodoongmeruohboksayif';
-    const basicAuth = 'Basic ' + btoa(username + ':' + password);
-
-    let OV = useRef(null); // Ref로 OV를 관리
-    let session = useRef(null); // Ref로 session을 관리
+    let OV = useRef(null);
+    let session = useRef(null);
+    let publisher = useRef(null);
 
     useEffect(() => {
         return () => {
@@ -33,13 +38,9 @@ const OpenViduApp = () => {
     useEffect(() => {
         const checkSessionStatus = async () => {
             try {
-                console.log('member 정보:', member);
-
-                const response = await getTeamSessionId(member.team_id, token);
-                console.log(response);
-                const teamSessionId = response.session_id;
+                const response = await getTeamSessionId(member.teamId, token);
+                const teamSessionId = response.sessionId;
                 setSessionId(teamSessionId);
-                console.log(teamSessionId);
                 if (teamSessionId === null) {
                     setSessionStatus(
                         member.role === 'Mentor' ? 'mentor' : 'mentee',
@@ -56,34 +57,20 @@ const OpenViduApp = () => {
         };
 
         checkSessionStatus();
-    }, [token, member.team_id, member.role]);
+    }, [token, member.teamId, member.role]);
 
-    const createNewSession = () => {
-        fetch(`${serverUrl}/openvidu/api/sessions`, {
-            method: 'POST',
-            headers: {
-                Authorization: basicAuth,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({}),
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to create session');
-                }
-                return response.text(); // JSON이 아닌 텍스트로 응답 처리
-            })
-            .then(newSessionId => {
-                setCurrentSessionId(newSessionId);
-                setSessionId(newSessionId);
-                joinSession(newSessionId);
-            })
-            .catch(error => {
-                console.error('Error creating session:', error);
-            });
+    const handleCreateNewSession = async () => {
+        try {
+            const newSessionId = await createSession(token, sessionId); //openvidu/api/sessions
+            setCurrentSessionId(newSessionId);
+            setSessionId(newSessionId);
+            joinSession(newSessionId);
+        } catch (error) {
+            console.error('Error creating session:', error);
+        }
     };
 
-    const joinSession = sessionId => {
+    const joinSession = async sessionId => {
         if (!sessionId) {
             console.error('No session ID provided');
             return;
@@ -97,6 +84,10 @@ const OpenViduApp = () => {
             if (stream) {
                 stream.remove();
             }
+            const newSubscribers = subscribers.filter(
+                sub => sub.stream !== event.stream,
+            );
+            setSubscribers(newSubscribers); // 구독자 상태 갱신
         });
 
         session.current.on('streamCreated', event => {
@@ -108,6 +99,7 @@ const OpenViduApp = () => {
                 event.element.style.width = '200px';
                 event.element.style.height = '150px';
             });
+            setSubscribers(prevSubscribers => [...prevSubscribers, subscriber]); // 구독자 추가
         });
 
         session.current.on('signal:chat', event => {
@@ -118,63 +110,57 @@ const OpenViduApp = () => {
             chatMessages.scrollTop = chatMessages.scrollHeight;
         });
 
-        fetch(`${serverUrl}/openvidu/api/sessions/${sessionId}/connection`, {
-            method: 'POST',
-            headers: {
-                Authorization: basicAuth,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({}),
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to create connection');
-                }
-                return response.text(); // JSON이 아닌 텍스트로 응답 처리
-            })
-            .then(token => {
-                session.current
-                    .connect(token)
-                    .then(() => {
-                        setIsConnected(true); // 사용자가 세션에 연결된 상태로 설정
-                        if (!document.querySelector('video.published')) {
-                            const publisher = OV.current.initPublisher(
-                                videoContainerRef.current,
-                                {
-                                    resolution: '640x480',
-                                    frameRate: 30,
-                                    insertMode: 'APPEND',
-                                    mirror: false,
-                                },
-                            );
-                            publisher.once('videoElementCreated', event => {
-                                event.element.classList.add('published');
-                            });
-                            session.current.publish(publisher);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error connecting to session:', error);
-                    });
-            })
-            .catch(error => {
-                console.error('Error fetching token:', error);
-            });
+        try {
+            const connectionToken = await createConnection(token, sessionId); //openvidu/api/sessions/{sessionId}/connection
+            await session.current.connect(connectionToken,{ clientData: member.nickname });
+            setIsConnected(true);
+            if (!publisher.current) {
+                publisher.current = OV.current.initPublisher(
+                    videoContainerRef.current,
+                    {
+                        resolution: '640x480',
+                        frameRate: 30,
+                        insertMode: 'APPEND',
+                        mirror: false,
+                    },
+                );
+                publisher.current.once('videoElementCreated', event => {
+                    event.element.classList.add('published');
+                });
+                session.current.publish(publisher.current);
+            }
+        } catch (error) {
+            console.error('Error connecting to session:', error);
+        }
     };
 
-    const startScreenShare = () => {
-        navigator.mediaDevices
-            .getDisplayMedia({ video: true })
-            .then(stream => {
-                const screenPublisher = OV.current.initPublisher(undefined, {
-                    videoSource: stream.getVideoTracks()[0],
-                    publishAudio: true,
-                    publishVideo: true,
-                });
+    const startScreenShare = async () => {
+        // 중복 호출 방지
+        if (isScreenSharing) {
+            return;
+        }
+        setIsScreenSharing(true);
 
-                session.current.publish(screenPublisher);
-            })
-            .catch(error => console.error('Error sharing the screen:', error));
+        try {
+            const stream = await navigator.mediaDevices.getDisplayMedia({
+                video: true,
+            });
+            const screenPublisher = OV.current.initPublisher(undefined, {
+                videoSource: stream.getVideoTracks()[0],
+                publishAudio: true,
+                publishVideo: true,
+            });
+
+            session.current.publish(screenPublisher);
+        } catch (error) {
+            if (error.name === 'NotAllowedError') {
+                console.error('Screen sharing permission denied:', error);
+            } else {
+                console.error('Error sharing the screen:', error);
+            }
+        } finally {
+            setIsScreenSharing(false);
+        }
     };
 
     const sendMessage = () => {
@@ -196,88 +182,125 @@ const OpenViduApp = () => {
             .catch(error => console.error('Error sending message:', error));
     };
 
-    const closeSession = () => {
+    const toggleMute = () => {
+        if (publisher.current) {
+            if (isMuted) {
+                publisher.current.publishAudio(true);
+            } else {
+                publisher.current.publishAudio(false);
+            }
+            setIsMuted(!isMuted);
+        }
+    };
+
+    const toggleVideo = () => {
+        if (publisher.current) {
+            const videoTracks = publisher.current.stream
+                .getMediaStream()
+                .getVideoTracks();
+            if (isVideoStopped) {
+                publisher.current.publishVideo(true);
+                videoTracks.forEach(track => (track.enabled = true));
+            } else {
+                publisher.current.publishVideo(false);
+                videoTracks.forEach(track => (track.enabled = false));
+            }
+            setIsVideoStopped(!isVideoStopped);
+        }
+    };
+
+    const handleCloseSession = async () => {
         if (!currentSessionId) {
             console.error('No active session to close');
             return;
         }
 
-        fetch(`${serverUrl}/openvidu/api/sessions/${currentSessionId}`, {
-            method: 'DELETE',
-            headers: {
-                Authorization: basicAuth,
-                'Content-Type': 'application/json',
-            },
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to close session');
-                }
-                return response.text();
-            })
-            .then(message => {
-                console.log(message);
-                setCurrentSessionId(null);
-                setIsConnected(false); // 사용자가 세션에서 연결 해제된 상태로 설정
-            })
-            .catch(error => {
-                console.error('Error closing session:', error);
-            });
+        try {
+            await closeSession(token, currentSessionId);
+            setCurrentSessionId(null);
+            setIsConnected(false);
+        } catch (error) {
+            console.error('Error closing session:', error);
+        }
     };
 
     return (
         <S.Container>
-            <S.Logo src="/logo.png" alt="Logo" />
             {!isConnected && (
-                <>
+                <S.CenteredContainer>
+                    <S.Logo src="/logo.png" alt="Logo" />
                     {sessionStatus === 'mentor' && (
-                        <button onClick={createNewSession}>
-                            Create New Session
-                        </button>
+                        <>
+                            <S.Input
+                                type="text"
+                                onChange={e => setSessionId(e.target.value)}
+                                placeholder="Enter Session ID"
+                            />
+                            <S.DiffBtn onClick={handleCreateNewSession}>
+                                Create New Session
+                            </S.DiffBtn>
+                        </>
                     )}
                     {sessionStatus === 'exists' && (
-                        <>
-                            <input
+                        <S.HorizontalContainer>
+                            <S.Input
                                 type="text"
                                 value={sessionId}
                                 onChange={e => setSessionId(e.target.value)}
                                 placeholder="Enter Session ID"
                             />
-                            <button onClick={() => joinSession(sessionId)}>
+                            <S.DiffBtn onClick={() => joinSession(sessionId)}>
                                 Join Session
-                            </button>
-                        </>
+                            </S.DiffBtn>
+                        </S.HorizontalContainer>
                     )}
-                </>
+                </S.CenteredContainer>
             )}
             <S.VideoContainer
                 ref={videoContainerRef}
                 $isConnected={isConnected}
             ></S.VideoContainer>
             {isConnected && (
-                <S.ContentContainer>
+                <>
                     <S.ChatContainer
                         id="chat-container"
                         $isConnected={isConnected}
                     >
                         <h2>Chat</h2>
-                        <div id="chat-messages" ref={chatMessagesRef}></div>
-                        <input
-                            type="text"
-                            value={message}
-                            onChange={e => setMessage(e.target.value)}
-                            placeholder="Enter your message"
-                        />
-                        <button onClick={sendMessage}>Send Message</button>
+                        <S.ChatMessages
+                            id="chat-messages"
+                            ref={chatMessagesRef}
+                        ></S.ChatMessages>
+                        <S.ChatInputContainer>
+                            <S.Input
+                                type="text"
+                                value={message}
+                                onChange={e => setMessage(e.target.value)}
+                                placeholder="Enter your message"
+                            />
+                            <S.DiffBtn onClick={sendMessage}>
+                                Send Message
+                            </S.DiffBtn>
+                        </S.ChatInputContainer>
                     </S.ChatContainer>
-                </S.ContentContainer>
-            )}
 
-            {isConnected && (
-                <S.ButtonContainer $isConnected={isConnected}>
-                    <S.Button onClick={closeSession}>Close Session</S.Button>
-                    <S.Button onClick={startScreenShare}>Share Screen</S.Button>
-                </S.ButtonContainer>
+                    <S.ButtonContainer $isConnected={isConnected}>
+                        {sessionStatus === 'mentor' && (
+                            <S.CustomBtn onClick={handleCloseSession}>
+                                Close Session
+                            </S.CustomBtn>
+                        )}
+                        <S.CustomBtn onClick={startScreenShare}>
+                            Share Screen
+                        </S.CustomBtn>
+                        <S.CustomBtn onClick={toggleMute}>
+                            {isMuted ? 'Unmute' : 'Mute'}
+                        </S.CustomBtn>
+                        <S.CustomBtn onClick={toggleVideo}>
+                            {isVideoStopped ? 'Start Video' : 'Stop Video'}
+                        </S.CustomBtn>
+                    </S.ButtonContainer>
+                </>
             )}
         </S.Container>
     );

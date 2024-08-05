@@ -43,7 +43,7 @@ function ShowMembers() {
     useEffect(() => {
         const callMemberInfo = async() => {
             try {
-                const response = await getMemberInfo(member.team_id, token);
+                const response = await getMemberInfo(member.teamId, token);
                 if(response.status == 200) {
                     const mentee = response.data.filter(member => member.role === 'Mentee');
                     const mentor = response.data.filter(member => member.role === "Mentor");
@@ -69,7 +69,7 @@ function ShowMembers() {
                                 <CustomCardMedia>
                                     <div>
                                         <S.MentorNameText>{mentor.nickname}</S.MentorNameText>
-                                        <S.MentorInfoText>{campus[mentor.reg_code]} {mentor.seq}기 {mentor.track}</S.MentorInfoText>
+                                        <S.MentorInfoText>{campus[mentor.regCode]} {mentor.seq}기 {mentor.track}</S.MentorInfoText>
                                     </div>
                                     <div>
                                         <Box sx={{ flexGrow: 0 }}>

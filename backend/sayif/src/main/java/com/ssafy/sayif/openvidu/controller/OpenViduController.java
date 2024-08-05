@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -27,13 +29,15 @@ public class OpenViduController {
      * 클라이언트는 이 토큰을 사용하여 세션에 연결할 수 있습니다.
      */
     @PostMapping("/api/sessions")
-    public ResponseEntity<?> initializeSession(@RequestHeader("Authorization") String authorizationHeader, @RequestBody(required = false) Map<String, Object> params) {
+    public ResponseEntity<?> initializeSession(@AuthenticationPrincipal UserDetails userDetails, @RequestBody(required = false)Map<String, Object> params) {
         try {
             log.info("Controller - initialize session");
-            Session session = openViduService.createSession(params, "bhe0323");
+            String username = userDetails.getUsername();
+            Session session = openViduService.createSession(params, username);
             return new ResponseEntity<>(session.getSessionId(), HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("Failed to create session", HttpStatus.BAD_REQUEST);
+            log.error("Unexpected error: ", e);
+            return new ResponseEntity<>("Unexpected error occurred", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -50,6 +54,7 @@ public class OpenViduController {
             String token = openViduService.createConnection(sessionId, params);
             return new ResponseEntity<>(token, HttpStatus.OK);
         } catch (Exception e) {
+            log.error("Unexpected connection error: ", e);
             return new ResponseEntity<>("Failed to create connection", HttpStatus.NOT_FOUND);
         }
     }
@@ -61,11 +66,22 @@ public class OpenViduController {
      * 이 작업은 세션을 닫고, 세션에 연결된 모든 Connection을 종료합니다.
      */
     @DeleteMapping("/api/sessions/{sessionId}")
-    public ResponseEntity<?> closeSession(@PathVariable String sessionId) {
+    public ResponseEntity<?> closeSession(@AuthenticationPrincipal UserDetails userDetails, @PathVariable String sessionId) {
         try {
-            return new ResponseEntity<>(openViduService.closeSession(sessionId, "bhe0323"), HttpStatus.NO_CONTENT);
+            String username = userDetails.getUsername();
+            return new ResponseEntity<>(openViduService.closeSession(sessionId, username), HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return new ResponseEntity<>("Failed to close session", HttpStatus.NOT_FOUND);
         }
     }
+
+    @DeleteMapping("/api/sessions/{sessionId}/connection/{connectionId}")
+    public ResponseEntity<?> deleteConnection(@PathVariable String sessionId, @PathVariable String connectionId) {
+        try{
+            return new ResponseEntity<>(openViduService.deleteConnection(sessionId, connectionId), HttpStatus.NO_CONTENT);
+        }catch (Exception e){
+            return new ResponseEntity<>("Failed to delete connection", HttpStatus.NOT_FOUND);
+        }
+    }
+
 }

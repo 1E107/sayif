@@ -10,7 +10,7 @@ const Title = styled.div`
 `;
 
 const Container = styled.div`
-
+    margin: 50px 0px 50px 0px;
 `
 
 const MentorList = styled.div`

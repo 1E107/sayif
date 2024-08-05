@@ -6,9 +6,11 @@ services:
       context: ./backend/sayif
       dockerfile: Dockerfile
     ports:
-      - "7777:7777"
+      - "7777:8080"
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_PROFILES_ACTIVE=secret
+      - openvidu.url=${OPENVIDU_URL}
+      - openvidu.secret=${OPENVIDU_SECRET}
   
   frontend:
     image: leechanghojjang/sayif-frontend:latest

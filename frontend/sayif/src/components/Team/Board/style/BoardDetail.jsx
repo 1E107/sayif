@@ -93,6 +93,11 @@ const CommentWriteBox = styled.textarea`
     width: 1000px;
 `
 
+const LoadingText = styled.div`
+    font-family: ChosunGu;
+    margin-bottom: 50px;
+`
+
 const S = {
     Container,
     Title,
@@ -106,7 +111,8 @@ const S = {
     CommentWriteBox,
     CommentList,
     CustomButton,
-    CommentItem
+    CommentItem,
+    LoadingText
 }
 
 export default S;

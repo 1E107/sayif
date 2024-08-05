@@ -9,10 +9,17 @@ import TeamHeader from './components/Team/layouts/TeamHeader';
 import BoardPage from './pages/Team/BoardPage';
 import LoginPage from './pages/Member/LoginPage';
 import CreatePage from './pages/Mentoring/CreatePage';
-
+import RegisterPage from './pages/Member/RegisterPage';
+import InformationPage from './pages/Information/InformationPage';
+import InformationDetailPage from './pages/Information/InformationDetailPage';
+import MyPage from './pages/Member/MyPage';
+import MaterialPage from './pages/Team/MaterialPage';
+import CommunityDetailPage from './pages/Community/CoomunityDetailPage';
 import './App.css';
+import useTokenExpiration from './hooks/useTokenExpiration';
 
 function App() {
+    useTokenExpiration();
     const location = useLocation();
 
     return (
@@ -26,13 +33,19 @@ function App() {
                 <Route path="/" element={<MainPage />}></Route>
                 <Route path="/serviceIntroduction" element={<IntroPage />} />
                 <Route path="/community" element={<CommunityPage />} />
+                <Route path="/community/datail/:id" element={<CommunityDetailPage/>}/>
                 <Route path="/apply-mentoring" element={<ApplyPage />} />
                 <Route path="/team/*" element={<TeamPage />} />
                 <Route path="/team/board/detail/:id" element={<BoardPage />} />
+                <Route path="/team/material/detail/:id" element={<MaterialPage/>} />
                 <Route path="/member">
-                    <Route path="login" element={<LoginPage />}></Route>
+                    <Route path="login" element={<LoginPage />}/>
+                    <Route path="regist/*" element={<RegisterPage/>}/>
                 </Route>
                 <Route path="/create-mentoring" element={<CreatePage/>}/>
+                <Route path="/support-information" element={<InformationPage/>}/>
+                <Route path="/support-information/:id" element={<InformationDetailPage/>}/>
+                <Route path="/my-page" element={<MyPage/>} />
             </Routes>
         </>
     );
