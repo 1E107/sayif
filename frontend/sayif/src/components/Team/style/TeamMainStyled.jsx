@@ -1,8 +1,13 @@
-import styled from "styled-components";
-import '../../../styles/fonts.css'
+import styled from 'styled-components';
+import '../../../styles/fonts.css';
 
 const Container = styled.div`
-   
+    margin-top: 60px;
+    margin-bottom: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 `;
 
 const ImageBox = styled.div`
@@ -12,8 +17,7 @@ const ImageBox = styled.div`
     border-radius: 30px;
 `;
 
-const Wrapper = styled.div`
-`;
+const Wrapper = styled.div``;
 
 const TeamNameText = styled.div`
     color: #116530;
@@ -22,18 +26,32 @@ const TeamNameText = styled.div`
     font-weight: bold;
     text-align: center;
     margin-top: 20px;
-`
+`;
 
 const TeamScoreText = styled.div`
     font-size: 20px;
     margin-top: 5px;
     color: #116530;
-`
+`;
 
 const ScoreContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+`;
+
+const BubbleImg = styled.img`
+    height: 140px;
+    width: 670px;
+    margin-top: 50px;
+`;
+
+const TextOverlay = styled.div`
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    font-family: Ownglyph_ryurue-Rg;
+    font-size: 20px;
 `;
 
 const S = {
@@ -42,7 +60,9 @@ const S = {
     TeamNameText,
     Wrapper,
     TeamScoreText,
-    ScoreContainer
-}
+    ScoreContainer,
+    BubbleImg,
+    TextOverlay,
+};
 
 export default S;

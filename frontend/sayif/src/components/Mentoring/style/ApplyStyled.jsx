@@ -47,6 +47,8 @@ const ApplyIconText = styled.div`
     font-family: ChosunGu;
     font-weight: bold;
     font-size: 15px;
+    transform: translate(-50%, -50%);
+    text-align: center;
 `;
 
 const S = {
