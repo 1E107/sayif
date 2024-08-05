@@ -11,6 +11,8 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 public class ChallengeService {
@@ -19,13 +21,23 @@ public class ChallengeService {
 
     private static final String FASTAPI_URL = "http://127.0.0.1:8000/predict/";
 
-    public Mono<String> getPrediction(MultipartFile file) {
+    public Mono<Boolean> getPredictionAndCompare(int challengeNum, MultipartFile file) {
         WebClient webClient = webClientBuilder.build();
         return webClient.post()
                 .uri(FASTAPI_URL)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .body(BodyInserters.fromMultipartData("file", file.getResource()))
                 .retrieve()
-                .bodyToMono(String.class);
+                .bodyToMono(Map.class)
+                .map(response -> {
+                    int predictedClass = (int) response.get("predicted_class");
+
+                    // 고양이와 강아지는 애완동물로 동일하게 처리
+                    if ((challengeNum == 2 || challengeNum == 3) && (predictedClass == 2 || predictedClass == 3)) {
+                        return true;
+                    }
+
+                    return challengeNum == predictedClass;
+                });
     }
 }
