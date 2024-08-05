@@ -5,16 +5,17 @@ const username = 'OPENVIDUAPP';
 const password = 'bangcutsoragodoongmeruohboksayif';
 const basicAuth = 'Basic ' + btoa(username + ':' + password);
 
-export const createSession = async (sessionId) => {
+export const createSession = async (token, sessionId) => {
     try {
         console.log('OpenViduApi.js createSession ---');
         const response = await axios.post(
             `${API_BASE_URL}/openvidu/api/sessions`,
-            {customSessionId: sessionId},
+            { customSessionId: sessionId },
             {
                 headers: {
                     Authorization: basicAuth,
                     'Content-Type': 'application/json',
+                    'X-Auth-Token': `Bearer ${token}`,
                 },
             },
         );
@@ -26,7 +27,7 @@ export const createSession = async (sessionId) => {
     }
 };
 
-export const createConnection = async sessionId => {
+export const createConnection = async (token, sessionId) => {
     try {
         const response = await axios.post(
             `${API_BASE_URL}/openvidu/api/sessions/${sessionId}/connection`,
@@ -35,6 +36,7 @@ export const createConnection = async sessionId => {
                 headers: {
                     Authorization: basicAuth,
                     'Content-Type': 'application/json',
+                    'X-Auth-Token': `Bearer ${token}`,
                 },
             },
         );
@@ -46,7 +48,7 @@ export const createConnection = async sessionId => {
     }
 };
 
-export const closeSession = async sessionId => {
+export const closeSession = async (token, sessionId) => {
     try {
         await axios.delete(
             `${API_BASE_URL}/openvidu/api/sessions/${sessionId}`,
@@ -54,6 +56,7 @@ export const closeSession = async sessionId => {
                 headers: {
                     Authorization: basicAuth,
                     'Content-Type': 'application/json',
+                    'X-Auth-Token': `Bearer ${token}`,
                 },
             },
         );

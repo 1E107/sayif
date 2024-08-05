@@ -26,7 +26,6 @@ const OpenViduApp = () => {
     let OV = useRef(null);
     let session = useRef(null);
     let publisher = useRef(null);
-    let connectionId;
 
     useEffect(() => {
         return () => {
@@ -62,7 +61,7 @@ const OpenViduApp = () => {
 
     const handleCreateNewSession = async () => {
         try {
-            const newSessionId = await createSession(sessionId); //openvidu/api/sessions
+            const newSessionId = await createSession(token, sessionId); //openvidu/api/sessions
             setCurrentSessionId(newSessionId);
             setSessionId(newSessionId);
             joinSession(newSessionId);
@@ -112,8 +111,8 @@ const OpenViduApp = () => {
         });
 
         try {
-            const token = await createConnection(sessionId); //openvidu/api/sessions/{sessionId}/connection
-            await session.current.connect(token);
+            const connectionToken = await createConnection(token, sessionId); //openvidu/api/sessions/{sessionId}/connection
+            await session.current.connect(connectionToken,{ clientData: member.nickname });
             setIsConnected(true);
             if (!publisher.current) {
                 publisher.current = OV.current.initPublisher(
@@ -217,7 +216,7 @@ const OpenViduApp = () => {
         }
 
         try {
-            await closeSession(currentSessionId);
+            await closeSession(token, currentSessionId);
             setCurrentSessionId(null);
             setIsConnected(false);
         } catch (error) {
@@ -232,14 +231,14 @@ const OpenViduApp = () => {
                     <S.Logo src="/logo.png" alt="Logo" />
                     {sessionStatus === 'mentor' && (
                         <>
-                        <S.Input
-                            type="text"
-                            onChange={e => setSessionId(e.target.value)}
-                            placeholder="Enter Session ID"
-                        />
-                        <S.DiffBtn onClick={handleCreateNewSession}>
-                            Create New Session
-                        </S.DiffBtn>
+                            <S.Input
+                                type="text"
+                                onChange={e => setSessionId(e.target.value)}
+                                placeholder="Enter Session ID"
+                            />
+                            <S.DiffBtn onClick={handleCreateNewSession}>
+                                Create New Session
+                            </S.DiffBtn>
                         </>
                     )}
                     {sessionStatus === 'exists' && (

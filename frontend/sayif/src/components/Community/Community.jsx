@@ -1,4 +1,4 @@
-import S from './style/CommunityStyled'
+import S from './style/CommunityStyled';
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
@@ -13,7 +13,7 @@ import TableRow from '@mui/material/TableRow';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 import { useEffect, useState } from 'react';
-import '../../styles/fonts.css'
+import '../../styles/fonts.css';
 import { useNavigate } from 'react-router-dom';
 import { GetCommunityList } from '../../api/Main';
 import { useSelector } from 'react-redux';
@@ -33,7 +33,7 @@ function Community() {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(7);
     const [rows, SetRows] = useState([]);
-    const {token} = useSelector(state => state.member);
+    const { token } = useSelector(state => state.member);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -51,17 +51,17 @@ function Community() {
 
     const moveDetailPage = id => {
         navigate('/');
-    }
+    };
 
     useEffect(() => {
-        const callCommunityList = async() => {
-            try{
-               const response = await GetCommunityList(token, value, page, 10);
-               console.log(response);
-            }catch(error) {
+        const callCommunityList = async () => {
+            try {
+                const response = await GetCommunityList(token, value, page, 10);
+                console.log(response);
+            } catch (error) {
                 console.log(error);
             }
-        }
+        };
         //callCommunityList();
     }, []);
 
@@ -69,21 +69,25 @@ function Community() {
         <S.Container>
             <S.HeaderWrapper>
                 <Box sx={{ width: '300px' }}>
-                    <Tabs value={value} onChange={handleChange} centered 
+                    <Tabs
+                        value={value}
+                        onChange={handleChange}
+                        centered
                         sx={{
                             '& .MuiTab-root': {
                                 color: '#116530',
                                 fontFamily: 'ChosunGu',
                                 fontWeight: 'bold',
-                                fontSize: "18px",
+                                fontSize: '18px',
                             },
                             '& .MuiTabs-indicator': {
                                 backgroundColor: '#116530',
                                 color: '#116530',
                             },
-                        }}>
-                        <Tab label="전체" value={'free'}/>
-                        <Tab label="일상" value={'일상'}/>
+                        }}
+                    >
+                        <Tab label="전체" value={'free'} />
+                        <Tab label="일상" value={'일상'} />
                         <Tab label="고민" value={'고민'} />
                     </Tabs>
                 </Box>
@@ -150,7 +154,9 @@ function Community() {
                                             role="checkbox"
                                             tabIndex={-1}
                                             key={row.writingId}
-                                            onClick = {() => moveDetailPage(row.id)}
+                                            onClick={() =>
+                                                moveDetailPage(row.id)
+                                            }
                                         >
                                             {columns.map(column => {
                                                 const value = row[column.id];
@@ -168,7 +174,7 @@ function Community() {
                                                             'number'
                                                             ? column.format(
                                                                   value,
-                                                            )
+                                                              )
                                                             : value}
                                                     </TableCell>
                                                 );
@@ -191,7 +197,7 @@ function Community() {
                 />
             </Paper>
         </S.Container>
-    )
+    );
 
     return CommunityView;
 }

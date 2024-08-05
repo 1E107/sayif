@@ -1,15 +1,14 @@
 package com.ssafy.sayif.openvidu.controller;
 
 import com.ssafy.sayif.member.jwt.JWTUtil;
-import com.ssafy.sayif.openvidu.dto.PostOpenViduSessionRequest;
 import com.ssafy.sayif.openvidu.service.OpenViduService;
-import io.openvidu.java.client.Connection;
 import io.openvidu.java.client.Session;
-import io.openvidu.java.client.SessionProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -30,10 +29,11 @@ public class OpenViduController {
      * 클라이언트는 이 토큰을 사용하여 세션에 연결할 수 있습니다.
      */
     @PostMapping("/api/sessions")
-    public ResponseEntity<?> initializeSession(@RequestHeader("Authorization") String authorizationHeader, @RequestBody(required = false)Map<String, Object> params) {
+    public ResponseEntity<?> initializeSession(@AuthenticationPrincipal UserDetails userDetails, @RequestBody(required = false)Map<String, Object> params) {
         try {
             log.info("Controller - initialize session");
-            Session session = openViduService.createSession(params, "sora1234");
+            String username = userDetails.getUsername();
+            Session session = openViduService.createSession(params, username);
             return new ResponseEntity<>(session.getSessionId(), HttpStatus.OK);
         } catch (Exception e) {
             log.error("Unexpected error: ", e);
@@ -66,9 +66,10 @@ public class OpenViduController {
      * 이 작업은 세션을 닫고, 세션에 연결된 모든 Connection을 종료합니다.
      */
     @DeleteMapping("/api/sessions/{sessionId}")
-    public ResponseEntity<?> closeSession(@PathVariable String sessionId) {
+    public ResponseEntity<?> closeSession(@AuthenticationPrincipal UserDetails userDetails, @PathVariable String sessionId) {
         try {
-            return new ResponseEntity<>(openViduService.closeSession(sessionId, "sora1234"), HttpStatus.NO_CONTENT);
+            String username = userDetails.getUsername();
+            return new ResponseEntity<>(openViduService.closeSession(sessionId, username), HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return new ResponseEntity<>("Failed to close session", HttpStatus.NOT_FOUND);
         }
