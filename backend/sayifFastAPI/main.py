@@ -38,9 +38,6 @@ async def predict(file: UploadFile = File(...)):
     predicted_class = np.argmax(predictions, axis=1)
     predicted_prob = np.max(predictions, axis=1)
 
-    # 클래스 인덱스를 클래스 이름으로 변환
-    class_indices = {0: "비행기", 1: "자동차", 2: "고양이", 3: "강아지", 4: "꽃", 5: "과일", 6: "오토바이", 7: "사람"}
-    class_names = [class_indices[i] for i in range(8)]
-    predicted_label = class_names[predicted_class[0]]
-
-    return JSONResponse(content={"predicted_class": predicted_label, "prediction_probability": float(predicted_prob[0])})
+    # 클래스 인덱스 별 유형 {0: "비행기", 1: "자동차", 2: "고양이", 3: "강아지", 4: "꽃", 5: "과일", 6: "오토바이", 7: "사람"}
+    # 클래스 인덱스 및 확률 반환
+    return JSONResponse(content={"predicted_class": int(predicted_class[0]), "prediction_probability": float(predicted_prob[0])})
