@@ -1,11 +1,8 @@
 package com.ssafy.sayif.openvidu.controller;
 
 import com.ssafy.sayif.member.jwt.JWTUtil;
-import com.ssafy.sayif.openvidu.dto.PostOpenViduSessionRequest;
 import com.ssafy.sayif.openvidu.service.OpenViduService;
-import io.openvidu.java.client.Connection;
 import io.openvidu.java.client.Session;
-import io.openvidu.java.client.SessionProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
