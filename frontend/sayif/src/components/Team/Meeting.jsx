@@ -12,7 +12,7 @@ import Mic from '@mui/icons-material/Mic';
 import MicOff from '@mui/icons-material/MicOff';
 import Videocam from '@mui/icons-material/Videocam';
 import VideocamOff from '@mui/icons-material/VideocamOff';
-import Close from '@mui/icons-material/Close'
+import Close from '@mui/icons-material/Close';
 import Fullscreen from '@mui/icons-material/Fullscreen';
 import FullscreenExit from '@mui/icons-material/FullscreenExit';
 import ScreenShare from '@mui/icons-material/ScreenShare';
@@ -20,7 +20,6 @@ import StopScreenShare from '@mui/icons-material/StopScreenShare';
 import Send from '@mui/icons-material/Send';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Chat from '@mui/icons-material/Chat';
-import UserModel from '../Team/MeetingCustom/user-model';
 
 const OpenViduApp = () => {
     const [sessionId, setSessionId] = useState('');
@@ -151,12 +150,14 @@ const OpenViduApp = () => {
     const startScreenShare = async () => {
         // 중복 호출 방지
         if (isScreenSharing) {
-             // 화면 공유 중이라면 중지
-             try {
+            // 화면 공유 중이라면 중지
+            try {
                 if (publisher.current) {
                     const screenPublisher = publisher.current;
                     const screenStream = screenPublisher.stream;
-                    const videoTracks = screenStream.getMediaStream().getVideoTracks();
+                    const videoTracks = screenStream
+                        .getMediaStream()
+                        .getVideoTracks();
                     videoTracks.forEach(track => track.stop());
                     session.current.unpublish(screenPublisher);
                     publisher.current = null;
@@ -168,13 +169,15 @@ const OpenViduApp = () => {
         } else {
             try {
                 // 기존 화면 공유가 있을 경우 종료
-            if (publisher.current) {
-                const screenPublisher = publisher.current;
-                session.current.unpublish(screenPublisher);
-                const videoTracks = screenPublisher.stream.getMediaStream().getVideoTracks();
-                videoTracks.forEach(track => track.stop());
-                publisher.current = null;
-            }
+                if (publisher.current) {
+                    const screenPublisher = publisher.current;
+                    session.current.unpublish(screenPublisher);
+                    const videoTracks = screenPublisher.stream
+                        .getMediaStream()
+                        .getVideoTracks();
+                    videoTracks.forEach(track => track.stop());
+                    publisher.current = null;
+                }
                 const stream = await navigator.mediaDevices.getDisplayMedia({
                     video: true,
                 });
@@ -272,9 +275,15 @@ const OpenViduApp = () => {
                                 type="text"
                                 onChange={e => setSessionId(e.target.value)}
                                 placeholder="Enter Session ID"
-                                style={{ border: '1px solid #116530CC', width: '100%', marginBottom: '15px' }}
+                                style={{
+                                    border: '1px solid #116530CC',
+                                    width: '100%',
+                                    marginBottom: '15px',
+                                }}
                             />
-                            <S.DiffBtn onClick={handleCreateNewSession}>회의실 생성</S.DiffBtn>
+                            <S.DiffBtn onClick={handleCreateNewSession}>
+                                회의실 생성
+                            </S.DiffBtn>
                         </S.CenteredContainer>
                     )}
                     {sessionStatus === 'exists' && (
@@ -284,26 +293,46 @@ const OpenViduApp = () => {
                                 value={sessionId}
                                 onChange={e => setSessionId(e.target.value)}
                                 placeholder="Enter Session ID"
-                                style={{ border: '1px solid #116530CC', width: '100%', marginBottom: '15px' }}
+                                style={{
+                                    border: '1px solid #116530CC',
+                                    width: '100%',
+                                    marginBottom: '15px',
+                                }}
                             />
-                            <S.DiffBtn onClick={() => joinSession(sessionId)}>회의실 입장</S.DiffBtn>
+                            <S.DiffBtn onClick={() => joinSession(sessionId)}>
+                                회의실 입장
+                            </S.DiffBtn>
                         </S.CenteredContainer>
                     )}
                 </S.CenteredContainer>
             )}
-            <S.VideoContainer ref={videoContainerRef} $isConnected={isConnected} />
+            <S.VideoContainer
+                ref={videoContainerRef}
+                $isConnected={isConnected}
+            />
             {isConnected && (
                 <>
-                    <S.ChatContainer id="chat-container" $isConnected={isConnected} display={chatDisplay}>
+                    <S.ChatContainer
+                        id="chat-container"
+                        $isConnected={isConnected}
+                        display={chatDisplay}
+                    >
                         <h3>채팅</h3>
-                        <S.ChatMessages id="chat-messages" ref={chatMessagesRef} />
+                        <S.ChatMessages
+                            id="chat-messages"
+                            ref={chatMessagesRef}
+                        />
                         <S.ChatInputContainer>
                             <OutlinedInput
                                 type="text"
                                 value={message}
                                 onChange={e => setMessage(e.target.value)}
                                 placeholder="Enter your message"
-                                style={{ border: '1px solid #116530CC', width: '100%', marginRight: '20px' }}
+                                style={{
+                                    border: '1px solid #116530CC',
+                                    width: '100%',
+                                    marginRight: '20px',
+                                }}
                             />
                             <S.IconButtonStyled onClick={sendMessage}>
                                 <Send />
@@ -317,7 +346,11 @@ const OpenViduApp = () => {
                             </S.IconButtonStyled>
                         )}
                         <S.IconButtonStyled onClick={startScreenShare}>
-                            {isScreenSharing ? <StopScreenShare /> : <ScreenShare />}
+                            {isScreenSharing ? (
+                                <StopScreenShare />
+                            ) : (
+                                <ScreenShare />
+                            )}
                         </S.IconButtonStyled>
                         <S.IconButtonStyled onClick={toggleMute}>
                             {isMuted ? <MicOff /> : <Mic />}
