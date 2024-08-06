@@ -612,11 +612,6 @@ class VideoRoomComponent extends Component {
                         leaveSession={this.leaveSession}
                         toggleChat={this.toggleChat}
                     />
-
-                    {/* <DialogExtensionComponent
-                        showDialog={this.state.showExtensionDialog}
-                        cancelClicked={this.closeDialogExtension}
-                    /> */}
                     <div id="layout" className="bounds">
                         {localUser !== undefined &&
                             localUser.getStreamManager() !== undefined && (
@@ -654,6 +649,7 @@ class VideoRoomComponent extends Component {
                                 </div>
                             )}
                     </div>
+                    
                 </div>
             );
         }

@@ -22,6 +22,12 @@ export default class StreamComponent extends Component {
     render() {
         return (
             <div className="OT_widget-container">
+                <div className="pointer nickname">
+                        <div>
+                            <span id="nickname">{this.props.user.getNickname()}</span>
+                            {this.props.user.isLocal() && <span id=""></span>}
+                        </div>
+                </div>
                 {this.props.user !== undefined &&
                 this.props.user.getStreamManager() !== undefined ? (
                     <div className="streamComponent">
