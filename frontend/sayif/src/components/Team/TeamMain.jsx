@@ -48,7 +48,7 @@ function TeamMain() {
                 <div
                     style={{
                         position: 'absolute',
-                        top: '62%',
+                        top: '67%',
                         left: '45%',
                         transform: 'translate(-50%, -50%)',
                         fontFamily: 'Ownglyph_ryurue-Rg',
