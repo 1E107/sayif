@@ -45,7 +45,8 @@ public class MentoringService {
 
     private final TeamRepository teamRepository;
     private final MemberRepository memberRepository;
-    private final  MentorRepository mentorRepository;
+    private final MentorRepository mentorRepository;
+    private final TagRepository tagRepository;
     private final ChallengeRepository challengeRepository;
     private final ChallengeListRepository challengeListRepository;
 
