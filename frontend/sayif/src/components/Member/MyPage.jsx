@@ -102,12 +102,19 @@ function MyPageComponent() {
 
     const handleUpdateCallBtn = () => {
         const callUpdateInfo = async () => {
+            const formData = new FormData();
+            // JSON 객체를 문자열로 변환하여 Blob으로 추가
+            const infoBlob = new Blob([JSON.stringify(newMember)], {
+                type: 'application/json',
+            });
+            formData.append('info', infoBlob);
+            // 파일 추가
+            if (file) {
+                formData.append('file', file);
+            }
+
             try {
-                const response = await uploadProfileImage(
-                    token,
-                    newMember,
-                    file,
-                );
+                const response = await uploadProfileImage(token, formData);
                 if (response.status === 200) {
                     callMemberInfo();
                     alert('회원 정보가 성공적으로 수정되었어요!');
@@ -143,6 +150,11 @@ function MyPageComponent() {
         const file = e.target.files[0];
         if (file) {
             setFile(file);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                dispatch(setMember({ ...member, imgUrl: reader.result }));
+            };
+            reader.readAsDataURL(file);
         }
     };
 
@@ -157,7 +169,7 @@ function MyPageComponent() {
             <div style={{ display: 'flex' }}>
                 <div style={{ textAlign: 'center' }}>
                     <S.ProfileImg
-                        src={member.fileUrl}
+                        src={member.imgUrl}
                         alt="Profile"
                         onClick={handleProfileImageClick}
                     />

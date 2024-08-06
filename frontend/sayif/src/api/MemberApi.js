@@ -8,8 +8,7 @@ export const login = async (username, password) => {
     };
 
     try {
-        const response = await axios.post(`${API_BASE_URL}/login`, loginData);
-        return response;
+        return await axios.post(`${API_BASE_URL}/login`, loginData);
     } catch (error) {
         console.log(error);
         throw error;
@@ -18,12 +17,11 @@ export const login = async (username, password) => {
 
 export const getMemberInfo = async token => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/member/member-info`, {
+        return await axios.get(`${API_BASE_URL}/member/member-info`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
         });
-        return response;
     } catch (error) {
         throw error;
     }
@@ -43,33 +41,15 @@ export const createMember = async formData => {
 
 export const updateMember = async (token, data) => {
     try {
-        const response = await axios.put(
-            `${API_BASE_URL}/member/member-info`,
-            data,
-            {
-                headers: { Authorization: `Bearer ${token}` },
-            },
-        );
-        return response;
+        return await axios.put(`${API_BASE_URL}/member/member-info`, data, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
     } catch (error) {
         throw error;
     }
 };
-export const uploadProfileImage = async (token, newInfo, file) => {
+export const uploadProfileImage = async (token, formData) => {
     try {
-        const formData = new FormData();
-
-        // JSON 데이터를 Blob으로 변환하여 추가합니다.
-        formData.append(
-            'info',
-            new Blob([JSON.stringify(newInfo)], { type: 'application/json' }),
-        );
-
-        // 파일을 추가합니다.
-        if (file) {
-            formData.append('file', file);
-        }
-
         // 요청 헤더에 인증 토큰을 추가합니다.
         return await axios.put(`${API_BASE_URL}/member/member-info`, formData, {
             headers: {
