@@ -125,8 +125,63 @@ class VideoRoomComponent extends Component {
             async () => {
                 this.subscribeToStreamCreated();
                 await this.connectToSession();
+                // 세션 객체 생성 후 신호 이벤트 리스너 등록
+                this.state.session.on('signal:sessionEnded', event => {
+                    console.log('Session ended signal received:', event);
+                    alert('회의가 종료되었습니다.');
+                    this.leaveSession();
+                });
             },
         );
+    }
+    async leaveSession() {
+        const mySession = this.state.session;
+        const mySessionId = this.state.mySessionId;
+
+        if (this.state.sessionStatus === 'mentor') {
+            try {
+                await closeSession(this.props.userToken, mySessionId);
+                // 세션 종료 신호 전송
+                this.state.session.signal({
+                    data: 'Session Ended', // 메타데이터, 필요에 따라 수정 가능
+                    to: [], // 모든 참가자에게 신호 전송
+                    type: 'sessionEnded',
+                });
+            } catch (error) {
+                console.error('Error closing session:', error);
+                alert('Error closing session: ' + error.message);
+            }
+        }
+        if (mySession) {
+            mySession.disconnect();
+        }
+
+        try {
+            const response = await getTeamSessionId(
+                this.props.member.teamId,
+                this.props.userToken,
+            );
+            const teamSessionId = response.sessionId;
+            console.log('teamSessionId: ', teamSessionId);
+            this.setState({
+                mySessionId: teamSessionId
+                    ? teamSessionId
+                    : this.state.mySessionId,
+            });
+        } catch (error) {
+            console.error('Error fetching team session ID:', error);
+        }
+
+        this.OV = null;
+        this.setState({
+            session: undefined,
+            subscribers: [],
+            myUserName: this.props.member.nickname,
+            localUser: undefined,
+        });
+        if (this.props.leaveSession) {
+            this.props.leaveSession();
+        }
     }
 
     async connectToSession() {
@@ -261,32 +316,6 @@ class VideoRoomComponent extends Component {
         );
     }
 
-    async leaveSession() {
-        const mySession = this.state.session;
-        const mySessionId = this.state.mySessionId;
-        if (mySession) {
-            mySession.disconnect();
-        }
-
-        try {
-            // setCurrentSessionId(null);
-            // setIsConnected(false);
-            this.OV = null;
-            this.setState({
-                session: undefined,
-                subscribers: [],
-                mySessionId: 'SessionInit',
-                myUserName: this.props.member.nickname,
-                localUser: undefined,
-            });
-            // await closeSession(this.props.userToken, mySessionId);
-        } catch (error) {
-            console.error('Error closing session:', error);
-        }
-        if (this.props.leaveSession) {
-            this.props.leaveSession();
-        }
-    }
     camStatusChanged() {
         localUser.setVideoActive(!localUser.isVideoActive());
         localUser.getStreamManager().publishVideo(localUser.isVideoActive());
@@ -304,15 +333,6 @@ class VideoRoomComponent extends Component {
         });
         this.setState({ localUser: localUser });
     }
-
-    // nicknameChanged(nickname) {
-    //     let localUser = this.state.localUser;
-    //     localUser.setNickname(nickname);
-    //     this.setState({ localUser: localUser });
-    //     this.sendSignalUserChanged({
-    //         nickname: this.state.localUser.getNickname(),
-    //     });
-    // }
 
     deleteSubscriber(stream) {
         const remoteUsers = this.state.subscribers;
@@ -446,48 +466,6 @@ class VideoRoomComponent extends Component {
             }
         }
     }
-
-    // async switchCamera() {
-    //     try {
-    //         const devices = await this.OV.getDevices();
-    //         var videoDevices = devices.filter(
-    //             device => device.kind === 'videoinput',
-    //         );
-
-    //         if (videoDevices && videoDevices.length > 1) {
-    //             var newVideoDevice = videoDevices.filter(
-    //                 device =>
-    //                     device.deviceId !==
-    //                     this.state.currentVideoDevice.deviceId,
-    //             );
-
-    //             if (newVideoDevice.length > 0) {
-    //                 // Creating a new publisher with specific videoSource
-    //                 // In mobile devices the default and first camera is the front one
-    //                 var newPublisher = this.OV.initPublisher(undefined, {
-    //                     audioSource: undefined,
-    //                     videoSource: newVideoDevice[0].deviceId,
-    //                     publishAudio: localUser.isAudioActive(),
-    //                     publishVideo: localUser.isVideoActive(),
-    //                     mirror: true,
-    //                 });
-
-    //                 //newPublisher.once("accessAllowed", () => {
-    //                 await this.state.session.unpublish(
-    //                     this.state.localUser.getStreamManager(),
-    //                 );
-    //                 await this.state.session.publish(newPublisher);
-    //                 this.state.localUser.setStreamManager(newPublisher);
-    //                 this.setState({
-    //                     currentVideoDevice: newVideoDevice,
-    //                     localUser: localUser,
-    //                 });
-    //             }
-    //         }
-    //     } catch (e) {
-    //         console.error(e);
-    //     }
-    // }
 
     screenShare() {
         const videoSource =
@@ -693,7 +671,8 @@ class VideoRoomComponent extends Component {
                 />
                 <div id="layout" className="bounds">
                     {this.state.sessionStatus === 'mentor' && (
-                        <>
+                        <div className="beforeEnterSession">
+                            <img src="/logo.png"></img>
                             <OutlinedInput
                                 type="text"
                                 onChange={e =>
@@ -704,31 +683,56 @@ class VideoRoomComponent extends Component {
                                 placeholder="Enter Session ID"
                                 style={{
                                     border: '1px solid #116530CC',
-                                    width: '100%',
+                                    width: '250px',
                                     marginBottom: '15px',
+                                    marginTop: '15px',
                                 }}
                             />
-                            <Button onClick={this.joinSession}>
+                            <Button
+                                onClick={this.joinSession}
+                                sx={{
+                                    backgroundColor: '#0B4619',
+                                    color: 'white',
+                                    '&:hover': {
+                                        backgroundColor: '#416D19', // 호버 시 배경색
+                                        color: '#ffffff', // 호버 시 텍스트 색상
+                                    },
+                                    padding: '10px',
+                                }}
+                            >
                                 회의실 생성
                             </Button>
-                        </>
+                        </div>
                     )}
                     {this.state.sessionStatus === 'exists' && (
-                        <>
+                        <div className="beforeEnterSession">
+                            <img src="/logo.png"></img>
                             <OutlinedInput
                                 readOnly
                                 type="text"
                                 value={mySessionId}
                                 style={{
                                     border: '1px solid #116530CC',
-                                    width: '100%',
+                                    width: '250px',
                                     marginBottom: '15px',
+                                    marginTop: '15px',
                                 }}
                             />
-                            <Button onClick={this.joinSession}>
+                            <Button
+                                onClick={this.joinSession}
+                                sx={{
+                                    backgroundColor: '#0B4619',
+                                    color: 'white',
+                                    '&:hover': {
+                                        backgroundColor: '#416D19', // 호버 시 배경색
+                                        color: '#ffffff', // 호버 시 텍스트 색상
+                                    },
+                                    padding: '10px',
+                                }}
+                            >
                                 회의실 입장
                             </Button>
-                        </>
+                        </div>
                     )}
                 </div>
             </div>

@@ -46,9 +46,13 @@ export default class DialogExtensionComponent extends Component {
                     <div id="dialogExtension">
                         <Card id="card">
                             <CardContent>
-                                <Typography color="textSecondary">Hello</Typography>
                                 <Typography color="textSecondary">
-                                    You need install this chrome extension and refresh the browser for can share your screen.
+                                    Hello
+                                </Typography>
+                                <Typography color="textSecondary">
+                                    You need install this chrome extension and
+                                    refresh the browser for can share your
+                                    screen.
                                 </Typography>
                             </CardContent>
                             <CardActions>
@@ -56,11 +60,17 @@ export default class DialogExtensionComponent extends Component {
                                     Cancel
                                 </Button>
 
-                                <Button size="small" onClick={this.goToChromePage}>
+                                <Button
+                                    size="small"
+                                    onClick={this.goToChromePage}
+                                >
                                     Install
                                 </Button>
                                 {this.state.isInstalled ? (
-                                    <Button size="small" onClick={this.refreshBrowser}>
+                                    <Button
+                                        size="small"
+                                        onClick={this.refreshBrowser}
+                                    >
                                         Refresh
                                     </Button>
                                 ) : null}

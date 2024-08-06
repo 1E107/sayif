@@ -20,25 +20,21 @@ export default class ChatComponent extends Component {
         this.handlePressKey = this.handlePressKey.bind(this);
         this.close = this.close.bind(this);
         this.sendMessage = this.sendMessage.bind(this);
+        this.receiveMessage = this.receiveMessage.bind(this);
     }
 
-
     componentDidMount() {
-        this.props.user.getStreamManager().stream.session.on('signal:chat', (event) => {
-            const data = JSON.parse(event.data);
-            let messageList = this.state.messageList;
-            messageList.push({ connectionId: event.from.connectionId, nickname: data.nickname, message: data.message });
-            const document = window.document;
-            setTimeout(() => {
-                const userImg = document.getElementById('userImg-' + (this.state.messageList.length - 1));
-                const video = document.getElementById('video-' + data.streamId);
-                const avatar = userImg.getContext('2d');
-                avatar.drawImage(video, 200, 120, 285, 285, 0, 0, 60, 60);
-                this.props.messageReceived();
-            }, 50);
-            this.setState({ messageList: messageList });
-            this.scrollToBottom();
-        });
+        // 이벤트 리스너 등록
+        this.props.user
+            .getStreamManager()
+            .stream.session.on('signal:chat', this.receiveMessage);
+    }
+
+    componentWillUnmount() {
+        // 이벤트 리스너 제거
+        this.props.user
+            .getStreamManager()
+            .stream.session.off('signal:chat', this.receiveMessage);
     }
 
     handleChange(event) {
@@ -51,12 +47,39 @@ export default class ChatComponent extends Component {
         }
     }
 
+    receiveMessage(event) {
+        const data = JSON.parse(event.data);
+        let messageList = this.state.messageList;
+        messageList.push({
+            connectionId: event.from.connectionId,
+            nickname: data.nickname,
+            message: data.message,
+        });
+        const document = window.document;
+        setTimeout(() => {
+            const userImg = document.getElementById(
+                'userImg-' + (this.state.messageList.length - 1),
+            );
+            const video = document.getElementById('video-' + data.streamId);
+            const avatar = userImg.getContext('2d');
+            avatar.drawImage(video, 200, 120, 285, 285, 0, 0, 60, 60);
+            this.props.messageReceived();
+        }, 50);
+        this.setState({ messageList: messageList });
+        this.scrollToBottom();
+    }
+
     sendMessage() {
         console.log(this.state.message);
         if (this.props.user && this.state.message) {
             let message = this.state.message.replace(/ +(?= )/g, '');
             if (message !== '' && message !== ' ') {
-                const data = { message: message, nickname: this.props.user.getNickname(), streamId: this.props.user.getStreamManager().stream.streamId };
+                const data = {
+                    message: message,
+                    nickname: this.props.user.getNickname(),
+                    streamId:
+                        this.props.user.getStreamManager().stream.streamId,
+                };
                 this.props.user.getStreamManager().stream.session.signal({
                     data: JSON.stringify(data),
                     type: 'chat',
@@ -69,7 +92,8 @@ export default class ChatComponent extends Component {
     scrollToBottom() {
         setTimeout(() => {
             try {
-                this.chatScroll.current.scrollTop = this.chatScroll.current.scrollHeight;
+                this.chatScroll.current.scrollTop =
+                    this.chatScroll.current.scrollHeight;
             } catch (err) {}
         }, 20);
     }
@@ -84,9 +108,15 @@ export default class ChatComponent extends Component {
             <div id="chatContainer">
                 <div id="chatComponent" style={styleChat}>
                     <div id="chatToolbar">
-                        <span>{this.props.user.getStreamManager().stream.session.sessionId} - CHAT</span>
+                        <span>
+                            {
+                                this.props.user.getStreamManager().stream
+                                    .session.sessionId
+                            }{' '}
+                            - CHAT
+                        </span>
                         <IconButton id="closeButton" onClick={this.close}>
-                            <HighlightOff color="secondary" />
+                            <HighlightOff style={{ color: '#E8E8CC' }} />
                         </IconButton>
                     </div>
                     <div className="message-wrap" ref={this.chatScroll}>
@@ -95,10 +125,19 @@ export default class ChatComponent extends Component {
                                 key={i}
                                 id="remoteUsers"
                                 className={
-                                    'message' + (data.connectionId !== this.props.user.getConnectionId() ? ' left' : ' right')
+                                    'message' +
+                                    (data.connectionId !==
+                                    this.props.user.getConnectionId()
+                                        ? ' left'
+                                        : ' right')
                                 }
                             >
-                                <canvas id={'userImg-' + i} width="60" height="60" className="user-img" />
+                                <canvas
+                                    id={'userImg-' + i}
+                                    width="60"
+                                    height="60"
+                                    className="user-img"
+                                />
                                 <div className="msg-detail">
                                     <div className="msg-info">
                                         <p> {data.nickname}</p>
@@ -121,8 +160,12 @@ export default class ChatComponent extends Component {
                             onKeyPress={this.handlePressKey}
                         />
                         <Tooltip title="Send message">
-                            <Fab size="small" id="sendButton" onClick={this.sendMessage}>
-                                <Send />
+                            <Fab
+                                size="small"
+                                id="sendButton"
+                                onClick={this.sendMessage}
+                            >
+                                <Send style={{ color: 'white' }} />
                             </Fab>
                         </Tooltip>
                     </div>

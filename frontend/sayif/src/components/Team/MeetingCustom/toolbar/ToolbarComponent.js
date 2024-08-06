@@ -143,7 +143,7 @@ export default class ToolbarComponent extends Component {
                             onClick={this.leaveSession}
                             id="navLeaveButton"
                         >
-                            <PowerSettingsNew />
+                            <PowerSettingsNew style={{ color: '#FFCC1D' }} />
                         </IconButton>
                         <IconButton
                             color="inherit"
