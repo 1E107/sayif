@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { OpenVidu } from 'openvidu-browser';
 import { useSelector } from 'react-redux';
 import {
@@ -8,6 +8,19 @@ import {
 } from '../../api/OpenViduApi';
 import { getTeamSessionId } from '../../api/MentoringApi';
 import S from './style/MeetingStyled';
+import Mic from '@mui/icons-material/Mic';
+import MicOff from '@mui/icons-material/MicOff';
+import Videocam from '@mui/icons-material/Videocam';
+import VideocamOff from '@mui/icons-material/VideocamOff';
+import Close from '@mui/icons-material/Close'
+import Fullscreen from '@mui/icons-material/Fullscreen';
+import FullscreenExit from '@mui/icons-material/FullscreenExit';
+import ScreenShare from '@mui/icons-material/ScreenShare';
+import StopScreenShare from '@mui/icons-material/StopScreenShare';
+import Send from '@mui/icons-material/Send';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import Chat from '@mui/icons-material/Chat';
+import UserModel from '../Team/MeetingCustom/user-model';
 
 const OpenViduApp = () => {
     const [sessionId, setSessionId] = useState('');
@@ -18,6 +31,7 @@ const OpenViduApp = () => {
     const [isMuted, setIsMuted] = useState(false);
     const [isVideoStopped, setIsVideoStopped] = useState(false);
     const [isScreenSharing, setIsScreenSharing] = useState(false); // 화면 공유 상태 추가
+    const [chatDisplay, setChatDisplay] = useState('none');
     const [subscribers, setSubscribers] = useState([]); // 추가: 구독자 관리 상태
     const videoContainerRef = useRef(null);
     const chatMessagesRef = useRef(null);
@@ -112,7 +126,7 @@ const OpenViduApp = () => {
 
         try {
             const connectionToken = await createConnection(token, sessionId); //openvidu/api/sessions/{sessionId}/connection
-            await session.current.connect(connectionToken,{ clientData: member.nickname });
+            await session.current.connect(connectionToken);
             setIsConnected(true);
             if (!publisher.current) {
                 publisher.current = OV.current.initPublisher(
@@ -137,29 +151,48 @@ const OpenViduApp = () => {
     const startScreenShare = async () => {
         // 중복 호출 방지
         if (isScreenSharing) {
-            return;
-        }
-        setIsScreenSharing(true);
-
-        try {
-            const stream = await navigator.mediaDevices.getDisplayMedia({
-                video: true,
-            });
-            const screenPublisher = OV.current.initPublisher(undefined, {
-                videoSource: stream.getVideoTracks()[0],
-                publishAudio: true,
-                publishVideo: true,
-            });
-
-            session.current.publish(screenPublisher);
-        } catch (error) {
-            if (error.name === 'NotAllowedError') {
-                console.error('Screen sharing permission denied:', error);
-            } else {
-                console.error('Error sharing the screen:', error);
+             // 화면 공유 중이라면 중지
+             try {
+                if (publisher.current) {
+                    const screenPublisher = publisher.current;
+                    const screenStream = screenPublisher.stream;
+                    const videoTracks = screenStream.getMediaStream().getVideoTracks();
+                    videoTracks.forEach(track => track.stop());
+                    session.current.unpublish(screenPublisher);
+                    publisher.current = null;
+                }
+                setIsScreenSharing(false);
+            } catch (error) {
+                console.error('Error stopping screen share:', error);
             }
-        } finally {
-            setIsScreenSharing(false);
+        } else {
+            try {
+                // 기존 화면 공유가 있을 경우 종료
+            if (publisher.current) {
+                const screenPublisher = publisher.current;
+                session.current.unpublish(screenPublisher);
+                const videoTracks = screenPublisher.stream.getMediaStream().getVideoTracks();
+                videoTracks.forEach(track => track.stop());
+                publisher.current = null;
+            }
+                const stream = await navigator.mediaDevices.getDisplayMedia({
+                    video: true,
+                });
+                const screenPublisher = OV.current.initPublisher(undefined, {
+                    videoSource: stream.getVideoTracks()[0],
+                    publishAudio: true,
+                    publishVideo: true,
+                });
+                session.current.publish(screenPublisher);
+                publisher.current = screenPublisher; // 화면 공유 객체를 새로 설정
+                setIsScreenSharing(true);
+            } catch (error) {
+                if (error.name === 'NotAllowedError') {
+                    console.error('Screen sharing permission denied:', error);
+                } else {
+                    console.error('Error sharing the screen:', error);
+                }
+            }
         }
     };
 
@@ -224,81 +257,77 @@ const OpenViduApp = () => {
         }
     };
 
+    const handleChatDisplay = useCallback(() => {
+        setChatDisplay(chatDisplay === 'none' ? 'block' : 'none');
+    }, [chatDisplay]);
+
     return (
         <S.Container>
             {!isConnected && (
                 <S.CenteredContainer>
                     <S.Logo src="/logo.png" alt="Logo" />
                     {sessionStatus === 'mentor' && (
-                        <>
-                            <S.Input
+                        <S.CenteredContainer>
+                            <OutlinedInput
                                 type="text"
                                 onChange={e => setSessionId(e.target.value)}
                                 placeholder="Enter Session ID"
+                                style={{ border: '1px solid #116530CC', width: '100%', marginBottom: '15px' }}
                             />
-                            <S.DiffBtn onClick={handleCreateNewSession}>
-                                Create New Session
-                            </S.DiffBtn>
-                        </>
+                            <S.DiffBtn onClick={handleCreateNewSession}>회의실 생성</S.DiffBtn>
+                        </S.CenteredContainer>
                     )}
                     {sessionStatus === 'exists' && (
-                        <S.HorizontalContainer>
-                            <S.Input
+                        <S.CenteredContainer>
+                            <OutlinedInput
                                 type="text"
                                 value={sessionId}
                                 onChange={e => setSessionId(e.target.value)}
                                 placeholder="Enter Session ID"
+                                style={{ border: '1px solid #116530CC', width: '100%', marginBottom: '15px' }}
                             />
-                            <S.DiffBtn onClick={() => joinSession(sessionId)}>
-                                Join Session
-                            </S.DiffBtn>
-                        </S.HorizontalContainer>
+                            <S.DiffBtn onClick={() => joinSession(sessionId)}>회의실 입장</S.DiffBtn>
+                        </S.CenteredContainer>
                     )}
                 </S.CenteredContainer>
             )}
-            <S.VideoContainer
-                ref={videoContainerRef}
-                $isConnected={isConnected}
-            ></S.VideoContainer>
+            <S.VideoContainer ref={videoContainerRef} $isConnected={isConnected} />
             {isConnected && (
                 <>
-                    <S.ChatContainer
-                        id="chat-container"
-                        $isConnected={isConnected}
-                    >
-                        <h2>Chat</h2>
-                        <S.ChatMessages
-                            id="chat-messages"
-                            ref={chatMessagesRef}
-                        ></S.ChatMessages>
+                    <S.ChatContainer id="chat-container" $isConnected={isConnected} display={chatDisplay}>
+                        <h3>채팅</h3>
+                        <S.ChatMessages id="chat-messages" ref={chatMessagesRef} />
                         <S.ChatInputContainer>
-                            <S.Input
+                            <OutlinedInput
                                 type="text"
                                 value={message}
                                 onChange={e => setMessage(e.target.value)}
                                 placeholder="Enter your message"
+                                style={{ border: '1px solid #116530CC', width: '100%', marginRight: '20px' }}
                             />
-                            <S.DiffBtn onClick={sendMessage}>
-                                Send Message
-                            </S.DiffBtn>
+                            <S.IconButtonStyled onClick={sendMessage}>
+                                <Send />
+                            </S.IconButtonStyled>
                         </S.ChatInputContainer>
                     </S.ChatContainer>
-
                     <S.ButtonContainer $isConnected={isConnected}>
                         {sessionStatus === 'mentor' && (
-                            <S.CustomBtn onClick={handleCloseSession}>
-                                Close Session
-                            </S.CustomBtn>
+                            <S.IconButtonStyled onClick={handleCloseSession}>
+                                <Close />
+                            </S.IconButtonStyled>
                         )}
-                        <S.CustomBtn onClick={startScreenShare}>
-                            Share Screen
-                        </S.CustomBtn>
-                        <S.CustomBtn onClick={toggleMute}>
-                            {isMuted ? 'Unmute' : 'Mute'}
-                        </S.CustomBtn>
-                        <S.CustomBtn onClick={toggleVideo}>
-                            {isVideoStopped ? 'Start Video' : 'Stop Video'}
-                        </S.CustomBtn>
+                        <S.IconButtonStyled onClick={startScreenShare}>
+                            {isScreenSharing ? <StopScreenShare /> : <ScreenShare />}
+                        </S.IconButtonStyled>
+                        <S.IconButtonStyled onClick={toggleMute}>
+                            {isMuted ? <MicOff /> : <Mic />}
+                        </S.IconButtonStyled>
+                        <S.IconButtonStyled onClick={toggleVideo}>
+                            {isVideoStopped ? <Videocam /> : <VideocamOff />}
+                        </S.IconButtonStyled>
+                        <S.IconButtonStyled onClick={handleChatDisplay}>
+                            <Chat />
+                        </S.IconButtonStyled>
                     </S.ButtonContainer>
                 </>
             )}
