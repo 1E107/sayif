@@ -6,14 +6,10 @@ import {
     setMember,
     setToken,
 } from '../../redux/modules/member';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import MentoringModal from './MentoringModal';
 import { getTeamStatue } from '../../api/MentoringApi';
-import {
-    updateMember,
-    getMemberInfo,
-    uploadProfileImage,
-} from '../../api/MemberApi'; // uploadProfileImage API 추가
+import { getMemberInfo, uploadProfileImage } from '../../api/MemberApi';
 
 function MyPageComponent() {
     const navigate = useNavigate();
@@ -31,10 +27,9 @@ function MyPageComponent() {
         email: member.email,
         gender: member.gender,
     });
-    const [file, setFile] = useState(null); // 파일 상태 추가
+    const [file, setFile] = useState(null);
 
     const handleInputChange = field => e => {
-        console.log(field);
         if (field === 'phone') {
             const phonePattern = /^\d{3}-\d{4}-\d{4}$/;
             if (!phonePattern.test(e.target.value)) {
@@ -82,7 +77,6 @@ function MyPageComponent() {
                         );
                     }
                 }
-                console.log(response);
             } catch (error) {
                 console.log(error);
             }
@@ -99,7 +93,6 @@ function MyPageComponent() {
         try {
             const response = await getMemberInfo(token);
             if (response.status === 200) {
-                console.log(response.data);
                 dispatch(setMember(response.data));
             }
         } catch (error) {
@@ -110,26 +103,11 @@ function MyPageComponent() {
     const handleUpdateCallBtn = () => {
         const callUpdateInfo = async () => {
             try {
-                // 프로필 이미지 업로드
-                if (file) {
-                    const formData = new FormData();
-                    formData.append('file', file);
-                    const uploadResponse = await uploadProfileImage(
-                        token,
-                        formData,
-                    );
-                    if (uploadResponse.status === 200) {
-                        SetNewMember({
-                            ...newMember,
-                            fileUrl: uploadResponse.data.fileUrl,
-                        });
-                    } else {
-                        throw new Error('Profile image upload failed');
-                    }
-                }
-
-                // 멤버 정보 업데이트
-                const response = await updateMember(token, newMember);
+                const response = await uploadProfileImage(
+                    token,
+                    newMember,
+                    file,
+                );
                 if (response.status === 200) {
                     callMemberInfo();
                     alert('회원 정보가 성공적으로 수정되었어요!');
@@ -168,16 +146,20 @@ function MyPageComponent() {
         }
     };
 
-    const MyPageView = (
+    const handleProfileImageClick = () => {
+        if (changeInfo) {
+            document.getElementById('fileInput').click();
+        }
+    };
+
+    return (
         <S.Container>
             <div style={{ display: 'flex' }}>
                 <div style={{ textAlign: 'center' }}>
                     <S.ProfileImg
                         src={member.fileUrl}
                         alt="Profile"
-                        onClick={() =>
-                            document.getElementById('fileInput').click()
-                        } // 파일 선택 다이얼로그 열기
+                        onClick={handleProfileImageClick}
                     />
                     <input
                         type="file"
@@ -210,7 +192,7 @@ function MyPageComponent() {
                             disabled={!changeInfo}
                             onChange={handleInputChange('name')}
                             onKeyDown={handleKeyDown}
-                        ></S.CustomInput>
+                        />
                     </div>
                     <div
                         style={{
@@ -231,7 +213,7 @@ function MyPageComponent() {
                             onChange={handleGenderChange}
                             onKeyDown={handleKeyDown}
                             disabled={!changeInfo}
-                        ></S.CustomInput>
+                        />
                     </div>
                     <div
                         style={{
@@ -246,7 +228,7 @@ function MyPageComponent() {
                             disabled={!changeInfo}
                             onChange={handleInputChange('phone')}
                             onKeyDown={handleKeyDown}
-                        ></S.CustomInput>
+                        />
                     </div>
                     {phoneError && <S.ErrorMsg>{phoneError}</S.ErrorMsg>}
                     <div
@@ -262,7 +244,7 @@ function MyPageComponent() {
                             disabled={!changeInfo}
                             onChange={handleInputChange('email')}
                             onKeyDown={handleKeyDown}
-                        ></S.CustomInput>
+                        />
                     </div>
                     {emailError && <S.ErrorMsg>{emailError}</S.ErrorMsg>}
                 </div>
@@ -294,8 +276,6 @@ function MyPageComponent() {
             )}
         </S.Container>
     );
-
-    return MyPageView;
 }
 
 export default MyPageComponent;

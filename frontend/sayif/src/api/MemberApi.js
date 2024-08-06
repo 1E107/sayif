@@ -29,13 +29,13 @@ export const getMemberInfo = async token => {
     }
 };
 
-export const createMember = async data => {
+export const createMember = async formData => {
     try {
-        const response = await axios.post(
-            `${API_BASE_URL}/member/register`,
-            data,
-        );
-        return response;
+        return await axios.post(`${API_BASE_URL}/member/register`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
     } catch (error) {
         throw error;
     }
@@ -55,34 +55,28 @@ export const updateMember = async (token, data) => {
         throw error;
     }
 };
-
-export const uploadProfileImage = async (token, userInfo, file) => {
+export const uploadProfileImage = async (token, newInfo, file) => {
     try {
-        // FormData 객체를 생성합니다.
         const formData = new FormData();
 
-        // 사용자 정보를 FormData에 추가합니다.
-        Object.keys(userInfo).forEach(key => {
-            formData.append(key, userInfo[key]);
-        });
-
-        // 파일을 FormData에 추가합니다.
-        formData.append('file', file);
-
-        // 요청 헤더에 인증 토큰을 추가합니다.
-        const response = await axios.put(
-            `${API_BASE_URL}/member/member-info`,
-            formData,
-            {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    Authorization: `Bearer ${token}`, // 인증 토큰을 헤더에 추가
-                },
-            },
+        // JSON 데이터를 Blob으로 변환하여 추가합니다.
+        formData.append(
+            'info',
+            new Blob([JSON.stringify(newInfo)], { type: 'application/json' }),
         );
 
-        // 성공적인 응답을 반환합니다.
-        return response;
+        // 파일을 추가합니다.
+        if (file) {
+            formData.append('file', file);
+        }
+
+        // 요청 헤더에 인증 토큰을 추가합니다.
+        return await axios.put(`${API_BASE_URL}/member/member-info`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                Authorization: `Bearer ${token}`, // 인증 토큰을 헤더에 추가
+            },
+        });
     } catch (error) {
         // 에러를 발생시키거나 에러 처리를 수행합니다.
         console.error('이미지 및 정보 업로드 실패:', error);
