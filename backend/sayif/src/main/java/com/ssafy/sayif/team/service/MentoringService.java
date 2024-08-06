@@ -3,25 +3,35 @@ package com.ssafy.sayif.team.service;
 import com.ssafy.sayif.member.entity.Member;
 import com.ssafy.sayif.member.entity.Mentor;
 import com.ssafy.sayif.member.entity.Role;
+import com.ssafy.sayif.member.entity.Tag;
 import com.ssafy.sayif.member.repository.MemberRepository;
 import com.ssafy.sayif.member.repository.MentorRepository;
-import com.ssafy.sayif.team.dto.*;
+import com.ssafy.sayif.member.repository.TagRepository;
+import com.ssafy.sayif.team.dto.MentorNicknameResponse;
+import com.ssafy.sayif.team.dto.MentorProfileResponse;
+import com.ssafy.sayif.team.dto.MentoringApplicationRequest;
+import com.ssafy.sayif.team.dto.MentoringInfoResponseDto;
+import com.ssafy.sayif.team.dto.MentoringRecruitRequest;
+import com.ssafy.sayif.team.dto.MentoringSearchRequest;
+import com.ssafy.sayif.team.dto.MentoringSearchResponse;
+import com.ssafy.sayif.team.dto.TeamSessionResponse;
+import com.ssafy.sayif.team.dto.TeamStatusResponse;
 import com.ssafy.sayif.team.entity.Team;
 import com.ssafy.sayif.team.entity.TeamStatus;
 import com.ssafy.sayif.team.repository.TeamRepository;
 import jakarta.transaction.Transactional;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -30,8 +40,8 @@ public class MentoringService {
 
     private final TeamRepository teamRepository;
     private final MemberRepository memberRepository;
-
-    private final  MentorRepository mentorRepository;
+    private final MentorRepository mentorRepository;
+    private final TagRepository tagRepository;
 
     @Transactional
     public Team recruit(MentoringRecruitRequest mentoringRecruitRequest, String username) {
@@ -115,7 +125,7 @@ public class MentoringService {
 
         LocalTime mentoringTime = team.getMentoringTime();
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-        String pmam = "";
+        String pmam;
         if (mentoringTime.getHour() >= 13 && mentoringTime.getHour() <= 23) {
             pmam = "오후";
             mentoringTime = mentoringTime.minusHours(12);
@@ -157,47 +167,85 @@ public class MentoringService {
         Pageable pageable = PageRequest.of(pageNo, sizeNo);
         Page<Mentor> mentorPage = mentorRepository.findAll(pageable);
         log.info(mentorPage.toString());
-        List<MentorProfileResponse> mentorProfileResponses = mentorPage.stream().map(mentor -> {
-            Member member = memberRepository.findById(mentor.getId()).orElseThrow(() -> new RuntimeException("Member not found"));
-            return new MentorProfileResponse(
-                    member.getId(),
-                    member.getNickname(),
-                    member.getName(),
-                    member.getEmail(),
-                    mentor.getMajor(),
-                    mentor.getTrack().toString(),
-                    member.getProfileImg(),
-                    mentor.getIntro(),
-                    mentor.getRegCode(),
-                    mentor.getSeq()
-            );
+
+        return mentorPage.stream().map(mentor -> {
+            Member member = memberRepository.findById(mentor.getId())
+                .orElseThrow(() -> new RuntimeException("Member not found"));
+            return MentorProfileResponse.builder()
+                .id(member.getId())
+                .nickname(member.getNickname())
+                .name(member.getName())
+                .email(member.getEmail())
+                .major(mentor.getMajor())
+                .track(mentor.getTrack().toString())
+                .profileImg(member.getProfileImg())
+                .intro(mentor.getIntro())
+                .regCode(mentor.getRegCode())
+                .seq(mentor.getSeq())
+                .tags(tagRepository.findAllByMentorId(member.getId()).stream().map(Tag::getContent)
+                    .collect(Collectors.toList()))
+                .build();
         }).collect(Collectors.toList());
-        return mentorProfileResponses;
     }
+
 
     public TeamStatusResponse getTeamStatus(Integer teamId) {
         Team team = teamRepository.findById(teamId)
-                .orElseThrow(() -> new IllegalArgumentException("Team with ID " + teamId + " not found."));
+            .orElseThrow(
+                () -> new IllegalArgumentException("Team with ID " + teamId + " not found."));
 
         return TeamStatusResponse.builder()
-                .status(team.getStatus())
-                .build();
+            .status(team.getStatus())
+            .build();
     }
 
     public List<MentorNicknameResponse> getMentorNicknames() {
         List<Member> memberList = memberRepository.findByRole(Role.Mentor);
         return memberList.stream()
-                .map(member -> new MentorNicknameResponse(member.getNickname(), member.getUsername()))
-                .collect(Collectors.toList());
+            .map(member -> new MentorNicknameResponse(member.getNickname(), member.getUsername()))
+            .collect(Collectors.toList());
     }
 
     public TeamSessionResponse getTeamSession(Integer teamId) {
         Team team = teamRepository.findById(teamId)
-                .orElseThrow(() -> new IllegalArgumentException("Team with ID " + teamId + " not found."));
+            .orElseThrow(
+                () -> new IllegalArgumentException("Team with ID " + teamId + " not found."));
 
         return TeamSessionResponse.builder()
-                .sessionId(team.getSessionId())
-                .build();
+            .sessionId(team.getSessionId())
+            .build();
+    }
+
+    @Transactional
+    public MentoringInfoResponseDto getMentoringInfo(Integer teamId) {
+        MentoringInfoResponseDto mentoringInfoResponseDto = new MentoringInfoResponseDto();
+        // 멤버 정보 가져오기
+        List<Member> teamMember = memberRepository.findByTeamId(teamId);
+        for (Member member : teamMember) {
+            if (member.getRole() == Role.Mentor) {
+                if (mentoringInfoResponseDto.getMentor1Nickname() == null) {
+                    mentoringInfoResponseDto.setMentor1Nickname(member.getNickname());
+                } else {
+                    mentoringInfoResponseDto.setMentor2Nickname(member.getNickname());
+                }
+
+            } else {
+                mentoringInfoResponseDto.increaseMentee();
+            }
+        }
+
+        // 멘토링 정보 가져오기
+        Optional<Team> findTeam = teamRepository.findById(teamId);
+        if (findTeam.isPresent()) {
+            Team team = findTeam.get();
+            LocalDate startDate = team.getStartDate();
+            LocalDate deadlineDate = startDate.minusDays(3);
+
+            mentoringInfoResponseDto.setId(team.getId());
+            mentoringInfoResponseDto.setStartDate(startDate.toString());
+            mentoringInfoResponseDto.setDeadlineDate(deadlineDate.toString());
+        }
+        return mentoringInfoResponseDto;
     }
 
 }

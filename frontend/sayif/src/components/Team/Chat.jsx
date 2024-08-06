@@ -11,17 +11,15 @@ import { useSelector } from 'react-redux';
 const Chat = () => {
   const { token, member } = useSelector((state) => state.member);
   const teamId = member.teamId;
-  const currentUserName = member.username; // 확인
+  const currentUserNickname = member.nickname;
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
 
-  // chatContentEndRef를 추가하여 대화창 끝부분을 참조
-  const chatContentEndRef = useRef(null); // 변경된 부분
+  const chatContentEndRef = useRef(null);
   
   useEffect(() => {
     let isSubscribed = true;
 
-    // 서버에서 채팅 기록 가져오기
     axios
       .get(`${API_BASE_URL}/team/${teamId}/chat`, {
         headers: {
@@ -37,7 +35,6 @@ const Chat = () => {
         console.error('Failed to fetch messages', error);
       });
 
-    // WebSocket 연결 및 구독
     webSocketService.connect(token);
 
     const subscription = webSocketService.subscribe(`/topic/${teamId}`, (message) => {
@@ -62,14 +59,17 @@ const Chat = () => {
       }
       webSocketService.disconnect();
     };
-  }, [teamId, token, currentUserName]);
+  }, [teamId, token, currentUserNickname]);
 
   useEffect(() => {
-    if (chatContentEndRef.current) { // 변경된 부분
-      chatContentEndRef.current.scrollIntoView({ behavior: 'smooth' }); // 변경된 부분
+    if (chatContentEndRef.current) {
+      chatContentEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [messages]); // messages가 변경될 때마다 실행
+  }, [messages]);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const handleSendBtn = () => {
     const message = {
@@ -81,6 +81,7 @@ const Chat = () => {
   };
 
   const handleKeyDown = (e) => {
+    console.log(e.key);
     if (e.key === 'Enter') { 
       handleSendBtn();
     }
@@ -88,30 +89,30 @@ const Chat = () => {
 
   return (
     <S.Container>
+
       <S.ChatContentWrapper>
         {messages.map((msg, index) =>
-          msg.username === currentUserName ? (
+          msg.nickname === currentUserNickname ? (
             <S.ChatMy key={index}>
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <S.MyInfoText style={{ alignSelf: 'flex-end' }}>
-                  {msg.username} - {new Date(msg.sendAt).toLocaleTimeString()}
-                </S.MyInfoText>
-                <S.ChatContent
-                  style={{ backgroundColor: '#116530', color: 'white' }}
-                >
+              <S.ProfileImg src={msg.profileImg ? msg.profileImg : "/basic-profile.PNG"} />
+              <div>
+                <S.ChatContent style={{ backgroundColor: '#116530', color: 'white' }}>
                   {msg.msgContent}
                 </S.ChatContent>
+                <S.TimeText align="right">
+                  {new Date(msg.sendAt).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}
+                </S.TimeText>
               </div>
-              <S.ProfileImg src="/basic-profile.PNG" />
             </S.ChatMy>
           ) : (
             <S.ChatOther key={index}>
-              <S.ProfileImg src="/basic-profile.PNG" />
+              <S.ProfileImg src={msg.profileImg ? msg.profileImg : "/basic-profile.PNG"} />
               <div>
-                <S.OtherInfoText>
-                  {msg.username} - {new Date(msg.sendAt).toLocaleTimeString()}
-                </S.OtherInfoText>
+                <S.NameText>{msg.nickname}</S.NameText>
                 <S.ChatContent>{msg.msgContent}</S.ChatContent>
+                <S.TimeText>
+                  {new Date(msg.sendAt).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}
+                </S.TimeText>
               </div>
             </S.ChatOther>
           )
@@ -126,10 +127,10 @@ const Chat = () => {
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             onKeyDown={handleKeyDown} // Add onKeyDown event handler
-            style={{ border: '1px solid #116530CC', width: '1000px' }}
+            style={{ border: '1px solid #116530CC', width: '1010px'}}
           />
           <SendIcon
-            style={{ color: '#116530CC', marginLeft: '10px', fontSize: '30px' }}
+            style={{ color: '#116530CC', marginLeft: '20px', fontSize: '30px' }}
             onClick={handleSendBtn}
           />
         </S.SendChatWrapper>

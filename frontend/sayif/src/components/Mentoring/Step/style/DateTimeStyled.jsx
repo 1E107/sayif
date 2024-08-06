@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import '../../../../styles/fonts.css'
+import styled from 'styled-components';
+import '../../../../styles/fonts.css';
 
 const Container = styled.div`
     margin-top: 50px;
@@ -15,11 +15,11 @@ const Icon = styled.div`
     background-image: url('/img/Apply/apply-step1.png');
     background-size: cover;
     width: 900px;
-    height: 200px;
-`
+    height: 150px;
+`;
 
 const DateTimeContainer = styled.div`
-    display : inline-flex;
+    display: inline-flex;
 `;
 
 const TimeBtn = styled.div`
@@ -37,12 +37,12 @@ const TimeSelectText = styled.div`
     padding-bottom: 10px;
     padding-top: 10px;
     font-weight: bold;
-    display : inline-block;
-`
+    display: inline-block;
+`;
 
 const TimeBlock = styled.div`
     width: 400px;
-    background-color: #F5F5F5;
+    background-color: #f5f5f5;
     border-radius: 0px 0px 10px 10px;
     height: 247px;
     display: flex;
@@ -51,15 +51,14 @@ const TimeBlock = styled.div`
 `;
 
 const ContainerText = styled.div`
-    background-color: #F5F5F5;
+    background-color: #f5f5f5;
     border-radius: 10px 10px 0px 0px;
     padding-top: 20px;
     font-family: ChosunGu;
     font-size: 15px;
     font-weight: bold;
-    color : #868E96;
+    color: #868e96;
 `;
-
 
 const S = {
     Container,
@@ -69,7 +68,7 @@ const S = {
     TimeBlock,
     TimeBtn,
     TimeSelectText,
-    Icon
+    Icon,
 };
 
 export default S;
