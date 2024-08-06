@@ -9,10 +9,11 @@ const TagsContainer = styled.div`
 `;
 
 const Tag = styled.span`
-    background-color: #a0a7a5;
-    border-radius: 5px;
+    background-color: #161616;
+    border-radius: 20px;
     padding: 5px 10px;
     font-size: 0.8em;
+    color: #e8e8cc;
 `;
 
 const TagList = ({ tags }) => {
