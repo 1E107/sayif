@@ -52,6 +52,7 @@ function BoardDetail() {
                     window.location.reload();
                 }
             }catch(error) {
+                alert("댓글 등록이 실패했어요! 다시 한 번 시도해보세요!");
                 console.log(error);
             }
         }
@@ -76,7 +77,7 @@ function BoardDetail() {
                     <S.CommentList>
                         {comment.map((data, index) => (
                             <S.CommentItem>
-                                <span style={{fontWeight:"bold"}}>{data.username}</span> <S.CommentDate>2024.07.30</S.CommentDate>
+                                <span style={{fontWeight:"bold"}}>{data.username}</span> <S.CommentDate>{data.createdAt}</S.CommentDate>
                                 <S.CommentContent> {data.content} </S.CommentContent>
                             </S.CommentItem>
                         ))}

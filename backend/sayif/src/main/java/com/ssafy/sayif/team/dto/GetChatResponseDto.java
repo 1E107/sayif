@@ -14,7 +14,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Getter
 public class GetChatResponseDto {
 
-    private String username;
+    private String nickname;
 
     private String msgContent;
 

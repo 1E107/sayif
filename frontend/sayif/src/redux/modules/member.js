@@ -10,7 +10,7 @@ const SET_EXPIRATIONDATE = 'SET_EXPIRATIONDATE';
 
 export const setToken = data => ({ type: SET_TOKEN, data });
 export const setMember = data => ({ type: SET_MEMBER, data });
-export const setExpirationdate = data => ({type: SET_EXPIRATIONDATE, data});
+export const setExpirationdate = data => ({ type: SET_EXPIRATIONDATE, data });
 
 export default function member(state = initailState, action) {
     switch (action.type) {

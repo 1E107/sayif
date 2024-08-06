@@ -42,7 +42,7 @@ class WebSocketService {
       console.error('Additional details: ' + frame.body);
     };
 
-    this.client.activate();
+    this.client.activate(); 
   }
 
   disconnect() {

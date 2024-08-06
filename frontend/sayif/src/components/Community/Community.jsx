@@ -20,11 +20,10 @@ import { useSelector } from 'react-redux';
 
 const columns = [
     { id: 'title', label: '제목', minWidth: 250, align: 'center' },
-    { id: 'category', label: '카테고리', minWidth: 100, align: 'center' },
+    { id: 'type', label: '카테고리', minWidth: 100, align: 'center' },
     { id: 'writer', label: '작성자', minWidth: 100, align: 'center' },
     { id: 'createdAt', label: '작성일', minWidth: 170, align: 'center' },
-    { id: 'comment', label: '댓글', minWidth: 50, align: 'center' },
-    { id: 'hit', label: '조회수', minWidth: 50, align: 'center' },
+    { id: 'hitCount', label: '조회수', minWidth: 50, align: 'center' },
 ];
 
 function Community() {
@@ -50,7 +49,7 @@ function Community() {
     };
 
     const moveDetailPage = id => {
-        navigate('/');
+        navigate(`/community/datail/${id}`);
     };
 
     useEffect(() => {
@@ -58,12 +57,15 @@ function Community() {
             try {
                 const response = await GetCommunityList(token, value, page, 10);
                 console.log(response);
+                if(response.status === 200) {
+                    SetRows(response.data);
+                }
             } catch (error) {
                 console.log(error);
             }
         };
-        //callCommunityList();
-    }, []);
+        callCommunityList();
+    }, [value]);
 
     const CommunityView = (
         <S.Container>
@@ -79,6 +81,9 @@ function Community() {
                                 fontFamily: 'ChosunGu',
                                 fontWeight: 'bold',
                                 fontSize: '18px',
+                                '&.Mui-selected': {
+                                    color: '#116530',
+                                },
                             },
                             '& .MuiTabs-indicator': {
                                 backgroundColor: '#116530',
@@ -86,9 +91,9 @@ function Community() {
                             },
                         }}
                     >
-                        <Tab label="전체" value={'free'} />
-                        <Tab label="일상" value={'일상'} />
-                        <Tab label="고민" value={'고민'} />
+                        <Tab label="전체" value={'Total'} />
+                        <Tab label="일상" value={'Free'} />
+                        <Tab label="고민" value={'Worry'} />
                     </Tabs>
                 </Box>
                 <div>
@@ -159,7 +164,11 @@ function Community() {
                                             }
                                         >
                                             {columns.map(column => {
-                                                const value = row[column.id];
+                                                let value = row[column.id];
+                                                if(column.id === 'type') {
+                                                    if(value === 'Free') value = '일상';
+                                                    else if(value === 'Worry') value = '고민'
+                                                }
                                                 return (
                                                     <TableCell
                                                         key={column.id}

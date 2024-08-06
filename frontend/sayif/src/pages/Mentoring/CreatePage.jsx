@@ -2,7 +2,7 @@ import styled from "styled-components"
 import Create from "../../components/Mentoring/Create";
 
 const Main = styled.div`
-    margin-top: 170px;
+    margin-top: 110px;
     padding-left: 50px;
 `;
 
