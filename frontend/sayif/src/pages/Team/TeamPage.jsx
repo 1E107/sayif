@@ -8,6 +8,7 @@ import CreateStory from '../../components/Team/Story/CreateStory';
 import Meeting from '../../components/Team/Meeting';
 import MaterialList from '../../components/Team/MentoringDocument/List';
 import ChallengeMain from '../../components/Team/challenge/ChallengeMain';
+import ChallengePhoto from '../../components/Team/challenge/ChallengePhoto';
 import VideoRoomComponent from '../../components/Team/MeetingCustom/VideoRoomComponent';
 
 import { useLocation } from "react-router-dom";
@@ -38,6 +39,9 @@ const MainPage = () => {
             {location.pathname === '/team/meeting' && <Meeting />}
             {location.pathname === '/team/material' && <MaterialList />}
             {location.pathname === '/team/challenge' && <ChallengeMain />}
+            {location.pathname === '/team/challenge/photo' && (
+                <ChallengePhoto />
+            )}
             {location.pathname === '/team/meeting' && <VideoRoomComponent userToken={token} member={member} />}
         </Main>
     );
