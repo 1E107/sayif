@@ -34,7 +34,7 @@ const Info = styled.div`
 `;
 
 const Name = styled.h3`
-    margin: 0 0 5px 0;
+    margin: 0 0 10px 0;
     font-size: 1.2em;
 `;
 
@@ -45,11 +45,23 @@ const Cohort = styled.p`
 const Description = styled.p`
     border-radius: 10px;
     padding: 15px;
-    margin: 15px 0;
+    margin: 0;
     font-size: 1.3em;
     font-weight: bold;
     color: #0b4619;
     line-height: 1.5; /* 줄간 간격 설정 */
+    position: absolute; /* 고정 위치 */
+    top: 100px; /* 상단 여백 */
+    width: calc(100% - 40px); /* 카드의 좌우 여백을 고려하여 전체 너비 조정 */
+    height: 100px; /* 고정 높이 설정 */
+    overflow: auto; /* 내용이 많을 경우 스크롤 가능 */
+`;
+
+const TagListContainer = styled.div`
+    margin-top: 100px; /* Description과의 간격 설정 */
+    display: flex;
+    justify-content: center; /* 중앙 정렬 */
+    width: 100%;
 `;
 
 const MessageLink = styled.a`
@@ -84,6 +96,8 @@ const ContentContainer = styled.div`
     align-items: center;
     text-align: center;
     width: 100%;
+    padding: 20px; /* 상하 좌우 여백 추가 */
+    box-sizing: border-box; /* padding과 border를 포함한 너비와 높이 계산 */
 `;
 
 const MentorCard = ({
@@ -109,7 +123,9 @@ const MentorCard = ({
             </Header>
             <ContentContainer>
                 <Description>{intro}</Description>
-                <TagList tags={tags} />
+                <TagListContainer>
+                    <TagList tags={tags} />
+                </TagListContainer>
             </ContentContainer>
             <MessageLink href="#">📩 쪽지 보내기</MessageLink>
         </Card>
