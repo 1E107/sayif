@@ -47,15 +47,16 @@ const Description = styled.p`
     padding: 15px;
     margin: 15px 0;
     font-size: 1.3em;
-    font-weight: bold; /* 굵은 폰트 */
-    color: #0b4619; /* 색상 지정 */
+    font-weight: bold;
+    color: #0b4619;
+    line-height: 1.5; /* 줄간 간격 설정 */
 `;
 
 const MessageLink = styled.a`
     position: absolute;
     bottom: 20px;
     right: 20px;
-    color: #007bff;
+    color: #161616;
     text-decoration: none;
     font-size: 0.9em;
 `;
@@ -77,7 +78,6 @@ const Card = styled.div`
 `;
 
 const ContentContainer = styled.div`
-    padding: 20px; /* Card 내부 내용물에 대한 여백 설정 */
     flex: 1; /* 공간을 채우도록 설정 */
     display: flex;
     flex-direction: column;
@@ -111,7 +111,7 @@ const MentorCard = ({
                 <Description>{intro}</Description>
                 <TagList tags={tags} />
             </ContentContainer>
-            <MessageLink href="#">쪽지 보내기</MessageLink>
+            <MessageLink href="#">📩 쪽지 보내기</MessageLink>
         </Card>
     );
 };
