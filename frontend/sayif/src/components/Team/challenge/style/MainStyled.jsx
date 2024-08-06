@@ -3,7 +3,6 @@ import '../../../../styles/fonts.css';
 import Button from '@mui/material/Button';
 
 const Container = styled.div`
-    margin-top: 50px;
     margin-bottom: 30px;
     text-align: center;
     display: flex;
@@ -13,7 +12,7 @@ const Container = styled.div`
 `;
 
 const Title = styled.div`
-    font-size: 65px;
+    font-size: 60px;
     font-family: SDSamliphopangche_Outline;
     color: #116530;
     padding: 5px 25px 5px 25px;
@@ -23,7 +22,7 @@ const Title = styled.div`
 const MissionBox = styled.div`
     background-color: white;
     width: 620px;
-    height: 500px;
+    height: 450px;
     border-radius: 30px;
     border: 5px solid #116530;
     margin-top: 30px;

@@ -39,7 +39,7 @@ function Story() {
                                 Math.floor(Math.random() * 5) + 1;
                             const randomRotation =
                                 Math.floor(Math.random() * 91) - 45;
-                            const randomX = Math.floor(Math.random() * 700);
+                            const randomX = Math.floor(Math.random() * 900);
                             const randomY = Math.floor(Math.random() * 500);
                             story.randomValue = randomValue;
                             story.randomRotation = randomRotation;
