@@ -86,6 +86,8 @@ function TeamHeader() {
             case '사연함':
                 navigate('/team/story-board');
                 break;
+            case '챌린지':
+                navigate('/team/challenge');
             default:
                 break;
         }
