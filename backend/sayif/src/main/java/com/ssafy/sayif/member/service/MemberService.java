@@ -173,4 +173,8 @@ public class MemberService {
         memberRepository.save(member);
         return true; // 비밀번호 변경됨
     }
+
+    public Member getMemberByUsername(String username) {
+        return memberRepository.findByUsername(username);
+    }
 }
