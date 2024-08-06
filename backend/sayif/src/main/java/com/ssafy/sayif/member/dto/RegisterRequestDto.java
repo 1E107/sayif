@@ -15,5 +15,7 @@ public class RegisterRequestDto {
     private String phone;
     private String email;
 
+    private String filename;
+
     private String authFile;
 }

@@ -6,10 +6,10 @@ import {
     setMember,
     setToken,
 } from '../../redux/modules/member';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import MentoringModal from './MentoringModal';
 import { getTeamStatue } from '../../api/MentoringApi';
-import { updateMember, getMemberInfo } from '../../api/MemberApi';
+import { getMemberInfo, uploadProfileImage } from '../../api/MemberApi';
 
 function MyPageComponent() {
     const navigate = useNavigate();
@@ -27,9 +27,9 @@ function MyPageComponent() {
         email: member.email,
         gender: member.gender,
     });
+    const [file, setFile] = useState(null);
 
     const handleInputChange = field => e => {
-        console.log(field);
         if (field === 'phone') {
             const phonePattern = /^\d{3}-\d{4}-\d{4}$/;
             if (!phonePattern.test(e.target.value)) {
@@ -77,7 +77,6 @@ function MyPageComponent() {
                         );
                     }
                 }
-                console.log(response);
             } catch (error) {
                 console.log(error);
             }
@@ -94,7 +93,6 @@ function MyPageComponent() {
         try {
             const response = await getMemberInfo(token);
             if (response.status === 200) {
-                console.log(response.data);
                 dispatch(setMember(response.data));
             }
         } catch (error) {
@@ -104,8 +102,19 @@ function MyPageComponent() {
 
     const handleUpdateCallBtn = () => {
         const callUpdateInfo = async () => {
+            const formData = new FormData();
+            // JSON 객체를 문자열로 변환하여 Blob으로 추가
+            const infoBlob = new Blob([JSON.stringify(newMember)], {
+                type: 'application/json',
+            });
+            formData.append('info', infoBlob);
+            // 파일 추가
+            if (file) {
+                formData.append('file', file);
+            }
+
             try {
-                const response = await updateMember(token, newMember);
+                const response = await uploadProfileImage(token, formData);
                 if (response.status === 200) {
                     callMemberInfo();
                     alert('회원 정보가 성공적으로 수정되었어요!');
@@ -137,11 +146,40 @@ function MyPageComponent() {
         });
     };
 
-    const MyPageView = (
+    const handleImageChange = e => {
+        const file = e.target.files[0];
+        if (file) {
+            setFile(file);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                dispatch(setMember({ ...member, imgUrl: reader.result }));
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleProfileImageClick = () => {
+        if (changeInfo) {
+            document.getElementById('fileInput').click();
+        }
+    };
+
+    return (
         <S.Container>
             <div style={{ display: 'flex' }}>
                 <div style={{ textAlign: 'center' }}>
-                    <S.ProfileImg src="/basic-profile.png" />
+                    <S.ProfileImg
+                        src={member.imgUrl}
+                        alt="Profile"
+                        onClick={handleProfileImageClick}
+                    />
+                    <input
+                        type="file"
+                        id="fileInput"
+                        style={{ display: 'none' }}
+                        onChange={handleImageChange}
+                        accept="image/*"
+                    />
                     <S.NickNameText>
                         {role === 'Mentor'
                             ? '단비'
@@ -166,7 +204,7 @@ function MyPageComponent() {
                             disabled={!changeInfo}
                             onChange={handleInputChange('name')}
                             onKeyDown={handleKeyDown}
-                        ></S.CustomInput>
+                        />
                     </div>
                     <div
                         style={{
@@ -187,7 +225,7 @@ function MyPageComponent() {
                             onChange={handleGenderChange}
                             onKeyDown={handleKeyDown}
                             disabled={!changeInfo}
-                        ></S.CustomInput>
+                        />
                     </div>
                     <div
                         style={{
@@ -202,7 +240,7 @@ function MyPageComponent() {
                             disabled={!changeInfo}
                             onChange={handleInputChange('phone')}
                             onKeyDown={handleKeyDown}
-                        ></S.CustomInput>
+                        />
                     </div>
                     {phoneError && <S.ErrorMsg>{phoneError}</S.ErrorMsg>}
                     <div
@@ -218,7 +256,7 @@ function MyPageComponent() {
                             disabled={!changeInfo}
                             onChange={handleInputChange('email')}
                             onKeyDown={handleKeyDown}
-                        ></S.CustomInput>
+                        />
                     </div>
                     {emailError && <S.ErrorMsg>{emailError}</S.ErrorMsg>}
                 </div>
@@ -250,7 +288,6 @@ function MyPageComponent() {
             )}
         </S.Container>
     );
-    return MyPageView;
 }
 
 export default MyPageComponent;
