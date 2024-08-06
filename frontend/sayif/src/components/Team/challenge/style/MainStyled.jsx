@@ -22,10 +22,10 @@ const Title = styled.div`
 
 const MissionBox = styled.div`
     background-color: white;
-    width: 600px;
+    width: 620px;
     height: 500px;
     border-radius: 30px;
-    border: 30px solid #116530;
+    border: 5px solid #116530;
     margin-top: 30px;
     display: flex;
     justify-content: center;
@@ -55,7 +55,7 @@ const CustomButton = styled(Button)({
     backgroundColor: '#E7F0DC !important',
     color: 'black !important',
     fontFamily: 'ChosunGu !important',
-    borderRadius: '30px  !important',
+    borderRadius: '30px  ',
 });
 
 const S = {
