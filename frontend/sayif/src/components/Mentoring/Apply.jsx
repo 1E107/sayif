@@ -57,9 +57,9 @@ function Apply() {
             </S.ExplainText>
             <S.Container>
                 {showApplyMain && (
-                    <>
+                    <S.MainWrapper>
                         <S.ApplyIconContainer>
-                            <S.ApplyIconStep/>
+                            <S.ApplyIconStep />
                         </S.ApplyIconContainer>
                         <Button
                             variant="contained"
@@ -70,12 +70,12 @@ function Apply() {
                                 backgroundColor: '#116530',
                                 width: '250px',
                                 height: '50px',
-                                marginBottom: '50px'
+                                marginBottom: '50px',
                             }}
                         >
                             멘토링 신청하러 가기
                         </Button>
-                    </>
+                    </S.MainWrapper>
                 )}
                 {showApplyDetail && (
                     <DateTime selectInfoSave={handleSelectInfo}></DateTime>

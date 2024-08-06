@@ -4,7 +4,8 @@ import lombok.Data;
 
 @Data
 public class LetterRequestDto {
+
     private String title;
     private String content;
-    private String receiver;
+    private int receiver;
 }

@@ -11,18 +11,20 @@ import ContactSupportIcon from '@mui/icons-material/ContactSupport';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import QuizIcon from '@mui/icons-material/Quiz';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
+import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import '../../../styles/fonts.css';
 import { ListItemIcon, Typography } from '@mui/material';
 
 const icon = {
-    '홈': <HomeIcon />,
+    홈: <HomeIcon />,
     '우리 팀 보기': <PersonIcon />,
     '멘토링 회의': <VideocamIcon />,
     '멘토링 자료': <AttachFileIcon />,
     'Q&A 게시판': <ContactSupportIcon />,
-    '메시지': <QuestionAnswerIcon />,
-    '퀴즈': <QuizIcon />,
-    '사연함': <NoteAltIcon />,
+    메시지: <QuestionAnswerIcon />,
+    퀴즈: <QuizIcon />,
+    사연함: <NoteAltIcon />,
+    챌린지: <LocalFireDepartmentIcon />,
 };
 
 function TeamSideMenu({ offSideMenu, selectSideMenu }) {
@@ -45,6 +47,7 @@ function TeamSideMenu({ offSideMenu, selectSideMenu }) {
                     '메시지',
                     '퀴즈',
                     '사연함',
+                    '챌린지',
                 ].map((text, index) => (
                     <ListItem key={text} disablePadding>
                         <ListItemButton

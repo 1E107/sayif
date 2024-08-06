@@ -3,89 +3,116 @@ import '../../../styles/fonts.css'
 
 const Container = styled.div`
     margin-top: 60px;
-    margin-bottom: 60px;
+    margin-bottom: 37px;
     background-color: white;
-    height: 800px;
+    height: 100%; 
     width: 1300px;
     border-radius: 30px;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    overflow: hidden;
 `
+
+const TeamNameBar = styled.div`
+    width: 100%;
+    padding: 15px 0;
+    background-color: #116530;
+    color: white;
+    font-family: ChosunGu;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+`
+
 const SendChatWrapper = styled.div`
     display: flex;
     align-items: center;
+    margin-top: auto;
+    margin-bottom: 35px; 
 `
 
 const ChatContentWrapper = styled.div`
-    height: 600px;
+    flex: 1;
     width: 1100px;
-    margin-bottom: 30px;
+    margin-bottom: 0px;
     display: flex;
-    align-items: center;
     flex-direction: column;
-    padding-right: 110px;
+    padding: 20px;
     overflow-y: auto;
+    position: relative;
 `
 
 const ProfileImg = styled.img`
-    width: 60px;
-    height: 60px;
+    width: 40px;
+    height: 40px;
     border-radius: 100px;
-    margin: 5px;
+    margin: 0px 5px 5px 5px;
 `
 
 const ChatContent = styled.div`
-    margin: 10px;
+    margin: 5px 0;
     border: 1px solid #116530;
-    width: 700px;
-    height: 50px;
+    min-height: 15px;
     border-radius: 10px;
     padding: 15px;
+    font-size: 14px;
     font-family: ChosunGu;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    position: relative;
 `
 
-const OtherInfoText = styled.div`
+const TimeText = styled.div`
     font-family: ChosunGu;
-    margin-left: 20px;
-`
-
-const MyInfoText = styled.div`
-    font-family: ChosunGu;
-    margin-right: 25px;
+    font-size: 11px;
+    color: #888;
+    align-self: flex-end;
+    margin-top: 5px;
+    margin-left: 4px;
+    margin-right: 4px;
 `
 
 const ChatOther = styled.div`
-    width: 700px;
-    height: 80px;
-    margin: 20px;
+    max-width: 90%;
+    margin: 15px 0;
     align-self: flex-start;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
 `
 
 const ChatMy = styled.div`
-    width: 700px;
-    height: 80px;
-    margin: 20px;
+    max-width: 90%;
+    margin: 15px 0;
     align-self: flex-end;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    flex-direction: row-reverse;
+`
+
+const NameText = styled.div`
+    font-family: ChosunGu;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    margin-left: 3px;
 `
 
 const S = {
     Container,
+    TeamNameBar,
     SendChatWrapper,
     ChatContentWrapper,
     ChatOther,
     ChatMy,
     ProfileImg,
     ChatContent,
-    OtherInfoText,
-    MyInfoText,
+    TimeText,
+    NameText,
 }
 
 export default S;

@@ -80,7 +80,7 @@ public class ChatWebSocketController {
         teamMsgRepository.save(message);
 
         GetChatResponseDto chatResponseDto = new GetChatResponseDto();
-        chatResponseDto.setUsername(message.getMember().getUsername());
+        chatResponseDto.setNickname(message.getMember().getNickname());
         chatResponseDto.setMsgContent(message.getMsgContent());
         chatResponseDto.setSendAt(message.getSendAt());
 

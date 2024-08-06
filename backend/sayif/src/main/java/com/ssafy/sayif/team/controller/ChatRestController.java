@@ -24,7 +24,7 @@ public class ChatRestController {
         List<GetChatResponseDto> chatResponseDtos = teamMsgs.stream()
                 .map(msg -> {
                     GetChatResponseDto chatResponseDto = new GetChatResponseDto();
-                    chatResponseDto.setUsername(msg.getMember().getUsername());
+                    chatResponseDto.setNickname(msg.getMember().getNickname());
                     chatResponseDto.setMsgContent(msg.getMsgContent());
                     chatResponseDto.setSendAt(msg.getSendAt());
                     return chatResponseDto;

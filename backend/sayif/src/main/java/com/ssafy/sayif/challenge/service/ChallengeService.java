@@ -36,8 +36,7 @@ public class ChallengeService {
     private final ChallengeDetailRepository challengeDetailRepository;
     private final FileService fileService;
 
-    private final String bucketName = "challenge-images";
-    private static final String FASTAPI_URL = "http://127.0.0.1:8000/predict/";
+    private static final String FASTAPI_URL = "http://i11e107.p.ssafy.io:8000/predict/";
 
     public Mono<Boolean> getPredictionAndCompare(int challengeNum, MultipartFile file) {
         WebClient webClient = webClientBuilder.build();

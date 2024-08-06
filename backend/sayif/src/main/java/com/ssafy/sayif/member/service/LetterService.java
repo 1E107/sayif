@@ -3,6 +3,7 @@ package com.ssafy.sayif.member.service;
 import com.ssafy.sayif.common.entity.Letter;
 import com.ssafy.sayif.member.dto.LetterResponseDto;
 import com.ssafy.sayif.member.entity.Member;
+import com.ssafy.sayif.member.exception.MemberNotFoundException;
 import com.ssafy.sayif.member.repository.LetterRepository;
 import com.ssafy.sayif.member.repository.MemberRepository;
 import java.util.List;
@@ -20,9 +21,10 @@ public class LetterService {
     private final LetterRepository letterRepository;
     private final MemberRepository memberRepository;
 
-    public void sendLetter(String title, String content, String senderId, String receiverId) {
+    public void sendLetter(String title, String content, String senderId, int receiverId) {
         Member sender = memberRepository.findByUsername(senderId);
-        Member receiver = memberRepository.findByUsername(receiverId);
+        Member receiver = memberRepository.findById(receiverId)
+            .orElseThrow(() -> new MemberNotFoundException("x"));
 
         Letter letter = Letter.builder()
             .title(title)
