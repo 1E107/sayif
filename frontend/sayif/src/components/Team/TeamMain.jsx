@@ -52,7 +52,7 @@ function TeamMain() {
                         left: '45%',
                         transform: 'translate(-50%, -50%)',
                         fontFamily: 'Ownglyph_ryurue-Rg',
-                        fontSize: '24px',
+                        fontSize: '20px',
                         color: 'black',
                         textAlign: 'center',
                         width: '420px',

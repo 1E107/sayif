@@ -11,8 +11,8 @@ const Container = styled.div`
 `;
 
 const ImageBox = styled.div`
-    height: 400px;
-    width: 400px;
+    height: 300px;
+    width: 300px;
     background-color: white;
     border-radius: 30px;
 `;
@@ -21,7 +21,7 @@ const Wrapper = styled.div``;
 
 const TeamNameText = styled.div`
     color: #116530;
-    font-size: 25px;
+    font-size: 20px;
     font-family: ChosunGu;
     font-weight: bold;
     text-align: center;
@@ -29,7 +29,7 @@ const TeamNameText = styled.div`
 `;
 
 const TeamScoreText = styled.div`
-    font-size: 20px;
+    font-size: 16px;
     margin-top: 5px;
     color: #116530;
 `;
@@ -41,8 +41,8 @@ const ScoreContainer = styled.div`
 `;
 
 const BubbleImg = styled.img`
-    height: 140px;
-    width: 670px;
+    height: 130px;
+    width: 570px;
     margin-top: 50px;
 `;
 

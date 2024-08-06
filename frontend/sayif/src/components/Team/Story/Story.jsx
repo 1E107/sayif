@@ -3,6 +3,7 @@ import S from './style/StoryStyled';
 import { getStoryList } from '../../../api/TeamApi';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
 function Story() {
     const [selectPostIt, setSelectPostIt] = useState(false);
@@ -23,8 +24,8 @@ function Story() {
     };
 
     const goCreateStory = () => {
-        navigate("/team/create-story");
-    }
+        navigate('/team/create-story');
+    };
 
     useEffect(() => {
         const callStoryList = async () => {
@@ -38,8 +39,8 @@ function Story() {
                                 Math.floor(Math.random() * 5) + 1;
                             const randomRotation =
                                 Math.floor(Math.random() * 91) - 45;
-                            const randomX = Math.floor(Math.random() * 1000);
-                            const randomY = Math.floor(Math.random() * 600);
+                            const randomX = Math.floor(Math.random() * 700);
+                            const randomY = Math.floor(Math.random() * 500);
                             story.randomValue = randomValue;
                             story.randomRotation = randomRotation;
                             story.randomX = randomX;
@@ -58,6 +59,12 @@ function Story() {
 
     const StoryView = (
         <S.Main>
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <S.CustomButton variant="outlined" onClick={goCreateStory}>
+                    사연 보내기
+                    <NavigateNextIcon style={{ marginLeft: '5px' }} />
+                </S.CustomButton>
+            </div>
             <S.Container>
                 <S.PostItWrapper>
                     {writing.map((write, index) => {
@@ -82,9 +89,6 @@ function Story() {
                     })}
                 </S.PostItWrapper>
             </S.Container>
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <S.CustomButton variant="outlined" onClick={goCreateStory}>사연 보내기</S.CustomButton>
-            </div>
 
             {selectPostIt && (
                 <S.Modal onClick={closeDetail}>
