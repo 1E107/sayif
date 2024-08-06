@@ -8,12 +8,14 @@ import CreateStory from '../../components/Team/Story/CreateStory';
 import Meeting from '../../components/Team/Meeting';
 import MaterialList from '../../components/Team/MentoringDocument/List';
 import ChallengeMain from '../../components/Team/challenge/ChallengeMain';
+import VideoRoomComponent from '../../components/Team/MeetingCustom/VideoRoomComponent';
 
-import { useLocation } from 'react-router-dom';
-import styled from 'styled-components';
+import { useLocation } from "react-router-dom";
+import { useSelector } from 'react-redux';
+import styled from "styled-components";
 
 const Main = styled.div`
-    background-color: #f7f9f6;
+    background-color: #F7F9F6;
     min-height: 100vh;
     justify-content: center;
     display: flex;
@@ -23,7 +25,7 @@ const Main = styled.div`
 
 const MainPage = () => {
     const location = useLocation();
-
+    const { token, member } = useSelector(state => state.member);
     return (
         <Main>
             {location.pathname === '/team' && <TeamMain />}
@@ -36,6 +38,7 @@ const MainPage = () => {
             {location.pathname === '/team/meeting' && <Meeting />}
             {location.pathname === '/team/material' && <MaterialList />}
             {location.pathname === '/team/challenge' && <ChallengeMain />}
+            {location.pathname === '/team/meeting' && <VideoRoomComponent userToken={token} member={member} />}
         </Main>
     );
 };
