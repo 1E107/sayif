@@ -15,5 +15,4 @@ public class SayifApplication {
         SpringApplication.run(SayifApplication.class, args);
     }
 
-
 }

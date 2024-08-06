@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Builder
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChallengeDetail extends BaseTimeEntity {
@@ -28,4 +28,8 @@ public class ChallengeDetail extends BaseTimeEntity {
 
     @Column(name = "file")
     private String file;
+
+    public void updateFile(String file) {
+        this.file = file;
+    }
 }

@@ -118,12 +118,20 @@ public class ChallengeService {
             throw new IllegalArgumentException("존재하지 않는 회원입니다.");
         }
 
-        // ChallengeDetail 객체를 생성하고 저장합니다.
-        ChallengeDetail challengeDetail = ChallengeDetail.builder()
-                .challenge(challenge)
-                .member(member)
-                .file(filename)
-                .build();
-        challengeDetailRepository.save(challengeDetail);
+        Optional<ChallengeDetail> findChallenge = challengeDetailRepository.findByChallengeIdAndMemberId(challengeId, member.getId());
+        if (findChallenge.isPresent()) {
+            ChallengeDetail challengeDetail = findChallenge.get();
+            challengeDetail.updateFile(filename);
+        }
+        else {
+            // ChallengeDetail 객체를 생성하고 저장합니다.
+            ChallengeDetail challengeDetail = ChallengeDetail.builder()
+                    .challenge(challenge)
+                    .member(member)
+                    .file(filename)
+                    .build();
+            challengeDetailRepository.save(challengeDetail);
+        }
+
     }
 }
