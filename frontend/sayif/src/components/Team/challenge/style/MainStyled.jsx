@@ -3,7 +3,7 @@ import '../../../../styles/fonts.css';
 import Button from '@mui/material/Button';
 
 const Container = styled.div`
-    margin-bottom: 30px;
+    margin-bottom: 40px;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -15,8 +15,7 @@ const Title = styled.div`
     font-size: 60px;
     font-family: SDSamliphopangche_Outline;
     color: #116530;
-    padding: 5px 25px 5px 25px;
-    border-radius: 30px;
+    padding: 35px 25px 5px 25px;
 `;
 
 const MissionBox = styled.div`
@@ -54,7 +53,7 @@ const CustomButton = styled(Button)({
     backgroundColor: '#E7F0DC !important',
     color: 'black !important',
     fontFamily: 'ChosunGu !important',
-    borderRadius: '30px  ',
+    borderRadius: '30px  !important',
 });
 
 const S = {

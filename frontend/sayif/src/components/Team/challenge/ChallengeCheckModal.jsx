@@ -38,14 +38,14 @@ function ChallengeCheckModal({ onClose }) {
             aria-describedby="modal-modal-description"
         >
             <Box sx={style}>
-                <S.Title>오늘의 챌린지</S.Title>
+                <S.Title>지금 진행 중인 챌린지</S.Title>
                 <img
                     src="/img/challenge/cat.png"
                     style={{ width: '200px', margin: '30px' }}
                 />
                 <S.Content>고양이 사진을 찍어서 올려봅시다!</S.Content>
                 <S.SubmitButton variant="outlined" onClick={handleUpload}>
-                    사진 올리기{' '}
+                    사진 확인
                     <AddPhotoAlternateIcon style={{ marginLeft: '5px' }} />
                 </S.SubmitButton>
             </Box>
