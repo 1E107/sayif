@@ -47,6 +47,7 @@ const Input = styled.input`
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 1em;
+    box-sizing: border-box;
 `;
 
 const TextArea = styled.textarea`
@@ -58,6 +59,7 @@ const TextArea = styled.textarea`
     font-size: 1em;
     height: 100px;
     resize: vertical;
+    box-sizing: border-box;
 `;
 
 const SubmitButton = styled.button`
@@ -69,34 +71,46 @@ const SubmitButton = styled.button`
     font-size: 1em;
     cursor: pointer;
     margin-top: 10px;
+    &:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+    }
+`;
+
+const ErrorText = styled.p`
+    color: red;
+    font-size: 0.9em;
+    margin: 0;
+    padding: 0 20px;
+    text-align: left;
 `;
 
 const MessageModal = ({ isOpen, onClose, receiver }) => {
     const { token } = useSelector(state => state.member);
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = async () => {
-        if (!title) {
-            alert('제목을 입력하세요.');
+        if (!title || !content) {
+            setError('제목과 내용을 모두 입력하세요.');
             return;
         }
-        if (!content) {
-            alert('내용을 입력하세요.');
-            return;
-        }
-
-        console.log({
-            receiver, // 멘토 ID 추가
-            title,
-            content,
-        });
+        setError('');
+        setLoading(true);
 
         try {
+            console.log({
+                receiver,
+                title,
+                content,
+            });
+
             const response = await axios.post(
                 `${API_BASE_URL}/member/message`,
                 {
-                    receiver, // 멘토 ID 추가
+                    receiver,
                     title,
                     content,
                 },
@@ -107,37 +121,44 @@ const MessageModal = ({ isOpen, onClose, receiver }) => {
 
             if (response.status === 200) {
                 alert('쪽지가 전송되었습니다.');
-                setTitle(''); // 입력 필드 초기화
-                setContent(''); // 입력 필드 초기화
-                onClose(); // 모달 닫기
+                setTitle('');
+                setContent('');
+                onClose();
             } else {
                 alert('쪽지 전송에 실패했습니다. 다시 시도해 주세요.');
             }
         } catch (error) {
             console.error('전송 오류:', error);
             alert('서버와의 연결에 실패했습니다. 나중에 다시 시도해 주세요.');
+        } finally {
+            setLoading(false);
         }
     };
 
     if (!isOpen) return null;
 
     return (
-        <ModalOverlay>
-            <ModalContent>
+        <ModalOverlay onClick={onClose}>
+            <ModalContent onClick={e => e.stopPropagation()}>
                 <CloseButton onClick={onClose}>&times;</CloseButton>
                 <h2>📬 멘토에게 쪽지 보내기</h2>
+                {error && <ErrorText>{error}</ErrorText>}
                 <Input
                     type="text"
                     placeholder="제목을 입력하세요"
                     value={title}
                     onChange={e => setTitle(e.target.value)}
+                    aria-required="true"
                 />
                 <TextArea
                     placeholder="내용을 입력하세요"
                     value={content}
                     onChange={e => setContent(e.target.value)}
+                    aria-required="true"
                 />
-                <SubmitButton onClick={handleSubmit}>보내기</SubmitButton>
+                <SubmitButton onClick={handleSubmit} disabled={loading}>
+                    {loading ? '전송 중...' : '보내기'}
+                </SubmitButton>
             </ModalContent>
         </ModalOverlay>
     );
@@ -147,7 +168,7 @@ MessageModal.propTypes = {
     isOpen: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     receiver: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-        .isRequired, // receiver prop 타입 수정
+        .isRequired,
 };
 
 export default MessageModal;
