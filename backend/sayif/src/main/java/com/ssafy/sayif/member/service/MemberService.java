@@ -42,7 +42,7 @@ public class MemberService {
 
     private final String bucketName = "member-profile";
 
-    public Boolean registerMember(RegisterRequestDto registerRequestDto) {
+    public Boolean registerMember(RegisterRequestDto registerRequestDto, MultipartFile file) {
         String username = registerRequestDto.getUsername();
         String pwd = registerRequestDto.getPassword();
 
@@ -50,6 +50,8 @@ public class MemberService {
         if (memberRepository.existsByUsername(username)) {
             return false;
         }
+
+        String filename = saveFileAndGetFilename(file);
 
         Mentee mentee = Mentee.builder()
             .username(username)
@@ -61,11 +63,38 @@ public class MemberService {
             .phone(registerRequestDto.getPhone())
             .role(Role.Mentee)
             .authFile(registerRequestDto.getAuthFile())
+            .profileImg(filename == null ? "default" : filename)
             .status(Status.Pending)
             .build();
         menteeRepository.save(mentee);
 
         return true;
+    }
+
+    private String saveFileAndGetFilename(MultipartFile file) {
+        if (file != null && !file.isEmpty()) {
+            try {
+                // MultipartFile 객체에서 파일의 바이트 배열을 가져옵니다.
+                byte[] fileContent = file.getBytes();
+
+                // MultipartFile 객체에서 원본 파일 이름을 가져옵니다.
+                String originalFilename = file.getOriginalFilename();
+
+                // Minio 서버에 파일을 저장하고, 저장된 파일의 이름을 반환받습니다.
+                String filename = fileService.saveFileToMinio(fileContent, bucketName,
+                    originalFilename);
+
+                // 파일이 제대로 저장되지 않았거나, 반환된 파일 이름이 null인 경우 예외를 발생시킵니다.
+                if (filename == null) {
+                    throw new FileStorageException("Failed to save file.");
+                }
+                return filename;
+            } catch (IOException e) {
+                throw new FileStorageException("Failed to save file.");
+            }
+        } else {
+            return null;
+        }
     }
 
     @Transactional
@@ -76,27 +105,7 @@ public class MemberService {
             throw new RuntimeException("Member not found");
         }
 
-        String filename = null;
-        if (file != null && !file.isEmpty()) {
-            try {
-                // MultipartFile 객체에서 파일의 바이트 배열을 가져옵니다.
-                byte[] fileContent = file.getBytes();
-
-                // MultipartFile 객체에서 원본 파일 이름을 가져옵니다.
-                String originalFilename = file.getOriginalFilename();
-
-                // Minio 서버에 파일을 저장하고, 저장된 파일의 이름을 반환받습니다.
-                filename = fileService.saveFileToMinio(fileContent, bucketName,
-                    originalFilename);
-
-                // 파일이 제대로 저장되지 않았거나, 반환된 파일 이름이 null인 경우 예외를 발생시킵니다.
-                if (filename == null) {
-                    throw new FileStorageException("Failed to save file.");
-                }
-            } catch (IOException e) {
-                throw new FileStorageException("Failed to save file.");
-            }
-        }
+        String filename = saveFileAndGetFilename(file);
 
         if (member.getRole() == Role.Mentee) {
             Optional<Mentee> mentee = menteeRepository.findById(member.getId());

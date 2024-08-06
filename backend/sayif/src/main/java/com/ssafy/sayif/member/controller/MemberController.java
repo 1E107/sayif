@@ -33,9 +33,11 @@ public class MemberController {
     private final JWTUtil jwtUtil;
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequestDto registerRequestDto) {
+    public ResponseEntity<?> register(@AuthenticationPrincipal UserDetails userDetails,
+        @RequestPart("info") RegisterRequestDto registerRequestDto,
+        @RequestPart(value = "file", required = false) MultipartFile file) {
         // 회원가입 여부 확인
-        boolean isRegistered = memberService.registerMember(registerRequestDto);
+        boolean isRegistered = memberService.registerMember(registerRequestDto, file);
         if (isRegistered) {
             return ResponseEntity.ok("회원가입 성공.");
         } else {
