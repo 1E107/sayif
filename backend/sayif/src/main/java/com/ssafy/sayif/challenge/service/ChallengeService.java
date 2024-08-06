@@ -132,6 +132,15 @@ public class ChallengeService {
                     .build();
             challengeDetailRepository.save(challengeDetail);
         }
+    }
 
+    public String getImageUrl(Long challengeId, int memberId) {
+        Optional<ChallengeDetail> findChallenge = challengeDetailRepository.findByChallengeIdAndMemberId(challengeId, memberId);
+        if (findChallenge.isPresent()) {
+            return findChallenge.get().getFile();
+        }
+        else {
+            return null;
+        }
     }
 }

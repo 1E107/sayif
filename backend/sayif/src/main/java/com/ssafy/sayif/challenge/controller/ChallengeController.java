@@ -125,4 +125,26 @@ public class ChallengeController {
         }
     }
 
+    @GetMapping("/{challengeId}")
+    public ResponseEntity<?> getImage(@PathVariable Long challengeId, @AuthenticationPrincipal UserDetails userDetails) {
+        String username = userDetails.getUsername();
+        Member member = memberRepository.findByUsername(username);
+        Optional<Challenge> findChallenge = challengeRepository.findById(challengeId);
+        if (findChallenge.isPresent()) {
+            Challenge challenge = findChallenge.get();
+            if (member.getTeam() != challenge.getTeam()) {
+                return ResponseEntity.status(400).body("해당 팀의 구성원이 아닙니다.");
+            }
+            else {
+                String result = challengeService.getImageUrl(challengeId, member.getId());
+                if (result != null) {
+                    return ResponseEntity.ok(result);
+                }
+                return ResponseEntity.status(400).body("등록한 이미지가 없습니다.");
+            }
+
+        } else {
+            return ResponseEntity.status(400).body("존재하지 않는 챌린지 ID입니다.");
+        }
+    }
 }
