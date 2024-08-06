@@ -1,31 +1,26 @@
-package com.ssafy.sayif.challenge.entity;
+package com.ssafy.sayif.common.entity;
 
-import com.ssafy.sayif.common.entity.BaseTimeEntity;
 import com.ssafy.sayif.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChallengeDetail extends BaseTimeEntity {
+public class QuizMember {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "challenge_id")
-    private Challenge challenge;
+    @JoinColumn(name = "quiz_id")
+    private Quiz quiz;
 
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @Column(name = "file")
-    private String file;
 }

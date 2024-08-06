@@ -85,6 +85,5 @@ public class ChatWebSocketController {
         chatResponseDto.setSendAt(message.getSendAt());
 
         messagingTemplate.convertAndSend("/topic/" + teamId, chatResponseDto);
-        System.out.println("Message sent to /topic/" + teamId + ": " + chatResponseDto);
     }
 }
