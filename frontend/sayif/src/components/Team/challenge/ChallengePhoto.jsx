@@ -8,8 +8,11 @@ import {
     Box,
     Typography,
 } from '@mui/material';
+import UploadModal from './UploadModal';
 
 function ChallengePhoto() {
+    const [showModal, SetShowModal] = useState(false);
+
     const cardsData = [
         {
             id: 1,
@@ -45,11 +48,21 @@ function ChallengePhoto() {
 
     const [hoverIndex, SetHoverIndex] = useState();
 
+    const handleUploadBtn = () => {
+        SetShowModal(true);
+    };
+
+    const handleCloseCheck = () => {
+        SetShowModal(false);
+    };
+
     const PhotoView = (
         <S.Container>
             <S.TopWrapper>
                 <S.Title>챌린지 사진첩</S.Title>
-                <S.UploadButton variant="contained">사진 올리기</S.UploadButton>
+                <S.UploadButton variant="contained" onClick={handleUploadBtn}>
+                    사진 올리기
+                </S.UploadButton>
             </S.TopWrapper>
             <Grid container spacing={2}>
                 {cardsData.map((card, index) => (
@@ -89,6 +102,7 @@ function ChallengePhoto() {
                     </Grid>
                 ))}
             </Grid>
+            {showModal && <UploadModal onClose={handleCloseCheck} />}
         </S.Container>
     );
     return PhotoView;
