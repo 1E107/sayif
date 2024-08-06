@@ -101,6 +101,16 @@ class VideoRoomComponent extends Component {
         window.addEventListener('beforeunload', this.onbeforeunload);
         window.addEventListener('resize', this.updateLayout);
         window.addEventListener('resize', this.checkSize);
+        if (this.state.session) {
+            // 세션 객체 생성 후 신호 이벤트 리스너 등록
+            this.state.session.on('signal:sessionEnded', event => {
+                console.log('Session ended signal received:', event);
+                alert('회의가 종료되었습니다.');
+                this.leaveSession();
+                window.location.reload();
+            });
+        }
+
         // this.joinSession();
     }
 
@@ -125,12 +135,6 @@ class VideoRoomComponent extends Component {
             async () => {
                 this.subscribeToStreamCreated();
                 await this.connectToSession();
-                // 세션 객체 생성 후 신호 이벤트 리스너 등록
-                this.state.session.on('signal:sessionEnded', event => {
-                    console.log('Session ended signal received:', event);
-                    alert('회의가 종료되었습니다.');
-                    this.leaveSession();
-                });
             },
         );
     }
@@ -155,7 +159,7 @@ class VideoRoomComponent extends Component {
         if (mySession) {
             mySession.disconnect();
         }
-
+        console.log(this.state.sessionStatus);
         try {
             const response = await getTeamSessionId(
                 this.props.member.teamId,
@@ -176,7 +180,6 @@ class VideoRoomComponent extends Component {
         this.setState({
             session: undefined,
             subscribers: [],
-            myUserName: this.props.member.nickname,
             localUser: undefined,
         });
         if (this.props.leaveSession) {
@@ -634,22 +637,22 @@ class VideoRoomComponent extends Component {
                                 />
                             </div>
                         ))}
-                        {localUser !== undefined &&
-                            localUser.getStreamManager() !== undefined && (
-                                <div
-                                    className="OT_root OT_publisher custom-class"
-                                    style={chatDisplay}
-                                >
-                                    <ChatComponent
-                                        user={localUser}
-                                        chatDisplay={this.state.chatDisplay}
-                                        close={this.toggleChat}
-                                        messageReceived={this.checkNotification}
-                                    />
-                                </div>
-                            )}
                     </div>
-                    
+                    {localUser !== undefined &&
+                        localUser.getStreamManager() !== undefined && (
+                            <div
+                                // className="OT_root OT_publisher custom-class"
+                                className="chatComponentWrapper"
+                                style={chatDisplay}
+                            >
+                                <ChatComponent
+                                    user={localUser}
+                                    chatDisplay={this.state.chatDisplay}
+                                    close={this.toggleChat}
+                                    messageReceived={this.checkNotification}
+                                />
+                            </div>
+                        )}
                 </div>
             );
         }
@@ -676,6 +679,11 @@ class VideoRoomComponent extends Component {
                                         mySessionId: e.target.value,
                                     })
                                 }
+                                onKeyPress={e => {
+                                    if (e.key === 'Enter') {
+                                        this.joinSession();
+                                    }
+                                }}
                                 placeholder="Enter Session ID"
                                 style={{
                                     border: '1px solid #116530CC',
@@ -707,6 +715,11 @@ class VideoRoomComponent extends Component {
                                 readOnly
                                 type="text"
                                 value={mySessionId}
+                                onKeyPress={e => {
+                                    if (e.key === 'Enter') {
+                                        this.joinSession();
+                                    }
+                                }}
                                 style={{
                                     border: '1px solid #116530CC',
                                     width: '250px',
