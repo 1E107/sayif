@@ -56,7 +56,7 @@ public class FileService {
 
             // 파일 이름을 원본 이름과 UUID로 생성
             String uuid = UUID.randomUUID().toString();
-            String filename = originalFilename + "-" + uuid;
+            String filename = uuid + "-" + originalFilename;
 
             // 파일의 Content-Type 감지
             String contentType = tika.detect(fileContent);
