@@ -1,22 +1,32 @@
 package com.ssafy.sayif.member.service;
 
+import com.ssafy.sayif.common.exception.FileStorageException;
+import com.ssafy.sayif.common.service.FileService;
 import com.ssafy.sayif.member.dto.MemberInfoResponseDto;
 import com.ssafy.sayif.member.dto.MemberUpdateRequestDto;
 import com.ssafy.sayif.member.dto.MentoringRecordResponseDto;
 import com.ssafy.sayif.member.dto.RegisterRequestDto;
-import com.ssafy.sayif.member.entity.*;
-import com.ssafy.sayif.member.repository.*;
+import com.ssafy.sayif.member.entity.History;
+import com.ssafy.sayif.member.entity.Member;
+import com.ssafy.sayif.member.entity.Mentee;
+import com.ssafy.sayif.member.entity.Mentor;
+import com.ssafy.sayif.member.entity.Role;
+import com.ssafy.sayif.member.entity.Status;
+import com.ssafy.sayif.member.repository.HistoryRepository;
+import com.ssafy.sayif.member.repository.MemberRepository;
+import com.ssafy.sayif.member.repository.MenteeRepository;
+import com.ssafy.sayif.member.repository.MentorRepository;
+import com.ssafy.sayif.member.repository.RefreshRepository;
 import com.ssafy.sayif.team.entity.Team;
-
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import com.ssafy.sayif.team.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -28,38 +38,64 @@ public class MemberService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final MenteeRepository menteeRepository;
     private final MentorRepository mentorRepository;
+    private final FileService fileService;
+
+    private final String bucketName = "member-profile";
 
     public Boolean registerMember(RegisterRequestDto registerRequestDto) {
         String username = registerRequestDto.getUsername();
         String pwd = registerRequestDto.getPassword();
-        
+
         // 중복 아이디 존재
         if (memberRepository.existsByUsername(username)) {
             return false;
         }
 
         Mentee mentee = Mentee.builder()
-                .username(username)
-                .password(bCryptPasswordEncoder.encode(pwd))
-                .name(registerRequestDto.getName())
-                .nickname(registerRequestDto.getNickname())
-                .gender(registerRequestDto.getGender())
-                .email(registerRequestDto.getEmail())
-                .phone(registerRequestDto.getPhone())
-                .role(Role.Mentee)
-                .authFile(registerRequestDto.getAuthFile())
-                .status(Status.Pending)
-                .build();
+            .username(username)
+            .password(bCryptPasswordEncoder.encode(pwd))
+            .name(registerRequestDto.getName())
+            .nickname(registerRequestDto.getNickname())
+            .gender(registerRequestDto.getGender())
+            .email(registerRequestDto.getEmail())
+            .phone(registerRequestDto.getPhone())
+            .role(Role.Mentee)
+            .authFile(registerRequestDto.getAuthFile())
+            .status(Status.Pending)
+            .build();
         menteeRepository.save(mentee);
 
         return true;
     }
 
     @Transactional
-    public void updateMember(String username, MemberUpdateRequestDto updateRequestDto) {
+    public void updateMember(String username, MemberUpdateRequestDto updateRequestDto,
+        MultipartFile file) {
         Member member = memberRepository.findByUsername(username);
         if (member == null) {
             throw new RuntimeException("Member not found");
+        }
+
+        String filename = null;
+        if (file != null && !file.isEmpty()) {
+            try {
+                // MultipartFile 객체에서 파일의 바이트 배열을 가져옵니다.
+                byte[] fileContent = file.getBytes();
+
+                // MultipartFile 객체에서 원본 파일 이름을 가져옵니다.
+                String originalFilename = file.getOriginalFilename();
+
+                // Minio 서버에 파일을 저장하고, 저장된 파일의 이름을 반환받습니다.
+                filename = fileService.saveFileToMinio(fileContent, bucketName,
+                    originalFilename);
+
+                // 파일이 제대로 저장되지 않았거나, 반환된 파일 이름이 null인 경우 예외를 발생시킵니다.
+                if (filename == null) {
+                    throw new FileStorageException("Failed to save file.");
+                }
+            } catch (IOException e) {
+                throw new FileStorageException("Failed to save file.");
+            }
         }
 
         if (member.getRole() == Role.Mentee) {
@@ -67,26 +103,39 @@ public class MemberService {
             if (mentee.isPresent()) {
                 Mentee loginedMentee = mentee.get();
                 Mentee updatedMentee = loginedMentee.toBuilder()
-                        .name(updateRequestDto.getName() != null ? updateRequestDto.getName() : member.getName())
-                        .nickname(updateRequestDto.getNickname() != null ? updateRequestDto.getNickname() : member.getNickname())
-                        .gender(updateRequestDto.getGender() != null ? updateRequestDto.getGender() : member.getGender())
-                        .email(updateRequestDto.getEmail() != null ? updateRequestDto.getEmail() : member.getEmail())
-                        .phone(updateRequestDto.getPhone() != null ? updateRequestDto.getPhone() : member.getPhone())
-                        .build();
+                    .name(updateRequestDto.getName() != null ? updateRequestDto.getName()
+                        : member.getName())
+                    .nickname(
+                        updateRequestDto.getNickname() != null ? updateRequestDto.getNickname()
+                            : member.getNickname())
+                    .gender(updateRequestDto.getGender() != null ? updateRequestDto.getGender()
+                        : member.getGender())
+                    .email(updateRequestDto.getEmail() != null ? updateRequestDto.getEmail()
+                        : member.getEmail())
+                    .profileImg(filename != null ? filename : member.getProfileImg())
+                    .phone(updateRequestDto.getPhone() != null ? updateRequestDto.getPhone()
+                        : member.getPhone())
+                    .build();
                 menteeRepository.save(updatedMentee);
             }
-        }
-        else if (member.getRole() == Role.Mentor) {
+        } else if (member.getRole() == Role.Mentor) {
             Optional<Mentor> mentor = mentorRepository.findById(member.getId());
             if (mentor.isPresent()) {
                 Mentor loginedMentor = mentor.get();
                 Mentor updatedMentor = loginedMentor.toBuilder()
-                        .name(updateRequestDto.getName() != null ? updateRequestDto.getName() : loginedMentor.getName())
-                        .nickname(updateRequestDto.getNickname() != null ? updateRequestDto.getNickname() : loginedMentor.getNickname())
-                        .gender(updateRequestDto.getGender() != null ? updateRequestDto.getGender() : loginedMentor.getGender())
-                        .email(updateRequestDto.getEmail() != null ? updateRequestDto.getEmail() : loginedMentor.getEmail())
-                        .phone(updateRequestDto.getPhone() != null ? updateRequestDto.getPhone() : loginedMentor.getPhone())
-                        .build();
+                    .name(updateRequestDto.getName() != null ? updateRequestDto.getName()
+                        : loginedMentor.getName())
+                    .nickname(
+                        updateRequestDto.getNickname() != null ? updateRequestDto.getNickname()
+                            : loginedMentor.getNickname())
+                    .gender(updateRequestDto.getGender() != null ? updateRequestDto.getGender()
+                        : loginedMentor.getGender())
+                    .email(updateRequestDto.getEmail() != null ? updateRequestDto.getEmail()
+                        : loginedMentor.getEmail())
+                    .profileImg(filename != null ? filename : member.getProfileImg())
+                    .phone(updateRequestDto.getPhone() != null ? updateRequestDto.getPhone()
+                        : loginedMentor.getPhone())
+                    .build();
                 mentorRepository.save(updatedMentor);
             }
         }

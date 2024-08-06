@@ -1,10 +1,12 @@
 package com.ssafy.sayif.member.controller;
 
-import com.ssafy.sayif.member.dto.*;
+import com.ssafy.sayif.member.dto.MemberUpdateRequestDto;
+import com.ssafy.sayif.member.dto.PasswordChangeRequestDto;
+import com.ssafy.sayif.member.dto.RegisterRequestDto;
+import com.ssafy.sayif.member.dto.UsernameRequestDto;
 import com.ssafy.sayif.member.jwt.JWTUtil;
 import com.ssafy.sayif.member.service.LetterService;
 import com.ssafy.sayif.member.service.MemberService;
-
 import com.ssafy.sayif.member.service.TagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +18,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/member")
@@ -47,9 +51,10 @@ public class MemberController {
 
     @PutMapping("/member-info")
     public ResponseEntity<?> updateMemberInfo(@AuthenticationPrincipal UserDetails userDetails,
-        @RequestBody MemberUpdateRequestDto updateRequestDto) {
+        @RequestPart("info") MemberUpdateRequestDto updateRequestDto,
+        @RequestPart(value = "file", required = false) MultipartFile file) {
         String username = userDetails.getUsername();
-        memberService.updateMember(username, updateRequestDto);
+        memberService.updateMember(username, updateRequestDto, file);
         return ResponseEntity.ok("멤버 정보 수정 성공");
     }
 
@@ -59,7 +64,7 @@ public class MemberController {
         memberService.deleteMember(username);
         return ResponseEntity.ok("회원탈퇴 성공");
     }
-    
+
     @PostMapping("/password-change")
     public ResponseEntity<?> findChange(@RequestBody UsernameRequestDto request) {
         boolean exists = memberService.isMemberExists(request.getUsername());
