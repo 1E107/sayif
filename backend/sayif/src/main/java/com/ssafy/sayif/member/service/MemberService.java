@@ -170,6 +170,7 @@ public class MemberService {
                 member.getPhone(),
                 member.getEmail(),
                 member.getProfileImg(),
+                fileService.getFileUrl(member.getProfileImg(), bucketName),
                 member.getRole().name(),
                 member.getTeam() != null ? member.getTeam().getId() : null
             );

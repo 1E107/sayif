@@ -55,3 +55,37 @@ export const updateMember = async (token, data) => {
         throw error;
     }
 };
+
+export const uploadProfileImage = async (token, userInfo, file) => {
+    try {
+        // FormData 객체를 생성합니다.
+        const formData = new FormData();
+
+        // 사용자 정보를 FormData에 추가합니다.
+        Object.keys(userInfo).forEach(key => {
+            formData.append(key, userInfo[key]);
+        });
+
+        // 파일을 FormData에 추가합니다.
+        formData.append('file', file);
+
+        // 요청 헤더에 인증 토큰을 추가합니다.
+        const response = await axios.put(
+            `${API_BASE_URL}/member/member-info`,
+            formData,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${token}`, // 인증 토큰을 헤더에 추가
+                },
+            },
+        );
+
+        // 성공적인 응답을 반환합니다.
+        return response;
+    } catch (error) {
+        // 에러를 발생시키거나 에러 처리를 수행합니다.
+        console.error('이미지 및 정보 업로드 실패:', error);
+        throw error; // 에러를 호출한 함수로 전달
+    }
+};

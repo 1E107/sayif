@@ -18,6 +18,7 @@ public class MemberInfoResponseDto {
     private String phone;
     private String email;
     private String profileImg;
+    private String imgUrl;
     private String role;
     private Integer teamId;
 }

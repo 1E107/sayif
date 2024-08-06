@@ -9,7 +9,11 @@ import {
 import { useEffect, useState } from 'react';
 import MentoringModal from './MentoringModal';
 import { getTeamStatue } from '../../api/MentoringApi';
-import { updateMember, getMemberInfo } from '../../api/MemberApi';
+import {
+    updateMember,
+    getMemberInfo,
+    uploadProfileImage,
+} from '../../api/MemberApi'; // uploadProfileImage API 추가
 
 function MyPageComponent() {
     const navigate = useNavigate();
@@ -27,6 +31,7 @@ function MyPageComponent() {
         email: member.email,
         gender: member.gender,
     });
+    const [file, setFile] = useState(null); // 파일 상태 추가
 
     const handleInputChange = field => e => {
         console.log(field);
@@ -105,6 +110,25 @@ function MyPageComponent() {
     const handleUpdateCallBtn = () => {
         const callUpdateInfo = async () => {
             try {
+                // 프로필 이미지 업로드
+                if (file) {
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    const uploadResponse = await uploadProfileImage(
+                        token,
+                        formData,
+                    );
+                    if (uploadResponse.status === 200) {
+                        SetNewMember({
+                            ...newMember,
+                            fileUrl: uploadResponse.data.fileUrl,
+                        });
+                    } else {
+                        throw new Error('Profile image upload failed');
+                    }
+                }
+
+                // 멤버 정보 업데이트
                 const response = await updateMember(token, newMember);
                 if (response.status === 200) {
                     callMemberInfo();
@@ -137,11 +161,31 @@ function MyPageComponent() {
         });
     };
 
+    const handleImageChange = e => {
+        const file = e.target.files[0];
+        if (file) {
+            setFile(file);
+        }
+    };
+
     const MyPageView = (
         <S.Container>
             <div style={{ display: 'flex' }}>
                 <div style={{ textAlign: 'center' }}>
-                    <S.ProfileImg src="/basic-profile.png" />
+                    <S.ProfileImg
+                        src={member.fileUrl}
+                        alt="Profile"
+                        onClick={() =>
+                            document.getElementById('fileInput').click()
+                        } // 파일 선택 다이얼로그 열기
+                    />
+                    <input
+                        type="file"
+                        id="fileInput"
+                        style={{ display: 'none' }}
+                        onChange={handleImageChange}
+                        accept="image/*"
+                    />
                     <S.NickNameText>
                         {role === 'Mentor'
                             ? '단비'
@@ -250,6 +294,7 @@ function MyPageComponent() {
             )}
         </S.Container>
     );
+
     return MyPageView;
 }
 
