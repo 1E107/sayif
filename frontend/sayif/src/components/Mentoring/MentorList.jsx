@@ -36,6 +36,7 @@ const MentorList = () => {
             {mentors.map((mentor, index) => (
                 <MentorCard
                     key={index}
+                    id={mentor.id}
                     seq={mentor.seq}
                     regCode={mentor.regCode}
                     name={mentor.name}
