@@ -19,7 +19,7 @@ public class ChallengeService {
 
     private final WebClient.Builder webClientBuilder;
 
-    private static final String FASTAPI_URL = "http://127.0.0.1:8000/predict/";
+    private static final String FASTAPI_URL = "http://i11e107.p.ssafy.io:8000/predict/";
 
     public Mono<Boolean> getPredictionAndCompare(int challengeNum, MultipartFile file) {
         WebClient webClient = webClientBuilder.build();
