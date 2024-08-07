@@ -118,11 +118,11 @@ class VideoRoomComponent extends Component {
         window.removeEventListener('beforeunload', this.onbeforeunload);
         window.removeEventListener('resize', this.updateLayout);
         window.removeEventListener('resize', this.checkSize);
-        this.leaveSession();
+        // this.leaveSession();
     }
 
     onbeforeunload(event) {
-        this.leaveSession();
+        // this.leaveSession();
     }
 
     joinSession() {
@@ -144,13 +144,13 @@ class VideoRoomComponent extends Component {
 
         if (this.state.sessionStatus === 'mentor') {
             try {
-                await closeSession(this.props.userToken, mySessionId);
                 // 세션 종료 신호 전송
                 this.state.session.signal({
                     data: 'Session Ended', // 메타데이터, 필요에 따라 수정 가능
                     to: [], // 모든 참가자에게 신호 전송
                     type: 'sessionEnded',
                 });
+                await closeSession(this.props.userToken, mySessionId);
             } catch (error) {
                 console.error('Error closing session:', error);
                 alert('Error closing session: ' + error.message);
@@ -182,9 +182,9 @@ class VideoRoomComponent extends Component {
             subscribers: [],
             localUser: undefined,
         });
-        if (this.props.leaveSession) {
-            this.props.leaveSession();
-        }
+        // if (this.props.leaveSession) {
+        //     this.props.leaveSession();
+        // }
     }
 
     async connectToSession() {
