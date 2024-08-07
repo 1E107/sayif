@@ -34,12 +34,8 @@ public class BoardController {
     @PostMapping
     public ResponseEntity<?> writePost(@RequestPart("post") PostRequestDto dto,
         @RequestPart(value = "file", required = false) MultipartFile file) {
-        // 파일이 존재하는 경우에만 파일 저장 및 파일 이름 설정
-        if (file != null && !file.isEmpty()) {
-        }
-
         // 게시물 작성 서비스 호출
-        boardService.writePost(dto);
+        boardService.writePost(dto, file);
         return ResponseEntity.ok("Post created successfully with file");
     }
 
@@ -55,12 +51,8 @@ public class BoardController {
     public ResponseEntity<?> modifyPost(@PathVariable("id") int id,
         @RequestPart("post") PostRequestDto dto,
         @RequestPart(value = "file", required = false) MultipartFile file) {
-        // 파일이 존재하는 경우에만 파일 저장 및 파일 이름 설정
-        if (file != null && !file.isEmpty()) {
-        }
-
         // 게시물 수정 서비스 호출
-        boardService.modifyPost(id, dto);
+        boardService.modifyPost(id, dto, file);
         return ResponseEntity.ok("Post modified successfully with file");
     }
 

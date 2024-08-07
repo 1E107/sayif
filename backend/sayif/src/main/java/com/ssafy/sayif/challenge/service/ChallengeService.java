@@ -104,7 +104,7 @@ public class ChallengeService {
             .collect(Collectors.toList());
     }
 
-    public void saveChallengeDetail(Long challengeId, String filename, String username) {
+    public void saveChallengeDetail(Long challengeId, String fileUrl, String username) {
         // 챌린지 ID로 챌린지를 찾습니다.
         Optional<Challenge> challengeOptional = challengeRepository.findById(challengeId);
         if (challengeOptional.isEmpty()) {
@@ -122,13 +122,13 @@ public class ChallengeService {
             challengeId, member.getId());
         if (findChallenge.isPresent()) {
             ChallengeDetail challengeDetail = findChallenge.get();
-            challengeDetail.updateFile(filename);
+            challengeDetail.updateFile(fileUrl);
         } else {
             // ChallengeDetail 객체를 생성하고 저장합니다.
             ChallengeDetail challengeDetail = ChallengeDetail.builder()
                 .challenge(challenge)
                 .member(member)
-                .file(filename)
+                .file(fileUrl)
                 .build();
             challengeDetailRepository.save(challengeDetail);
         }

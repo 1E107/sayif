@@ -103,6 +103,7 @@ public class ChallengeController {
         @RequestBody MultipartFile file, @AuthenticationPrincipal UserDetails userDetails) {
         // 파일이 존재하는 경우
         if (file != null && !file.isEmpty()) {
+            // S3 버킷에 파일 저장
             String fileUrl = s3Service.upload(file);
 
             // 파일이 제대로 저장되지 않았거나, 반환된 파일 이름이 null인 경우 예외를 발생시킵니다.
