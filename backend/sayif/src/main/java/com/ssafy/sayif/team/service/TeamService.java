@@ -100,6 +100,15 @@ public class TeamService {
     }
 
     @Transactional
+    public Team registerTeamName(Integer teamId, String newName) {
+        Team team = teamRepository.findById(teamId).orElse(null);
+        if (team != null) {
+            team.registerName(newName);
+        }
+        return team;
+    }
+
+    @Transactional
     public Team updateTeamName(Integer teamId, String newName) {
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new RuntimeException("Team not found"));

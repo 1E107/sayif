@@ -5,6 +5,7 @@ import com.ssafy.sayif.member.repository.MemberRepository;
 import com.ssafy.sayif.team.converter.MemberConverter;
 import com.ssafy.sayif.team.converter.TeamNameConverter;
 import com.ssafy.sayif.team.dto.MemberInfoResponseDto;
+import com.ssafy.sayif.team.dto.TeamNameRequestDto;
 import com.ssafy.sayif.team.dto.TeamNameResponseDto;
 import com.ssafy.sayif.team.entity.Team;
 import com.ssafy.sayif.team.service.TeamService;
@@ -38,9 +39,17 @@ public class TeamController {
         return ResponseEntity.ok(memberDTOs);
     }
 
+    @PostMapping("/team-name")
+    public ResponseEntity<?> registerTeamName(@PathVariable Integer id, @RequestBody TeamNameRequestDto newName) {
+        Team team = teamService.registerTeamName(id, newName.getNewName());
+        TeamNameResponseDto responseDto = teamNameConverter.convertToDto(team);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
+    }
+
+
     @PutMapping("/team-name")
-    public ResponseEntity<TeamNameResponseDto> updateTeamName(@PathVariable Integer id, @RequestParam String newName) {
-        Team team = teamService.updateTeamName(id, newName);
+    public ResponseEntity<TeamNameResponseDto> updateTeamName(@PathVariable Integer id, @RequestBody TeamNameRequestDto newName) {
+        Team team = teamService.updateTeamName(id, newName.getNewName());
         TeamNameResponseDto responseDto = teamNameConverter.convertToDto(team);
         return ResponseEntity.ok(responseDto);
     }

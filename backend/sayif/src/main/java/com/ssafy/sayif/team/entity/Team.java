@@ -67,4 +67,8 @@ public class Team {
     public void changeName(String newName) {
         this.name = newName;
     }
+
+    public void registerName(String newName) {
+        this.name = newName;
+    }
 }
