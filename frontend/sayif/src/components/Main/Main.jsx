@@ -1,10 +1,27 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import S from "./styled";
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
-function Main() {
+const Main = () => {
     const sectionsRef = useRef([]);
     const scrollTimeout = useRef(null);
+    const [currentSlide, setCurrentSlide] = useState(0);
+
+    const contents = [
+        { type: 'menu', content: <MentorProfileContent /> },
+        { type: 'calendar', content: <MentoringApplyContent /> },
+        { type: 'cactus', content: <TeamOfficeContent /> },
+        { type: 'scratch', content: <MentoringVideoContent /> }
+    ];
+
+    const nextSlide = () => {
+        setCurrentSlide((prev) => (prev + 1) % contents.length);
+    };
+
+    const prevSlide = () => {
+        setCurrentSlide((prev) => (prev - 1 + contents.length) % contents.length);
+    };
 
     const scrollToSection = (index) => {
         if (index >= 0 && index < sectionsRef.current.length) {
@@ -13,7 +30,6 @@ function Main() {
     };
 
     useEffect(() => {
-        // 페이지가 로드될 때 맨 위로 스크롤
         window.scrollTo(0, 0);
 
         const handleScroll = () => {
@@ -33,7 +49,6 @@ function Main() {
 
         window.addEventListener('scroll', handleScroll);
 
-        // Cleanup
         return () => {
             window.removeEventListener('scroll', handleScroll);
             clearTimeout(scrollTimeout.current);
@@ -76,9 +91,19 @@ function Main() {
                 </S.VideoContainer>
             </S.MainSplitSection>
 
-            {/* 4 section */}
+            {/* Fourth section */}
             <S.MainMiddle ref={(el) => (sectionsRef.current[3] = el)}>
-                <S.SectionContent>중간 섹션 내용</S.SectionContent>
+                <S.SliderContainer>
+                    <S.SliderArrow onClick={prevSlide}>
+                        <ArrowBackIosIcon />
+                    </S.SliderArrow>
+                    <S.SlideContent>
+                        {contents[currentSlide].content}
+                    </S.SlideContent>
+                    <S.SliderArrow onClick={nextSlide}>
+                        <ArrowForwardIosIcon />
+                    </S.SliderArrow>
+                </S.SliderContainer>
             </S.MainMiddle>
             
             <S.MainBottom ref={(el) => (sectionsRef.current[4] = el)}>
@@ -87,5 +112,29 @@ function Main() {
         </>
     );
 }
+
+const MentorProfileContent = () => (
+    <S.ContentWrapper style={{ marginRight: "120px" }}>
+        <S.Image style={{ width: "150%"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/프로필 카드 소개.png`} alt="프로필 이미지" />
+    </S.ContentWrapper>
+);
+
+const MentoringApplyContent = () => (
+    <S.ContentWrapper style={{ marginRight: "95px" }}>
+        <S.Image style={{ width: "120%"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/멘토링 신청.png`} alt="캘린더 이미지" />
+    </S.ContentWrapper>
+);
+
+const TeamOfficeContent = () => (
+    <S.ContentWrapper style={{ marginRight: "160px" }}>
+        <S.Image style={{ width: "150%"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/팀 오피스.png`} alt="선인장 이미지" />
+    </S.ContentWrapper>
+);
+
+const MentoringVideoContent = () => (
+    <S.ContentWrapper style={{ margin: "30px 95px 0px 0px" }}>
+        <S.Image style={{ width: "120%"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/화상 멘토링.png`} alt="스크래치 이미지" />
+    </S.ContentWrapper>
+);
 
 export default Main;

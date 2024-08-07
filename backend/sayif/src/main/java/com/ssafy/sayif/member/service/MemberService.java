@@ -23,11 +23,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MemberService {
@@ -63,7 +65,7 @@ public class MemberService {
             .phone(registerRequestDto.getPhone())
             .role(Role.Mentee)
             .authFile(registerRequestDto.getAuthFile())
-            .profileImg(filename == null ? "default" : filename)
+            .profileImg(filename == null ? "default.jpg" : filename)
             .status(Status.Pending)
             .build();
         menteeRepository.save(mentee);
@@ -171,6 +173,7 @@ public class MemberService {
     public MemberInfoResponseDto getMemberInfo(String username) {
         Member member = memberRepository.findByUsername(username);
         if (member != null) {
+            log.info(fileService.getFileUrl(member.getProfileImg(), bucketName));
             return new MemberInfoResponseDto(
                 member.getUsername(),
                 member.getName(),
