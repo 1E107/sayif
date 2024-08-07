@@ -54,7 +54,7 @@ public class OpenViduController {
             String token = openViduService.createConnection(sessionId, params);
             String modifiedToken = token.replace("ws://localhost:4443", "ws://i11e107.p.ssafy.io/openvidu");
             log.info(modifiedToken);
-            return new ResponseEntity<>(token, HttpStatus.OK);
+            return new ResponseEntity<>(modifiedToken, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Unexpected connection error: ", e);
             return new ResponseEntity<>("Failed to create connection", HttpStatus.NOT_FOUND);
