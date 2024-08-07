@@ -5,6 +5,9 @@ import LinearProgress from '@mui/material/LinearProgress';
 import styled from 'styled-components';
 import '../../styles/fonts.css';
 import { ReactTyped } from 'react-typed';
+import { getTeamExperience } from '../../api/TeamApi';
+import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
 
 const CustomLinearProgress = styled(LinearProgress)({
     padding: '10px',
@@ -18,9 +21,19 @@ const CustomLinearProgress = styled(LinearProgress)({
 });
 
 function TeamMain() {
-    const [activeStep, setActiveStep] = React.useState(0);
-    const [progress, setProgress] = React.useState(30);
-
+    // const [activeStep, setActiveStep] = React.useState(0);
+    const [progress, setProgress] = React.useState(0);
+    const { token, member } = useSelector(state => state.member);
+    
+    useEffect(() => {
+        async function fetchProgress() {
+            const result = await getTeamExperience(member.teamId, token);
+            console.log(result.data.point);
+            setProgress(result.data.point);
+        }
+        fetchProgress();
+    }, [member.teamId, token]);
+    
     const MainView = (
         <S.Container>
             <S.Wrapper>
@@ -32,10 +45,10 @@ function TeamMain() {
                     />
                 </S.TeamNameText>
                 <S.ScoreContainer>
-                    <S.TeamScoreText>135</S.TeamScoreText>
+                    <S.TeamScoreText>{progress}</S.TeamScoreText>
                     <CustomLinearProgress
                         variant="determinate"
-                        value={progress}
+                        value={progress%100} 
                     />
                 </S.ScoreContainer>
             </S.Wrapper>
