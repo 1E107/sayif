@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { postStory } from '../../../api/TeamApi';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { acquireExperience } from '../../../api/config';
 
 function CreateStory() {
     const navigate = useNavigate();
@@ -19,7 +20,7 @@ function CreateStory() {
         navigate('/team/story-board');
     };
 
-    const submitStory = () => {
+    const submitStory = async () => {
         const callPostStory = async () => {
             try {
                 const response = await postStory(
@@ -33,6 +34,7 @@ function CreateStory() {
             }
         };
         callPostStory();
+        acquireExperience(token, member,2);
         alert('익명 사연이 등록되었습니다.');
         navigate('/team/story-board');
     };

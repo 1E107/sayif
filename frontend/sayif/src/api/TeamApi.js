@@ -129,3 +129,16 @@ export const getTeamExperience = async(teamId, token) => {
         throw error;
     }
 }
+
+export const updateTeamExperience = async (teamId, token, point) => {
+    try {
+        const response = await axios.put(
+            `${API_BASE_URL}/team/exp/${teamId}`,{ point }, {
+                headers: { Authorization: `Bearer ${token}` },
+             }
+        );
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
