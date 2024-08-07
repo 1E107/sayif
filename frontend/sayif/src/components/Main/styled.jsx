@@ -108,6 +108,8 @@ const SliderContainer = styled.div`
     justify-content: space-between;
     width: 100%;
     height: 100%;
+    overflow: hidden; // 추가
+    position: relative;
 `;
 
 const SliderArrow = styled.div`
@@ -119,11 +121,24 @@ const SliderArrow = styled.div`
     }
 `;
 
+const slideTransition = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
+
 const SlideContent = styled.div`
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: ${slideTransition} 0.5s ease-out;
+  height: 500px; // 적절한 고정 높이 설정
+  overflow: hidden; // 내용이 넘칠 경우 숨김 처리
+  cursor: pointer;  // 이 줄을 추가
 `;
 
 const ContentWrapper = styled.div`
@@ -134,8 +149,10 @@ const ContentWrapper = styled.div`
 
 const Image = styled.img`
     width: 100%;
-    height: auto;
+    height: 400px; // 모든 이미지에 대해 동일한 높이 설정
+    object-fit: contain; // 이미지 비율 유지
 `;
+
 
 const S = {
     MainTop,
@@ -150,6 +167,7 @@ const S = {
     VideoContainer,
     SliderContainer,
     SliderArrow,
+    slideTransition,
     SlideContent,
     ContentWrapper,
     Image

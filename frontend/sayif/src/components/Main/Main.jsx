@@ -1,18 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import S from "./styled";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 const Main = () => {
+    const navigate = useNavigate();
     const sectionsRef = useRef([]);
     const scrollTimeout = useRef(null);
     const [currentSlide, setCurrentSlide] = useState(0);
 
     const contents = [
-        { type: 'menu', content: <MentorProfileContent /> },
-        { type: 'calendar', content: <MentoringApplyContent /> },
-        { type: 'cactus', content: <TeamOfficeContent /> },
-        { type: 'scratch', content: <MentoringVideoContent /> }
+        { type: 'profile', content: <MentorProfileContent />, link: '/mentor-profile' },
+        { type: 'apply', content: <MentoringApplyContent />, link: '/apply-mentoring' },
+        { type: 'team', content: <TeamOfficeContent />, link: '/team' },
+        { type: 'mentoring', content: <MentoringVideoContent />, link: '/team/meeting' }
     ];
 
     const nextSlide = () => {
@@ -21,6 +23,10 @@ const Main = () => {
 
     const prevSlide = () => {
         setCurrentSlide((prev) => (prev - 1 + contents.length) % contents.length);
+    };
+
+    const handleSlideClick = (link) => {
+        navigate(link);
     };
 
     const scrollToSection = (index) => {
@@ -97,7 +103,10 @@ const Main = () => {
                     <S.SliderArrow onClick={prevSlide}>
                         <ArrowBackIosIcon />
                     </S.SliderArrow>
-                    <S.SlideContent>
+                    <S.SlideContent 
+                        key={currentSlide}
+                        onClick={() => handleSlideClick(contents[currentSlide].link)}
+                    >
                         {contents[currentSlide].content}
                     </S.SlideContent>
                     <S.SliderArrow onClick={nextSlide}>
@@ -126,13 +135,13 @@ const MentoringApplyContent = () => (
 );
 
 const TeamOfficeContent = () => (
-    <S.ContentWrapper style={{ marginRight: "160px" }}>
+    <S.ContentWrapper style={{ marginRight: "200px" }}>
         <S.Image style={{ width: "150%"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/팀 오피스.png`} alt="선인장 이미지" />
     </S.ContentWrapper>
 );
 
 const MentoringVideoContent = () => (
-    <S.ContentWrapper style={{ margin: "30px 95px 0px 0px" }}>
+    <S.ContentWrapper style={{ margin: "30px 120px 0px 0px" }}>
         <S.Image style={{ width: "120%"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/화상 멘토링.png`} alt="스크래치 이미지" />
     </S.ContentWrapper>
 );
