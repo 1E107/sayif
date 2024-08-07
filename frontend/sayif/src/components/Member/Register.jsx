@@ -1,144 +1,211 @@
 import { useState } from 'react';
-import S from './style/RegisterStyled'
+import S from './style/RegisterStyled';
 import { createMember } from '../../api/MemberApi';
 import { useNavigate } from 'react-router-dom';
 
 function Register() {
-    const [selectGender, SetSelectGender] = useState("");
-    const [id, SetId] = useState("");
-    const [password, SetPassword] = useState("");
-    const [name, SetName] = useState("");
-    const [nickname, SetNickname] = useState("");
-    const [phone, SetPhone] = useState("");
-    const [email, SetEmail] = useState("");
-    const [phoneError, SetPhoneError] = useState("");
-    const [emailError, SetEmailError] = useState("");
+    const [selectGender, SetSelectGender] = useState('');
+    const [id, SetId] = useState('');
+    const [password, SetPassword] = useState('');
+    const [name, SetName] = useState('');
+    const [nickname, SetNickname] = useState('');
+    const [phone, SetPhone] = useState('');
+    const [email, SetEmail] = useState('');
+    const [phoneError, SetPhoneError] = useState('');
+    const [emailError, SetEmailError] = useState('');
+    const [profileImage, SetProfileImage] = useState(null);
     const navigate = useNavigate();
 
-    const handleClickGender = (data) => {
+    const handleClickGender = data => {
         SetSelectGender(data);
-    }
+    };
 
     const gender = {
-        "여자" : "F",
-        "남자" : "M",
-    }
+        여자: 'F',
+        남자: 'M',
+    };
 
-    const validateEmail = (email) => {
-        const emailPattern =  /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const validateEmail = email => {
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailPattern.test(email)) {
-            SetEmailError("유효하지 않은 이메일 형식입니다.");
+            SetEmailError('유효하지 않은 이메일 형식입니다.');
             return false;
         } else {
             SetEmailError('');
             return true;
         }
-    }
+    };
 
-    const validatePhone = (phone) => {
+    const validatePhone = phone => {
         const phonePattern = /^\d{3}-\d{4}-\d{4}$/;
-        if(!phonePattern.test(phone)) {
-            SetPhoneError("유효하지 않은 전화번호 형식입니다.");
+        if (!phonePattern.test(phone)) {
+            SetPhoneError('유효하지 않은 전화번호 형식입니다.');
         } else {
             SetPhoneError('');
         }
-    }
+    };
+
+    const handleProfileImageChange = event => {
+        const file = event.target.files[0];
+        if (file) {
+            SetProfileImage(file);
+        }
+    };
 
     const handleNextButton = () => {
-        const data = {
+        const formData = new FormData();
+
+        // JSON 객체를 문자열로 변환하여 Blob으로 추가
+        const info = {
             username: id,
             password: password,
             name: name,
             nickname: nickname,
-            phone: phone,
             email: email,
-            gender: gender[selectGender]
+            phone: phone,
+            gender: gender[selectGender],
+        };
+        const infoBlob = new Blob([JSON.stringify(info)], {
+            type: 'application/json',
+        });
+        formData.append('info', infoBlob);
+
+        // 파일 추가
+        if (profileImage) {
+            formData.append('file', profileImage);
         }
 
         const CallRegist = async () => {
             try {
-                const response = await createMember(data);
-                if(response.status === 200) {
-                    navigate("/member/regist/proof-documents");
+                const response = await createMember(formData);
+                if (response.status === 200) {
+                    navigate('/member/regist/proof-documents');
                 }
-            }catch(error) {
-                alert("회원가입에 실패했습니다.");
+            } catch (error) {
+                alert('회원가입에 실패했습니다.');
                 console.log(error);
             }
-        }
-        
-        if(phoneError === '' && emailError === '') {
+        };
+
+        if (phoneError === '' && emailError === '') {
             CallRegist();
         } else {
-            alert("입력한 정보가 올바른지 확인해 주세요!");
+            alert('입력한 정보가 올바른지 확인해 주세요!');
         }
-    }
+    };
 
-    const handleKeyDown = (event) => {
-        if(event.key === 'Enter') {
-            if(validateEmail(email)) {
+    const handleKeyDown = event => {
+        if (event.key === 'Enter') {
+            if (validateEmail(email)) {
                 handleNextButton();
             }
         }
-    }
+    };
 
     const RegisterView = (
         <S.Container>
             <S.ItemWrapper>
                 <S.Text>아이디</S.Text>
-                <S.CustomTextField  variant="outlined" onChange={(e) => SetId(e.target.value)}/>
+                <S.CustomTextField
+                    variant="outlined"
+                    onChange={e => SetId(e.target.value)}
+                />
             </S.ItemWrapper>
             <S.ItemWrapper>
                 <S.Text>비밀번호</S.Text>
-                <S.CustomTextField  variant="outlined" type='password' onChange={(e) => SetPassword(e.target.value)}/>
+                <S.CustomTextField
+                    variant="outlined"
+                    type="password"
+                    onChange={e => SetPassword(e.target.value)}
+                />
             </S.ItemWrapper>
             <S.ItemWrapper>
                 <S.Text>이름</S.Text>
-                <S.CustomTextField  variant="outlined" onChange={(e) => SetName(e.target.value)}/>
+                <S.CustomTextField
+                    variant="outlined"
+                    onChange={e => SetName(e.target.value)}
+                />
             </S.ItemWrapper>
             <S.ItemWrapper>
                 <S.Text>닉네임</S.Text>
-                <S.CustomTextField  variant="outlined" onChange={(e) => SetNickname(e.target.value)}/>
+                <S.CustomTextField
+                    variant="outlined"
+                    onChange={e => SetNickname(e.target.value)}
+                />
             </S.ItemWrapper>
             <S.ItemWrapper>
                 <S.Text>성별</S.Text>
-                <div style={{width:"350px", textAlign: "center"}}>
-                    <S.CustomBtn 
-                        variant="outlined" 
-                        onClick={() => {handleClickGender("남자")}} 
-                        style={{backgroundColor: selectGender === "남자" ? '#BFEA7C' : 'white'}}
-                    >남자</S.CustomBtn>
-                    <S.CustomBtn 
-                        variant="outlined" 
-                        onClick={() => {handleClickGender("여자")}}
-                        style={{backgroundColor: selectGender === "여자" ? '#BFEA7C' : 'white'}}
-                    >여자</S.CustomBtn>
+                <div style={{ width: '350px', textAlign: 'center' }}>
+                    <S.CustomBtn
+                        variant="outlined"
+                        onClick={() => {
+                            handleClickGender('남자');
+                        }}
+                        style={{
+                            backgroundColor:
+                                selectGender === '남자' ? '#BFEA7C' : 'white',
+                        }}
+                    >
+                        남자
+                    </S.CustomBtn>
+                    <S.CustomBtn
+                        variant="outlined"
+                        onClick={() => {
+                            handleClickGender('여자');
+                        }}
+                        style={{
+                            backgroundColor:
+                                selectGender === '여자' ? '#BFEA7C' : 'white',
+                        }}
+                    >
+                        여자
+                    </S.CustomBtn>
                 </div>
-               
             </S.ItemWrapper>
             <S.ItemWrapper>
                 <S.Text>전화번호</S.Text>
-                <S.CustomTextField  
-                    variant="outlined" 
-                    onChange={(e) => SetPhone(e.target.value)} 
-                    onBlur={()=>validatePhone(phone)}
+                <S.CustomTextField
+                    variant="outlined"
+                    onChange={e => SetPhone(e.target.value)}
+                    onBlur={() => validatePhone(phone)}
                     helperText={phoneError}
                     error={!!phoneError}
                 />
             </S.ItemWrapper>
             <S.ItemWrapper>
                 <S.Text>이메일</S.Text>
-                <S.CustomTextField  
-                    variant="outlined" 
-                    onChange={(e) => SetEmail(e.target.value)} 
+                <S.CustomTextField
+                    variant="outlined"
+                    onChange={e => SetEmail(e.target.value)}
                     onKeyDown={handleKeyDown}
                     helperText={emailError}
                     error={!!emailError}
-                    onBlur={()=>validateEmail(email)}
+                    onBlur={() => validateEmail(email)}
                 />
             </S.ItemWrapper>
-
-            <S.RegistBtn variant="contained" onClick={handleNextButton}>다음</S.RegistBtn>
+            <S.ItemWrapper>
+                <S.Text>프로필 사진</S.Text>
+                <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleProfileImageChange}
+                    style={{ marginBottom: '10px' }}
+                />
+                {profileImage && (
+                    <img
+                        src={URL.createObjectURL(profileImage)}
+                        alt="프로필 미리보기"
+                        style={{
+                            width: '100px',
+                            height: '100px',
+                            objectFit: 'cover',
+                        }}
+                    />
+                )}
+            </S.ItemWrapper>
+            <S.RegistBtn variant="contained" onClick={handleNextButton}>
+                다음
+            </S.RegistBtn>
         </S.Container>
     );
 
