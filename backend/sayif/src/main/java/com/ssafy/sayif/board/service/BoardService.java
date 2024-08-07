@@ -5,7 +5,7 @@ import com.ssafy.sayif.board.dto.PostRequestDto;
 import com.ssafy.sayif.board.entity.Board;
 import com.ssafy.sayif.board.entity.BoardType;
 import com.ssafy.sayif.board.repository.BoardRepository;
-import com.ssafy.sayif.common.service.FileService;
+import com.ssafy.sayif.common.service.S3Service;
 import com.ssafy.sayif.member.entity.Member;
 import com.ssafy.sayif.member.exception.MemberNotFoundException;
 import com.ssafy.sayif.member.repository.MemberRepository;
@@ -30,12 +30,10 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class BoardService {
 
-    private final String bucketName = "board-images";
-
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
     private final GoodService goodService;
-    private final FileService fileService;
+    private final S3Service s3Service;
 
     /**
      * 새로운 게시글을 작성합니다.
@@ -170,7 +168,7 @@ public class BoardService {
             .id(board.getId())
             .title(board.getTitle())
             .content(board.getContent())
-            .fileUrl(fileService.getFileUrl(board.getFile(), bucketName))
+            .fileUrl(board.getFile())
             .writer(board.getMember().getName())
             .type(board.getType())
             .hitCount(board.getHitCount())

@@ -10,6 +10,7 @@ import { useState } from 'react';
 import MentoringModal from './MentoringModal';
 import { getTeamStatue } from '../../api/MentoringApi';
 import { getMemberInfo, uploadProfileImage } from '../../api/MemberApi';
+import log from 'eslint-plugin-react/lib/util/log';
 
 function MyPageComponent() {
     const navigate = useNavigate();
@@ -92,6 +93,7 @@ function MyPageComponent() {
     const callMemberInfo = async () => {
         try {
             const response = await getMemberInfo(token);
+            console.log(response.data);
             if (response.status === 200) {
                 dispatch(setMember(response.data));
             }
@@ -147,6 +149,7 @@ function MyPageComponent() {
     };
 
     const handleImageChange = e => {
+        console.log(member);
         const file = e.target.files[0];
         if (file) {
             setFile(file);
@@ -169,7 +172,7 @@ function MyPageComponent() {
             <div style={{ display: 'flex' }}>
                 <div style={{ textAlign: 'center' }}>
                     <S.ProfileImg
-                        src={member.imgUrl}
+                        src={member.profileImg}
                         alt="Profile"
                         onClick={handleProfileImageClick}
                     />
