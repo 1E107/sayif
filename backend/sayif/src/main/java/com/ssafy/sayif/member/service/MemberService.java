@@ -1,7 +1,6 @@
 package com.ssafy.sayif.member.service;
 
-import com.ssafy.sayif.common.exception.FileStorageException;
-import com.ssafy.sayif.common.service.FileService;
+import com.ssafy.sayif.common.service.S3Service;
 import com.ssafy.sayif.member.dto.MemberInfoResponseDto;
 import com.ssafy.sayif.member.dto.MemberUpdateRequestDto;
 import com.ssafy.sayif.member.dto.MentoringRecordResponseDto;
@@ -18,7 +17,6 @@ import com.ssafy.sayif.member.repository.MenteeRepository;
 import com.ssafy.sayif.member.repository.MentorRepository;
 import com.ssafy.sayif.member.repository.RefreshRepository;
 import com.ssafy.sayif.team.entity.Team;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -40,9 +38,8 @@ public class MemberService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final MenteeRepository menteeRepository;
     private final MentorRepository mentorRepository;
-    private final FileService fileService;
+    private final S3Service s3Service;
 
-    private final String bucketName = "member-profile";
 
     public Boolean registerMember(RegisterRequestDto registerRequestDto, MultipartFile file) {
         String username = registerRequestDto.getUsername();
@@ -53,7 +50,7 @@ public class MemberService {
             return false;
         }
 
-        String filename = saveFileAndGetFilename(file);
+        String fileUrl = s3Service.upload(file);
 
         Mentee mentee = Mentee.builder()
             .username(username)
@@ -65,38 +62,12 @@ public class MemberService {
             .phone(registerRequestDto.getPhone())
             .role(Role.Mentee)
             .authFile(registerRequestDto.getAuthFile())
-            .profileImg(filename == null ? "default.jpg" : filename)
+            .profileImg(fileUrl == null ? "default.jpg" : fileUrl)
             .status(Status.Pending)
             .build();
         menteeRepository.save(mentee);
 
         return true;
-    }
-
-    private String saveFileAndGetFilename(MultipartFile file) {
-        if (file != null && !file.isEmpty()) {
-            try {
-                // MultipartFile 객체에서 파일의 바이트 배열을 가져옵니다.
-                byte[] fileContent = file.getBytes();
-
-                // MultipartFile 객체에서 원본 파일 이름을 가져옵니다.
-                String originalFilename = file.getOriginalFilename();
-
-                // Minio 서버에 파일을 저장하고, 저장된 파일의 이름을 반환받습니다.
-                String filename = fileService.saveFileToMinio(fileContent, bucketName,
-                    originalFilename);
-
-                // 파일이 제대로 저장되지 않았거나, 반환된 파일 이름이 null인 경우 예외를 발생시킵니다.
-                if (filename == null) {
-                    throw new FileStorageException("Failed to save file.");
-                }
-                return filename;
-            } catch (IOException e) {
-                throw new FileStorageException("Failed to save file.");
-            }
-        } else {
-            return null;
-        }
     }
 
     @Transactional
@@ -107,7 +78,7 @@ public class MemberService {
             throw new RuntimeException("Member not found");
         }
 
-        String filename = saveFileAndGetFilename(file);
+        String fileUrl = s3Service.upload(file);
 
         if (member.getRole() == Role.Mentee) {
             Optional<Mentee> mentee = menteeRepository.findById(member.getId());
@@ -123,7 +94,7 @@ public class MemberService {
                         : member.getGender())
                     .email(updateRequestDto.getEmail() != null ? updateRequestDto.getEmail()
                         : member.getEmail())
-                    .profileImg(filename != null ? filename : member.getProfileImg())
+                    .profileImg(fileUrl != null ? fileUrl : member.getProfileImg())
                     .phone(updateRequestDto.getPhone() != null ? updateRequestDto.getPhone()
                         : member.getPhone())
                     .build();
@@ -143,7 +114,7 @@ public class MemberService {
                         : loginedMentor.getGender())
                     .email(updateRequestDto.getEmail() != null ? updateRequestDto.getEmail()
                         : loginedMentor.getEmail())
-                    .profileImg(filename != null ? filename : member.getProfileImg())
+                    .profileImg(fileUrl != null ? fileUrl : member.getProfileImg())
                     .phone(updateRequestDto.getPhone() != null ? updateRequestDto.getPhone()
                         : loginedMentor.getPhone())
                     .build();
@@ -173,7 +144,6 @@ public class MemberService {
     public MemberInfoResponseDto getMemberInfo(String username) {
         Member member = memberRepository.findByUsername(username);
         if (member != null) {
-            log.info(fileService.getFileUrl(member.getProfileImg(), bucketName));
             return new MemberInfoResponseDto(
                 member.getUsername(),
                 member.getName(),
@@ -182,7 +152,6 @@ public class MemberService {
                 member.getPhone(),
                 member.getEmail(),
                 member.getProfileImg(),
-                fileService.getFileUrl(member.getProfileImg(), bucketName),
                 member.getRole().name(),
                 member.getTeam() != null ? member.getTeam().getId() : null
             );

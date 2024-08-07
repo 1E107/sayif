@@ -28,6 +28,7 @@ function MyPageComponent() {
         gender: member.gender,
     });
     const [file, setFile] = useState(null);
+    const [preview, setPreview] = useState(member.profileImg);
 
     const handleInputChange = field => e => {
         if (field === 'phone') {
@@ -92,6 +93,7 @@ function MyPageComponent() {
     const callMemberInfo = async () => {
         try {
             const response = await getMemberInfo(token);
+            console.log(response.data);
             if (response.status === 200) {
                 dispatch(setMember(response.data));
             }
@@ -152,7 +154,7 @@ function MyPageComponent() {
             setFile(file);
             const reader = new FileReader();
             reader.onloadend = () => {
-                dispatch(setMember({ ...member, imgUrl: reader.result }));
+                setPreview(reader.result);
             };
             reader.readAsDataURL(file);
         }
@@ -169,7 +171,7 @@ function MyPageComponent() {
             <div style={{ display: 'flex' }}>
                 <div style={{ textAlign: 'center' }}>
                     <S.ProfileImg
-                        src={member.imgUrl}
+                        src={preview}
                         alt="Profile"
                         onClick={handleProfileImageClick}
                     />

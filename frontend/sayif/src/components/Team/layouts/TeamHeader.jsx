@@ -11,7 +11,6 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import Modal from '@mui/material/Modal';
 import { useNavigate } from 'react-router-dom';
 import TeamSideMenu from './TeamSideMenu';
 import Drawer from '@mui/material/Drawer';
@@ -247,7 +246,7 @@ function TeamHeader() {
                             >
                                 <Avatar
                                     alt="Remy Sharp"
-                                    src={member.imgUrl}
+                                    src={member.profileImg}
                                 />
                             </IconButton>
                         </Tooltip>

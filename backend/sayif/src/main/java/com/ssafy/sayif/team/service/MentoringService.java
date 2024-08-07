@@ -5,7 +5,6 @@ import com.ssafy.sayif.challenge.Repository.ChallengeRepository;
 import com.ssafy.sayif.challenge.entity.Challenge;
 import com.ssafy.sayif.challenge.entity.ChallengeList;
 import com.ssafy.sayif.challenge.entity.ChallengeStatus;
-import com.ssafy.sayif.common.service.FileService;
 import com.ssafy.sayif.member.entity.Member;
 import com.ssafy.sayif.member.entity.Mentor;
 import com.ssafy.sayif.member.entity.Role;
@@ -50,7 +49,6 @@ public class MentoringService {
     private final TagRepository tagRepository;
     private final ChallengeRepository challengeRepository;
     private final ChallengeListRepository challengeListRepository;
-    private final FileService fileService;
 
     @Transactional
     public Team recruit(MentoringRecruitRequest mentoringRecruitRequest, String username) {
@@ -199,7 +197,7 @@ public class MentoringService {
                 .email(member.getEmail())
                 .major(mentor.getMajor())
                 .track(mentor.getTrack().toString())
-                .profileImg(fileService.getFileUrl(member.getProfileImg(), "member-profile"))
+                .profileImg(member.getProfileImg())
                 .intro(mentor.getIntro())
                 .regCode(mentor.getRegCode())
                 .seq(mentor.getSeq())

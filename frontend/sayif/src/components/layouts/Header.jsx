@@ -362,7 +362,7 @@ function Header() {
                                         >
                                             <Avatar
                                                 alt="Remy Sharp"
-                                                src={member.imgUrl}
+                                                src={member.profileImg}
                                             />
                                         </IconButton>
                                     </Tooltip>
