@@ -17,6 +17,7 @@ import TeamSideMenu from './TeamSideMenu';
 import Drawer from '@mui/material/Drawer';
 import ChatbotModal from '../ChatBotModal';
 import '../../../styles/fonts.css';
+import { useSelector } from 'react-redux';
 
 const pages = ['AI 새잎 클로버', '새잎 홈페이지'];
 
@@ -26,6 +27,7 @@ function TeamHeader() {
     const [showSide, setShowSide] = useState(false);
     const [selectSideMenu, setSelectSideMenu] = useState('');
     const [openModal, setOpenModal] = useState(false);
+    const { token, member } = useSelector(state => state.member);
     const navigate = useNavigate();
 
     const handleOpenNavMenu = event => {
@@ -245,7 +247,7 @@ function TeamHeader() {
                             >
                                 <Avatar
                                     alt="Remy Sharp"
-                                    src="/static/images/avatar/2.jpg"
+                                    src={member.imgUrl}
                                 />
                             </IconButton>
                         </Tooltip>
