@@ -20,6 +20,14 @@ const PostBtn = styled(Button)({
     marginTop: '20px !important',
 });
 
+const FinishBtn = styled(Button)({
+    fontFamily: 'ChosunGu !important',
+    width: '130px',
+    marginBottom: '30px !important',
+    marginTop: '20px !important',
+    backgroundColor: '#116530 !important',
+});
+
 const ExplanText = styled.div`
     font-family: ChosunGu;
     font-size: 12px;
@@ -42,6 +50,7 @@ const S = {
     ResultText,
     ResultHigh,
     ExplanText,
+    FinishBtn,
 };
 
 export default S;
