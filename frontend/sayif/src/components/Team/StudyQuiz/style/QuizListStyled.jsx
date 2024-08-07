@@ -19,8 +19,8 @@ const title = styled.div`
 `;
 
 const QuizBox = styled.div`
-    height: 65px;
-    width: 700px;
+    height: 70px;
+    width: 800px;
     background-color: white;
     border-radius: 10px;
     margin-bottom: 10px;
@@ -45,7 +45,9 @@ const QuizNumber = styled.div`
 const QuizTitle = styled.div`
     font-family: ChosunGu;
     margin-left: 20px;
+    margin-right: 20px;
     font-weight: bold;
+    line-height: 140%;
 `;
 
 const QuizWrapper = styled.div`

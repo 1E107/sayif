@@ -5,7 +5,7 @@ import QuizDetail from './QuizDetail';
 import Box from '@mui/material/Box';
 import FormControl from '@mui/material/FormControl';
 import NativeSelect from '@mui/material/NativeSelect';
-import { getQuizList } from '../../../api/TeamApi';
+import { getQuizList, GetMySolve } from '../../../api/TeamApi';
 import { useSelector } from 'react-redux';
 
 function QuizList() {
@@ -13,6 +13,7 @@ function QuizList() {
     const { token } = useSelector(state => state.member);
     const [quizList, SetQuizList] = useState([]);
     const [quiz, SetQuiz] = useState();
+    const [solvedQuiz, SetSolvedQuiz] = useState([]);
 
     const handleQuizBtn = data => {
         SetQuiz(data);
@@ -26,6 +27,24 @@ function QuizList() {
                 const response = await getQuizList(event.target.value, token);
                 if (response.status == 200) {
                     SetQuizList(response.data);
+                    console.log('퀴즈 리스트-----------');
+                    console.log(quizList);
+                    const results = await Promise.all(
+                        response.data.map(async quiz => {
+                            const isSolveRes = await GetMySolve(quiz.id, token);
+                            return { id: quiz.id, solved: isSolveRes.data };
+                        }),
+                    );
+
+                    const solvedMapping = results.reduce(
+                        (acc, { id, solved }) => {
+                            acc[id] = solved;
+                            return acc;
+                        },
+                        {},
+                    );
+
+                    SetSolvedQuiz(solvedMapping);
                 }
             } catch (error) {
                 console.log(error);
@@ -40,6 +59,22 @@ function QuizList() {
                 const response = await getQuizList(1, token);
                 if (response.status == 200) {
                     SetQuizList(response.data);
+
+                    const results = await Promise.all(
+                        response.data.map(async quiz => {
+                            const isSolveRes = await GetMySolve(quiz.id, token);
+                            return { id: quiz.id, solved: isSolveRes.data };
+                        }),
+                    );
+                    const solvedMapping = results.reduce(
+                        (acc, { id, solved }) => {
+                            acc[id] = solved;
+                            return acc;
+                        },
+                        {},
+                    );
+
+                    SetSolvedQuiz(solvedMapping);
                 }
             } catch (error) {
                 console.log(error);
@@ -87,7 +122,20 @@ function QuizList() {
                     </div>
                     {quizList.map((quiz, index) => {
                         return (
-                            <S.QuizBox>
+                            <S.QuizBox
+                                style={{
+                                    opacity:
+                                        solvedQuiz[quiz.id] === true ? 0.5 : 1,
+                                    backgroundColor:
+                                        solvedQuiz[quiz.id] === true
+                                            ? '#f1f3f5'
+                                            : 'white',
+                                    pointerEvents:
+                                        solvedQuiz[quiz.id] === true
+                                            ? 'none'
+                                            : 'auto',
+                                }}
+                            >
                                 <S.QuizWrapper>
                                     <S.QuizNumber>{index + 1}</S.QuizNumber>
                                     <S.QuizTitle>{quiz.question}</S.QuizTitle>
