@@ -28,7 +28,7 @@ const columns = [
 
 function Community() {
     const navigate = useNavigate();
-    const [value, setValue] = useState('전체');
+    const [value, setValue] = useState('Total');
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(7);
     const [rows, SetRows] = useState([]);
@@ -57,7 +57,7 @@ function Community() {
             try {
                 const response = await GetCommunityList(token, value, page, 10);
                 console.log(response);
-                if(response.status === 200) {
+                if (response.status === 200) {
                     SetRows(response.data);
                 }
             } catch (error) {
@@ -165,9 +165,11 @@ function Community() {
                                         >
                                             {columns.map(column => {
                                                 let value = row[column.id];
-                                                if(column.id === 'type') {
-                                                    if(value === 'Free') value = '일상';
-                                                    else if(value === 'Worry') value = '고민'
+                                                if (column.id === 'type') {
+                                                    if (value === 'Free')
+                                                        value = '일상';
+                                                    else if (value === 'Worry')
+                                                        value = '고민';
                                                 }
                                                 return (
                                                     <TableCell

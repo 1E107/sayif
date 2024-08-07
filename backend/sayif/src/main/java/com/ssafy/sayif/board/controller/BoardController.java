@@ -3,7 +3,6 @@ package com.ssafy.sayif.board.controller;
 import com.ssafy.sayif.board.dto.PostRequestDto;
 import com.ssafy.sayif.board.entity.BoardType;
 import com.ssafy.sayif.board.service.BoardService;
-import com.ssafy.sayif.common.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class BoardController {
 
     private final BoardService boardService;
-    private S3Service s3Service;
 
     /**
      * 게시물을 작성합니다. 파일이 업로드된 경우, 해당 파일을 함께 저장합니다.
