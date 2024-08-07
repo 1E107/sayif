@@ -21,6 +21,7 @@ const MainTop = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    overflow-x: hidden; /* 가로 스크롤 숨기기 */
 `;
 
 const MainTopTitle = styled.div`
@@ -52,14 +53,15 @@ const MainMiddle = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow-x: hidden; /* 가로 스크롤 숨기기 */
 `;
 
 const MainBottom = styled.div`
     height: 100vh;
-    background-color: #ffffff;
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow-x: hidden; /* 가로 스크롤 숨기기 */
 `;
 
 const SectionContent = styled.div`
@@ -88,6 +90,7 @@ const MainSplitSection = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow-x: hidden; /* 가로 스크롤 숨기기 */
 `;
 
 const VideoContainer = styled.div`
@@ -111,6 +114,7 @@ const SliderContainer = styled.div`
     height: 100%;
     overflow: hidden; // 추가
     position: relative;
+    overflow-x: hidden; /* 가로 스크롤 숨기기 */
 `;
 
 const SliderArrow = styled.div`
@@ -154,12 +158,13 @@ const Image = styled.img`
     object-fit: contain; // 이미지 비율 유지
 `;
 
-const FifthSection = styled.div`
+const InformationSection = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 50px;
+    overflow-x: hidden; /* 가로 스크롤 숨기기 */
 `;
 
 const ImageWrapper = styled.div`
@@ -167,7 +172,7 @@ const ImageWrapper = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 20px 0;
+    margin: 20px 0px 0px 5px;
     opacity: 0;
     transform: translateY(20px);
     transition: opacity 2s ease-out, transform 2s ease-out;
@@ -178,7 +183,7 @@ const ImageWrapper = styled.div`
     }
 
     img {
-        margin-left: 50px;
+        margin-left: 60px;
     }
 `;
 
@@ -199,7 +204,7 @@ const S = {
     SlideContent,
     ContentWrapper,
     Image,
-    FifthSection,
+    InformationSection,
     ImageWrapper
 };
 

@@ -9,6 +9,7 @@ const Main = () => {
     const sectionsRef = useRef([]);
     const scrollTimeout = useRef(null);
     const [currentSlide, setCurrentSlide] = useState(0);
+    const slideInterval = useRef(null);
 
     const contents = [
         { type: 'profile', content: <MentorProfileContent />, link: '/mentor-profile' },
@@ -94,6 +95,16 @@ const Main = () => {
         };
     }, []);
 
+    useEffect(() => {
+        slideInterval.current = setInterval(() => {
+            nextSlide();
+        }, 8000); // 8초마다 슬라이드 변경
+
+        return () => {
+            clearInterval(slideInterval.current);
+        };
+    }, []);
+
 
     return (
         <>  
@@ -152,17 +163,38 @@ const Main = () => {
             </S.MainMiddle>
             
              {/* Fifth section */}
-             <S.FifthSection ref={(el) => (sectionsRef.current[4] = el)}>
+             <S.InformationSection ref={(el) => (sectionsRef.current[4] = el)}>
                 <S.ImageWrapper className="animated-element" data-delay="500">
-                    <img style={{ width: "40%", margin: "60px 0px 0px 0px"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/퀴즈 설명.png`} alt="Quiz Description" />
+                    <img style={{ width: "40%", margin: "80px 0px 0px 0px"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/퀴즈 설명.png`} alt="Quiz Description" />
                 </S.ImageWrapper>
                 <S.ImageWrapper className="animated-element" data-delay="1000">
                     <img style={{ width: "75%"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/퀴즈 내용.png`} alt="Quiz Content" />
                 </S.ImageWrapper>
-            </S.FifthSection>
+            </S.InformationSection>
 
-            <S.MainBottom ref={(el) => (sectionsRef.current[5] = el)}>
-                <S.SectionContent>하단 섹션 내용</S.SectionContent>
+            
+             {/* Sixth section */}
+             <S.InformationSection ref={(el) => (sectionsRef.current[5] = el)}>
+                <S.ImageWrapper className="animated-element" data-delay="500">
+                    <img style={{ width: "32%", margin: "80px 0px 0px 0px"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/자립 설명.png`} alt="Quiz Description" />
+                </S.ImageWrapper>
+                <S.ImageWrapper className="animated-element" data-delay="1000">
+                    <img style={{ width: "75%", margin: "8px 0px 0px 0px"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/자립 내용.png`} alt="Quiz Content" />
+                </S.ImageWrapper>
+            </S.InformationSection>
+
+            {/* Seventh section */}
+            <S.InformationSection ref={(el) => (sectionsRef.current[6] = el)}>
+                <S.ImageWrapper className="animated-element" data-delay="500">
+                    <img style={{ width: "32%", margin: "80px 0px 0px 0px"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/챗봇 설명.png`} alt="Quiz Description" />
+                </S.ImageWrapper>
+                <S.ImageWrapper className="animated-element" data-delay="1000">
+                    <img style={{ width: "35%", margin: "5px 0px 0px 0px"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/챗봇 내용.png`} alt="Quiz Content" />
+                </S.ImageWrapper>
+            </S.InformationSection>
+
+            <S.MainBottom ref={(el) => (sectionsRef.current[7] = el)}>
+                <S.SectionContent style={{ color: "black"}}>나눔의 가치를 실천하며 더 나은 미래를 만들어갑니다. <br />함께 가요 미래로! Enabling People</S.SectionContent>
             </S.MainBottom>
         </>
     );
