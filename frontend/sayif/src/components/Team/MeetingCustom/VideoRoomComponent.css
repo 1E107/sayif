@@ -9,6 +9,22 @@
     min-width: 400px !important;
 }
 
+.chatComponentWrapper {
+    position: fixed;
+    bottom: 45px;
+    right: 0;
+    z-index: 9999;
+    width: 380px; /* 적절한 너비 설정 */
+    height: 80vh; /* 전체 화면 높이 */
+    background-color: white; /* 필요에 따라 배경색 설정 */
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.089); /* 그림자 효과 */
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    justify-content: space-between;
+    box-sizing: border-box;
+}
+
 .toolbar {
     min-height: 40px !important;
 }
