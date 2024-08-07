@@ -14,13 +14,13 @@ const fadeIn = keyframes`
 `;
 
 const MainTop = styled.div`
-    height: 100vh; /* 화면 전체 높이 */
+    height: 100vh;
     background-color: white;
     text-align: center;
     display: flex;
     flex-direction: column;
-    justify-content: center; 
-    align-items: center; 
+    justify-content: center;
+    align-items: center;
 `;
 
 const MainTopTitle = styled.div`
@@ -46,19 +46,19 @@ const GifContainer = styled.div`
 `;
 
 const MainMiddle = styled.div`
-    height: 100vh; /* 화면 전체 높이 */
+    height: 100vh;
     background-color: #116530;
     display: flex;
-    justify-content: center; 
-    align-items: center; 
+    justify-content: center;
+    align-items: center;
 `;
 
 const MainBottom = styled.div`
-    height: 100vh; /* 화면 전체 높이 */
+    height: 100vh;
     background-color: #ffffff;
     display: flex;
-    justify-content: center; 
-    align-items: center; 
+    justify-content: center;
+    align-items: center;
 `;
 
 const SectionContent = styled.div`
@@ -72,34 +72,69 @@ const HoverIcon = styled(ExpandMoreIcon)`
     font-size: 55px; 
     margin-top: 60px;
     cursor: pointer;
-    color: #888888; /* 기본 연한 색상 */
-    transition: color 0.3s, transform 0.3s; /* 색상과 크기 변경 시 부드러운 전환 */
+    color: #888888; 
+    transition: color 0.3s, transform 0.3s; 
 
     &:hover {
-        color: #333333; /* 호버 시 어두운 색상 */
-        transform: scale(1.1); /* 호버 시 크기 약간 증가 */
+        color: #333333; 
+        transform: scale(1.1); 
     }
 `;
 
 const MainSplitSection = styled.div`
-    height: 100vh; /* 화면 전체 높이 */
+    height: 100vh;
     background: linear-gradient(to bottom, white 50%, #116530 50%);
     display: flex;
-    justify-content: center; 
-    align-items: center; 
+    justify-content: center;
+    align-items: center;
 `;
 
 const VideoContainer = styled.div`
     margin-top: 70px;
-    width: 70vw; /* 화면 너비의 70% */
-    height: 39.375vw; /* 16:9 비율을 유지하기 위한 높이 */
+    width: 50vw; /* 화면 너비의 50%로 줄이기 */
+    height: 28.125vw; /* 16:9 비율을 유지하기 위한 높이 */
     display: flex;
-    justify-content: center; /* 비디오 수평 중앙 정렬 */
+    justify-content: center;
 
     iframe {
         width: 100%;
         height: 100%;
     }
+`;
+
+const SliderContainer = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 100%;
+`;
+
+const SliderArrow = styled.div`
+    cursor: pointer;
+    padding: 10px;
+    color: white; 
+    &:hover {
+        color: #ddd; /* 호버 시 색상 연하게 */
+    }
+`;
+
+const SlideContent = styled.div`
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
+
+const ContentWrapper = styled.div`
+    width: 100%;
+    max-width: 500px;
+    padding: 20px;
+`;
+
+const Image = styled.img`
+    width: 100%;
+    height: auto;
 `;
 
 const S = {
@@ -112,7 +147,12 @@ const S = {
     GifContainer,
     HoverIcon,
     MainSplitSection,
-    VideoContainer
+    VideoContainer,
+    SliderContainer,
+    SliderArrow,
+    SlideContent,
+    ContentWrapper,
+    Image
 };
 
 export default S;
