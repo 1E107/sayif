@@ -118,3 +118,14 @@ export const getMaterialDetail = async(materialId, token) => {
         throw error;
     }
 }
+
+export const getTeamExperience = async(teamId, token) => {
+    try{
+        const response = await axios.get(`${API_BASE_URL}/team/exp/${teamId}`, {
+            headers: {Authorization: `Bearer ${token}`}
+        })
+        return response;
+    }catch(error) {
+        throw error;
+    }
+}
