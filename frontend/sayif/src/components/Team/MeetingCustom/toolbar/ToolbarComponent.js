@@ -53,7 +53,14 @@ export default class ToolbarComponent extends Component {
     }
 
     leaveSession() {
-        this.props.leaveSession();
+        if (this.props.sessionStatus === 'mentor') {
+            const confirmLeave = window.confirm('회의를 종료하시겠습니까?');
+            if (confirmLeave) {
+                this.props.leaveSession();
+            }
+        } else {
+            this.props.leaveSession();
+        }
     }
 
     toggleChat() {

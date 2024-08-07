@@ -56,6 +56,12 @@ class VideoRoomComponent extends Component {
     }
 
     async componentDidMount() {
+        window.addEventListener('beforeunload', this.onbeforeunload);
+        window.addEventListener('resize', this.updateLayout);
+        window.addEventListener('resize', this.checkSize);
+        if (this.state.session) {
+            this.addSessionEventHandlers(this.state.session);
+        }
         // API 호출 및 상태 설정
         try {
             console.log('getTeamSesionId 호출');
@@ -98,18 +104,6 @@ class VideoRoomComponent extends Component {
             openViduLayoutOptions,
         );
         this.setState({ myUserName: this.props.member.nickname });
-        window.addEventListener('beforeunload', this.onbeforeunload);
-        window.addEventListener('resize', this.updateLayout);
-        window.addEventListener('resize', this.checkSize);
-        if (this.state.session) {
-            // 세션 객체 생성 후 신호 이벤트 리스너 등록
-            this.state.session.on('signal:sessionEnded', event => {
-                console.log('Session ended signal received:', event);
-                alert('회의가 종료되었습니다.');
-                this.leaveSession();
-                window.location.reload();
-            });
-        }
 
         // this.joinSession();
     }
@@ -118,7 +112,15 @@ class VideoRoomComponent extends Component {
         window.removeEventListener('beforeunload', this.onbeforeunload);
         window.removeEventListener('resize', this.updateLayout);
         window.removeEventListener('resize', this.checkSize);
-        // this.leaveSession();
+        this.leaveSession();
+    }
+
+    addSessionEventHandlers(session) {
+        session.on('signal:sessionEnded', event => {
+            console.log('Session ended signal received:', event);
+            alert('회의가 종료되었습니다.');
+            window.location.reload();
+        });
     }
 
     onbeforeunload(event) {
@@ -134,6 +136,7 @@ class VideoRoomComponent extends Component {
             },
             async () => {
                 this.subscribeToStreamCreated();
+                this.addSessionEventHandlers(this.state.session);
                 await this.connectToSession();
             },
         );
@@ -142,7 +145,7 @@ class VideoRoomComponent extends Component {
         const mySession = this.state.session;
         const mySessionId = this.state.mySessionId;
 
-        if (this.state.sessionStatus === 'mentor') {
+        if (this.state.sessionStatus === 'mentor' && mySession) {
             try {
                 // 세션 종료 신호 전송
                 this.state.session.signal({
@@ -614,6 +617,7 @@ class VideoRoomComponent extends Component {
                         toggleFullscreen={this.toggleFullscreen}
                         leaveSession={this.leaveSession}
                         toggleChat={this.toggleChat}
+                        sessionStatus={this.state.sessionStatus}
                     />
                     <div id="layout" className="bounds">
                         {localUser !== undefined &&
@@ -664,7 +668,7 @@ class VideoRoomComponent extends Component {
                     alt="Logo"
                     style={{
                         display: 'block',
-                        width: '80px',
+                        width: '100px',
                         margin: '0 auto 20px auto',
                     }}
                 />
