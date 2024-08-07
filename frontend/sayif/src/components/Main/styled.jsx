@@ -2,14 +2,14 @@ import styled, { keyframes } from "styled-components";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import '../../styles/fonts.css';
 
-const fadeIn = keyframes`
-    0% {
+const fadeInUp = keyframes`
+    from {
         opacity: 0;
-        transform: scale(0.9);
+        transform: translateY(20px);
     }
-    100% {
+    to {
         opacity: 1;
-        transform: scale(1); 
+        transform: translateY(0);
     }
 `;
 
@@ -27,13 +27,14 @@ const MainTopTitle = styled.div`
     margin-top: 10px;
     font-size: 50px;
     font-family: Freesentation-9Black;
-    animation: ${fadeIn} 1.1s ease-out; 
+    animation: ${fadeInUp} 1.1s ease-out; 
 `;
 
 const MainText = styled.div`
     font-family: NanumBarunpen;
     font-size: 18px;
     font-weight: bold;
+    transition: opacity 1s ease-out, transform 1s ease-out;
 `;
 
 const GifContainer = styled.div`
@@ -135,7 +136,7 @@ const SlideContent = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  animation: ${slideTransition} 0.5s ease-out;
+  animation: ${slideTransition} 1.2s ease-out;
   height: 500px; // 적절한 고정 높이 설정
   overflow: hidden; // 내용이 넘칠 경우 숨김 처리
   cursor: pointer;  // 이 줄을 추가
@@ -153,6 +154,33 @@ const Image = styled.img`
     object-fit: contain; // 이미지 비율 유지
 `;
 
+const FifthSection = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 50px;
+`;
+
+const ImageWrapper = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 2s ease-out, transform 2s ease-out;
+    
+    &.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    img {
+        margin-left: 50px;
+    }
+`;
 
 const S = {
     MainTop,
@@ -170,7 +198,9 @@ const S = {
     slideTransition,
     SlideContent,
     ContentWrapper,
-    Image
+    Image,
+    FifthSection,
+    ImageWrapper
 };
 
 export default S;
