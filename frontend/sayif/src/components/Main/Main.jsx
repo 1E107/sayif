@@ -11,10 +11,10 @@ const Main = () => {
     const [currentSlide, setCurrentSlide] = useState(0);
 
     const contents = [
-        { type: 'menu', content: <MentorProfileContent />, link: '/mentor-profile' },
-        { type: 'calendar', content: <MentoringApplyContent />, link: '/apply-mentoring' },
-        { type: 'cactus', content: <TeamOfficeContent />, link: '/team' },
-        { type: 'scratch', content: <MentoringVideoContent />, link: '/team/meeting' }
+        { type: 'profile', content: <MentorProfileContent />, link: '/mentor-profile' },
+        { type: 'apply', content: <MentoringApplyContent />, link: '/apply-mentoring' },
+        { type: 'team', content: <TeamOfficeContent />, link: '/team' },
+        { type: 'mentoring', content: <MentoringVideoContent />, link: '/team/meeting' }
     ];
 
     const nextSlide = () => {
