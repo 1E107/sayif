@@ -914,3 +914,19 @@
     width: 100%;
     box-sizing: border-box;
 }
+
+.meeting-info {
+    color: #116530;
+    font-size: 20px;
+    font-family: 'ChosunGu';
+    font-weight: bold;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.sessionNameInput {
+    border: 1px solid #116530;
+    width: 300px;
+    margin-bottom: 15px;
+    margin-top: 15px;
+}
