@@ -145,7 +145,12 @@ public class BoardService {
      */
     public List<BoardResponseDto> getPostList(BoardType type, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Board> boardPage = boardRepository.findAllByType(pageable, type);
+        Page<Board> boardPage;
+        if (type.equals(BoardType.Total)) {
+            boardPage = boardRepository.findAll(pageable);
+        } else {
+            boardPage = boardRepository.findAllByType(pageable, type);
+        }
 
         // 삭제되지 않은 게시글만 필터링하여 DTO로 변환
         return boardPage.getContent().stream()
