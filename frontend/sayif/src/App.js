@@ -16,6 +16,7 @@ import InformationDetailPage from './pages/Information/InformationDetailPage';
 import MyPage from './pages/Member/MyPage';
 import MaterialPage from './pages/Team/MaterialPage';
 import CommunityDetailPage from './pages/Community/CoomunityDetailPage';
+import ChallengeDetailPage from './pages/Team/ChallengeDetailPage';
 import './App.css';
 import useTokenExpiration from './hooks/useTokenExpiration';
 
@@ -60,6 +61,10 @@ function App() {
                     element={<InformationDetailPage />}
                 />
                 <Route path="/my-page" element={<MyPage />} />
+                <Route
+                    path="/team/challenge/photo/:id"
+                    element={<ChallengeDetailPage />}
+                />
             </Routes>
         </>
     );
