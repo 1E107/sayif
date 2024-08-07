@@ -10,7 +10,6 @@ import { useState } from 'react';
 import MentoringModal from './MentoringModal';
 import { getTeamStatue } from '../../api/MentoringApi';
 import { getMemberInfo, uploadProfileImage } from '../../api/MemberApi';
-import log from 'eslint-plugin-react/lib/util/log';
 
 function MyPageComponent() {
     const navigate = useNavigate();
@@ -29,6 +28,7 @@ function MyPageComponent() {
         gender: member.gender,
     });
     const [file, setFile] = useState(null);
+    const [preview, setPreview] = useState(member.profileImg);
 
     const handleInputChange = field => e => {
         if (field === 'phone') {
@@ -149,13 +149,12 @@ function MyPageComponent() {
     };
 
     const handleImageChange = e => {
-        console.log(member);
         const file = e.target.files[0];
         if (file) {
             setFile(file);
             const reader = new FileReader();
             reader.onloadend = () => {
-                dispatch(setMember({ ...member, imgUrl: reader.result }));
+                setPreview(reader.result);
             };
             reader.readAsDataURL(file);
         }
@@ -172,7 +171,7 @@ function MyPageComponent() {
             <div style={{ display: 'flex' }}>
                 <div style={{ textAlign: 'center' }}>
                     <S.ProfileImg
-                        src={member.profileImg}
+                        src={preview}
                         alt="Profile"
                         onClick={handleProfileImageClick}
                     />

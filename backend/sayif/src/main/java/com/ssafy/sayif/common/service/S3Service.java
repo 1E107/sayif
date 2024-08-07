@@ -1,6 +1,7 @@
 package com.ssafy.sayif.common.service;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
@@ -31,7 +32,7 @@ public class S3Service {
     private final AmazonS3 amazonS3; // AmazonS3 클라이언트 객체
     private final Tika tika = new Tika(); // Tika 객체를 사용하여 파일의 ContentType을 감지
 
-    @Value("${cloud.aws.s3.bucketName}")
+    @Value("${cloud.aws.s3.bucket-name}")
     private String bucketName; // S3 버킷 이름
 
     /**
@@ -100,7 +101,8 @@ public class S3Service {
         try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes)) {
             // S3에 파일 업로드 요청 설정
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, s3FileName,
-                byteArrayInputStream, metadata);
+                byteArrayInputStream, metadata)
+                .withCannedAcl(CannedAccessControlList.PublicRead); // Public Read 권한 설정;
             amazonS3.putObject(putObjectRequest); // 파일을 S3에 업로드
         } catch (Exception e) {
             log.error("Error occurred while uploading to S3: ", e);
