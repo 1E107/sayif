@@ -1,12 +1,15 @@
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import S from './style/CheckModalStyled';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 function ChallengeCheckModal({ onClose }) {
     const naviagte = useNavigate();
+    const challengeId = 16;
+    const { token, member } = useSelector(state => state.member);
     const [open, setOpen] = useState(true);
     const handleClose = () => {
         setOpen(false);
@@ -14,7 +17,7 @@ function ChallengeCheckModal({ onClose }) {
     };
 
     const handleUpload = () => {
-        naviagte('/team/challenge/photo');
+        naviagte(`/team/challenge/photo/${challengeId}`);
     };
 
     const style = {
@@ -29,6 +32,19 @@ function ChallengeCheckModal({ onClose }) {
         p: 4,
         textAlign: 'center',
     };
+
+    useEffect(() => {
+        const callMission = async () => {
+            try {
+                // const response = await getMission(member.teamId, token);
+                // console.log(response);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        //callMission();
+    }, []);
 
     return (
         <Modal

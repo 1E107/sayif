@@ -39,9 +39,6 @@ const MainPage = () => {
             {location.pathname === '/team/meeting' && <Meeting />}
             {location.pathname === '/team/material' && <MaterialList />}
             {location.pathname === '/team/challenge' && <ChallengeMain />}
-            {location.pathname === '/team/challenge/photo' && (
-                <ChallengePhoto />
-            )}
             {location.pathname === '/team/meeting' && (
                 <VideoRoomComponent userToken={token} member={member} />
             )}
