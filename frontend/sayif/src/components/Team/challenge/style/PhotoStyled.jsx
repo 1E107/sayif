@@ -25,8 +25,19 @@ const UploadButton = styled(Button)({
 const TopWrapper = styled.div`
     display: flex;
     justify-content: space-between;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 `;
+
+const ExplanText = styled.div`
+    font-family: ChosunGu;
+    margin-right: 10px;
+`;
+
+const NextChallengeBtn = styled(Button)({
+    fontFamily: 'ChosunGu !important',
+    color: '#116530 !important',
+    fontWeight: 'bold !important',
+});
 
 const BottomWrapper = styled.div`
     display: flex;
@@ -38,6 +49,7 @@ const BottomWrapper = styled.div`
 const CardText = styled.div`
     font-family: ChosunGu;
     font-size: 17px;
+    margin-bottom: 10px;
 `;
 
 const S = {
@@ -47,6 +59,8 @@ const S = {
     TopWrapper,
     BottomWrapper,
     CardText,
+    ExplanText,
+    NextChallengeBtn,
 };
 
 export default S;

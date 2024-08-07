@@ -75,7 +75,12 @@ function ChallengeMain() {
                     </div>
                 </S.MissionBox>
             </S.Container>
-            {showModal && <ChallengeCheckModal onClose={handleCloseCheck} />}
+            {showModal && (
+                <ChallengeCheckModal
+                    showModal={showModal}
+                    onClose={handleCloseCheck}
+                />
+            )}
         </>
     );
 
