@@ -10,15 +10,21 @@ import { useState } from 'react';
 import Modal from '@mui/material/Modal';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
+import { useSelector } from 'react-redux';
+import { acquireExperience } from '../../../api/config';
 
 function QuizDetail({ quiz }) {
     const [isSelect, SetIsSelect] = useState('');
     const [open, SetOpen] = useState(false);
     const [isCorrect, SetIsCorrect] = useState(false);
     const [openCorrect, SetOpenCorrect] = useState(false);
+    const { token, member } = useSelector(state => state.member);
 
-    const handleOpen = () => {
-        if (isCorrect) SetOpenCorrect(true);
+    const handleOpen = async () => {
+        if (isCorrect) {
+            SetOpenCorrect(true);
+            acquireExperience(token, member,10);
+        }
         SetOpen(true);
     };
     const handleClose = () => {

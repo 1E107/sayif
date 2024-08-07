@@ -24,12 +24,11 @@ function TeamMain() {
     // const [activeStep, setActiveStep] = React.useState(0);
     const [progress, setProgress] = React.useState(0);
     const { token, member } = useSelector(state => state.member);
-    
+
     useEffect(() => {
         async function fetchProgress() {
-            const result = await getTeamExperience(member.teamId, token);
-            console.log(result.data.point);
-            setProgress(result.data.point);
+            const experience = await getTeamExperience(member.teamId, token);
+            setProgress(experience.data.point);
         }
         fetchProgress();
     }, [member.teamId, token]);
@@ -38,17 +37,19 @@ function TeamMain() {
         <S.Container>
             <S.Wrapper>
                 <S.ImageBox></S.ImageBox>
-                <S.TeamNameText>
-                    새이프
-                    <CreateIcon
-                        style={{ color: '#DED3A6', marginLeft: '10px' }}
-                    />
-                </S.TeamNameText>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '10px' }}>
+                    <S.TeamNameText>
+                    Lv. {Math.floor(progress / 100)} 새이프
+                        <CreateIcon
+                            style={{ color: '#DED3A6', marginLeft: '10px' }}
+                        />
+                    </S.TeamNameText>
+                </div>
                 <S.ScoreContainer>
-                    <S.TeamScoreText>{progress}</S.TeamScoreText>
+                    <S.TeamScoreText>{progress / 100 < 5 ? progress % 100 : 100}</S.TeamScoreText>
                     <CustomLinearProgress
                         variant="determinate"
-                        value={progress%100} 
+                        value={progress / 100 < 5 ? progress % 100 : 100} 
                     />
                 </S.ScoreContainer>
             </S.Wrapper>
