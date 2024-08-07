@@ -71,7 +71,7 @@ public class ChallengeService {
             Random random = new Random();
             Challenge challenge = beforeChallenges.get(random.nextInt(beforeChallenges.size()));
             challenge.updateStatus(ChallengeStatus.Process);
-            return new ChallengeResponseDto(challenge.getId(), challenge.getChallengeList(), "새로운 챌린지가 시작되었습니다.");
+            return new ChallengeResponseDto(challenge.getId(), challenge.getChallengeList());
         }
         // 모든 첼린지를 진행했거나, 진행중이 있는 경우
         return null;
@@ -142,5 +142,20 @@ public class ChallengeService {
         else {
             return null;
         }
+    }
+
+    public ChallengeResponseDto getChallenge(Integer teamId) {
+        List<Challenge> challenges = challengeRepository.findByTeamIdAndStatus(teamId, ChallengeStatus.Process);
+        if (!challenges.isEmpty()) {
+            ChallengeResponseDto challengeResponseDto = new ChallengeResponseDto();
+            Challenge challenge = challenges.get(0);
+            challengeResponseDto.setChallengeId(challenge.getId());
+            challengeResponseDto.setChallengeList(challenge.getChallengeList());
+            return challengeResponseDto;
+        }
+        else {
+            throw new IllegalArgumentException("진행중인 챌린지가 없습니다.");
+        }
+
     }
 }

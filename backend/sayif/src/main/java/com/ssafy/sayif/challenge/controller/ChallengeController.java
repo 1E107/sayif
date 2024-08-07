@@ -67,8 +67,7 @@ public class ChallengeController {
         boolean changed = challengeService.changeChallengeStatus(id);
         if (changed) {
             return ResponseEntity.ok("챌린지를 완료했습니다.");
-        }
-        else {
+        } else {
             return ResponseEntity.status(400).body("해당 챌린지는 진행 중이 아닙니다.");
         }
     }
@@ -82,8 +81,7 @@ public class ChallengeController {
             Challenge challenge = findChallenge.get();
             if (member.getTeam() != challenge.getTeam()) {
                 return ResponseEntity.status(400).body("해당 팀의 구성원이 아닙니다.");
-            }
-            else {
+            } else {
                 return ResponseEntity.ok(challengeService.getChallengeDetail(challengeId));
             }
 
@@ -114,8 +112,7 @@ public class ChallengeController {
                 // 챌린지 상세 정보 저장
                 challengeService.saveChallengeDetail(challengeId, filename, userDetails.getUsername());
                 return ResponseEntity.ok("챌린지 상세 정보가 저장되었습니다.");
-            }
-            else {
+            } else {
                 return ResponseEntity.status(400).body("이미지가 없습니다.");
             }
 
@@ -125,7 +122,7 @@ public class ChallengeController {
         }
     }
 
-    @GetMapping("/{challengeId}")
+    @GetMapping("/image/{challengeId}")
     public ResponseEntity<?> getImage(@PathVariable Long challengeId, @AuthenticationPrincipal UserDetails userDetails) {
         String username = userDetails.getUsername();
         Member member = memberRepository.findByUsername(username);
@@ -134,8 +131,7 @@ public class ChallengeController {
             Challenge challenge = findChallenge.get();
             if (member.getTeam() != challenge.getTeam()) {
                 return ResponseEntity.status(400).body("해당 팀의 구성원이 아닙니다.");
-            }
-            else {
+            } else {
                 String result = challengeService.getImageUrl(challengeId, member.getId());
                 if (result != null) {
                     return ResponseEntity.ok(result);
@@ -146,5 +142,17 @@ public class ChallengeController {
         } else {
             return ResponseEntity.status(400).body("존재하지 않는 챌린지 ID입니다.");
         }
+    }
+
+    @GetMapping("/{teamId}")
+    public ResponseEntity<?> getChallenge(@PathVariable Integer teamId, @AuthenticationPrincipal UserDetails userDetails) {
+        String username = userDetails.getUsername();
+        Member member = memberRepository.findByUsername(username);
+        if (member.getTeam().getId() != teamId) {
+            return ResponseEntity.status(400).body("해당 팀의 구성원이 아닙니다.");
+        } else {
+            return ResponseEntity.ok(challengeService.getChallenge(teamId));
+        }
+
     }
 }
