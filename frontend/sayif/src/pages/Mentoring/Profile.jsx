@@ -11,7 +11,7 @@ const Main = styled.div`
 const Profile = () => {
     return (
         <Main>
-            <S.Title>멘토링 신청</S.Title>
+            <S.Title>멘토 프로필 조회</S.Title>
             <S.ExplainText>멘토 프로필을 확인하세요 !</S.ExplainText>
             <MentorList />
         </Main>

@@ -77,7 +77,7 @@ public class S3Service {
         }
 
         // S3에 저장될 파일명 생성 (랜덤 UUID + 원본 파일명)
-        String s3FileName = UUID.randomUUID().toString() + originalFilename;
+        String s3FileName = UUID.randomUUID() + originalFilename;
 
         byte[] bytes;
         try (InputStream is = file.getInputStream()) {
@@ -113,6 +113,10 @@ public class S3Service {
         return amazonS3.getUrl(bucketName, s3FileName).toString();
     }
 
+    public String getUrl(String fileName) {
+        return amazonS3.getUrl(bucketName, fileName).toString();
+    }
+
     /**
      * S3 버킷에서 파일 삭제
      *
@@ -134,7 +138,7 @@ public class S3Service {
      * @param fileAddress 파일의 URL
      * @return S3 키
      */
-    private String getKeyFromFileAddress(String fileAddress) {
+    public String getKeyFromFileAddress(String fileAddress) {
         try {
             URL url = new URL(fileAddress); // URL 객체 생성
             String decodingKey = URLDecoder.decode(url.getPath(),

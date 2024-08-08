@@ -50,7 +50,12 @@ public class MemberService {
             return false;
         }
 
-        String fileUrl = s3Service.upload(file);
+        String fileUrl;
+        if (file != null) {
+            fileUrl = s3Service.upload(file);
+        } else {
+            fileUrl = s3Service.getUrl("default.jpg");
+        }
 
         Mentee mentee = Mentee.builder()
             .username(username)
@@ -62,7 +67,7 @@ public class MemberService {
             .phone(registerRequestDto.getPhone())
             .role(Role.Mentee)
             .authFile(registerRequestDto.getAuthFile())
-            .profileImg(fileUrl == null ? "default.jpg" : fileUrl)
+            .profileImg(fileUrl)
             .status(Status.Pending)
             .build();
         menteeRepository.save(mentee);
@@ -78,7 +83,8 @@ public class MemberService {
             throw new RuntimeException("Member not found");
         }
 
-        String fileUrl = s3Service.upload(file);
+        String oldFileUrl = member.getProfileImg(); // 기존 이미지 URL 저장
+        String newFileUrl = s3Service.upload(file);
 
         if (member.getRole() == Role.Mentee) {
             Optional<Mentee> mentee = menteeRepository.findById(member.getId());
@@ -94,7 +100,7 @@ public class MemberService {
                         : member.getGender())
                     .email(updateRequestDto.getEmail() != null ? updateRequestDto.getEmail()
                         : member.getEmail())
-                    .profileImg(fileUrl != null ? fileUrl : member.getProfileImg())
+                    .profileImg(newFileUrl != null ? newFileUrl : member.getProfileImg())
                     .phone(updateRequestDto.getPhone() != null ? updateRequestDto.getPhone()
                         : member.getPhone())
                     .build();
@@ -114,7 +120,7 @@ public class MemberService {
                         : loginedMentor.getGender())
                     .email(updateRequestDto.getEmail() != null ? updateRequestDto.getEmail()
                         : loginedMentor.getEmail())
-                    .profileImg(fileUrl != null ? fileUrl : member.getProfileImg())
+                    .profileImg(newFileUrl != null ? newFileUrl : member.getProfileImg())
                     .phone(updateRequestDto.getPhone() != null ? updateRequestDto.getPhone()
                         : loginedMentor.getPhone())
                     .build();
@@ -122,13 +128,19 @@ public class MemberService {
             }
         }
 
-
+        // 새로운 파일 업로드 후, 기존 파일이 default.jpg가 아닐 때만 삭제
+        if (newFileUrl != null && oldFileUrl != null && !oldFileUrl.equals(newFileUrl)
+            && !s3Service.getKeyFromFileAddress(oldFileUrl).equals("default.jpg")) {
+            s3Service.deleteFileFromS3(oldFileUrl);
+        }
     }
+
 
     public void deleteMember(String username) {
         Member member = memberRepository.findByUsername(username);
         if (member != null) {
             memberRepository.delete(member);
+            s3Service.deleteFileFromS3(member.getProfileImg());
             deleteRefreshTokens(username);
         } else {
             throw new RuntimeException("존재하지 않는 회원입니다.");
