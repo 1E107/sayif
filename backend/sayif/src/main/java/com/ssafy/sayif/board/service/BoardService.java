@@ -158,9 +158,14 @@ public class BoardService {
      * @return 삭제되지 않은(isRemove = false) 게시글 목록의 DTO 리스트
      */
     public List<BoardResponseDto> getPostList(BoardType type, int page, int size) {
+        if (page < 0 || size <= 0) {
+            throw new IllegalArgumentException("Invalid page or size parameters");
+        }
+
         Pageable pageable = PageRequest.of(page, size);
         Page<Board> boardPage;
-        if (type.equals(BoardType.Total)) {
+
+        if (type == BoardType.Total) { // enum 타입 비교
             boardPage = boardRepository.findAll(pageable);
         } else {
             boardPage = boardRepository.findAllByType(pageable, type);
