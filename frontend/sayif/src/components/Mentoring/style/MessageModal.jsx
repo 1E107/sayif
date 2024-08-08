@@ -6,83 +6,91 @@ import { API_BASE_URL } from '../../../api/config';
 import { useSelector } from 'react-redux';
 
 const ModalOverlay = styled.div`
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'ChosunGu', sans-serif;
 `;
 
 const ModalContent = styled.div`
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 400px;
-    max-height: 80vh;
-    overflow-y: auto;
-    text-align: center;
-    position: relative;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  max-height: 80vh;
+  overflow-y: auto;
+  text-align: center;
+  position: relative;
+  font-family: 'ChosunGu', sans-serif;
 `;
 
 const CloseButton = styled.button`
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    border: none;
-    background: transparent;
-    font-size: 24px;
-    color: #333;
-    cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: none;
+  background: transparent;
+  font-size: 24px;
+  color: #333;
+  cursor: pointer;
+  font-family: 'ChosunGu', sans-serif;
 `;
 
 const Input = styled.input`
-    width: calc(100% - 20px);
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 1em;
-    box-sizing: border-box;
+  width: calc(100% - 20px);
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1em;
+  box-sizing: border-box;
+  font-family: 'ChosunGu', sans-serif;
 `;
 
 const TextArea = styled.textarea`
-    width: calc(100% - 20px);
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 1em;
-    height: 100px;
-    resize: vertical;
-    box-sizing: border-box;
+  width: calc(100% - 20px);
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1em;
+  height: 100px;
+  resize: vertical;
+  box-sizing: border-box;
+  font-family: 'ChosunGu', sans-serif;
 `;
 
 const SubmitButton = styled.button`
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    background-color: #0b4619;
-    color: white;
-    font-size: 1em;
-    cursor: pointer;
-    margin-top: 10px;
-    &:disabled {
-        background-color: #cccccc;
-        cursor: not-allowed;
-    }
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  background-color: #0b4619;
+  color: white;
+  font-size: 1em;
+  cursor: pointer;
+  margin-top: 10px;
+  font-family: 'ChosunGu', sans-serif;
+
+  &:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
 `;
 
 const ErrorText = styled.p`
-    color: red;
-    font-size: 0.9em;
-    margin: 0;
-    padding: 0 20px;
-    text-align: left;
+  color: red;
+  font-size: 0.9em;
+  margin: 0;
+  padding: 0 20px;
+  text-align: left;
+  font-family: 'ChosunGu', sans-serif;
 `;
 
 const MessageModal = ({ isOpen, onClose, receiver }) => {
@@ -135,7 +143,9 @@ const MessageModal = ({ isOpen, onClose, receiver }) => {
         }
     };
 
-    if (!isOpen) return null;
+    if (!isOpen) {
+        return null;
+    }
 
     return (
         <ModalOverlay onClick={onClose}>

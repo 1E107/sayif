@@ -252,7 +252,7 @@ function TeamHeader() {
                         </Tooltip>
                     </Box>
 
-                    <Drawer open={showSide}>
+                    <Drawer open={showSide} onClose={handleShowSideMenu}>
                         <TeamSideMenu
                             offSideMenu={handleShowSideMenu}
                             selectSideMenu={handleShowPage}

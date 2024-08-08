@@ -90,7 +90,7 @@ const Chat = () => {
   return (
     <S.Container>
 
-      <S.ChatContentWrapper>
+      <S.ChatContentWrapper>11
         {messages.map((msg, index) =>
           msg.nickname === currentUserNickname ? (
             <S.ChatMy key={index}>

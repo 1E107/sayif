@@ -40,11 +40,13 @@ public class BoardService {
     /**
      * 새로운 게시글을 작성합니다.
      *
-     * @param dto 게시글 작성 요청을 담고 있는 DTO
+     * @param dto      게시글 작성 요청을 담고 있는 DTO
+     * @param username
      * @return 작성된 게시글의 DTO를 감싼 Optional 객체
      * @throws MemberNotFoundException 해당 ID의 멤버가 존재하지 않을 경우 예외를 던집니다.
      */
-    public Optional<BoardResponseDto> writePost(PostRequestDto dto, MultipartFile file) {
+    public Optional<BoardResponseDto> writePost(PostRequestDto dto, MultipartFile file,
+        String username) {
         // 파일이 존재하는 경우에만 파일 저장 및 파일 이름 설정
         String fileUrl = "";
         if (file != null && !file.isEmpty()) {
@@ -52,14 +54,13 @@ public class BoardService {
         }
 
         // 작성 요청 DTO에서 멤버를 조회
-        Member member = memberRepository.findByUsername(dto.getUsername());
+        Member member = memberRepository.findByUsername(username);
         if (member == null) {
-            throw new MemberNotFoundException(dto.getUsername());
+            throw new MemberNotFoundException(username);
         }
 
         // 새로운 게시글 엔티티 생성
         Board board = Board.builder()
-            .file(dto.getFile())
             .title(dto.getTitle())
             .content(dto.getContent())
             .type(dto.getType())
@@ -99,7 +100,7 @@ public class BoardService {
 
         // 게시글 수정
         Board updatedBoard = existBoard.toBuilder()
-            .file(Objects.equals(newFileUrl, "") ? dto.getFile()
+            .file(Objects.equals(newFileUrl, "") ? oldFileUrl
                 : newFileUrl) // 새로운 파일 URL이 존재하지 않으면 DTO에서 가져온 파일 URL 사용
             .title(dto.getTitle()) // 새로운 제목 설정
             .content(dto.getContent()) // 새로운 내용 설정
@@ -158,9 +159,14 @@ public class BoardService {
      * @return 삭제되지 않은(isRemove = false) 게시글 목록의 DTO 리스트
      */
     public List<BoardResponseDto> getPostList(BoardType type, int page, int size) {
+        if (page < 0 || size <= 0) {
+            throw new IllegalArgumentException("Invalid page or size parameters");
+        }
+
         Pageable pageable = PageRequest.of(page, size);
         Page<Board> boardPage;
-        if (type.equals(BoardType.Total)) {
+
+        if (type == BoardType.Total) { // enum 타입 비교
             boardPage = boardRepository.findAll(pageable);
         } else {
             boardPage = boardRepository.findAllByType(pageable, type);

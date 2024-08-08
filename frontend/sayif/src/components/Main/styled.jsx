@@ -61,14 +61,42 @@ const MainBottom = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative; /* 상대적 위치 설정 */
     overflow-x: hidden; /* 가로 스크롤 숨기기 */
 `;
 
 const SectionContent = styled.div`
     text-align: center;
     color: white;
-    font-size: 24px;
-    font-family: NanumBarunpen;
+    font-weight: 700;
+    font-size: 34px;
+    font-family: 'NanumBarunpen', sans-serif;
+    z-index: 2; /* 텍스트를 위에 표시 */
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px; /* 텍스트 주변 여백 */
+`;
+
+const VideoBackground = styled.video`
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1; /* 배경으로 설정 */
+`;
+
+const Overlay = styled.div`
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* 어두운 오버레이 */
+    z-index: 1; /* 오버레이를 배경 영상 위에 표시 */
 `;
 
 const HoverIcon = styled(ExpandMoreIcon)`
@@ -159,11 +187,12 @@ const Image = styled.img`
 `;
 
 const InformationSection = styled.div`
+    height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 50px;
+    margin: 20px 50px 0px 0px;
     overflow-x: hidden; /* 가로 스크롤 숨기기 */
 `;
 
@@ -194,6 +223,8 @@ const S = {
     MainText,
     MainBottom,
     SectionContent,
+    VideoBackground,
+    Overlay,
     GifContainer,
     HoverIcon,
     MainSplitSection,

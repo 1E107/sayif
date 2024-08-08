@@ -18,6 +18,7 @@ import { useSelector } from 'react-redux';
 import ChallengeEmpty from '../../LoadingAndEmpty/ChallengeEmpty';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import { color } from 'framer-motion';
+import { acquireExperience } from '../../../api/config';
 
 function ChallengePhoto() {
     const navigate = useNavigate();
@@ -42,6 +43,7 @@ function ChallengePhoto() {
                 const response = await changeMissionStatus(id, token);
                 if (response.status === 200) {
                     alert('다음 챌린지가 오픈됩니다!');
+                    acquireExperience(token,member,5);
                     navigate('/team/challenge');
                 }
             } catch (error) {

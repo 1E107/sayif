@@ -1,45 +1,46 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import '../../../../styles/fonts.css';
 
 const Container = styled.div`
-     margin: 70px 20px 50px 20px;
+    margin: 70px 20px 50px 20px;
 `;
 
 const CustomButton = styled(Button)({
-    backgroundColor: "#116530 !important",
-    borderRadius: "13px !important",
-    padding: "5px !important",
-    margin: "10px 0px 0px 5px !important",
-    fontFamily: "ChosunGu !important",
+    backgroundColor: '#116530 !important',
+    borderRadius: '13px !important',
+    padding: '5px !important',
+    margin: '10px 0px 0px 5px !important',
+    fontFamily: 'ChosunGu !important',
+    fontSize: '15px !important',
 });
 
 const SearchButton = styled(Button)({
-    backgroundColor: "#116530 !important",
-    borderRadius: "20px !important",
-    marginBottom: "40px !important",
-    padding: "5px !important",
-    fontFamily: "ChosunGu !important",
-    marginLeft: "5px !important",
+    backgroundColor: '#116530 !important',
+    borderRadius: '20px !important',
+    marginBottom: '40px !important',
+    padding: '5px !important',
+    fontFamily: 'ChosunGu !important',
+    marginLeft: '5px !important',
 });
 
 const CustomTextField = styled(TextField)({
-    backgroundColor: "white",
-    borderRadius: "20px",
+    backgroundColor: 'white',
+    borderRadius: '20px',
     '& .MuiOutlinedInput-root': {
         '& fieldset': {
             border: 'none',
         },
         '&:hover fieldset': {
-            border: 'none', 
+            border: 'none',
         },
         '&.Mui-focused fieldset': {
-            border: 'none', 
+            border: 'none',
         },
-        '& input' : {
+        '& input': {
             padding: '7px',
-        }
+        },
     },
 });
 
@@ -48,6 +49,6 @@ const S = {
     CustomButton,
     SearchButton,
     CustomTextField,
-}
+};
 
 export default S;
