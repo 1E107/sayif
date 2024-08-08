@@ -1,36 +1,13 @@
 .nickname {
-    background: rgba(58, 64, 74, 0.651);
-    padding: 5px !important;
+    background: rgba(58, 64, 74, 0.397);
+    padding: 10px !important;
     position: absolute;
     z-index: 999;
     color: #ffffff;
 }
-.form-control {
-    color: black;
-}
 
 .pointer {
     cursor: pointer;
-}
-
-#closeButton {
-    position: absolute;
-    top: -3px;
-    right: 0;
-    z-index: 999;
-}
-
-#name-error-text {
-    color: #fd6d5f;
-    font-weight: bold;
-    text-align: center;
-}
-
-#nicknameForm {
-    padding: 10px;
-}
-.fullscreen {
-    top: 40px;
 }
 
 .streamComponent {
@@ -47,7 +24,7 @@ video {
     padding: 0;
     border: 0;
     font-size: 100%;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: 'Chosungu';
 }
 
 #statusIcons {

@@ -2,14 +2,14 @@ import styled, { keyframes } from "styled-components";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import '../../styles/fonts.css';
 
-const fadeIn = keyframes`
-    0% {
+const fadeInUp = keyframes`
+    from {
         opacity: 0;
-        transform: scale(0.9);
+        transform: translateY(20px);
     }
-    100% {
+    to {
         opacity: 1;
-        transform: scale(1); 
+        transform: translateY(0);
     }
 `;
 
@@ -21,19 +21,21 @@ const MainTop = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    overflow-x: hidden; /* 가로 스크롤 숨기기 */
 `;
 
 const MainTopTitle = styled.div`
     margin-top: 10px;
     font-size: 50px;
     font-family: Freesentation-9Black;
-    animation: ${fadeIn} 1.1s ease-out; 
+    animation: ${fadeInUp} 1.1s ease-out; 
 `;
 
 const MainText = styled.div`
     font-family: NanumBarunpen;
     font-size: 18px;
     font-weight: bold;
+    transition: opacity 1s ease-out, transform 1s ease-out;
 `;
 
 const GifContainer = styled.div`
@@ -51,14 +53,15 @@ const MainMiddle = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow-x: hidden; /* 가로 스크롤 숨기기 */
 `;
 
 const MainBottom = styled.div`
     height: 100vh;
-    background-color: #ffffff;
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow-x: hidden; /* 가로 스크롤 숨기기 */
 `;
 
 const SectionContent = styled.div`
@@ -87,6 +90,7 @@ const MainSplitSection = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow-x: hidden; /* 가로 스크롤 숨기기 */
 `;
 
 const VideoContainer = styled.div`
@@ -108,6 +112,9 @@ const SliderContainer = styled.div`
     justify-content: space-between;
     width: 100%;
     height: 100%;
+    overflow: hidden; // 추가
+    position: relative;
+    overflow-x: hidden; /* 가로 스크롤 숨기기 */
 `;
 
 const SliderArrow = styled.div`
@@ -119,11 +126,24 @@ const SliderArrow = styled.div`
     }
 `;
 
+const slideTransition = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
+
 const SlideContent = styled.div`
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: ${slideTransition} 1.2s ease-out;
+  height: 500px; // 적절한 고정 높이 설정
+  overflow: hidden; // 내용이 넘칠 경우 숨김 처리
+  cursor: pointer;  // 이 줄을 추가
 `;
 
 const ContentWrapper = styled.div`
@@ -134,7 +154,37 @@ const ContentWrapper = styled.div`
 
 const Image = styled.img`
     width: 100%;
-    height: auto;
+    height: 400px; // 모든 이미지에 대해 동일한 높이 설정
+    object-fit: contain; // 이미지 비율 유지
+`;
+
+const InformationSection = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 50px;
+    overflow-x: hidden; /* 가로 스크롤 숨기기 */
+`;
+
+const ImageWrapper = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0px 0px 5px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 2s ease-out, transform 2s ease-out;
+    
+    &.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    img {
+        margin-left: 60px;
+    }
 `;
 
 const S = {
@@ -150,9 +200,12 @@ const S = {
     VideoContainer,
     SliderContainer,
     SliderArrow,
+    slideTransition,
     SlideContent,
     ContentWrapper,
-    Image
+    Image,
+    InformationSection,
+    ImageWrapper
 };
 
 export default S;

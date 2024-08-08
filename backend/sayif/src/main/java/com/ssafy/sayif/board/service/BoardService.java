@@ -5,13 +5,14 @@ import com.ssafy.sayif.board.dto.PostRequestDto;
 import com.ssafy.sayif.board.entity.Board;
 import com.ssafy.sayif.board.entity.BoardType;
 import com.ssafy.sayif.board.repository.BoardRepository;
-import com.ssafy.sayif.common.service.FileService;
+import com.ssafy.sayif.common.service.S3Service;
 import com.ssafy.sayif.member.entity.Member;
 import com.ssafy.sayif.member.exception.MemberNotFoundException;
 import com.ssafy.sayif.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 게시판 서비스를 제공하는 클래스입니다. 게시글의 CRUD 작업 및 목록 조회와 관련된 비즈니스 로직을 처리합니다.
@@ -30,12 +32,10 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class BoardService {
 
-    private final String bucketName = "board-images";
-
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
     private final GoodService goodService;
-    private final FileService fileService;
+    private final S3Service s3Service;
 
     /**
      * 새로운 게시글을 작성합니다.
@@ -44,10 +44,11 @@ public class BoardService {
      * @return 작성된 게시글의 DTO를 감싼 Optional 객체
      * @throws MemberNotFoundException 해당 ID의 멤버가 존재하지 않을 경우 예외를 던집니다.
      */
-    public Optional<BoardResponseDto> writePost(PostRequestDto dto) {
-        // 모든 멤버 정보를 로그에 출력
-        for (Member member : memberRepository.findAll()) {
-            log.info(member.toString());
+    public Optional<BoardResponseDto> writePost(PostRequestDto dto, MultipartFile file) {
+        // 파일이 존재하는 경우에만 파일 저장 및 파일 이름 설정
+        String fileUrl = "";
+        if (file != null && !file.isEmpty()) {
+            fileUrl = s3Service.upload(file);
         }
 
         // 작성 요청 DTO에서 멤버를 조회
@@ -62,6 +63,7 @@ public class BoardService {
             .title(dto.getTitle())
             .content(dto.getContent())
             .type(dto.getType())
+            .file(fileUrl)
             .isRemove(false)
             .member(member)
             .build();
@@ -74,29 +76,50 @@ public class BoardService {
     /**
      * 기존 게시글을 수정합니다.
      *
-     * @param id  수정할 게시글의 ID
-     * @param dto 게시글 수정 요청을 담고 있는 DTO
+     * @param id   수정할 게시글의 ID
+     * @param dto  게시글 수정 요청을 담고 있는 DTO
+     * @param file 업로드할 파일
      * @return 수정된 게시글의 DTO를 감싼 Optional 객체
      * @throws IllegalArgumentException 해당 ID의 게시글이 존재하지 않을 경우 예외를 던집니다.
      */
-    public Optional<BoardResponseDto> modifyPost(int id, PostRequestDto dto) {
+    public Optional<BoardResponseDto> modifyPost(int id, PostRequestDto dto, MultipartFile file) {
         // 수정할 게시글 조회
         Board existBoard = boardRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Invalid board ID: " + id));
 
+        // 기존 파일 URL 저장
+        String oldFileUrl = existBoard.getFile();
+
+        // 새로운 파일이 존재하는 경우에만 파일 저장 및 파일 이름 설정
+        String newFileUrl = "";
+        if (file != null && !file.isEmpty()) {
+            // 새로운 파일을 S3에 업로드하고, 해당 파일의 URL을 저장
+            newFileUrl = s3Service.upload(file);
+        }
+
         // 게시글 수정
         Board updatedBoard = existBoard.toBuilder()
-            .file(dto.getFile())
-            .title(dto.getTitle())
-            .content(dto.getContent())
-            .modifiedAt(LocalDateTime.now())
-            .type(dto.getType())
+            .file(Objects.equals(newFileUrl, "") ? dto.getFile()
+                : newFileUrl) // 새로운 파일 URL이 존재하지 않으면 DTO에서 가져온 파일 URL 사용
+            .title(dto.getTitle()) // 새로운 제목 설정
+            .content(dto.getContent()) // 새로운 내용 설정
+            .modifiedAt(LocalDateTime.now()) // 수정 시간 업데이트
+            .type(dto.getType()) // 새로운 타입 설정
             .build();
 
-        // 수정된 게시글 저장 및 DTO로 변환하여 반환
+        // 수정된 게시글 저장
         Board savedBoard = boardRepository.save(updatedBoard);
+
+        // 새로운 파일이 업로드되었고, 기존 파일이 존재하는 경우 S3에서 기존 파일 삭제
+        if (!Objects.equals(newFileUrl, "") && oldFileUrl != null && !oldFileUrl.isEmpty()) {
+            // S3에서 기존 파일 삭제
+            s3Service.deleteFileFromS3(oldFileUrl);
+        }
+
+        // 수정된 게시글을 DTO로 변환하여 반환
         return Optional.of(convertToDto(savedBoard));
     }
+
 
     /**
      * 게시글을 논리적으로 삭제합니다.
@@ -136,7 +159,12 @@ public class BoardService {
      */
     public List<BoardResponseDto> getPostList(BoardType type, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Board> boardPage = boardRepository.findAllByType(pageable, type);
+        Page<Board> boardPage;
+        if (type.equals(BoardType.Total)) {
+            boardPage = boardRepository.findAll(pageable);
+        } else {
+            boardPage = boardRepository.findAllByType(pageable, type);
+        }
 
         // 삭제되지 않은 게시글만 필터링하여 DTO로 변환
         return boardPage.getContent().stream()
@@ -170,7 +198,7 @@ public class BoardService {
             .id(board.getId())
             .title(board.getTitle())
             .content(board.getContent())
-            .fileUrl(fileService.getFileUrl(board.getFile(), bucketName))
+            .fileUrl(board.getFile())
             .writer(board.getMember().getName())
             .type(board.getType())
             .hitCount(board.getHitCount())

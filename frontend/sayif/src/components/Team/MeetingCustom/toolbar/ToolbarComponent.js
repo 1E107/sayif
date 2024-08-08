@@ -15,7 +15,7 @@ import FullscreenExit from '@mui/icons-material/FullscreenExit';
 import PictureInPicture from '@mui/icons-material/PictureInPicture';
 import ScreenShare from '@mui/icons-material/ScreenShare';
 import StopScreenShare from '@mui/icons-material/StopScreenShare';
-import PowerSettingsNew from '@mui/icons-material/PowerSettingsNew';
+import ExitToApp from '@mui/icons-material/ExitToApp';
 import QuestionAnswer from '@mui/icons-material/QuestionAnswer';
 
 export default class ToolbarComponent extends Component {
@@ -53,7 +53,14 @@ export default class ToolbarComponent extends Component {
     }
 
     leaveSession() {
-        this.props.leaveSession();
+        if (this.props.sessionStatus === 'mentor') {
+            const confirmLeave = window.confirm('회의를 종료하시겠습니까?');
+            if (confirmLeave) {
+                this.props.leaveSession();
+            }
+        } else {
+            this.props.leaveSession();
+        }
     }
 
     toggleChat() {
@@ -143,7 +150,7 @@ export default class ToolbarComponent extends Component {
                             onClick={this.leaveSession}
                             id="navLeaveButton"
                         >
-                            <PowerSettingsNew style={{ color: '#FFCC1D' }} />
+                            <ExitToApp style={{ color: '#FFCC1D' }} />
                         </IconButton>
                         <IconButton
                             color="inherit"

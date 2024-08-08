@@ -33,13 +33,13 @@
     right: 0;
     bottom: 0;
     margin: auto;
-    height: calc(100% - 30px);
-    width: calc(100% - 30px);
+    height: calc(100% - 10px);
+    width: calc(100% - 10px);
     border-radius: 20px;
 }
 
 .message-wrap {
-    padding: 0 15px;
+    padding: 0 10px;
     height: calc(100% - 80px);
     overflow: auto;
     background-color: #ebebeb;
@@ -65,7 +65,7 @@
 .msg-detail p {
     margin: 0;
     font-size: 15px;
-    color: #303030;
+    color: #0b0b0b;
     font-family: 'Chosungu';
 }
 
@@ -74,7 +74,7 @@
     color: #000000;
     font-style: italic;
     font-family: 'Chosungu';
-    padding: 2px 5px;
+    padding: 3px 5px;
 }
 
 .msg-content {
@@ -175,7 +175,7 @@ span.triangle {
     border: none;
     outline: none;
     font-size: 14px;
-    margin-left: -2%;
+    margin-left: -4%;
     color: #000000;
     font-family: 'Chosungu';
 }

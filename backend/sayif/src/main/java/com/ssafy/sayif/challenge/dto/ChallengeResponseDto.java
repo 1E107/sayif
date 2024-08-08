@@ -14,5 +14,4 @@ public class ChallengeResponseDto {
 
     private Long challengeId;
     private ChallengeList challengeList;
-    private String message;
 }

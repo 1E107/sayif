@@ -113,7 +113,6 @@ export default class ChatComponent extends Component {
                                 this.props.user.getStreamManager().stream
                                     .session.sessionId
                             }{' '}
-                            - CHAT
                         </span>
                         <IconButton id="closeButton" onClick={this.close}>
                             <HighlightOff style={{ color: '#E8E8CC' }} />

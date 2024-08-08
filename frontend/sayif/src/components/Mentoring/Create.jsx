@@ -11,20 +11,39 @@ import '../../styles/fonts.css';
 import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { submitMentoringGroup, getTotalMentor } from '../../api/MentoringApi';
+import { getTotalMentor, submitMentoringGroup } from '../../api/MentoringApi';
 import CreateFinish from './CreateFinish';
 
 function Create() {
     const [otherMentor, SetOtherMentor] = useState('');
     const [selectDays, SetSelectDays] = useState([]);
-    const [selectDate, SetSelectDate] = useState('');
-    const [selectTime, SetSelectTime] = useState('');
-    const [selectPMAM, SetSelectPMAM] = useState('');
+    const [selectDate, SetSelectDate] = useState(dayjs().format('YYYY-MM-DD')); // 기본 날짜 설정
+    const [selectTime, SetSelectTime] = useState('09:00'); // 기본 시간 설정
+    const [selectPMAM, SetSelectPMAM] = useState('오전'); // 기본 PMAM 설정
     const navigate = useNavigate();
     const { token } = useSelector(state => state.member);
     const [showFinish, SetShowFinish] = useState(false);
     const [showApply, SetShowApply] = useState(true);
     const [mentorList, SetMentorList] = useState([]);
+
+    useEffect(() => {
+        const callTotalMentor = async () => {
+            try {
+                const response = await getTotalMentor(token);
+                if (response.status === 200) {
+                    SetMentorList(response.data);
+                    // 첫 번째 멘토를 기본값으로 설정
+                    if (response.data.length > 0) {
+                        SetOtherMentor(response.data[0].username);
+                    }
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        callTotalMentor();
+    }, [token]);
 
     const handleClick = day => {
         SetSelectDays(prevDays => {
@@ -57,6 +76,23 @@ function Create() {
     };
 
     const handleCompleteBtn = () => {
+        if (!selectDate) {
+            alert('멘토링 시작 날짜를 선택하세요.');
+            return;
+        }
+        if (selectDays.length === 0) {
+            alert('멘토링 요일을 선택하세요.');
+            return;
+        }
+        if (!selectTime) {
+            alert('멘토링 시간을 선택하세요.');
+            return;
+        }
+        if (!otherMentor) {
+            alert('멘토를 선택하세요.');
+            return;
+        }
+
         const daysString = selectDays.join(', ');
 
         const callSubmitGroupd = async () => {
@@ -69,7 +105,7 @@ function Create() {
                     otherMentor,
                     token,
                 );
-                if (response.status == 200) {
+                if (response.status === 200) {
                     alert('멘토링 그룹 신청이 완료되었습니다.');
                     SetShowApply(false);
                     SetShowFinish(true);
@@ -96,22 +132,7 @@ function Create() {
         { value: '12:00', label: '12:00' },
     ];
 
-    useEffect(() => {
-        const callTotalMentor = async () => {
-            try {
-                const response = await getTotalMentor(token);
-                if (response.status === 200) {
-                    SetMentorList(response.data);
-                }
-            } catch (error) {
-                console.log(error);
-            }
-        };
-
-        callTotalMentor();
-    }, []);
-
-    const CreateView = (
+    return (
         <>
             <S.Title>멘토 그룹 생성</S.Title>
             <S.ExplainText>
@@ -121,6 +142,7 @@ function Create() {
                 <>
                     <S.Container>
                         <S.CustomTable>
+                            <tbody>
                             <tr>
                                 <S.CustomTdTitle>멘토링 팀원</S.CustomTdTitle>
                                 <S.CustomTdContent>
@@ -147,17 +169,21 @@ function Create() {
                                                 style={{ width: '100px' }}
                                             >
                                                 <NativeSelect
+                                                    value={otherMentor}
                                                     onChange={
                                                         handleChangeMentor
                                                     }
                                                     style={{
-                                                        fontFamily: 'ChosunGu',
+                                                        fontFamily:
+                                                            'ChosunGu',
                                                     }}
                                                 >
-                                                    {/* 나중에 반복문 돌림 멘토 리스트 받아와서 */}
-                                                    {mentorList.map(mentor => {
-                                                        return (
+                                                    {mentorList.map(
+                                                        mentor => (
                                                             <option
+                                                                key={
+                                                                    mentor.username
+                                                                }
                                                                 value={
                                                                     mentor.username
                                                                 }
@@ -166,13 +192,8 @@ function Create() {
                                                                     mentor.nickname
                                                                 }
                                                             </option>
-                                                        );
-                                                    })}
-                                                    {/* <option value={"오복"}>오복</option>
-                                                <option value={"컷"}>컷</option>
-                                                <option value={"뱅"}>뱅</option>
-                                                <option value={"소라"}>소라</option>
-                                                <option value={"고동"}>고동</option> */}
+                                                        )
+                                                    )}
                                                 </NativeSelect>
                                             </FormControl>
                                         </Box>
@@ -191,8 +212,11 @@ function Create() {
                                             components={['DatePicker']}
                                         >
                                             <DatePicker
+                                                value={dayjs(selectDate)}
                                                 format="YYYY/MM/DD"
-                                                onChange={handleChangeDate}
+                                                onChange={
+                                                    handleChangeDate
+                                                }
                                             />
                                         </DemoContainer>
                                     </LocalizationProvider>
@@ -202,7 +226,10 @@ function Create() {
                                 <S.CustomTdTitle>멘토링 요일</S.CustomTdTitle>
                                 <S.CustomTdContent>
                                     <div
-                                        style={{ display: 'flex', gap: '10px' }}
+                                        style={{
+                                            display: 'flex',
+                                            gap: '10px',
+                                        }}
                                     >
                                         {[
                                             '월',
@@ -218,7 +245,9 @@ function Create() {
                                                 variant="outlined"
                                                 style={{
                                                     backgroundColor:
-                                                        selectDays.includes(day)
+                                                        selectDays.includes(
+                                                            day
+                                                        )
                                                             ? '#C6D0BE'
                                                             : 'white',
                                                 }}
@@ -241,10 +270,14 @@ function Create() {
                                                 style={{ width: '100px' }}
                                             >
                                                 <NativeSelect
+                                                    value={selectPMAM} // 기본 PMAM 값 설정
                                                     style={{
-                                                        fontFamily: 'ChosunGu',
+                                                        fontFamily:
+                                                            'ChosunGu',
                                                     }}
-                                                    onChange={handleChangePMAM}
+                                                    onChange={
+                                                        handleChangePMAM
+                                                    }
                                                 >
                                                     <option value={'오전'}>
                                                         오전
@@ -260,25 +293,38 @@ function Create() {
                                                 style={{ width: '100px' }}
                                             >
                                                 <NativeSelect
+                                                    value={selectTime} // 기본 시간 값 설정
                                                     style={{
-                                                        fontFamily: 'ChosunGu',
+                                                        fontFamily:
+                                                            'ChosunGu',
                                                     }}
-                                                    onChange={handleChangeTime}
+                                                    onChange={
+                                                        handleChangeTime
+                                                    }
                                                 >
-                                                    {optionsTime.map(option => (
-                                                        <option
-                                                            key={option.value}
-                                                            value={option.value}
-                                                        >
-                                                            {option.label}
-                                                        </option>
-                                                    ))}
+                                                    {optionsTime.map(
+                                                        option => (
+                                                            <option
+                                                                key={
+                                                                    option.value
+                                                                }
+                                                                value={
+                                                                    option.value
+                                                                }
+                                                            >
+                                                                {
+                                                                    option.label
+                                                                }
+                                                            </option>
+                                                        )
+                                                    )}
                                                 </NativeSelect>
                                             </FormControl>
                                         </Box>
                                     </div>
                                 </S.CustomTdContent>
                             </tr>
+                            </tbody>
                         </S.CustomTable>
                     </S.Container>
                     <S.BtnGroup>
@@ -297,15 +343,9 @@ function Create() {
                     </S.BtnGroup>
                 </>
             )}
-            {showFinish && (
-                <>
-                    <CreateFinish />
-                </>
-            )}
+            {showFinish && <CreateFinish />}
         </>
     );
-
-    return CreateView;
 }
 
 export default Create;

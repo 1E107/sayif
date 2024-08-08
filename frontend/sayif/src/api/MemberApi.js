@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { API_BASE_URL } from './config';
+import Cookies from 'js-cookie';
 
 export const login = async (username, password) => {
     const loginData = {
@@ -48,6 +49,7 @@ export const updateMember = async (token, data) => {
         throw error;
     }
 };
+
 export const uploadProfileImage = async (token, formData) => {
     try {
         // 요청 헤더에 인증 토큰을 추가합니다.
@@ -62,4 +64,18 @@ export const uploadProfileImage = async (token, formData) => {
         console.error('이미지 및 정보 업로드 실패:', error);
         throw error; // 에러를 호출한 함수로 전달
     }
+};
+
+export const getNewToken = async () => {
+    const refreshToken = Cookies.get('refresh');
+    console.log(refreshToken);
+
+    // try {
+    //     const response = await axios.post(`${API_BASE_URL}/reissue`, null, {
+    //         withCredentials: true,
+    //     });
+    //     return response;
+    // } catch (error) {
+    //     throw error;
+    // }
 };

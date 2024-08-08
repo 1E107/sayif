@@ -10,15 +10,23 @@ import { useState } from 'react';
 import Modal from '@mui/material/Modal';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
+import { useSelector } from 'react-redux';
+import { acquireExperience } from '../../../api/config';
+import { CheckSolveQuiz } from '../../../api/TeamApi';
 
 function QuizDetail({ quiz }) {
     const [isSelect, SetIsSelect] = useState('');
     const [open, SetOpen] = useState(false);
     const [isCorrect, SetIsCorrect] = useState(false);
     const [openCorrect, SetOpenCorrect] = useState(false);
+    const { token, member } = useSelector(state => state.member);
 
-    const handleOpen = () => {
-        if (isCorrect) SetOpenCorrect(true);
+    const handleOpen = async () => {
+        if (isCorrect) {
+            SetOpenCorrect(true);
+            acquireExperience(token, member, 10);
+            CheckSolveQuiz(quiz.id, token);
+        }
         SetOpen(true);
     };
     const handleClose = () => {
@@ -70,6 +78,10 @@ function QuizDetail({ quiz }) {
                                                 isSelect === index
                                                     ? '#116530'
                                                     : 'gray',
+                                            backgroundColor:
+                                                isSelect === index
+                                                    ? '#e9ecef'
+                                                    : 'white',
                                         }}
                                         onClick={() =>
                                             handleSelect(index, item.isAnswer)
@@ -82,7 +94,7 @@ function QuizDetail({ quiz }) {
                                                         fontFamily: 'ChosunGu',
                                                     }}
                                                 >
-                                                    {index+1}. {item.content}
+                                                    {index + 1}. {item.content}
                                                 </Typography>
                                             }
                                         />

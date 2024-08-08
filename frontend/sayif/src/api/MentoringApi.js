@@ -17,11 +17,10 @@ export const getMentorList = async (
     };
 
     try {
-        const response = await axios.post(
+        return await axios.post(
             `${API_BASE_URL}/mentoring/search/${page_no}/${size_no}`,
             data,
         );
-        return response;
     } catch (error) {
         throw error;
     }
@@ -31,7 +30,7 @@ export const applyMentoring = async (id, token) => {
     const data = { id: id };
 
     try {
-        const response = await axios.post(
+        return await axios.post(
             `${API_BASE_URL}/mentoring/application`,
             data,
             {
@@ -40,7 +39,6 @@ export const applyMentoring = async (id, token) => {
                 },
             },
         );
-        return response;
     } catch (error) {
         throw error;
     }
@@ -48,7 +46,7 @@ export const applyMentoring = async (id, token) => {
 
 export const getTeamStatue = async(id, token) => {
     try {
-        const response = await axios.get(
+        return await axios.get(
             `${API_BASE_URL}/mentoring/team/${id}`,
             {
                 headers: {
@@ -56,7 +54,6 @@ export const getTeamStatue = async(id, token) => {
                 },
             },
         );
-        return response;
     } catch (error) {
         throw error;
     }
@@ -77,9 +74,10 @@ export const submitMentoringGroup = async (
         pmam: pmam,
         id: id,
     };
+    console.log(data);
 
     try {
-        const response = await axios.post(
+        return await axios.post(
             `${API_BASE_URL}/mentoring/recruit`,
             data,
             {
@@ -88,7 +86,6 @@ export const submitMentoringGroup = async (
                 },
             },
         );
-        return response;
     } catch (error) {
         throw error;
     }
@@ -117,10 +114,9 @@ export const getTeamSessionId = async (id, token) => {
 
 export const getTotalMentor = async(token) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/mentoring/mentor-nickname`, {
-            headers: { Authorization: `Bearer ${token}`}
+        return await axios.get(`${API_BASE_URL}/mentoring/mentor-nickname`, {
+            headers: { Authorization: `Bearer ${token}` }
         });
-        return response;
     }catch(error) {
         throw error;
     }

@@ -5,6 +5,9 @@ import LinearProgress from '@mui/material/LinearProgress';
 import styled from 'styled-components';
 import '../../styles/fonts.css';
 import { ReactTyped } from 'react-typed';
+import { getTeamExperience } from '../../api/TeamApi';
+import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
 
 const CustomLinearProgress = styled(LinearProgress)({
     padding: '10px',
@@ -18,24 +21,35 @@ const CustomLinearProgress = styled(LinearProgress)({
 });
 
 function TeamMain() {
-    const [activeStep, setActiveStep] = React.useState(0);
-    const [progress, setProgress] = React.useState(30);
+    // const [activeStep, setActiveStep] = React.useState(0);
+    const [progress, setProgress] = React.useState(0);
+    const { token, member } = useSelector(state => state.member);
 
+    useEffect(() => {
+        async function fetchProgress() {
+            const experience = await getTeamExperience(member.teamId, token);
+            setProgress(experience.data.point);
+        }
+        fetchProgress();
+    }, [member.teamId, token]);
+    
     const MainView = (
         <S.Container>
             <S.Wrapper>
                 <S.ImageBox></S.ImageBox>
-                <S.TeamNameText>
-                    새이프
-                    <CreateIcon
-                        style={{ color: '#DED3A6', marginLeft: '10px' }}
-                    />
-                </S.TeamNameText>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '10px' }}>
+                    <S.TeamNameText>
+                    Lv. {Math.floor(progress / 100)} 새이프
+                        <CreateIcon
+                            style={{ color: '#DED3A6', marginLeft: '10px' }}
+                        />
+                    </S.TeamNameText>
+                </div>
                 <S.ScoreContainer>
-                    <S.TeamScoreText>135</S.TeamScoreText>
+                    <S.TeamScoreText>{progress / 100 < 5 ? progress % 100 : 100}</S.TeamScoreText>
                     <CustomLinearProgress
                         variant="determinate"
-                        value={progress}
+                        value={progress / 100 < 5 ? progress % 100 : 100} 
                     />
                 </S.ScoreContainer>
             </S.Wrapper>

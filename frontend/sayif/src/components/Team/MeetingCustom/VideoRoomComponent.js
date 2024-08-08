@@ -56,6 +56,12 @@ class VideoRoomComponent extends Component {
     }
 
     async componentDidMount() {
+        window.addEventListener('beforeunload', this.onbeforeunload);
+        window.addEventListener('resize', this.updateLayout);
+        window.addEventListener('resize', this.checkSize);
+        if (this.state.session) {
+            this.addSessionEventHandlers(this.state.session);
+        }
         // API 호출 및 상태 설정
         try {
             console.log('getTeamSesionId 호출');
@@ -98,9 +104,7 @@ class VideoRoomComponent extends Component {
             openViduLayoutOptions,
         );
         this.setState({ myUserName: this.props.member.nickname });
-        window.addEventListener('beforeunload', this.onbeforeunload);
-        window.addEventListener('resize', this.updateLayout);
-        window.addEventListener('resize', this.checkSize);
+
         // this.joinSession();
     }
 
@@ -111,8 +115,16 @@ class VideoRoomComponent extends Component {
         this.leaveSession();
     }
 
+    addSessionEventHandlers(session) {
+        session.on('signal:sessionEnded', event => {
+            console.log('Session ended signal received:', event);
+            alert('회의가 종료되었습니다.');
+            window.location.reload();
+        });
+    }
+
     onbeforeunload(event) {
-        this.leaveSession();
+        // this.leaveSession();
     }
 
     joinSession() {
@@ -124,13 +136,8 @@ class VideoRoomComponent extends Component {
             },
             async () => {
                 this.subscribeToStreamCreated();
+                this.addSessionEventHandlers(this.state.session);
                 await this.connectToSession();
-                // 세션 객체 생성 후 신호 이벤트 리스너 등록
-                this.state.session.on('signal:sessionEnded', event => {
-                    console.log('Session ended signal received:', event);
-                    alert('회의가 종료되었습니다.');
-                    this.leaveSession();
-                });
             },
         );
     }
@@ -138,15 +145,15 @@ class VideoRoomComponent extends Component {
         const mySession = this.state.session;
         const mySessionId = this.state.mySessionId;
 
-        if (this.state.sessionStatus === 'mentor') {
+        if (this.state.sessionStatus === 'mentor' && mySession) {
             try {
-                await closeSession(this.props.userToken, mySessionId);
                 // 세션 종료 신호 전송
                 this.state.session.signal({
                     data: 'Session Ended', // 메타데이터, 필요에 따라 수정 가능
                     to: [], // 모든 참가자에게 신호 전송
                     type: 'sessionEnded',
                 });
+                await closeSession(this.props.userToken, mySessionId);
             } catch (error) {
                 console.error('Error closing session:', error);
                 alert('Error closing session: ' + error.message);
@@ -155,7 +162,7 @@ class VideoRoomComponent extends Component {
         if (mySession) {
             mySession.disconnect();
         }
-
+        console.log(this.state.sessionStatus);
         try {
             const response = await getTeamSessionId(
                 this.props.member.teamId,
@@ -176,12 +183,11 @@ class VideoRoomComponent extends Component {
         this.setState({
             session: undefined,
             subscribers: [],
-            myUserName: this.props.member.nickname,
             localUser: undefined,
         });
-        if (this.props.leaveSession) {
-            this.props.leaveSession();
-        }
+        // if (this.props.leaveSession) {
+        //     this.props.leaveSession();
+        // }
     }
 
     async connectToSession() {
@@ -611,12 +617,8 @@ class VideoRoomComponent extends Component {
                         toggleFullscreen={this.toggleFullscreen}
                         leaveSession={this.leaveSession}
                         toggleChat={this.toggleChat}
+                        sessionStatus={this.state.sessionStatus}
                     />
-
-                    {/* <DialogExtensionComponent
-                        showDialog={this.state.showExtensionDialog}
-                        cancelClicked={this.closeDialogExtension}
-                    /> */}
                     <div id="layout" className="bounds">
                         {localUser !== undefined &&
                             localUser.getStreamManager() !== undefined && (
@@ -639,121 +641,121 @@ class VideoRoomComponent extends Component {
                                 />
                             </div>
                         ))}
-                        {localUser !== undefined &&
-                            localUser.getStreamManager() !== undefined && (
-                                <div
-                                    className="OT_root OT_publisher custom-class"
-                                    style={chatDisplay}
-                                >
-                                    <ChatComponent
-                                        user={localUser}
-                                        chatDisplay={this.state.chatDisplay}
-                                        close={this.toggleChat}
-                                        messageReceived={this.checkNotification}
-                                    />
-                                </div>
-                            )}
                     </div>
+                    {localUser !== undefined &&
+                        localUser.getStreamManager() !== undefined && (
+                            <div
+                                // className="OT_root OT_publisher custom-class"
+                                className="chatComponentWrapper"
+                                style={chatDisplay}
+                            >
+                                <ChatComponent
+                                    user={localUser}
+                                    chatDisplay={this.state.chatDisplay}
+                                    close={this.toggleChat}
+                                    messageReceived={this.checkNotification}
+                                />
+                            </div>
+                        )}
                 </div>
             );
         }
 
         return (
             <div className="container" id="container">
-                <img
-                    src="/logo.png"
-                    alt="Logo"
-                    style={{
-                        display: 'block',
-                        width: '80px',
-                        margin: '0 auto 20px auto',
-                    }}
-                />
                 <div id="layout" className="bounds">
-                    {this.state.sessionStatus === 'mentor' && (
-                        <div className="beforeEnterSession">
-                            <img src="/logo.png"></img>
-                            <OutlinedInput
-                                type="text"
-                                onChange={e =>
-                                    this.setState({
-                                        mySessionId: e.target.value,
-                                    })
-                                }
-                                placeholder="Enter Session ID"
-                                style={{
-                                    border: '1px solid #116530CC',
-                                    width: '250px',
-                                    marginBottom: '15px',
-                                    marginTop: '15px',
-                                }}
-                            />
-                            <Button
-                                onClick={this.joinSession}
-                                sx={{
-                                    backgroundColor: '#0B4619',
-                                    color: 'white',
-                                    '&:hover': {
-                                        backgroundColor: '#416D19', // 호버 시 배경색
-                                        color: '#ffffff', // 호버 시 텍스트 색상
-                                    },
-                                    padding: '10px',
-                                }}
-                            >
-                                회의실 생성
-                            </Button>
-                        </div>
-                    )}
-                    {this.state.sessionStatus === 'exists' && (
-                        <div className="beforeEnterSession">
-                            <img src="/logo.png"></img>
-                            <OutlinedInput
-                                readOnly
-                                type="text"
-                                value={mySessionId}
-                                style={{
-                                    border: '1px solid #116530CC',
-                                    width: '250px',
-                                    marginBottom: '15px',
-                                    marginTop: '15px',
-                                }}
-                            />
-                            <Button
-                                onClick={this.joinSession}
-                                sx={{
-                                    backgroundColor: '#0B4619',
-                                    color: 'white',
-                                    '&:hover': {
-                                        backgroundColor: '#416D19', // 호버 시 배경색
-                                        color: '#ffffff', // 호버 시 텍스트 색상
-                                    },
-                                    padding: '10px',
-                                }}
-                            >
-                                회의실 입장
-                            </Button>
-                        </div>
-                    )}
+                    <div className="beforeEnterSession">
+                        <img
+                            src="/logo.png"
+                            alt="Logo"
+                            style={{
+                                display: 'block',
+                                width: '80px',
+                            }}
+                        />
+                        {this.state.sessionStatus === 'mentee' && (
+                            <div className="meeting-info">
+                                진행 중인 회의가 없습니다.
+                            </div>
+                        )}
+                        {this.state.sessionStatus === 'mentor' && (
+                            <>
+                                <OutlinedInput
+                                    type="text"
+                                    className="sessionNameInput"
+                                    onChange={e =>
+                                        this.setState({
+                                            mySessionId: e.target.value,
+                                        })
+                                    }
+                                    onKeyPress={e => {
+                                        if (
+                                            e.key === 'Enter' &&
+                                            this.state.mySessionId !== null
+                                        ) {
+                                            this.joinSession();
+                                        }
+                                    }}
+                                    placeholder="회의실 이름을 '영어로' 입력해주세요."
+                                />
+                                <Button
+                                    onClick={this.joinSession}
+                                    disabled={!this.state.mySessionId}
+                                    sx={{
+                                        backgroundColor: '#0B4619',
+                                        color: 'white',
+                                        '&:hover': {
+                                            backgroundColor: '#416D19', // 호버 시 배경색
+                                            color: '#ffffff', // 호버 시 텍스트 색상
+                                        },
+                                        '&.Mui-disabled': {
+                                            backgroundColor: '#416D19', // 비활성화 시 배경색
+                                            color: '#a9a9a9', // 비활성화 시 텍스트 색상
+                                        },
+                                        padding: '10px',
+                                        fontSize: '16px',
+                                    }}
+                                >
+                                    회의실 생성
+                                </Button>
+                            </>
+                        )}
+                        {this.state.sessionStatus === 'exists' && (
+                            <>
+                                <OutlinedInput
+                                    readOnly
+                                    type="text"
+                                    className="sessionNameInput"
+                                    value={mySessionId}
+                                    onKeyPress={e => {
+                                        if (e.key === 'Enter') {
+                                            this.joinSession();
+                                        }
+                                    }}
+                                />
+                                <Button
+                                    onClick={this.joinSession}
+                                    sx={{
+                                        backgroundColor: '#0B4619',
+                                        color: 'white',
+                                        '&:hover': {
+                                            backgroundColor: '#416D19', // 호버 시 배경색
+                                            color: '#ffffff', // 호버 시 텍스트 색상
+                                        },
+                                        padding: '10px',
+                                        fontSize: '16px',
+                                    }}
+                                >
+                                    회의실 입장
+                                </Button>
+                            </>
+                        )}
+                    </div>
                 </div>
             </div>
         );
     }
 
-    /**
-     * --------------------------------------------
-     * GETTING A TOKEN FROM YOUR APPLICATION SERVER
-     * --------------------------------------------
-     * The methods below request the creation of a Session and a Token to
-     * your application server. This keeps your OpenVidu deployment secure.
-     *
-     * In this sample code, there is no user control at all. Anybody could
-     * access your application server endpoints! In a real production
-     * environment, your application server must identify the user to allow
-     * access to the endpoints.
-     *
-     * Visit https://docs.openvidu.io/en/stable/application-server to learn
-     * more about the integration of OpenVidu in your application server.
-     */
     async getToken() {
         const sessionId = await createSession(
             this.props.userToken,

@@ -76,6 +76,17 @@ dependencies {
 
     // jackson 의존성 추가
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+    // AWS SDK for S3
+    implementation 'com.amazonaws:aws-java-sdk-s3:1.12.393' // 최신 버전으로 업데이트할 수 있습니다
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+    // JAXB 의존성
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'
+    implementation 'com.sun.xml.bind:jaxb-core:2.3.0'
+    implementation 'com.sun.xml.bind:jaxb-impl:2.3.0'
+    implementation 'javax.activation:activation:1.1.1'
+
 }
 
 tasks.named('test') {

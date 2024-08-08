@@ -1,17 +1,21 @@
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import S from './style/UploadStyled';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import { useNavigate } from 'react-router-dom';
+import { tryChallenge, submitPhoto, getMyImg } from '../../../api/challenge';
+import { useSelector } from 'react-redux';
 
-function UploadModal({ onClose }) {
+function UploadModal({ onClose, id }) {
     const fileInputRef = useRef(null);
-
-    const [open, setOpen] = useState(true);
-
+    const { token, member } = useSelector(state => state.member);
+    const [open, SetOpen] = useState(true);
+    const [file, SetFile] = useState();
+    const [result, SetResult] = useState(undefined);
+    const [imgUrl, setImgUrl] = useState('/img/NoImage.png');
     const handleClose = () => {
-        setOpen(false);
+        SetOpen(false);
         onClose();
     };
 
@@ -20,11 +24,61 @@ function UploadModal({ onClose }) {
     };
 
     const handleFileChange = event => {
-        const file = event.target.files[0];
-        if (file) {
-            console.log('선택한 파일 : ', file);
+        const selectFile = event.target.files[0];
+        if (selectFile) {
+            SetFile(selectFile);
+            const url = URL.createObjectURL(selectFile);
+            setImgUrl(url);
         }
     };
+
+    const handleUploadBtn = () => {
+        const callTry = async () => {
+            try {
+                const response = await tryChallenge(id, token, file);
+                if (response.status === 200) {
+                    console.log(response);
+                    SetResult(response.data);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        callTry();
+    };
+
+    const handleFinishBtn = () => {
+        const callSubmitPhoto = async () => {
+            try {
+                const response = await submitPhoto(id, file, token);
+                if (response.status === 200) {
+                    alert('사진이 성공적으로 업로드되었습니다!');
+                    handleClose();
+                    window.location.reload();
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        callSubmitPhoto();
+    };
+
+    useEffect(() => {
+        const callMyImg = async () => {
+            try {
+                const response = await getMyImg(id, token);
+                if (response.status === 200) {
+                    setImgUrl(response.data);
+                }
+                console.log(response);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        callMyImg();
+    }, []);
 
     const style = {
         position: 'absolute',
@@ -49,7 +103,7 @@ function UploadModal({ onClose }) {
             <Box sx={style}>
                 <S.Title>사진을 업로드 해볼까요?</S.Title>
                 <img
-                    src="/img/NoImage.png"
+                    src={imgUrl}
                     alt="Upload"
                     onClick={handleImageClick}
                     style={{
@@ -67,12 +121,29 @@ function UploadModal({ onClose }) {
                 <S.ExplanText>
                     이미지를 클릭해서 파일을 업로드해주세요!
                 </S.ExplanText>
-                <S.PostBtn variant="outlined">사진 전송</S.PostBtn>
-                <S.ResultText>
-                    보내주신 사진을 보니{' '}
-                    <S.ResultHigh>귀여운 토끼</S.ResultHigh>로 인식되었어요.
-                    정말 멋진 사진이에요!
-                </S.ResultText>
+                {result == undefined ? (
+                    <S.PostBtn variant="outlined" onClick={handleUploadBtn}>
+                        사진 전송
+                    </S.PostBtn>
+                ) : (
+                    <S.FinishBtn variant="contained" onClick={handleFinishBtn}>
+                        사진 올리기
+                    </S.FinishBtn>
+                )}
+                {result == undefined ? (
+                    <></>
+                ) : !result ? (
+                    <S.ResultText>
+                        아쉽게도 이 사진에서는 대상을 인식하지 못했어요. 다시 한
+                        번 사진을 찍어보실래요? 그대로 올려도 챌린지 수행에는
+                        문제가 없어요~^^
+                    </S.ResultText>
+                ) : (
+                    <S.ResultText>
+                        보내주신 사진이 잘 인식되었어요! 훌륭한 사진입니다!
+                        팀원들에게 자랑해볼까요~?
+                    </S.ResultText>
+                )}
             </Box>
         </Modal>
     );

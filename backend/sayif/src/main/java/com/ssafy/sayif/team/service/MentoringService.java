@@ -1,10 +1,10 @@
 package com.ssafy.sayif.team.service;
 
+import com.ssafy.sayif.challenge.Repository.ChallengeListRepository;
 import com.ssafy.sayif.challenge.Repository.ChallengeRepository;
 import com.ssafy.sayif.challenge.entity.Challenge;
 import com.ssafy.sayif.challenge.entity.ChallengeList;
 import com.ssafy.sayif.challenge.entity.ChallengeStatus;
-import com.ssafy.sayif.challenge.Repository.ChallengeListRepository;
 import com.ssafy.sayif.member.entity.Member;
 import com.ssafy.sayif.member.entity.Mentor;
 import com.ssafy.sayif.member.entity.Role;
@@ -91,10 +91,10 @@ public class MentoringService {
                 Optional<ChallengeList> challengeList = challengeListRepository.findById(i);
                 if (challengeList.isPresent()) {
                     Challenge challenge = Challenge.builder()
-                            .team(team)
-                            .challengeList(challengeList.get())
-                            .status(ChallengeStatus.Before)
-                            .build();
+                        .team(team)
+                        .challengeList(challengeList.get())
+                        .status(ChallengeStatus.Before)
+                        .build();
                     challengeRepository.save(challenge);
                 }
             }

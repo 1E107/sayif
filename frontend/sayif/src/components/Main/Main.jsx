@@ -1,18 +1,21 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import S from "./styled";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 const Main = () => {
+    const navigate = useNavigate();
     const sectionsRef = useRef([]);
     const scrollTimeout = useRef(null);
     const [currentSlide, setCurrentSlide] = useState(0);
+    const slideInterval = useRef(null);
 
     const contents = [
-        { type: 'menu', content: <MentorProfileContent /> },
-        { type: 'calendar', content: <MentoringApplyContent /> },
-        { type: 'cactus', content: <TeamOfficeContent /> },
-        { type: 'scratch', content: <MentoringVideoContent /> }
+        { type: 'profile', content: <MentorProfileContent />, link: '/mentor-profile' },
+        { type: 'apply', content: <MentoringApplyContent />, link: '/apply-mentoring' },
+        { type: 'team', content: <TeamOfficeContent />, link: '/team' },
+        { type: 'mentoring', content: <MentoringVideoContent />, link: '/team/meeting' }
     ];
 
     const nextSlide = () => {
@@ -21,6 +24,10 @@ const Main = () => {
 
     const prevSlide = () => {
         setCurrentSlide((prev) => (prev - 1 + contents.length) % contents.length);
+    };
+
+    const handleSlideClick = (link) => {
+        navigate(link);
     };
 
     const scrollToSection = (index) => {
@@ -55,6 +62,50 @@ const Main = () => {
         };
     }, []);
 
+    useEffect(() => {
+        const observerOptions = {
+            root: null,
+            rootMargin: '-20% 0px', // 뷰포트의 20% 만큼 더 내려와야 감지됨
+            threshold: 0.5 // 요소의 50%가 보여야 감지됨
+        };
+
+        const observerCallback = (entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const target = entry.target;
+                    
+                    setTimeout(() => {
+                        target.classList.add('visible');
+                    }, target.dataset.delay); // 요소에 설정된 지연 시간 사용
+
+                    observer.unobserve(target);
+                }
+            });
+        };
+
+        const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+        const animatedElements = document.querySelectorAll('.animated-element');
+        animatedElements.forEach((element) => {
+            observer.observe(element);
+        });
+
+        return () => {
+            animatedElements.forEach(element => observer.unobserve(element));
+        };
+    }, []);
+
+    useEffect(() => {
+        slideInterval.current = setInterval(() => {
+            nextSlide();
+        }, 8000); // 8초마다 슬라이드 변경
+
+        return () => {
+            clearInterval(slideInterval.current);
+        };
+    }, []);
+
+
     return (
         <>  
             {/* First section */}
@@ -67,13 +118,15 @@ const Main = () => {
                 <S.HoverIcon onClick={() => scrollToSection(1)} />
             </S.MainTop>
             
-            {/* Second section */}
-            <S.MainTop ref={(el) => (sectionsRef.current[1] = el)} id="nextSection">
-                <S.MainText style={{ color: "#0B4619", marginTop: "30px", fontSize: "28px" }}>
-                    쉽고 재미있는 IT 교육으로 새로운 가능성을 발견하세요. <br />
-                    청년 멘토와 같이 성장하고 꿈을 키워나가며, <br />
-                    자유롭게 소통하고 정보를 공유하세요. <br />
-                </S.MainText>
+           {/* Second section */}
+           <S.MainTop ref={(el) => (sectionsRef.current[1] = el)} id="nextSection">
+                <S.ImageWrapper className="animated-element" data-delay="500">
+                    <S.MainText style={{ color: "#0B4619", marginTop: "30px", fontSize: "28px" }}>
+                        쉽고 재미있는 IT 교육으로 새로운 가능성을 발견하세요. <br />
+                        청년 멘토와 같이 성장하고 꿈을 키워나가며, <br />
+                        자유롭게 소통하고 정보를 공유하세요. <br />
+                    </S.MainText>
+                </S.ImageWrapper>
             </S.MainTop>
 
             {/* Third section */}
@@ -97,7 +150,10 @@ const Main = () => {
                     <S.SliderArrow onClick={prevSlide}>
                         <ArrowBackIosIcon />
                     </S.SliderArrow>
-                    <S.SlideContent>
+                    <S.SlideContent 
+                        key={currentSlide}
+                        onClick={() => handleSlideClick(contents[currentSlide].link)}
+                    >
                         {contents[currentSlide].content}
                     </S.SlideContent>
                     <S.SliderArrow onClick={nextSlide}>
@@ -106,8 +162,39 @@ const Main = () => {
                 </S.SliderContainer>
             </S.MainMiddle>
             
-            <S.MainBottom ref={(el) => (sectionsRef.current[4] = el)}>
-                <S.SectionContent>하단 섹션 내용</S.SectionContent>
+             {/* Fifth section */}
+             <S.InformationSection ref={(el) => (sectionsRef.current[4] = el)}>
+                <S.ImageWrapper className="animated-element" data-delay="500">
+                    <img style={{ width: "40%", margin: "80px 0px 0px 0px"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/퀴즈 설명.png`} alt="Quiz Description" />
+                </S.ImageWrapper>
+                <S.ImageWrapper className="animated-element" data-delay="1000">
+                    <img style={{ width: "75%"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/퀴즈 내용.png`} alt="Quiz Content" />
+                </S.ImageWrapper>
+            </S.InformationSection>
+
+            
+             {/* Sixth section */}
+             <S.InformationSection ref={(el) => (sectionsRef.current[5] = el)}>
+                <S.ImageWrapper className="animated-element" data-delay="500">
+                    <img style={{ width: "32%", margin: "80px 0px 0px 0px"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/자립 설명.png`} alt="Quiz Description" />
+                </S.ImageWrapper>
+                <S.ImageWrapper className="animated-element" data-delay="1000">
+                    <img style={{ width: "75%", margin: "8px 0px 0px 0px"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/자립 내용.png`} alt="Quiz Content" />
+                </S.ImageWrapper>
+            </S.InformationSection>
+
+            {/* Seventh section */}
+            <S.InformationSection ref={(el) => (sectionsRef.current[6] = el)}>
+                <S.ImageWrapper className="animated-element" data-delay="500">
+                    <img style={{ width: "32%", margin: "80px 0px 0px 0px"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/챗봇 설명.png`} alt="Quiz Description" />
+                </S.ImageWrapper>
+                <S.ImageWrapper className="animated-element" data-delay="1000">
+                    <img style={{ width: "35%", margin: "5px 0px 0px 0px"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/챗봇 내용.png`} alt="Quiz Content" />
+                </S.ImageWrapper>
+            </S.InformationSection>
+
+            <S.MainBottom ref={(el) => (sectionsRef.current[7] = el)}>
+                <S.SectionContent style={{ color: "black"}}>나눔의 가치를 실천하며 더 나은 미래를 만들어갑니다. <br />함께 가요 미래로! Enabling People</S.SectionContent>
             </S.MainBottom>
         </>
     );
@@ -126,13 +213,13 @@ const MentoringApplyContent = () => (
 );
 
 const TeamOfficeContent = () => (
-    <S.ContentWrapper style={{ marginRight: "160px" }}>
+    <S.ContentWrapper style={{ marginRight: "200px" }}>
         <S.Image style={{ width: "150%"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/팀 오피스.png`} alt="선인장 이미지" />
     </S.ContentWrapper>
 );
 
 const MentoringVideoContent = () => (
-    <S.ContentWrapper style={{ margin: "30px 95px 0px 0px" }}>
+    <S.ContentWrapper style={{ margin: "30px 120px 0px 0px" }}>
         <S.Image style={{ width: "120%"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/화상 멘토링.png`} alt="스크래치 이미지" />
     </S.ContentWrapper>
 );
