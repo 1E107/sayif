@@ -695,6 +695,9 @@ class VideoRoomComponent extends Component {
                                         }
                                     }}
                                     placeholder="회의실 이름을 '영어로' 입력해주세요."
+                                    sx={{
+                                        fontFamily: 'Chosungu',
+                                    }}
                                 />
                                 <Button
                                     onClick={this.joinSession}
@@ -712,6 +715,7 @@ class VideoRoomComponent extends Component {
                                         },
                                         padding: '10px',
                                         fontSize: '16px',
+                                        fontFamily: 'Chosungu',
                                     }}
                                 >
                                     회의실 생성
@@ -730,6 +734,9 @@ class VideoRoomComponent extends Component {
                                             this.joinSession();
                                         }
                                     }}
+                                    sx={{
+                                        fontFamily: 'Chosungu',
+                                    }}
                                 />
                                 <Button
                                     onClick={this.joinSession}
@@ -742,6 +749,7 @@ class VideoRoomComponent extends Component {
                                         },
                                         padding: '10px',
                                         fontSize: '16px',
+                                        fontFamily: 'Chosungu',
                                     }}
                                 >
                                     회의실 입장
