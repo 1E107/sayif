@@ -104,8 +104,6 @@ class VideoRoomComponent extends Component {
             openViduLayoutOptions,
         );
         this.setState({ myUserName: this.props.member.nickname });
-
-        // this.joinSession();
     }
 
     componentWillUnmount() {
