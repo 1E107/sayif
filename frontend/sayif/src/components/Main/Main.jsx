@@ -1,12 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import S from "./styled";
+import Footer from "./Footer"
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 const Main = () => {
     const navigate = useNavigate();
     const sectionsRef = useRef([]);
+    const footerRef = useRef(null);
     const scrollTimeout = useRef(null);
     const [currentSlide, setCurrentSlide] = useState(0);
     const slideInterval = useRef(null);
@@ -36,20 +38,26 @@ const Main = () => {
         }
     };
 
+
     useEffect(() => {
         window.scrollTo(0, 0);
 
         const handleScroll = () => {
             clearTimeout(scrollTimeout.current);
             scrollTimeout.current = setTimeout(() => {
-                const scrollPos = window.scrollY + window.innerHeight / 2;
-                const index = sectionsRef.current.findIndex(
-                    (section) =>
-                        section.offsetTop <= scrollPos &&
-                        section.offsetTop + section.clientHeight > scrollPos
-                );
-                if (index !== -1) {
-                    scrollToSection(index);
+                const scrollPos = window.scrollY + window.innerHeight;
+                const footerPos = footerRef.current ? footerRef.current.offsetTop : Infinity;
+
+                // Footer에 도달하지 않았을 때만 스크롤 스냅 적용
+                if (scrollPos < footerPos) {
+                    const index = sectionsRef.current.findIndex(
+                        (section) =>
+                            section.offsetTop <= window.scrollY + window.innerHeight / 2 &&
+                            section.offsetTop + section.clientHeight > window.scrollY + window.innerHeight / 2
+                    );
+                    if (index !== -1) {
+                        scrollToSection(index);
+                    }
                 }
             }, 100);
         };
@@ -61,6 +69,7 @@ const Main = () => {
             clearTimeout(scrollTimeout.current);
         };
     }, []);
+
 
     useEffect(() => {
         const observerOptions = {
@@ -165,10 +174,10 @@ const Main = () => {
              {/* Fifth section */}
              <S.InformationSection ref={(el) => (sectionsRef.current[4] = el)}>
                 <S.ImageWrapper className="animated-element" data-delay="500">
-                    <img style={{ width: "40%", margin: "80px 0px 0px 0px"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/퀴즈 설명.png`} alt="Quiz Description" />
+                    <img style={{ width: "32%"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/퀴즈 설명.png`} alt="Quiz Description" />
                 </S.ImageWrapper>
                 <S.ImageWrapper className="animated-element" data-delay="1000">
-                    <img style={{ width: "75%"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/퀴즈 내용.png`} alt="Quiz Content" />
+                    <img style={{ width: "63%"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/퀴즈 내용.png`} alt="Quiz Content" />
                 </S.ImageWrapper>
             </S.InformationSection>
 
@@ -176,26 +185,37 @@ const Main = () => {
              {/* Sixth section */}
              <S.InformationSection ref={(el) => (sectionsRef.current[5] = el)}>
                 <S.ImageWrapper className="animated-element" data-delay="500">
-                    <img style={{ width: "32%", margin: "80px 0px 0px 0px"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/자립 설명.png`} alt="Quiz Description" />
+                    <img style={{ width: "26%"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/자립 설명.png`} alt="Quiz Description" />
                 </S.ImageWrapper>
                 <S.ImageWrapper className="animated-element" data-delay="1000">
-                    <img style={{ width: "75%", margin: "8px 0px 0px 0px"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/자립 내용.png`} alt="Quiz Content" />
+                    <img style={{ width: "65%", marginTop: "10px"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/자립 내용.png`} alt="Quiz Content" />
                 </S.ImageWrapper>
             </S.InformationSection>
 
             {/* Seventh section */}
             <S.InformationSection ref={(el) => (sectionsRef.current[6] = el)}>
                 <S.ImageWrapper className="animated-element" data-delay="500">
-                    <img style={{ width: "32%", margin: "80px 0px 0px 0px"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/챗봇 설명.png`} alt="Quiz Description" />
+                    <img style={{ width: "28%"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/챗봇 설명.png`} alt="Quiz Description" />
                 </S.ImageWrapper>
                 <S.ImageWrapper className="animated-element" data-delay="1000">
-                    <img style={{ width: "35%", margin: "5px 0px 0px 0px"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/챗봇 내용.png`} alt="Quiz Content" />
+                    <img style={{ width: "31%", margin: "9px 0px 0px 0px"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/챗봇 내용.png`} alt="Quiz Content" />
                 </S.ImageWrapper>
             </S.InformationSection>
 
+            {/* Eighth section */}
             <S.MainBottom ref={(el) => (sectionsRef.current[7] = el)}>
-                <S.SectionContent style={{ color: "black"}}>나눔의 가치를 실천하며 더 나은 미래를 만들어갑니다. <br />함께 가요 미래로! Enabling People</S.SectionContent>
+                <S.VideoBackground autoPlay loop muted>
+                    <source src={`${process.env.PUBLIC_URL}/video/team.mp4`} type="video/mp4" />
+                </S.VideoBackground>
+                <S.Overlay />
+                <S.SectionContent style={{ color: "white", zIndex: 2 }}>
+                    나눔의 가치를 실천하며 더 나은 미래를 만들어 갑니다. <br />함께 가요 미래로! Enabling People
+                </S.SectionContent>
             </S.MainBottom>
+
+            <div ref={footerRef}>
+                <Footer />
+            </div>
         </>
     );
 }
