@@ -1,11 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
-    Modal,
     Box,
-    Typography,
-    TextField,
     IconButton,
+    Modal,
+    TextField,
     Tooltip,
+    Typography,
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import FormatBoldIcon from '@mui/icons-material/FormatBold';
@@ -103,7 +103,7 @@ const ChatbotModal = ({ open, handleClose }) => {
     };
 
     const handleKeyPress = e => {
-        if (e.key === 'Enter') {
+        if (e.key === 'Enter' && !isLoading) {
             if (e.shiftKey) {
                 // Shift+Enter일 때 한 줄 띄우기
                 e.preventDefault(); // 기본 Enter 동작 방지
@@ -297,52 +297,65 @@ const ChatbotModal = ({ open, handleClose }) => {
                         }}
                     >
                         <Tooltip title="굵은 글씨">
-                            <IconButton
-                                onClick={() => insertMarkdown('**', true)}
-                            >
-                                <FormatBoldIcon />
-                            </IconButton>
+                            <span>
+                                <IconButton
+                                    onClick={() => insertMarkdown('**', true)}
+                                >
+                                    <FormatBoldIcon />
+                                </IconButton>
+                            </span>
                         </Tooltip>
                         <Tooltip title="기울임 글씨">
-                            <IconButton
-                                onClick={() => insertMarkdown('*', true)}
-                            >
-                                <FormatItalicIcon />
-                            </IconButton>
+                            <span>
+                                <IconButton
+                                    onClick={() => insertMarkdown('*', true)}
+                                >
+                                    <FormatItalicIcon />
+                                </IconButton>
+                            </span>
                         </Tooltip>
                         <Tooltip title="코드">
-                            <IconButton
-                                onClick={() => insertMarkdown('`', true)}
-                            >
-                                <CodeIcon />
-                            </IconButton>
+                            <span>
+                                <IconButton
+                                    onClick={() => insertMarkdown('`', true)}
+                                >
+                                    <CodeIcon />
+                                </IconButton>
+                            </span>
                         </Tooltip>
                         <Tooltip title="링크">
-                            <IconButton
-                                onClick={() =>
-                                    insertMarkdown(
-                                        '[링크](http://example.com)',
-                                        false,
-                                    )
-                                }
-                            >
-                                <LinkIcon />
-                            </IconButton>
+                            <span>
+                                <IconButton
+                                    onClick={() =>
+                                        insertMarkdown(
+                                            '[링크](http://example.com)',
+                                            false,
+                                        )
+                                    }
+                                >
+                                    <LinkIcon />
+                                </IconButton>
+                            </span>
                         </Tooltip>
                         <Tooltip title="인용문">
-                            <IconButton
-                                onClick={() => insertMarkdown('> ', false)}
-                            >
-                                <FormatQuoteIcon />
-                            </IconButton>
+                            <span>
+                                <IconButton
+                                    onClick={() => insertMarkdown('> ', false)}
+                                >
+                                    <FormatQuoteIcon />
+                                </IconButton>
+                            </span>
                         </Tooltip>
                         <Tooltip title="전송">
-                            <IconButton
-                                color="primary"
-                                onClick={handleSendMessage}
-                            >
-                                <SendIcon />
-                            </IconButton>
+                            <span>
+                                <IconButton
+                                    color="primary"
+                                    onClick={handleSendMessage}
+                                    disabled={isLoading} // 로딩 중일 때 비활성화
+                                >
+                                    <SendIcon />
+                                </IconButton>
+                            </span>
                         </Tooltip>
                     </Box>
                 </Box>

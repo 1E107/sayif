@@ -52,22 +52,27 @@ function Community() {
         navigate(`/community/datail/${id}`);
     };
 
-    useEffect(() => {
-        const callCommunityList = async () => {
-            try {
-                const response = await GetCommunityList(token, value, page, 10);
-                console.log(response);
-                if (response.status === 200) {
-                    SetRows(response.data);
-                }
-            } catch (error) {
-                console.log(error);
+    const callCommunityList = async (token, value, page) => {
+        try {
+            const response = await GetCommunityList(token, value, page, 10);
+            console.log(response);
+            if (response.status === 200) {
+                SetRows(response.data);
             }
-        };
-        callCommunityList();
-    }, [value]);
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
-    const CommunityView = (
+    useEffect(() => {
+        callCommunityList(token, value, page);
+    }, [value, page, token]);
+
+    useEffect(() => {
+        setValue('Total');
+    }, []);
+
+    return (
         <S.Container>
             <S.HeaderWrapper>
                 <Box sx={{ width: '300px' }}>
@@ -148,51 +153,52 @@ function Community() {
                         </TableHead>
                         <TableBody>
                             {rows
-                                .slice(
-                                    page * rowsPerPage,
-                                    page * rowsPerPage + rowsPerPage,
-                                )
-                                .map(row => {
-                                    return (
-                                        <TableRow
-                                            hover
-                                            role="checkbox"
-                                            tabIndex={-1}
-                                            key={row.writingId}
-                                            onClick={() =>
-                                                moveDetailPage(row.id)
-                                            }
-                                        >
-                                            {columns.map(column => {
-                                                let value = row[column.id];
-                                                if (column.id === 'type') {
-                                                    if (value === 'Free')
-                                                        value = '일상';
-                                                    else if (value === 'Worry')
-                                                        value = '고민';
+                            .slice(
+                                page * rowsPerPage,
+                                page * rowsPerPage + rowsPerPage,
+                            )
+                            .map(row => {
+                                return (
+                                    <TableRow
+                                        hover
+                                        role="checkbox"
+                                        tabIndex={-1}
+                                        key={row.writingId}
+                                        onClick={() =>
+                                            moveDetailPage(row.id)
+                                        }
+                                    >
+                                        {columns.map(column => {
+                                            let value = row[column.id];
+                                            if (column.id === 'type') {
+                                                if (value === 'Free') {
+                                                    value = '일상';
+                                                } else if (value === 'Worry') {
+                                                    value = '고민';
                                                 }
-                                                return (
-                                                    <TableCell
-                                                        key={column.id}
-                                                        align={column.align}
-                                                        style={{
-                                                            fontFamily:
-                                                                'ChosunGu',
-                                                        }}
-                                                    >
-                                                        {column.format &&
-                                                        typeof value ===
-                                                            'number'
-                                                            ? column.format(
-                                                                  value,
-                                                              )
-                                                            : value}
-                                                    </TableCell>
-                                                );
-                                            })}
-                                        </TableRow>
-                                    );
-                                })}
+                                            }
+                                            return (
+                                                <TableCell
+                                                    key={column.id}
+                                                    align={column.align}
+                                                    style={{
+                                                        fontFamily:
+                                                            'ChosunGu',
+                                                    }}
+                                                >
+                                                    {column.format &&
+                                                    typeof value ===
+                                                    'number'
+                                                        ? column.format(
+                                                            value,
+                                                        )
+                                                        : value}
+                                                </TableCell>
+                                            );
+                                        })}
+                                    </TableRow>
+                                );
+                            })}
                         </TableBody>
                     </Table>
                 </TableContainer>
@@ -209,8 +215,6 @@ function Community() {
             </Paper>
         </S.Container>
     );
-
-    return CommunityView;
 }
 
 export default Community;
