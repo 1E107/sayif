@@ -14,11 +14,11 @@ import {
 function CommunityDetail() {
     const { id } = useParams();
     const { token, member } = useSelector(state => state.member);
-    const [content, SetContent] = useState([]);
+    const [content, SetContent] = useState(null); // 초기값을 null로 변경
     const [comment, SetComment] = useState([]);
     const [writeComment, SetWriteComment] = useState('');
     const [editComment, setEditComment] = useState('');
-    const [isEditing, setIsEditing] = useState(null);  // Track which comment is being edited
+    const [isEditing, setIsEditing] = useState(null); // Track which comment is being edited
 
     useEffect(() => {
         const callDetail = async () => {
@@ -42,6 +42,7 @@ function CommunityDetail() {
                 console.log(error);
             }
         };
+
         callDetail();
         callCommentList();
     }, [id, token]);
@@ -54,21 +55,18 @@ function CommunityDetail() {
         setEditComment(event.target.value);
     };
 
-    const SubmitComment = () => {
-        const callSubmit = async () => {
-            try {
-                const response = await PostCommunityComment(token, id,
-                    writeComment);
-                if (response.status === 200) {
-                    alert('댓글이 성공적으로 등록되었습니다!');
-                    window.location.reload();
-                }
-            } catch (error) {
-                alert('댓글 등록이 실패했어요! 다시 한 번 시도해보세요!');
-                console.log(error);
+    const SubmitComment = async () => {
+        try {
+            const response = await PostCommunityComment(token, id,
+                writeComment);
+            if (response.status === 200) {
+                alert('댓글이 성공적으로 등록되었습니다!');
+                window.location.reload();
             }
-        };
-        callSubmit();
+        } catch (error) {
+            alert('댓글 등록이 실패했어요! 다시 한 번 시도해보세요!');
+            console.log(error);
+        }
     };
 
     const handleDeleteComment = async commentId => {
@@ -90,7 +88,7 @@ function CommunityDetail() {
                 editComment, token);
             if (response.status === 200) {
                 alert('댓글이 수정되었습니다!');
-                setIsEditing(null);  // Reset editing state
+                setIsEditing(null); // Reset editing state
                 window.location.reload();
             }
         } catch (error) {
@@ -99,7 +97,29 @@ function CommunityDetail() {
         }
     };
 
+    const isImage = url => {
+        return url.match(/\.(jpeg|jpg|gif|png)$/) != null;
+    };
+
     const commentLength = comment.length;
+
+    const handleDownloadImage = () => {
+        if (content?.fileUrl) {
+            const userConfirmed = window.confirm('이미지를 다운로드하시겠습니까?');
+            if (userConfirmed) {
+                const link = document.createElement('a');
+                link.href = content.fileUrl;
+                link.download = content.fileUrl.split('/').pop(); // Extract filename from URL
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+    };
+
+    const handleImageClick = () => {
+        handleDownloadImage();
+    };
 
     return (
         <S.Container>
@@ -108,10 +128,27 @@ function CommunityDetail() {
                     <S.Title>{content.title}</S.Title>
                     <S.DateAndWriter>
                         {content.createdAt} | {content.writer} |
-                        조회수:{content.hitCount}
+                        조회수: {content.hitCount}
                     </S.DateAndWriter>
                     <S.CustomHr />
-                    <S.Content>{content.content}</S.Content>
+                    <S.Content>
+                        {content.content}
+                    </S.Content>
+                    <S.CustomHr />
+                    {/* 파일이 존재하고 이미지일 때만 300x300 사이즈로 표시 */}
+                    {content.fileUrl && isImage(content.fileUrl) && (
+                        <S.Fieldset>
+                            <S.Legend onClick={handleDownloadImage}>
+                                첨부된 이미지
+                            </S.Legend>
+                            <S.ImageContainer onClick={handleImageClick}>
+                                <S.Image
+                                    src={content.fileUrl}
+                                    alt="게시글 파일"
+                                />
+                            </S.ImageContainer>
+                        </S.Fieldset>
+                    )}
                     <S.CustomHr />
                     <S.CommentTitle>댓글({commentLength})</S.CommentTitle>
                     <S.CustomHr />
@@ -189,10 +226,14 @@ function CommunityDetail() {
                             ))}
                         </S.CommentList>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <S.CommentWriteBox onChange={handleWriteComment}
-                                               value={writeComment} />
-                            <S.CustomButton variant="contained"
-                                            onClick={SubmitComment}>
+                            <S.CommentWriteBox
+                                onChange={handleWriteComment}
+                                value={writeComment}
+                            />
+                            <S.CustomButton
+                                variant="contained"
+                                onClick={SubmitComment}
+                            >
                                 등록
                             </S.CustomButton>
                         </div>
