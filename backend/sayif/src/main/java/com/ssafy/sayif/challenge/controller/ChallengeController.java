@@ -46,20 +46,20 @@ public class ChallengeController {
             .onErrorResume(e -> Mono.just(ResponseEntity.status(500).build()));
     }
 
-    @GetMapping("/try/{teamId}")
-    public ResponseEntity<?> tryChallenge(@PathVariable int teamId,
-        @AuthenticationPrincipal UserDetails userDetails) {
-        String username = userDetails.getUsername();
-        Member member = memberRepository.findByUsername(username);
-        if (member.getTeam().getId() != teamId) {
-            return ResponseEntity.status(400).body("해당 팀의 구성원이 아닙니다.");
-        }
-        ChallengeResponseDto challengeResponseDto = challengeService.tryChallenge(teamId);
-        if (challengeResponseDto == null) {
-            return ResponseEntity.status(400).body("진행 중인 챌린지가 있습니다.");
-        }
-        return ResponseEntity.ok(challengeResponseDto);
-    }
+//    @GetMapping("/try/{teamId}")
+//    public ResponseEntity<?> tryChallenge(@PathVariable int teamId,
+//        @AuthenticationPrincipal UserDetails userDetails) {
+//        String username = userDetails.getUsername();
+//        Member member = memberRepository.findByUsername(username);
+//        if (member.getTeam().getId() != teamId) {
+//            return ResponseEntity.status(400).body("해당 팀의 구성원이 아닙니다.");
+//        }
+//        ChallengeResponseDto challengeResponseDto = challengeService.tryChallenge(teamId);
+//        if (challengeResponseDto == null) {
+//            return ResponseEntity.status(400).body("진행 중인 챌린지가 있습니다.");
+//        }
+//        return ResponseEntity.ok(challengeResponseDto);
+//    }
 
     @PutMapping("/success/{id}")
     public ResponseEntity<?> successChallenge(@PathVariable Long id,
@@ -73,11 +73,16 @@ public class ChallengeController {
 
         boolean changed = challengeService.changeChallengeStatus(id);
         if (changed) {
-            return ResponseEntity.ok("챌린지를 완료했습니다.");
+            // 챌린지를 성공으로 변경한 후, 다음 챌린지를 시도
+            ChallengeResponseDto nextChallengeResponseDto = challengeService.tryChallenge(
+                member.getTeam().getId());
+            return ResponseEntity.ok(Objects.requireNonNullElse(nextChallengeResponseDto,
+                "챌린지를 완료했습니다. 현재 진행 중인 챌린지가 없습니다."));
         } else {
             return ResponseEntity.status(400).body("해당 챌린지는 진행 중이 아닙니다.");
         }
     }
+
 
     @GetMapping("/detail/{challengeId}")
     public ResponseEntity<?> detailChallenge(@PathVariable Long challengeId,
