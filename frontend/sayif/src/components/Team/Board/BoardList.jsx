@@ -78,6 +78,9 @@ function Board() {
                 />
                 <S.SearchButton variant="contained">검색</S.SearchButton>
             </div>
+            <div style={{ textAlign: 'right' }}>
+                <S.CustomButton variant="contained">글쓰기</S.CustomButton>
+            </div>
             <Paper
                 sx={{
                     width: '100%',
@@ -170,7 +173,6 @@ function Board() {
                     style={{ color: '#116530', fontWeight: 'bold' }}
                 />
             </Paper>
-            <S.CustomButton variant="contained">글쓰기</S.CustomButton>
         </S.Container>
     );
 
