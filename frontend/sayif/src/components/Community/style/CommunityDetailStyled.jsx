@@ -3,16 +3,14 @@ import '../../../styles/fonts.css';
 import Button from '@mui/material/Button';
 
 const Container = styled.div`
-    margin-top: 100px;
-    margin-bottom: 100px;
-    min-width: 1000px;
-    min-height: 700px;
-    background-color: white;
-    border-radius: 30px;
-    text-align: center;
-    box-shadow:
-        0 3px 6px rgba(0, 0, 0, 0.16),
-        0 3px 6px rgba(0, 0, 0, 0.23);
+  margin-top: 400px; /* Adjust margin-top to ensure it doesn't get hidden behind header */
+  margin-bottom: 100px;
+  min-width: 1000px;
+  min-height: 700px;
+  background-color: white;
+  border-radius: 30px;
+  text-align: center;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
 `;
 
 const Title = styled.div`
@@ -35,6 +33,7 @@ const CustomHr = styled.hr`
     height: 1px;
     border: 0;
 `;
+
 const Content = styled.div`
     text-align: left;
     font-size: 20px;
@@ -122,6 +121,46 @@ const SmallButton = styled(Button)({
     fontFamily: 'ChosunGu !important',
 });
 
+// 추가된 스타일
+const Fieldset = styled.fieldset`
+  border: 2px solid #ddd;
+  padding: 0;
+  margin-top: 10px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+`;
+
+const Legend = styled.legend`
+  display: block;
+  text-align: center;
+  font-weight: bold;
+  padding: 0 10px;
+  border-bottom: 2px solid #ddd;
+  margin: 0;
+  cursor: pointer; /* 클릭 가능하게 스타일 추가 */
+`;
+
+const ImageContainer = styled.div`
+  width: 300px;
+  height: 300px;
+  overflow: hidden;
+  position: relative;
+  margin: 0 auto;
+`;
+
+const Image = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+`;
+
 const S = {
     Container,
     Title,
@@ -139,6 +178,10 @@ const S = {
     CommentEditBox,
     LoadingText,
     SmallButton,
+    Fieldset,
+    Legend,
+    ImageContainer,
+    Image,
 };
 
 export default S;
