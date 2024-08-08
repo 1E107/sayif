@@ -113,6 +113,10 @@ public class S3Service {
         return amazonS3.getUrl(bucketName, s3FileName).toString();
     }
 
+    public String getUrl(String fileName) {
+        return amazonS3.getUrl(bucketName, fileName).toString();
+    }
+
     /**
      * S3 버킷에서 파일 삭제
      *

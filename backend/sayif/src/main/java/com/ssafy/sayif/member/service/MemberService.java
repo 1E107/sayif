@@ -50,7 +50,12 @@ public class MemberService {
             return false;
         }
 
-        String fileUrl = s3Service.upload(file);
+        String fileUrl;
+        if (file != null) {
+            fileUrl = s3Service.upload(file);
+        } else {
+            fileUrl = s3Service.getUrl("default.jpg");
+        }
 
         Mentee mentee = Mentee.builder()
             .username(username)
@@ -62,7 +67,7 @@ public class MemberService {
             .phone(registerRequestDto.getPhone())
             .role(Role.Mentee)
             .authFile(registerRequestDto.getAuthFile())
-            .profileImg(fileUrl == null ? "default.jpg" : fileUrl)
+            .profileImg(fileUrl)
             .status(Status.Pending)
             .build();
         menteeRepository.save(mentee);
