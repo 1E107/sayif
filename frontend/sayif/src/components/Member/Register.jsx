@@ -99,6 +99,7 @@ function Register() {
                 <S.CustomTextField
                     variant="outlined"
                     onChange={e => SetName(e.target.value)}
+                    placeholder="홍길동"
                 />
             </S.ItemWrapper>
             <S.ItemWrapper>
@@ -106,6 +107,7 @@ function Register() {
                 <S.CustomTextField
                     variant="outlined"
                     onChange={e => SetNickname(e.target.value)}
+                    placeholder="홍길동"
                 />
             </S.ItemWrapper>
             <S.ItemWrapper>
