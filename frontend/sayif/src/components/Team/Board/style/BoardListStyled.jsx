@@ -11,7 +11,7 @@ const CustomButton = styled(Button)({
     backgroundColor: '#116530 !important',
     borderRadius: '13px !important',
     padding: '5px !important',
-    margin: '10px 0px 0px 5px !important',
+    margin: '0px 10px 10px 0px !important',
     fontFamily: 'ChosunGu !important',
     fontSize: '15px !important',
 });
@@ -19,7 +19,6 @@ const CustomButton = styled(Button)({
 const SearchButton = styled(Button)({
     backgroundColor: '#116530 !important',
     borderRadius: '20px !important',
-    marginBottom: '40px !important',
     padding: '5px !important',
     fontFamily: 'ChosunGu !important',
     marginLeft: '5px !important',

@@ -36,10 +36,7 @@ function ChallengeMain() {
             <S.Container>
                 <S.Title>CHALLENGE</S.Title>
                 <S.ExplanText>
-                    우리가 함께 진행할 도전 과제가 무엇인지 알아봅시다! 우리
-                    팀의 식물을 잘 키우기 위해 <br /> 미션에 도전해봅시다. 한
-                    단계가 완료되면 도전 과제가 업데이트될 예정이에요. <br />
-                    함께 성장하는 재미를 느껴보세요!
+                    우리가 함께 진행할 미션이 무엇인지 알아봅시다! <br />
                 </S.ExplanText>
                 <S.MissionBox>
                     <div

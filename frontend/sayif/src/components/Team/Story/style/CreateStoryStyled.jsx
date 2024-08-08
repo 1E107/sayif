@@ -23,14 +23,15 @@ const Form = styled.div`
 `;
 
 const ContentText = styled.div`
-    padding-top: 20px;
+    padding-top: 30px;
     font-family: ChosunGu;
-    font-size: 14px;
+    font-size: 16px;
     color: gray;
     line-height: 140%;
 `;
 
 const CustomTextarea = styled.textarea`
+    font-size: 20px;
     width: 500px;
     height: 300px;
     margin-top: 30px;
@@ -38,6 +39,7 @@ const CustomTextarea = styled.textarea`
 `;
 
 const CustomBtn = styled(Button)({
+    fontSize: '16px !important',
     marginTop: '30px !important',
     fontFamily: 'ChosunGu !important',
     width: '140px',
