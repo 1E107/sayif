@@ -21,7 +21,6 @@ const Main = styled.div`
     justify-content: center;
     display: flex;
     align-items: center;
-    margin-top: 50px;
 `;
 
 const MainPage = () => {

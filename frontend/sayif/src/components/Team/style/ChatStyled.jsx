@@ -1,12 +1,12 @@
-import styled from "styled-components";
-import '../../../styles/fonts.css'
+import styled from 'styled-components';
+import '../../../styles/fonts.css';
 
 const Container = styled.div`
-    margin-top: 60px;
+    margin-top: 100px;
     margin-bottom: 50px;
     background-color: white;
-    height: 100%;  
-    width:760px;
+    height: 100%;
+    width: 760px;
     border-radius: 30px;
     display: flex;
     justify-content: center;
@@ -15,14 +15,13 @@ const Container = styled.div`
     overflow: hidden;
 
     @media (max-width: 800px) {
-        width: 510px; 
-        padding: 0 10px; 
+        width: 510px;
+        padding: 0 10px;
     }
     @media (max-width: 640px) {
-        width: 380px; 
-        padding: 0 10px; 
+        width: 380px;
+        padding: 0 10px;
         margin-bottom: 60px;
-
     }
 `;
 
@@ -40,7 +39,7 @@ const TeamNameBar = styled.div`
     position: sticky;
     top: 0;
     z-index: 1;
-`
+`;
 
 const SendChatWrapper = styled.div`
     display: flex;
@@ -50,13 +49,13 @@ const SendChatWrapper = styled.div`
     width: 680px;
     @media (max-width: 800px) {
         width: 480px;
-        padding: 0 10px; 
+        padding: 0 10px;
     }
     @media (max-width: 640px) {
         width: 340px;
-        padding: 0 10px; 
-    } 
-`
+        padding: 0 10px;
+    }
+`;
 
 const ChatContentWrapper = styled.div`
     flex: 1;
@@ -69,20 +68,20 @@ const ChatContentWrapper = styled.div`
     position: relative;
     @media (max-width: 800px) {
         width: 490px;
-        padding: 0 10px; 
+        padding: 0 10px;
     }
     @media (max-width: 640px) {
         width: 350px;
-        padding: 0 10px; 
-    } 
-`
+        padding: 0 10px;
+    }
+`;
 
 const ProfileImg = styled.img`
     width: 40px;
     height: 40px;
     border-radius: 100px;
     margin: 0px 5px 5px 5px;
-`
+`;
 
 const ChatContent = styled.div`
     margin: 5px 0;
@@ -95,7 +94,7 @@ const ChatContent = styled.div`
     word-wrap: break-word;
     white-space: pre-wrap;
     position: relative;
-`
+`;
 
 const TimeText = styled.div`
     font-family: ChosunGu;
@@ -105,14 +104,14 @@ const TimeText = styled.div`
     margin-top: 5px;
     margin-left: 4px;
     margin-right: 4px;
-`
+`;
 
 const ChatOther = styled.div`
     max-width: 90%;
     margin: 15px 0;
     align-self: flex-start;
     display: flex;
-`
+`;
 
 const ChatMy = styled.div`
     max-width: 90%;
@@ -120,7 +119,7 @@ const ChatMy = styled.div`
     align-self: flex-end;
     display: flex;
     flex-direction: row-reverse;
-`
+`;
 
 const NameText = styled.div`
     font-family: ChosunGu;
@@ -128,7 +127,7 @@ const NameText = styled.div`
     font-weight: bold;
     margin-bottom: 5px;
     margin-left: 3px;
-`
+`;
 
 const S = {
     Container,
@@ -141,6 +140,6 @@ const S = {
     ChatContent,
     TimeText,
     NameText,
-}
+};
 
 export default S;
