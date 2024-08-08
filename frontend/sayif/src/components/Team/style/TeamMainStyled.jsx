@@ -2,11 +2,9 @@ import styled from 'styled-components';
 import '../../../styles/fonts.css';
 
 const Container = styled.div`
-    margin-top: 60px;
-    margin-bottom: 60px;
+    margin-top: 50px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
 `;
 

@@ -90,7 +90,8 @@ function QuizList() {
                         style={{
                             display: 'flex',
                             justifyContent: 'space-between',
-                            marginBottom: '10px',
+                            marginBottom: '20px',
+                            marginTop: '20px',
                         }}
                     >
                         <S.title>퀴즈 목록</S.title>

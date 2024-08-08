@@ -10,7 +10,7 @@ const TitleBtn = styled(Button)({
 const Container = styled.div`
     background-color: white;
     width: 800px;
-    height: 600px;
+    height: 550px;
     border-radius: 20px;
     margin-bottom: 50px;
     text-align: center;
@@ -31,7 +31,7 @@ const TestTitle = styled.div`
 const CustomButton = styled(Button)({
     backgroundColor: '#116530 !important',
     fontFamily: 'ChosunGu !important',
-    marginTop: '100px !important',
+    marginTop: '80px !important',
 });
 
 const S = {

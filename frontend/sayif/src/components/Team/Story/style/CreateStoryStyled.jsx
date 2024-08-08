@@ -3,7 +3,7 @@ import '../../../../styles/fonts.css';
 import Button from '@mui/material/Button';
 
 const Container = styled.div`
-    margin-top: 20px;
+    margin-top: 80px;
 `;
 
 const TitleText = styled.div`
@@ -15,7 +15,7 @@ const TitleText = styled.div`
 `;
 
 const Form = styled.div`
-    height: 600px;
+    height: 500px;
     background-color: white;
     width: 800px;
     border-radius: 30px;
@@ -32,7 +32,7 @@ const ContentText = styled.div`
 
 const CustomTextarea = styled.textarea`
     width: 500px;
-    height: 400px;
+    height: 300px;
     margin-top: 30px;
     border-radius: 10px;
 `;
