@@ -56,6 +56,7 @@ const Description = styled.p`
     width: calc(100% - 40px);
     height: 100px;
     overflow: auto;
+    white-space: pre-line;
 `;
 
 const TagListContainer = styled.div`

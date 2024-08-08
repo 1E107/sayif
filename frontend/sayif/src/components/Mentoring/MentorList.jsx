@@ -18,7 +18,7 @@ const MentorList = () => {
     const getMentors = async () => {
         try {
             const resp = await axios.get(
-                `${API_BASE_URL}/mentoring/profile/0/10`,
+                `${API_BASE_URL}/mentoring/profile/0/12`,
             );
             console.log(resp.data); // Check the structure of the response data
             setMentors(resp.data); // Assuming resp.data is an array
