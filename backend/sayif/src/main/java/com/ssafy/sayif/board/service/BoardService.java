@@ -78,7 +78,7 @@ public class BoardService {
      *
      * @param id   수정할 게시글의 ID
      * @param dto  게시글 수정 요청을 담고 있는 DTO
-     * @param file
+     * @param file 업로드할 파일
      * @return 수정된 게시글의 DTO를 감싼 Optional 객체
      * @throws IllegalArgumentException 해당 ID의 게시글이 존재하지 않을 경우 예외를 던집니다.
      */
@@ -87,25 +87,39 @@ public class BoardService {
         Board existBoard = boardRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Invalid board ID: " + id));
 
-        // 파일이 존재하는 경우에만 파일 저장 및 파일 이름 설정
-        String fileUrl = "";
+        // 기존 파일 URL 저장
+        String oldFileUrl = existBoard.getFile();
+
+        // 새로운 파일이 존재하는 경우에만 파일 저장 및 파일 이름 설정
+        String newFileUrl = "";
         if (file != null && !file.isEmpty()) {
-            fileUrl = s3Service.upload(file);
+            // 새로운 파일을 S3에 업로드하고, 해당 파일의 URL을 저장
+            newFileUrl = s3Service.upload(file);
         }
 
         // 게시글 수정
         Board updatedBoard = existBoard.toBuilder()
-            .file(Objects.equals(fileUrl, "") ? dto.getFile() : fileUrl)
-            .title(dto.getTitle())
-            .content(dto.getContent())
-            .modifiedAt(LocalDateTime.now())
-            .type(dto.getType())
+            .file(Objects.equals(newFileUrl, "") ? dto.getFile()
+                : newFileUrl) // 새로운 파일 URL이 존재하지 않으면 DTO에서 가져온 파일 URL 사용
+            .title(dto.getTitle()) // 새로운 제목 설정
+            .content(dto.getContent()) // 새로운 내용 설정
+            .modifiedAt(LocalDateTime.now()) // 수정 시간 업데이트
+            .type(dto.getType()) // 새로운 타입 설정
             .build();
 
-        // 수정된 게시글 저장 및 DTO로 변환하여 반환
+        // 수정된 게시글 저장
         Board savedBoard = boardRepository.save(updatedBoard);
+
+        // 새로운 파일이 업로드되었고, 기존 파일이 존재하는 경우 S3에서 기존 파일 삭제
+        if (!Objects.equals(newFileUrl, "") && oldFileUrl != null && !oldFileUrl.isEmpty()) {
+            // S3에서 기존 파일 삭제
+            s3Service.deleteFileFromS3(oldFileUrl);
+        }
+
+        // 수정된 게시글을 DTO로 변환하여 반환
         return Optional.of(convertToDto(savedBoard));
     }
+
 
     /**
      * 게시글을 논리적으로 삭제합니다.
