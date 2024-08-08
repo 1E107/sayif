@@ -48,6 +48,10 @@ function Community() {
         setPage(0);
     };
 
+    const moveWritePage = () => {
+        navigate(`/community/write`);
+    };
+
     const moveDetailPage = id => {
         navigate(`/community/datail/${id}`);
     };
@@ -113,7 +117,8 @@ function Community() {
                         }}
                     />
                     <S.SearchButton variant="contained">검색</S.SearchButton>
-                    <S.WriteButton variant="outlined">글쓰기</S.WriteButton>
+                    <S.WriteButton variant="outlined"
+                                   onClick={moveWritePage}>글쓰기</S.WriteButton>
                 </div>
             </S.HeaderWrapper>
             <Paper
