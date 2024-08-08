@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import S from './style/RegisterStyled';
-import { createMember } from '../../api/MemberApi';
 import { useNavigate } from 'react-router-dom';
 
 function Register() {
@@ -13,7 +12,6 @@ function Register() {
     const [email, SetEmail] = useState('');
     const [phoneError, SetPhoneError] = useState('');
     const [emailError, SetEmailError] = useState('');
-    const [profileImage, SetProfileImage] = useState(null);
     const navigate = useNavigate();
 
     const handleClickGender = data => {
@@ -39,23 +37,13 @@ function Register() {
     const validatePhone = phone => {
         const phonePattern = /^\d{3}-\d{4}-\d{4}$/;
         if (!phonePattern.test(phone)) {
-            SetPhoneError('유효하지 않은 전화번호 형식입니다.');
+            SetPhoneError('하이픈(-)을 포함해 입력해 주세요.');
         } else {
             SetPhoneError('');
         }
     };
 
-    const handleProfileImageChange = event => {
-        const file = event.target.files[0];
-        if (file) {
-            SetProfileImage(file);
-        }
-    };
-
     const handleNextButton = () => {
-        const formData = new FormData();
-
-        // JSON 객체를 문자열로 변환하여 Blob으로 추가
         const info = {
             username: id,
             password: password,
@@ -65,32 +53,19 @@ function Register() {
             phone: phone,
             gender: gender[selectGender],
         };
-        const infoBlob = new Blob([JSON.stringify(info)], {
-            type: 'application/json',
-        });
-        formData.append('info', infoBlob);
 
-        // 파일 추가
-        if (profileImage) {
-            formData.append('file', profileImage);
-        }
+        const isInfoValid = Object.values(info).every(
+            value => value !== null && value !== '',
+        );
 
-        const CallRegist = async () => {
-            try {
-                const response = await createMember(formData);
-                if (response.status === 200) {
-                    navigate('/member/regist/proof-documents');
-                }
-            } catch (error) {
-                alert('회원가입에 실패했습니다.');
-                console.log(error);
+        if (isInfoValid) {
+            if (phoneError === '' && emailError === '') {
+                navigate('/member/regist/profile-img', { state: { info } });
+            } else {
+                alert('입력한 정보가 올바른지 확인해 주세요!');
             }
-        };
-
-        if (phoneError === '' && emailError === '') {
-            CallRegist();
         } else {
-            alert('입력한 정보가 올바른지 확인해 주세요!');
+            alert('모든 정보를 올바르게 입력해주세요!');
         }
     };
 
@@ -182,26 +157,6 @@ function Register() {
                     error={!!emailError}
                     onBlur={() => validateEmail(email)}
                 />
-            </S.ItemWrapper>
-            <S.ItemWrapper>
-                <S.Text>프로필 사진</S.Text>
-                <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleProfileImageChange}
-                    style={{ marginBottom: '10px' }}
-                />
-                {profileImage && (
-                    <img
-                        src={URL.createObjectURL(profileImage)}
-                        alt="프로필 미리보기"
-                        style={{
-                            width: '100px',
-                            height: '100px',
-                            objectFit: 'cover',
-                        }}
-                    />
-                )}
             </S.ItemWrapper>
             <S.RegistBtn variant="contained" onClick={handleNextButton}>
                 다음
