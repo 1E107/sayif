@@ -6,7 +6,7 @@ const Container = styled.div`
     margin-bottom: 37px;
     background-color: white;
     height: 100%; 
-    width: 1300px;
+    width: 760px;
     border-radius: 30px;
     display: flex;
     justify-content: center;
@@ -35,12 +35,14 @@ const SendChatWrapper = styled.div`
     display: flex;
     align-items: center;
     margin-top: auto;
-    margin-bottom: 35px; 
+    margin-bottom: 35px;
+    margin-left: 18%;
+    margin-right: 18%; 
 `
 
 const ChatContentWrapper = styled.div`
     flex: 1;
-    width: 1100px;
+    width: 690px;
     margin-bottom: 0px;
     display: flex;
     flex-direction: column;
