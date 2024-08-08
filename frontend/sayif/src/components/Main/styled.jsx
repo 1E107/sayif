@@ -95,7 +95,7 @@ const Overlay = styled.div`
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.75); /* 어두운 오버레이 */
+    background-color: rgba(0, 0, 0, 0.7); /* 어두운 오버레이 */
     z-index: 1; /* 오버레이를 배경 영상 위에 표시 */
 `;
 
@@ -215,7 +215,6 @@ const ImageWrapper = styled.div`
         margin-left: 60px;
     }
 `;
-
 
 const S = {
     MainTop,

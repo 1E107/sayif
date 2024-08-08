@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import S from "./styled";
-import Footer from "./Footer"
+import Footer from "./Footer";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import { getTeamStatue } from '../../api/MentoringApi';
+import { useSelector } from 'react-redux';
 
 const Main = () => {
     const navigate = useNavigate();
@@ -12,6 +14,7 @@ const Main = () => {
     const scrollTimeout = useRef(null);
     const [currentSlide, setCurrentSlide] = useState(0);
     const slideInterval = useRef(null);
+    const { token, member } = useSelector(state => state.member);
 
     const contents = [
         { type: 'profile', content: <MentorProfileContent />, link: '/mentor-profile' },
@@ -28,8 +31,44 @@ const Main = () => {
         setCurrentSlide((prev) => (prev - 1 + contents.length) % contents.length);
     };
 
-    const handleSlideClick = (link) => {
-        navigate(link);
+    const handleImageClick = async (link) => {
+        if (link === '/mentor-profile' || link === '/apply-mentoring') {
+            navigate(link);
+            return;
+        }
+
+        if (!token) {
+            alert('로그인 후 이용해 주세요');
+            navigate('/member/login');
+            return;
+        }
+
+        if (link === '/team/meeting') {
+            await handleTeamPage();
+        } else {
+            navigate(link);
+        }
+    };
+
+    const handleTeamPage = async () => {
+        if (member.teamId) {
+            try {
+                const response = await getTeamStatue(member.teamId, token);
+                if (response.status === 200) {
+                    if (response.data.status === 'Proceed') {
+                        navigate('/team');
+                    } else {
+                        alert('팀 오피스가 활성화 되지 않았습니다');
+                        navigate('/');
+                    }
+                }
+            } catch (error) {
+                console.log(error);
+                navigate('/login'); // 오류가 발생하면 로그인 페이지로 이동
+            }
+        } else {
+            navigate('/login'); // 팀 ID가 없으면 로그인 페이지로 이동
+        }
     };
 
     const scrollToSection = (index) => {
@@ -37,7 +76,6 @@ const Main = () => {
             sectionsRef.current[index].scrollIntoView({ behavior: 'smooth' });
         }
     };
-
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -69,7 +107,6 @@ const Main = () => {
             clearTimeout(scrollTimeout.current);
         };
     }, []);
-
 
     useEffect(() => {
         const observerOptions = {
@@ -113,7 +150,6 @@ const Main = () => {
             clearInterval(slideInterval.current);
         };
     }, []);
-
 
     return (
         <>  
@@ -159,11 +195,10 @@ const Main = () => {
                     <S.SliderArrow onClick={prevSlide}>
                         <ArrowBackIosIcon />
                     </S.SliderArrow>
-                    <S.SlideContent 
-                        key={currentSlide}
-                        onClick={() => handleSlideClick(contents[currentSlide].link)}
-                    >
-                        {contents[currentSlide].content}
+                    <S.SlideContent key={currentSlide}>
+                        <div onClick={() => handleImageClick(contents[currentSlide].link)}>
+                            {contents[currentSlide].content}
+                        </div>
                     </S.SlideContent>
                     <S.SliderArrow onClick={nextSlide}>
                         <ArrowForwardIosIcon />
