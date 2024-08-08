@@ -83,8 +83,10 @@ public class MemberService {
             throw new RuntimeException("Member not found");
         }
 
-        String oldFileUrl = member.getProfileImg(); // 기존 이미지 URL 저장
-        String newFileUrl = s3Service.upload(file);
+        String fileUrl = member.getProfileImg(); // 기존 이미지 URL 저장
+        if (file != null) {
+            fileUrl = s3Service.upload(file);
+        }
 
         if (member.getRole() == Role.Mentee) {
             Optional<Mentee> mentee = menteeRepository.findById(member.getId());
@@ -100,7 +102,7 @@ public class MemberService {
                         : member.getGender())
                     .email(updateRequestDto.getEmail() != null ? updateRequestDto.getEmail()
                         : member.getEmail())
-                    .profileImg(newFileUrl != null ? newFileUrl : member.getProfileImg())
+                    .profileImg(fileUrl)
                     .phone(updateRequestDto.getPhone() != null ? updateRequestDto.getPhone()
                         : member.getPhone())
                     .build();
@@ -120,7 +122,7 @@ public class MemberService {
                         : loginedMentor.getGender())
                     .email(updateRequestDto.getEmail() != null ? updateRequestDto.getEmail()
                         : loginedMentor.getEmail())
-                    .profileImg(newFileUrl != null ? newFileUrl : member.getProfileImg())
+                    .profileImg(fileUrl)
                     .phone(updateRequestDto.getPhone() != null ? updateRequestDto.getPhone()
                         : loginedMentor.getPhone())
                     .build();
@@ -129,9 +131,9 @@ public class MemberService {
         }
 
         // 새로운 파일 업로드 후, 기존 파일이 default.jpg가 아닐 때만 삭제
-        if (newFileUrl != null && oldFileUrl != null && !oldFileUrl.equals(newFileUrl)
-            && !s3Service.getKeyFromFileAddress(oldFileUrl).equals("default.jpg")) {
-            s3Service.deleteFileFromS3(oldFileUrl);
+        if (!fileUrl.equals(member.getProfileImg()) && !s3Service.getKeyFromFileAddress(fileUrl)
+            .equals("default.jpg")) {
+            s3Service.deleteFileFromS3(fileUrl);
         }
     }
 
