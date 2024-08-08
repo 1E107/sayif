@@ -20,30 +20,6 @@ import { useState } from 'react';
 import NoTeamModal from '../Mentoring/NoTeamModal';
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 
-const pages = ['새잎 소개', '멘토링', '소통 공간', '정보 공간'];
-const settings = {
-    '새잎 소개': ['서비스 소개', '커리큘럼 로드맵', '공지사항'],
-    멘토링: [
-        '멘토링 그룹 생성',
-        '멘토링 신청',
-        '멘토 프로필 조회',
-        '멘토링 자료 공유',
-    ],
-    '소통 공간': ['자유 게시판'],
-    '정보 공간': ['자립 지원 정보'],
-};
-const menuToPage = {
-    '서비스 소개': '/serviceIntroduction',
-    '커리큘럼 로드맵': '/',
-    공지사항: '/',
-    '멘토링 그룹 생성': '/create-mentoring',
-    '멘토링 신청': '/apply-mentoring',
-    '멘토 프로필 조회': '/mentor-profile',
-    '멘토링 자료 공유': '/',
-    '자유 게시판': '/community',
-    '자립 지원 정보': '/support-information',
-};
-
 function Header() {
     const navigate = useNavigate();
     const [anchorElNav, setAnchorElNav] = useState(null);
@@ -53,6 +29,31 @@ function Header() {
     const [showNoTeamModal, setShowNoTeamModal] = useState(false);
     const { token, member } = useSelector(state => state.member);
 
+    const pages = ['새잎 소개', '멘토링', '소통 공간', '정보 공간'];
+
+    const settings = {
+        '새잎 소개': ['서비스 소개', '커리큘럼 로드맵', '공지사항'],
+        멘토링: [
+            '멘토 프로필 조회',
+            ...(member.role === 'Mentor' ? ['멘토링 자료 공유'] : []),
+            ...(member.role === 'Mentor' ? ['멘토링 그룹 생성'] : []),
+            ...(member.role === 'Mentee' ? ['멘토링 신청'] : []),
+        ],
+        '소통 공간': ['자유 게시판'],
+        '정보 공간': ['자립 지원 정보'],
+    };
+    const menuToPage = {
+        '서비스 소개': '/serviceIntroduction',
+        '커리큘럼 로드맵': '/',
+        공지사항: '/',
+        '멘토링 그룹 생성': '/create-mentoring',
+        '멘토링 신청': '/apply-mentoring',
+        '멘토 프로필 조회': '/mentor-profile',
+        '멘토링 자료 공유': '/',
+        '자유 게시판': '/community',
+        '자립 지원 정보': '/support-information',
+    };
+
     const handleOpenNavMenu = event => {
         setAnchorElNav(event.currentTarget);
     };
@@ -60,11 +61,24 @@ function Header() {
         setAnchorElSubLow(event.currentTarget);
         setCurrentSettings(settings[page]);
         // 멘토링 메뉴의 경우 멘토, 멘티 볼 수 있는 하위 메뉴 다르게 하면 될 것 같음
+        console.log(member);
+        if (member === 'undefined') {
+            console.log('로그인하세요');
+        }
     };
     const handleOpenSubMenuFull = (event, page) => {
-        setAnchorElSubFull(event.currentTarget);
-        setCurrentSettings(settings[page]);
-        // 멘토링 메뉴의 경우 멘토, 멘티 볼 수 있는 하위 메뉴 다르게 하면 될 것 같음
+        if (page === '새잎 소개') {
+            setAnchorElSubFull(event.currentTarget);
+            setCurrentSettings(settings[page]);
+        } else {
+            if (!token) {
+                alert('로그인 후 이용해 주세요');
+                navigate('/member/login');
+            } else {
+                setAnchorElSubFull(event.currentTarget);
+                setCurrentSettings(settings[page]);
+            }
+        }
     };
 
     const handleCloseNavMenu = () => {
