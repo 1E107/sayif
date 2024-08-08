@@ -45,6 +45,7 @@ const ListItem = styled.div`
     align-items: center;
     border-bottom: solid 1px #dee2e6;
     margin-bottom: 20px;
+    cursor: pointer;
 `;
 
 const ListText = styled.div`

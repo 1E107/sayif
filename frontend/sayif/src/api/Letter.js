@@ -14,3 +14,17 @@ export const getList = async (token, page, size) => {
         throw error;
     }
 };
+
+export const getDetail = async (token, id) => {
+    try {
+        const response = await axios.get(
+            `${API_BASE_URL}/member/message/${id}`,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            },
+        );
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
