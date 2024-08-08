@@ -88,6 +88,10 @@ function MyPageComponent() {
         navigate('/');
     };
 
+    const handleCheckMessage = () => {
+        navigate('/letter');
+    };
+
     const handleCloseMentoringModal = () => {
         SetShowMentoringModal(false);
     };
@@ -231,6 +235,9 @@ function MyPageComponent() {
                         / {member.nickname}
                     </S.NickNameText>
                     <S.LogoutBtn onClick={logout}>로그아웃</S.LogoutBtn>
+                    <S.LogoutBtn onClick={handleCheckMessage}>
+                        쪽지함
+                    </S.LogoutBtn>
                 </div>
                 <div style={{ marginLeft: '80px' }}>
                     <div
