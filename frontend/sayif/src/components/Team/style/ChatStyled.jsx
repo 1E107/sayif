@@ -3,17 +3,28 @@ import '../../../styles/fonts.css'
 
 const Container = styled.div`
     margin-top: 60px;
-    margin-bottom: 37px;
+    margin-bottom: 50px;
     background-color: white;
-    height: 100%; 
-    width: 760px;
+    height: 100%;  
+    width:760px;
     border-radius: 30px;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
     overflow: hidden;
-`
+
+    @media (max-width: 800px) {
+        width: 510px; 
+        padding: 0 10px; 
+    }
+    @media (max-width: 640px) {
+        width: 380px; 
+        padding: 0 10px; 
+        margin-bottom: 60px;
+
+    }
+`;
 
 const TeamNameBar = styled.div`
     width: 100%;
@@ -35,20 +46,35 @@ const SendChatWrapper = styled.div`
     display: flex;
     align-items: center;
     margin-top: auto;
-    margin-bottom: 35px;
-    margin-left: 18%;
-    margin-right: 18%; 
+    margin-bottom: 37px;
+    width: 680px;
+    @media (max-width: 800px) {
+        width: 480px;
+        padding: 0 10px; 
+    }
+    @media (max-width: 640px) {
+        width: 340px;
+        padding: 0 10px; 
+    } 
 `
 
 const ChatContentWrapper = styled.div`
     flex: 1;
     width: 690px;
-    margin-bottom: 0px;
+    margin-bottom: 37px;
     display: flex;
     flex-direction: column;
     padding: 20px;
     overflow-y: auto;
     position: relative;
+    @media (max-width: 800px) {
+        width: 490px;
+        padding: 0 10px; 
+    }
+    @media (max-width: 640px) {
+        width: 350px;
+        padding: 0 10px; 
+    } 
 `
 
 const ProfileImg = styled.img`

@@ -13,6 +13,11 @@ const Container = styled.div`
     display: flex;
     justify-content: center;
     flex-direction: column;
+    margin-left: 30px;
+    @media (max-width: 640px) {
+        width: 320px; 
+        padding: 0 10px; 
+    }
 `;
 
 const Input = styled.input`
@@ -24,27 +29,43 @@ const Input = styled.input`
     border-width: 0px;
     padding-left: 10px;
     color: #116530;
+    maring-left: 10px;
+    maring-right: 10px;
+    @media (max-width: 640px) {
+        width: 260px; 
+        padding: 0 10px; 
+    }
 `
 
-const LoginButton = styled(Button)({
-    width: "410px",
-    height: "50px",
-    backgroundColor: "#116530 !important",
-    fontSize: "16px !important",
-    fontFamily: "ChosunGu !important",
-    color: "#E8E8CC !important",
-});
+const LoginButton = styled(Button)`
+    width: 410px;
+    height: 50px;
+    background-color: #116530 !important;
+    font-size: 16px !important;
+    font-family: ChosunGu !important;
+    color: #E8E8CC !important;
 
-const RegistButton = styled(Button)({
-    width: "410px",
-    height: "40px",
-    backgroundColor: "white !important",
-    fontSize: "14px !important",
-    fontFamily: "ChosunGu !important",
-    color: "#116530 !important",
-    fontWeight: "bold !important",
-    marginTop: "5px !important"
-});
+    @media (max-width: 640px) {
+        width: 280px;
+        padding: 0 10px; 
+    }
+`;
+
+const RegistButton = styled(Button)`
+    width: 410px;
+    height: 40px;
+    background-color: white !important;
+    font-size: 14px !important;
+    font-family: ChosunGu !important;
+    color: #116530 !important;
+    font-weight: bold !important;
+    margin-top: 5px !important;
+
+    @media (max-width: 640px) {
+        width: 280px;
+        padding: 0 10px; 
+    }
+`;
 
 
 const S = {
