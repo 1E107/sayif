@@ -111,11 +111,12 @@ function MyPageComponent() {
             });
             formData.append('info', infoBlob);
             // 파일 추가
-            if (file) {
+            if (file !== null) {
                 formData.append('file', file);
             }
 
             try {
+                console.log(file);
                 const response = await uploadProfileImage(token, formData);
                 if (response.status === 200) {
                     callMemberInfo();
