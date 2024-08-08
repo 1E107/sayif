@@ -36,12 +36,12 @@ function MyPageComponent() {
         width: 250px;
         height: 250px;
         border-radius: 150px;
-        cursor: pointer;
 
         &:hover {
             ${({ changeInfo }) =>
                 changeInfo &&
                 `
+            cursor: pointer;
             filter: brightness(0.3);
             transition: filter 0.3s ease;
         `}
