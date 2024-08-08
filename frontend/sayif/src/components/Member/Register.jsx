@@ -107,7 +107,7 @@ function Register() {
                 <S.CustomTextField
                     variant="outlined"
                     onChange={e => SetNickname(e.target.value)}
-                    placeholder="홍길동"
+                    placeholder="새잎"
                 />
             </S.ItemWrapper>
             <S.ItemWrapper>
@@ -147,6 +147,7 @@ function Register() {
                     onBlur={() => validatePhone(phone)}
                     helperText={phoneError}
                     error={!!phoneError}
+                    placeholder="010-0000-0000"
                 />
             </S.ItemWrapper>
             <S.ItemWrapper>
@@ -158,6 +159,7 @@ function Register() {
                     helperText={emailError}
                     error={!!emailError}
                     onBlur={() => validateEmail(email)}
+                    placeholder="ssafy@ssafy.com"
                 />
             </S.ItemWrapper>
             <S.RegistBtn variant="contained" onClick={handleNextButton}>
