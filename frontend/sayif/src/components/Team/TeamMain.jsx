@@ -4,28 +4,24 @@ import * as React from 'react';
 import LinearProgress from '@mui/material/LinearProgress';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-import styled from 'styled-components';
 import '../../styles/fonts.css';
 import { ReactTyped } from 'react-typed';
 import { getTeamExperience } from '../../api/TeamApi';
 import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
 
-const CustomLinearProgress = styled(LinearProgress)({
-    padding: '10px',
-    margin: '20px 10px 10px 10px',
-    width: '250px',
-    borderRadius: '10px',
-    backgroundColor: '#E8E8CC !important',
-    '& .MuiLinearProgress-bar': {
-        backgroundColor: '#116530',
-    },
-});
+const images = [
+    `${process.env.PUBLIC_URL}/img/Plant/새잎_0단계.png`, 
+    `${process.env.PUBLIC_URL}/img/Plant/새잎_1단계.png`, 
+    `${process.env.PUBLIC_URL}/img/Plant/새잎_2단계.png`, 
+    `${process.env.PUBLIC_URL}/img/Plant/새잎_3단계.png`, 
+    `${process.env.PUBLIC_URL}/img/Plant/새잎_4단계.png`, 
+    `${process.env.PUBLIC_URL}/img/Plant/새잎_5단계.png`, 
+];
 
 function TeamMain() {
-    // const [activeStep, setActiveStep] = React.useState(0);
     const [progress, setProgress] = React.useState(0);
-    const [openSnackbar, setOpenSnackbar] = React.useState(true); // 스낵바 열림 상태를 관리하는 상태 추가
+    const [openSnackbar, setOpenSnackbar] = React.useState(true);
     const { token, member } = useSelector(state => state.member);
 
     useEffect(() => {
@@ -40,13 +36,16 @@ function TeamMain() {
         if (reason === 'clickaway') {
             return;
         }
-        setOpenSnackbar(false); // 스낵바 닫기 핸들러 함수
+        setOpenSnackbar(false);
     };
+
+    const level = Math.floor(progress / 100);
+    const imageUrl = images[level] || images[0];
 
     const MainView = (
         <S.Container>
             <S.Wrapper>
-                <S.ImageBox></S.ImageBox>
+                <S.ImageBox style={{ backgroundImage: `url(${imageUrl})`, backgroundSize: 'contain' }}></S.ImageBox>
                 <div
                     style={{
                         display: 'flex',
@@ -66,7 +65,7 @@ function TeamMain() {
                     <S.TeamScoreText>
                         {progress / 100 < 5 ? progress % 100 : 100}
                     </S.TeamScoreText>
-                    <CustomLinearProgress
+                    <S.CustomLinearProgress
                         variant="determinate"
                         value={progress / 100 < 5 ? progress % 100 : 100}
                     />
@@ -74,7 +73,7 @@ function TeamMain() {
             </S.Wrapper>
             <div style={{ position: 'relative', display: 'inline-block' }}>
                 <S.BubbleImg
-                    src="/img/speech-bubble.png"
+                    src={`${process.env.PUBLIC_URL}/img/speech-bubble.png`}
                     alt="speech bubble"
                     style={{ display: 'block' }}
                 />
@@ -108,10 +107,10 @@ function TeamMain() {
                 </div>
             </div>
             <Snackbar
-                open={openSnackbar} // 스낵바 열림 상태
-                autoHideDuration={6000} // 6초 후 자동으로 닫힘
-                onClose={handleCloseSnackbar} // 스낵바 닫기 핸들러 연결
-                anchorOrigin={{ vertical: 'top', horizontal: 'left' }} // 스낵바 위치 설정
+                open={openSnackbar}
+                autoHideDuration={6000}
+                onClose={handleCloseSnackbar}
+                anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
                 sx={{
                     '& .MuiAlert-root': {
                         backgroundColor: '#0B4619',
@@ -122,7 +121,7 @@ function TeamMain() {
                 }}
             >
                 <Alert
-                    onClose={handleCloseSnackbar} // 닫기 버튼 눌렀을 때 핸들러
+                    onClose={handleCloseSnackbar}
                     severity="none"
                     sx={{ width: '100%' }}
                 >
