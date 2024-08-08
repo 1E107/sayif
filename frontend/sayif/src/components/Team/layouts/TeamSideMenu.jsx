@@ -14,6 +14,7 @@ import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import '../../../styles/fonts.css';
 import { ListItemIcon, Typography } from '@mui/material';
+import { useEffect, useRef } from 'react';
 
 const icon = {
     홈: <HomeIcon />,
@@ -28,9 +29,20 @@ const icon = {
 };
 
 function TeamSideMenu({ offSideMenu, selectSideMenu }) {
+    const menuRef = useRef(null);
     const handleShowPage = select => {
         selectSideMenu(select);
     };
+
+    useEffect(() => {
+        const handleClickOutside = event => {
+            if (menuRef.current && !menuRef.current.contains(event.target)) {
+                offSideMenu();
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+    }, [offSideMenu]);
 
     const SideMenuView = (
         <Box sx={{ width: 250 }} role="presentation" onClick={offSideMenu}>
