@@ -9,7 +9,7 @@ export default class OvVideoComponent extends Component {
 
     componentDidMount() {
         if (this.props && this.props.user.streamManager && !!this.videoRef) {
-            console.log('PROPS: ', this.props);
+            console.log('OvVideo componentDidMount PROPS: ', this.props);
             this.props.user
                 .getStreamManager()
                 .addVideoElement(this.videoRef.current);
@@ -26,6 +26,7 @@ export default class OvVideoComponent extends Component {
                 event => {
                     const data = JSON.parse(event.data);
                     if (data.isScreenShareActive !== undefined) {
+                        console.log('signal:userChanged event: ', event);
                         this.props.user
                             .getStreamManager()
                             .addVideoElement(this.videoRef.current);
@@ -37,6 +38,7 @@ export default class OvVideoComponent extends Component {
 
     componentDidUpdate(props) {
         if (props && !!this.videoRef) {
+            console.log('OvVideo componentDidUpdate PROPS: ', this.props);
             this.props.user
                 .getStreamManager()
                 .addVideoElement(this.videoRef.current);
@@ -53,6 +55,7 @@ export default class OvVideoComponent extends Component {
                 }
                 ref={this.videoRef}
                 muted={this.props.mutedSound}
+                controls
             />
         );
     }

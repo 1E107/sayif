@@ -11,12 +11,12 @@ import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
 
 const images = [
-    `${process.env.PUBLIC_URL}/img/Plant/새잎_0단계.png`, 
-    `${process.env.PUBLIC_URL}/img/Plant/새잎_1단계.png`, 
-    `${process.env.PUBLIC_URL}/img/Plant/새잎_2단계.png`, 
-    `${process.env.PUBLIC_URL}/img/Plant/새잎_3단계.png`, 
-    `${process.env.PUBLIC_URL}/img/Plant/새잎_4단계.png`, 
-    `${process.env.PUBLIC_URL}/img/Plant/새잎_5단계.png`, 
+    `${process.env.PUBLIC_URL}/img/Plant/새잎_0단계.png`,
+    `${process.env.PUBLIC_URL}/img/Plant/새잎_1단계.png`,
+    `${process.env.PUBLIC_URL}/img/Plant/새잎_2단계.png`,
+    `${process.env.PUBLIC_URL}/img/Plant/새잎_3단계.png`,
+    `${process.env.PUBLIC_URL}/img/Plant/새잎_4단계.png`,
+    `${process.env.PUBLIC_URL}/img/Plant/새잎_5단계.png`,
 ];
 
 function TeamMain() {
@@ -45,7 +45,12 @@ function TeamMain() {
     const MainView = (
         <S.Container>
             <S.Wrapper>
-                <S.ImageBox style={{ backgroundImage: `url(${imageUrl})`, backgroundSize: 'contain' }}></S.ImageBox>
+                <S.ImageBox
+                    style={{
+                        backgroundImage: `url(${imageUrl})`,
+                        backgroundSize: 'contain',
+                    }}
+                ></S.ImageBox>
                 <div
                     style={{
                         display: 'flex',
@@ -112,6 +117,7 @@ function TeamMain() {
                 onClose={handleCloseSnackbar}
                 anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
                 sx={{
+                    transform: 'translateY(50px)',
                     '& .MuiAlert-root': {
                         backgroundColor: '#0B4619',
                         color: '#FDFED3',
