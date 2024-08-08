@@ -106,6 +106,7 @@ function MaterialList() {
                                             fontFamily: 'ChosunGu',
                                             color: '#116530',
                                             fontWeight: 'bold',
+                                            fontSize: '15px',
                                         }}
                                     >
                                         {column.label}
@@ -139,6 +140,7 @@ function MaterialList() {
                                                         style={{
                                                             fontFamily:
                                                                 'ChosunGu',
+                                                            fontSize: '15px',
                                                         }}
                                                     >
                                                         {column.format &&
