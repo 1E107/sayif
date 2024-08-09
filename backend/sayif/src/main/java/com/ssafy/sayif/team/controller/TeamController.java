@@ -53,4 +53,11 @@ public class TeamController {
         TeamNameResponseDto responseDto = teamNameConverter.convertToDto(team);
         return ResponseEntity.ok(responseDto);
     }
+
+    @GetMapping("/team-name")
+    public ResponseEntity<?> getTeamName(@PathVariable Integer id) {
+        Team team = teamService.getTeamName(id);
+        TeamNameResponseDto responseDto =teamNameConverter.convertToDto(team);
+        return ResponseEntity.ok(responseDto);
+    }
 }

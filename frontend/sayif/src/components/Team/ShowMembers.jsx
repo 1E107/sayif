@@ -34,6 +34,10 @@ const CustomButton = styled(Button)`
 
 const campus = {
     101: '부울경',
+    102: '서울',
+    103: '광주',
+    104: '대전',
+    105: '구미',
 };
 
 function ShowMembers() {
@@ -66,6 +70,7 @@ function ShowMembers() {
                     );
                     SetMentorList(mentor);
                     SetMenteeList(mentee);
+                    console.log(response.data);
                 }
             } catch (error) {
                 console.log(error);

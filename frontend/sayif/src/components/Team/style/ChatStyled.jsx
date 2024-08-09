@@ -3,9 +3,9 @@ import '../../../styles/fonts.css';
 
 const Container = styled.div`
     margin-top: 100px;
-    margin-bottom: 50px;
+    margin-bottom: 30px;
     background-color: white;
-    height: 100%;
+    height: 600px;
     width: 760px;
     border-radius: 30px;
     display: flex;
@@ -17,11 +17,13 @@ const Container = styled.div`
     @media (max-width: 800px) {
         width: 510px;
         padding: 0 10px;
+        height: 500px;
     }
     @media (max-width: 640px) {
         width: 380px;
         padding: 0 10px;
         margin-bottom: 60px;
+        height: 450px;
     }
 `;
 
@@ -65,14 +67,33 @@ const ChatContentWrapper = styled.div`
     flex-direction: column;
     padding: 20px;
     overflow-y: auto;
-    position: relative;
+    max-height: 420px;
+    scrollbar-width: thin; 
+    scrollbar-color: #888 #ddd; 
+
+    &::-webkit-scrollbar {
+        width: 8px; 
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #888; 
+        border-radius: 4px; 
+    }
+
+    &::-webkit-scrollbar-track {
+        background-color: #ddd; 
+        border-radius: 4px; 
+    }
+
     @media (max-width: 800px) {
         width: 490px;
         padding: 0 10px;
+        max-height: 320px;
     }
     @media (max-width: 640px) {
         width: 350px;
         padding: 0 10px;
+        max-height: 270px;
     }
 `;
 
@@ -100,7 +121,7 @@ const TimeText = styled.div`
     font-family: ChosunGu;
     font-size: 11px;
     color: #888;
-    align-self: flex-end;
+    align-self: flex-start;
     margin-top: 5px;
     margin-left: 4px;
     margin-right: 4px;
@@ -129,6 +150,16 @@ const NameText = styled.div`
     margin-left: 3px;
 `;
 
+const DateDivider = styled.div`
+    text-align: center;
+    padding: 10px 0;
+    margin: 10px 0;
+    font-family: ChosunGu;
+    font-size: 12px;
+    color: #888;
+    border-bottom: 1px solid #ddd;
+`;
+
 const S = {
     Container,
     TeamNameBar,
@@ -140,6 +171,7 @@ const S = {
     ChatContent,
     TimeText,
     NameText,
+    DateDivider,
 };
 
 export default S;

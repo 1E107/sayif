@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { API_BASE_URL } from './config';
-import Cookies from 'js-cookie';
 
 export const login = async (username, password) => {
     const loginData = {
@@ -14,6 +13,24 @@ export const login = async (username, password) => {
         });
     } catch (error) {
         console.log(error);
+        throw error;
+    }
+};
+
+export const logout = async token => {
+    try {
+        const response = await axios.post(
+            `${API_BASE_URL}/logout`,
+            {},
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+                withCredentials: true,
+            },
+        );
+        return response;
+    } catch (error) {
         throw error;
     }
 };

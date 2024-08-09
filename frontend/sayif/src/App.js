@@ -15,7 +15,7 @@ import InformationPage from './pages/Information/InformationPage';
 import InformationDetailPage from './pages/Information/InformationDetailPage';
 import MyPage from './pages/Member/MyPage';
 import MaterialPage from './pages/Team/MaterialPage';
-import CommunityDetailPage from './pages/Community/CoomunityDetailPage';
+import CommunityDetailPage from './pages/Community/ComunityDetailPage';
 import ChallengeDetailPage from './pages/Team/ChallengeDetailPage';
 import './App.css';
 import useTokenExpiration from './hooks/useTokenExpiration';
