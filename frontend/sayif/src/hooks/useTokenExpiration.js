@@ -41,6 +41,7 @@ const useTokenExpiration = () => {
 
         const checkTokenExpiration = () => {
             if (expirationDateUtc <= currentDate) {
+                console.log('access token 재발급 요청');
                 //토큰 재발급
                 const callNewToken = async () => {
                     try {
