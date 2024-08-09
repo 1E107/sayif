@@ -12,6 +12,7 @@ import { getTeamStatue } from '../../api/MentoringApi';
 import { getMemberInfo, uploadProfileImage } from '../../api/MemberApi';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import styled from 'styled-components';
+import Cookies from 'js-cookie';
 
 function MyPageComponent() {
     const navigate = useNavigate();

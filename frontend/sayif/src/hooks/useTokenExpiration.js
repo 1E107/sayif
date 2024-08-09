@@ -38,7 +38,6 @@ const useTokenExpiration = () => {
                     try {
                         const response = await getNewToken();
                         const authToken = response.headers['access'];
-                        console.log(authToken);
                         dispatch(setToken(authToken));
                     } catch (error) {
                         console.log(error);
