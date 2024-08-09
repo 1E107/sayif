@@ -68,7 +68,7 @@ function App() {
                 />
                 <Route path="/my-page" element={<MyPage />} />
                 <Route
-                    path="/team/challenge/photo/:id"
+                    path="/team/challenge/photo/:id/:challengeId"
                     element={<ChallengeDetailPage />}
                 />
                 <Route path="/letter" element={<LetterPage />} />

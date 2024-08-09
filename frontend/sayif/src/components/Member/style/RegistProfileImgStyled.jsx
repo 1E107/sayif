@@ -27,10 +27,12 @@ const TitleText = styled.div`
 
 const ImgSelect = styled.img`
     width: 200px;
+    height: 200px;
     border-radius: 50%;
     border: 1px solid #e9ecef;
     margin-top: 20px;
     cursor: pointer;
+    object-fit: cover;
     &:hover {
         filter: brightness(0.3);
         transition: filter 0.3s ease;
