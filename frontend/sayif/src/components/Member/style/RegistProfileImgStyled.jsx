@@ -3,7 +3,7 @@ import Button from '@mui/material/Button';
 import '../../../styles/fonts.css';
 
 const Container = styled.div`
-    height: 300px;
+    height: auto;
     width: 500px;
     margin: 250px 0px 100px 50px;
     border-radius: 20px;
@@ -15,7 +15,7 @@ const Container = styled.div`
     display: flex;
     justify-content: center;
     flex-direction: column;
-    padding: 50px 0px 50px 0px;
+    padding: 50px 0px;
 `;
 
 const TitleText = styled.div`
