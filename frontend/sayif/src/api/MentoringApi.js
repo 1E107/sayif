@@ -8,6 +8,7 @@ export const getMentorList = async (
     start_date_to,
     pmam,
     time,
+    token,
 ) => {
     const data = {
         start_date_from: start_date_from,
@@ -20,6 +21,7 @@ export const getMentorList = async (
         return await axios.post(
             `${API_BASE_URL}/mentoring/search/${page_no}/${size_no}`,
             data,
+            { headers: { Authorization: `Bearer ${token}` } },
         );
     } catch (error) {
         throw error;
