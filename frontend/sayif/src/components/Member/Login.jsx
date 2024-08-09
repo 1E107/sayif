@@ -21,7 +21,6 @@ function Login() {
         const callLogin = async () => {
             try {
                 const response = await login(loginId, loginPassword);
-                console.log(response);
                 const authToken = response.headers['access'];
                 dispatch(setToken(authToken));
 

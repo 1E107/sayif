@@ -1,4 +1,4 @@
-import Letter from '../../components/Member/Letter';
+import Letter from '../../components/Member/Letter/Letter';
 import styled from 'styled-components';
 
 const Main = styled.div`
