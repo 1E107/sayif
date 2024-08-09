@@ -17,6 +17,24 @@ export const login = async (username, password) => {
     }
 };
 
+export const logout = async token => {
+    try {
+        const response = await axios.post(
+            `${API_BASE_URL}/logout`,
+            {},
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+                withCredentials: true,
+            },
+        );
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const getMemberInfo = async token => {
     try {
         return await axios.get(`${API_BASE_URL}/member/member-info`, {
