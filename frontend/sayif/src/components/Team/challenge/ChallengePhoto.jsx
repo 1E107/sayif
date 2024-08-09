@@ -23,7 +23,7 @@ import { acquireExperience } from '../../../api/config';
 function ChallengePhoto() {
     const navigate = useNavigate();
     const [showModal, SetShowModal] = useState(false);
-    const { id } = useParams();
+    const { id, challengeId } = useParams();
     const { token, member } = useSelector(state => state.member);
     const [cardData, SetCardData] = useState([]);
 
@@ -43,7 +43,7 @@ function ChallengePhoto() {
                 const response = await changeMissionStatus(id, token);
                 if (response.status === 200) {
                     alert('다음 챌린지가 오픈됩니다!');
-                    acquireExperience(token,member,5);
+                    acquireExperience(token, member, 5);
                     navigate('/team/challenge');
                 }
             } catch (error) {
@@ -160,7 +160,13 @@ function ChallengePhoto() {
                     </Grid>
                 </>
             )}
-            {showModal && <UploadModal onClose={handleCloseCheck} id={id} />}
+            {showModal && (
+                <UploadModal
+                    onClose={handleCloseCheck}
+                    id={id}
+                    challengeId={challengeId}
+                />
+            )}
         </S.Container>
     );
     return PhotoView;

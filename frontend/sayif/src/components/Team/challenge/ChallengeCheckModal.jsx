@@ -18,7 +18,9 @@ function ChallengeCheckModal({ onClose, showModal }) {
     const [nowChallenge, SetNowChallenge] = useState(null);
 
     const handleUpload = () => {
-        naviagte(`/team/challenge/photo/${nowChallenge.challengeId}`);
+        naviagte(
+            `/team/challenge/photo/${nowChallenge.challengeId}/${nowChallenge.challengeList.id}`,
+        );
     };
 
     const style = {
@@ -39,6 +41,7 @@ function ChallengeCheckModal({ onClose, showModal }) {
             try {
                 const response = await getNowChallenge(member.teamId, token);
                 if (response.status === 200) {
+                    console.log(response.data);
                     SetNowChallenge(response.data);
                 }
             } catch (error) {
