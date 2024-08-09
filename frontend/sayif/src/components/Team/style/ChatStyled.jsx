@@ -3,9 +3,9 @@ import '../../../styles/fonts.css';
 
 const Container = styled.div`
     margin-top: 100px;
-    margin-bottom: 50px;
+    margin-bottom: 30px;
     background-color: white;
-    height: 100%;
+    height: 600px; /* 고정된 높이 설정 */
     width: 760px;
     border-radius: 30px;
     display: flex;
@@ -17,11 +17,13 @@ const Container = styled.div`
     @media (max-width: 800px) {
         width: 510px;
         padding: 0 10px;
+        height: 500px; /* 고정된 높이 설정 */
     }
     @media (max-width: 640px) {
         width: 380px;
         padding: 0 10px;
         margin-bottom: 60px;
+        height: 450px; /* 고정된 높이 설정 */
     }
 `;
 
@@ -65,14 +67,33 @@ const ChatContentWrapper = styled.div`
     flex-direction: column;
     padding: 20px;
     overflow-y: auto;
-    position: relative;
+    max-height: 420px; /* 채팅 내용 영역에 고정된 최대 높이 설정 */
+    scrollbar-width: thin; 
+    scrollbar-color: #888 #ddd; 
+
+    &::-webkit-scrollbar {
+        width: 8px; 
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #888; 
+        border-radius: 4px; 
+    }
+
+    &::-webkit-scrollbar-track {
+        background-color: #ddd; 
+        border-radius: 4px; 
+    }
+
     @media (max-width: 800px) {
         width: 490px;
         padding: 0 10px;
+        max-height: 320px; /* 작은 화면을 위한 고정된 최대 높이 설정 */
     }
     @media (max-width: 640px) {
         width: 350px;
         padding: 0 10px;
+        max-height: 270px; /* 더 작은 화면을 위한 고정된 최대 높이 설정 */
     }
 `;
 

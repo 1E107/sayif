@@ -27,6 +27,7 @@ public class ChatRestController {
                     chatResponseDto.setNickname(msg.getMember().getNickname());
                     chatResponseDto.setMsgContent(msg.getMsgContent());
                     chatResponseDto.setSendAt(msg.getSendAt());
+                    chatResponseDto.setProfileImg(msg.getMember().getProfileImg());
                     return chatResponseDto;
                 })
                 .collect(Collectors.toList());

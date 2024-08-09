@@ -83,6 +83,7 @@ public class ChatWebSocketController {
         chatResponseDto.setNickname(message.getMember().getNickname());
         chatResponseDto.setMsgContent(message.getMsgContent());
         chatResponseDto.setSendAt(message.getSendAt());
+        chatResponseDto.setProfileImg(message.getMember().getProfileImg());
 
         messagingTemplate.convertAndSend("/topic/" + teamId, chatResponseDto);
     }
