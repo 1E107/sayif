@@ -17,7 +17,6 @@ function QuizList() {
 
     const handleQuizBtn = data => {
         SetQuiz(data);
-        console.log(data);
         setShowDetail(true);
     };
 
@@ -27,8 +26,6 @@ function QuizList() {
                 const response = await getQuizList(event.target.value, token);
                 if (response.status == 200) {
                     SetQuizList(response.data);
-                    console.log('퀴즈 리스트-----------');
-                    console.log(quizList);
                     const results = await Promise.all(
                         response.data.map(async quiz => {
                             const isSolveRes = await GetMySolve(quiz.id, token);
@@ -93,7 +90,8 @@ function QuizList() {
                         style={{
                             display: 'flex',
                             justifyContent: 'space-between',
-                            marginBottom: '10px',
+                            marginBottom: '20px',
+                            marginTop: '20px',
                         }}
                     >
                         <S.title>퀴즈 목록</S.title>

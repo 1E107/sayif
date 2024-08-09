@@ -12,6 +12,7 @@
 
 .streamComponent {
     height: 100%;
+    position: relative;
 }
 
 video {

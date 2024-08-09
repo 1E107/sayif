@@ -6,7 +6,7 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     align-self: flex-start;
-    margin-top: 55px;
+    margin-top: 90px;
 `;
 
 const title = styled.div`
@@ -48,6 +48,8 @@ const QuizTitle = styled.div`
     margin-right: 20px;
     font-weight: bold;
     line-height: 140%;
+    width: 500px;
+    padding: 5px 0px 5px 0px;
 `;
 
 const QuizWrapper = styled.div`

@@ -59,7 +59,13 @@ function Story() {
 
     const StoryView = (
         <S.Main>
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <div
+                style={{
+                    display: 'flex',
+                    justifyContent: 'flex-end',
+                    marginTop: '50px',
+                }}
+            >
                 <S.CustomButton variant="outlined" onClick={goCreateStory}>
                     사연 보내기
                     <NavigateNextIcon style={{ marginLeft: '5px' }} />

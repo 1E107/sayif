@@ -25,10 +25,18 @@ const NickNameText = styled.div`
     border-radius: 30px;
 `;
 
-const ProfileImg = styled.img`
-    width: 250px;
-    height: 250px;
-    border-radius: 150px;
+const ImgIcon = styled.div`
+    position: absolute;
+    color: white;
+    display: none;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+`;
+
+const ImageContainer = styled.div`
+    position: relative;
+    display: inline-block;
 `;
 
 const TitleText = styled.div`
@@ -79,7 +87,6 @@ const LogoutBtn = styled(Button)({
 
 const S = {
     Container,
-    ProfileImg,
     TitleText,
     CustomInput,
     NickNameText,
@@ -87,6 +94,8 @@ const S = {
     LogoutBtn,
     UpdateText,
     ErrorMsg,
+    ImgIcon,
+    ImageContainer,
 };
 
 export default S;

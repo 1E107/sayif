@@ -28,7 +28,7 @@ function Board() {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(7);
     const [rows, SetRows] = useState([]);
-    const {token, member} = useSelector(state => state.member);
+    const { token, member } = useSelector(state => state.member);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -41,19 +41,24 @@ function Board() {
 
     const moveDetailPage = id => {
         navigate(`/team/board/detail/${id}`);
-    }
+    };
 
     useEffect(() => {
-        const callBoardList = async() => {
-            try{
-                const response = await getQnAList(member.teamId, token, page, 10);
-                if(response.status === 200) {
+        const callBoardList = async () => {
+            try {
+                const response = await getQnAList(
+                    member.teamId,
+                    token,
+                    page,
+                    10,
+                );
+                if (response.status === 200) {
                     SetRows(response.data);
                 }
-            }catch(error) {
+            } catch (error) {
                 console.log(error);
             }
-        }
+        };
 
         callBoardList();
     }, []);
@@ -72,6 +77,9 @@ function Board() {
                     }}
                 />
                 <S.SearchButton variant="contained">검색</S.SearchButton>
+            </div>
+            <div style={{ textAlign: 'right' }}>
+                <S.CustomButton variant="contained">글쓰기</S.CustomButton>
             </div>
             <Paper
                 sx={{
@@ -101,6 +109,7 @@ function Board() {
                                             fontFamily: 'ChosunGu',
                                             color: '#116530',
                                             fontWeight: 'bold',
+                                            fontSize: '15px',
                                         }}
                                     >
                                         {column.label}
@@ -121,7 +130,9 @@ function Board() {
                                             role="checkbox"
                                             tabIndex={-1}
                                             key={row.writingId}
-                                            onClick = {() => moveDetailPage(row.id)}
+                                            onClick={() =>
+                                                moveDetailPage(row.id)
+                                            }
                                         >
                                             {columns.map(column => {
                                                 const value = row[column.id];
@@ -132,6 +143,7 @@ function Board() {
                                                         style={{
                                                             fontFamily:
                                                                 'ChosunGu',
+                                                            fontSize: '15px',
                                                         }}
                                                     >
                                                         {column.format &&
@@ -139,7 +151,7 @@ function Board() {
                                                             'number'
                                                             ? column.format(
                                                                   value,
-                                                            )
+                                                              )
                                                             : value}
                                                     </TableCell>
                                                 );
@@ -161,7 +173,6 @@ function Board() {
                     style={{ color: '#116530', fontWeight: 'bold' }}
                 />
             </Paper>
-            <S.CustomButton variant="contained">글쓰기</S.CustomButton>
         </S.Container>
     );
 

@@ -42,7 +42,7 @@ public class TeamService {
         return memberRepository.findByTeamId(teamId);
     }
 
-    @Scheduled(cron = "0 0 0 * * ?") // 매일 자정에 실행
+    @Scheduled(cron = "0 0 8 * * ?") // test 위해 매일 아침 8시에 실행하도록 함
     public void processTeamStatuses() {
         List<Team> applyTeams = teamRepository.findByStatus(TeamStatus.Apply);
 

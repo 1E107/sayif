@@ -27,10 +27,26 @@ const TitleText = styled.div`
 
 const ImgSelect = styled.img`
     width: 200px;
-    border-radius: 200px;
+    border-radius: 50%;
     border: 1px solid #e9ecef;
     margin-top: 20px;
     cursor: pointer;
+    &:hover {
+        filter: brightness(0.3);
+        transition: filter 0.3s ease;
+    }
+
+    &:hover + div {
+        transition: filter 0.3s ease;
+        display: block;
+    }
+`;
+
+const ImgIcon = styled.div`
+    position: absolute;
+    margin-bottom: 50px;
+    color: white;
+    display: none;
 `;
 
 const SubmitBtn = styled(Button)({
@@ -51,6 +67,7 @@ const S = {
     ImgSelect,
     SubmitBtn,
     ExplanText,
+    ImgIcon,
 };
 
 export default S;
