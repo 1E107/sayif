@@ -30,30 +30,23 @@ export const applyMentoring = async (id, token) => {
     const data = { id: id };
 
     try {
-        return await axios.post(
-            `${API_BASE_URL}/mentoring/application`,
-            data,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
+        return await axios.post(`${API_BASE_URL}/mentoring/application`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
             },
-        );
+        });
     } catch (error) {
         throw error;
     }
 };
 
-export const getTeamStatue = async(id, token) => {
+export const getTeamStatue = async (id, token) => {
     try {
-        return await axios.get(
-            `${API_BASE_URL}/mentoring/team/${id}`,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
+        return await axios.get(`${API_BASE_URL}/mentoring/team/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
             },
-        );
+        });
     } catch (error) {
         throw error;
     }
@@ -77,15 +70,11 @@ export const submitMentoringGroup = async (
     console.log(data);
 
     try {
-        return await axios.post(
-            `${API_BASE_URL}/mentoring/recruit`,
-            data,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
+        return await axios.post(`${API_BASE_URL}/mentoring/recruit`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
             },
-        );
+        });
     } catch (error) {
         throw error;
     }
@@ -112,12 +101,12 @@ export const getTeamSessionId = async (id, token) => {
     }
 };
 
-export const getTotalMentor = async(token) => {
+export const getTotalMentor = async token => {
     try {
         return await axios.get(`${API_BASE_URL}/mentoring/mentor-nickname`, {
-            headers: { Authorization: `Bearer ${token}` }
+            headers: { Authorization: `Bearer ${token}` },
         });
-    }catch(error) {
+    } catch (error) {
         throw error;
     }
-}
+};

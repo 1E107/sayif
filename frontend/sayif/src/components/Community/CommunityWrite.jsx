@@ -27,12 +27,16 @@ function CommunityWrite() {
         if (!type) {
             errors.type = '카테고리를 선택해야 합니다.';
         }
-        if (file && !['image/jpeg', 'image/png', 'image/gif'].includes(
-            file.type)) {
-            errors.file = '지원되지 않는 파일 형식입니다. JPG, PNG, GIF만 업로드 가능합니다.';
+        if (
+            file &&
+            !['image/jpeg', 'image/png', 'image/gif'].includes(file.type)
+        ) {
+            errors.file =
+                '지원되지 않는 파일 형식입니다. JPG, PNG, GIF만 업로드 가능합니다.';
         }
-        if (file && file.size > 5 * 1024 * 1024) { // 파일 크기 5MB 제한
-            errors.file = '파일 크기는 5MB를 넘을 수 없습니다.';
+        if (file && file.size > 3 * 1024 * 1024) {
+            // 파일 크기 3MB 제한
+            errors.file = '파일 크기는 3MB를 넘을 수 없습니다.';
         }
 
         setErrors(errors);
@@ -72,13 +76,18 @@ function CommunityWrite() {
 
         const formData = new FormData();
         // 게시글 정보 직렬화
-        const post = new Blob([JSON.stringify({
-            title: title,
-            content: content,
-            type: type,
-        })], {
-            type: 'application/json',
-        });
+        const post = new Blob(
+            [
+                JSON.stringify({
+                    title: title,
+                    content: content,
+                    type: type,
+                }),
+            ],
+            {
+                type: 'application/json',
+            },
+        );
         formData.append('post', post);
         if (file) {
             formData.append('file', file);
