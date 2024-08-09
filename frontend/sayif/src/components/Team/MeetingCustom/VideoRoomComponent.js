@@ -586,24 +586,63 @@ class VideoRoomComponent extends Component {
     }
 
     checkSomeoneShareScreen() {
-        let isScreenShared;
-        // return true if at least one passes the test
-        isScreenShared =
+        // let isScreenShared;
+        // // return true if at least one passes the test
+        // isScreenShared =
+        //     this.state.subscribers.some(user => user.isScreenShareActive()) ||
+        //     localUser.isScreenShareActive();
+        // const openviduLayoutOptions = {
+        //     maxRatio: 3 / 2,
+        //     minRatio: 9 / 16,
+        //     fixedRatio: isScreenShared,
+        //     bigClass: 'OV_big',
+        //     bigPercentage: 0.8,
+        //     bigFixedRatio: false,
+        //     bigMaxRatio: 3 / 2,
+        //     bigMinRatio: 9 / 16,
+        //     bigFirst: true,
+        //     animate: true,
+        // };
+        // this.layout.setLayoutOptions(openviduLayoutOptions);
+        // this.updateLayout();
+
+        const isScreenShared =
             this.state.subscribers.some(user => user.isScreenShareActive()) ||
             localUser.isScreenShareActive();
-        const openviduLayoutOptions = {
-            maxRatio: 3 / 2,
-            minRatio: 9 / 16,
-            fixedRatio: isScreenShared,
-            bigClass: 'OV_big',
-            bigPercentage: 0.8,
-            bigFixedRatio: false,
-            bigMaxRatio: 3 / 2,
-            bigMinRatio: 9 / 16,
-            bigFirst: true,
-            animate: true,
-        };
-        this.layout.setLayoutOptions(openviduLayoutOptions);
+
+        if (isScreenShared) {
+            // 화면 공유 중인 스트림만 표시하고 나머지는 숨김
+            this.state.subscribers.forEach(user => {
+                if (user.isScreenShareActive()) {
+                    document.getElementById(
+                        `remoteUsers_${user.getConnectionId()}`,
+                    ).style.display = 'block';
+                } else {
+                    document.getElementById(
+                        `remoteUsers_${user.getConnectionId()}`,
+                    ).style.display = 'none';
+                }
+            });
+
+            if (localUser.isScreenShareActive()) {
+                document.getElementById('localUser').style.display = 'block';
+            } else {
+                document.getElementById('localUser').style.display = 'none';
+            }
+
+            document.getElementById('layout').classList.add('screen-shared');
+        } else {
+            // 모든 스트림 다시 표시
+            this.state.subscribers.forEach(user => {
+                document.getElementById(
+                    `remoteUsers_${user.getConnectionId()}`,
+                ).style.display = 'block';
+            });
+            document.getElementById('localUser').style.display = 'block';
+
+            document.getElementById('layout').classList.remove('screen-shared');
+        }
+
         this.updateLayout();
     }
 
@@ -696,7 +735,8 @@ class VideoRoomComponent extends Component {
                             <div
                                 key={i}
                                 className="OT_root OT_publisher custom-class"
-                                id="remoteUsers"
+                                // id="remoteUsers"
+                                id={`remoteUsers_${sub.getConnectionId()}`}
                             >
                                 <StreamComponent
                                     user={sub}

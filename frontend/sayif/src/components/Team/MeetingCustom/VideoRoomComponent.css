@@ -815,3 +815,13 @@
     margin-bottom: 15px;
     margin-top: 15px;
 }
+
+.screen-shared .OT_root {
+    display: none;
+}
+
+.screen-shared .OT_root.screen-shared-active {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+}
