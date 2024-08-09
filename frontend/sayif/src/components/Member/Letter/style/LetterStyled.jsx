@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import '../../../styles/fonts.css';
+import '../../../../styles/fonts.css';
 
 const Container = styled.div`
     margin-top: 80px;
