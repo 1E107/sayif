@@ -32,7 +32,12 @@ function InformationDetail() {
             <S.Form>
                 <div style={{ display: 'flex', margin: '30px' }}>
                     <S.CustomImg
-                        src="/img/info-temp-img.jpg"
+                        src={
+                            detailContent && detailContent.img
+                            && detailContent.img !== ''
+                                ? detailContent.img
+                                : '/img/info-temp-img.jpg'
+                        }
                         alt="정보 이미지"
                     />
                     <div>
@@ -78,6 +83,12 @@ function InformationDetail() {
                             <S.ContentText style={{ marginTop: '15px' }}>
                                 {detailContent.method}
                             </S.ContentText>
+                            <S.ButtonContainer>
+                                <S.Button onClick={() => window.open(
+                                    detailContent.link, '_blank')}>
+                                    신청하러 가기
+                                </S.Button>
+                            </S.ButtonContainer>
                         </>
                     ) : (
                         <S.ContentText>로딩 중...</S.ContentText>
