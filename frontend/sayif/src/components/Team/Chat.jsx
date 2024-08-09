@@ -114,7 +114,8 @@ const Chat = () => {
     };
 
     const handleKeyDown = (e) => {
-        if (e.key === 'Enter') { 
+        if (e.key === 'Enter' && !e.shiftKey) { 
+            e.preventDefault(); // 기본 줄바꿈 동작 막기
             handleSendBtn();
         }
     };
@@ -165,7 +166,9 @@ const Chat = () => {
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
                         onKeyDown={handleKeyDown}
-                        style={{ border: '1px solid #116530CC', width: '1010px'}}
+                        multiline // 여러 줄 입력을 허용
+                        rows={1} // 기본적으로 1줄 높이
+                        style={{ border: '1px solid #116530CC', width: '100%' }} // 입력창 크기 조정
                     />
                     <SendIcon
                         style={{ color: '#116530CC', marginLeft: '20px', fontSize: '30px' }}
