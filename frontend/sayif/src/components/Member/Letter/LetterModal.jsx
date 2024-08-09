@@ -1,8 +1,9 @@
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import { useEffect, useState } from 'react';
-import { getDetail } from '../../api/Letter';
+import { getDetail } from '../../../api/Letter';
 import { useSelector } from 'react-redux';
+import S from './style/ModalStyled';
 
 function LetterModal({ onClose, id }) {
     const { token, member } = useSelector(state => state.member);
@@ -50,10 +51,15 @@ function LetterModal({ onClose, id }) {
             aria-describedby="modal-modal-description"
         >
             <Box sx={style}>
-                {detailContent.title}
-                {detailContent.content}
-                {detailContent.createdAt}
-                {detailContent.sendId}
+                <S.Text style={{ fontSize: '30px' }}>
+                    {detailContent.title}
+                </S.Text>
+                <S.Text>
+                    {detailContent.createdAt} | {detailContent.sendId}
+                </S.Text>
+                <S.Text style={{ fontSize: '20px' }}>
+                    {detailContent.content}
+                </S.Text>
             </Box>
         </Modal>
     );

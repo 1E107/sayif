@@ -2,7 +2,7 @@ import S from './style/LetterStyled';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import { useEffect, useState } from 'react';
-import { getList } from '../../api/Letter';
+import { getList } from '../../../api/Letter';
 import { useSelector } from 'react-redux';
 import LetterModal from './LetterModal';
 
