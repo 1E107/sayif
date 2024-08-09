@@ -39,7 +39,8 @@ public class TeamService {
     private final TeamMsgRepository teamMsgRepository;
 
     public List<Member> getMembersByTeamId(Integer teamId) {
-        return memberRepository.findByTeamId(teamId);
+        List<Member> members = memberRepository.findByTeamId(teamId);
+        return members;
     }
 
     @Scheduled(cron = "0 0 0 * * ?") // 매일 자정에 팀 상태 변경
