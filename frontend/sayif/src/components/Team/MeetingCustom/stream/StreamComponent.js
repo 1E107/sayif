@@ -20,13 +20,21 @@ export default class StreamComponent extends Component {
     }
 
     render() {
+        console.log(
+            '참가자 getStreamManager(): ',
+            this.props.user.getStreamManager(),
+        );
+        console.log('참가자 user: ', this.props.user);
+        console.log('참가자 스트림 ID: ', this.props.streamId);
         return (
             <div className="OT_widget-container">
                 <div className="pointer nickname">
-                        <div>
-                            <span id="nickname">{this.props.user.getNickname()}</span>
-                            {this.props.user.isLocal() && <span id=""></span>}
-                        </div>
+                    <div>
+                        <span id="nickname">
+                            {this.props.user.getNickname()}
+                        </span>
+                        {this.props.user.isLocal() && <span id=""></span>}
+                    </div>
                 </div>
                 {this.props.user !== undefined &&
                 this.props.user.getStreamManager() !== undefined ? (

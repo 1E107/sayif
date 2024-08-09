@@ -18,6 +18,8 @@ function Information() {
     const [infoList, SetInfoList] = useState([]);
     const [rows, SetRows] = useState([]);
     const [page, SetPage] = useState(1);
+    const [totalCount, SetTotalCount] = useState(6);
+    const itemsPerPage = 6;
 
     const handleShowDetail = id => {
         navigate(`/support-information/${id}`);
@@ -64,61 +66,65 @@ function Information() {
             <div>
                 <S.Line />
             </div>
-            {rows.map((row, rowIndex) => (
-                <div
-                    key={rowIndex}
-                    style={{ display: 'flex', marginBottom: '30px' }}
-                >
-                    {' '}
-                    {row.map((col, colIndex) => {
-                        const { date: startDate, time: startTime } =
-                            formatDateTime(col.recruitStart);
-                        const { date: endDate, time: endTime } = formatDateTime(
-                            col.recruitEnd,
-                        );
-                        return (
-                            <Card
-                                key={colIndex}
-                                sx={{ maxWidth: 300, borderRadius: 7 }}
-                                style={{ marginLeft: '30px' }}
-                                onClick={() => {
-                                    handleShowDetail(col.id);
-                                }}
-                            >
-                                <CardMedia
-                                    sx={{ height: 200 }}
-                                    image="/img/info-temp-img.jpg"
-                                    title="green iguana"
-                                />
-                                <CardContent>
-                                    <S.InfoTitle
-                                        gutterBottom
-                                        variant="h5"
-                                        component="div"
-                                    >
-                                        {col.title}
-                                    </S.InfoTitle>
-                                    <S.InfoContent
-                                        variant="body2"
-                                        color="text.secondary"
-                                    >
-                                        {startDate} ~ {endDate}
-                                    </S.InfoContent>
-                                    <S.InfoContent
-                                        variant="body2"
-                                        color="text.secondary"
-                                    >
-                                        {col.region}
-                                    </S.InfoContent>
-                                </CardContent>
-                            </Card>
-                        );
-                    })}
-                </div>
-            ))}
+            {rows.length === 0 ? (
+                <></>
+            ) : (
+                rows.map((row, rowIndex) => (
+                    <div
+                        key={rowIndex}
+                        style={{ display: 'flex', marginBottom: '30px' }}
+                    >
+                        {' '}
+                        {row.map((col, colIndex) => {
+                            const { date: startDate, time: startTime } =
+                                formatDateTime(col.recruitStart);
+                            const { date: endDate, time: endTime } =
+                                formatDateTime(col.recruitEnd);
+                            return (
+                                <Card
+                                    key={colIndex}
+                                    sx={{ maxWidth: 300, borderRadius: 7 }}
+                                    style={{ marginLeft: '30px' }}
+                                    onClick={() => {
+                                        handleShowDetail(col.id);
+                                    }}
+                                >
+                                    <CardMedia
+                                        sx={{ height: 200 }}
+                                        image="/img/info-temp-img.jpg"
+                                        title="green iguana"
+                                    />
+                                    <CardContent>
+                                        <S.InfoTitle
+                                            gutterBottom
+                                            variant="h5"
+                                            component="div"
+                                        >
+                                            {col.title}
+                                        </S.InfoTitle>
+                                        <S.InfoContent
+                                            variant="body2"
+                                            color="text.secondary"
+                                        >
+                                            {startDate} ~ {endDate}
+                                        </S.InfoContent>
+                                        <S.InfoContent
+                                            variant="body2"
+                                            color="text.secondary"
+                                        >
+                                            {col.region}
+                                        </S.InfoContent>
+                                    </CardContent>
+                                </Card>
+                            );
+                        })}
+                    </div>
+                ))
+            )}
+
             <Stack spacing={2} style={{ margin: '50px 0px 50px 0px' }}>
                 <Pagination
-                    count={10}
+                    count={Math.ceil(totalCount / itemsPerPage)}
                     page={page}
                     onChange={handlePageChange}
                     variant="outlined"

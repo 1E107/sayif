@@ -19,6 +19,8 @@ import CommunityDetailPage from './pages/Community/CoomunityDetailPage';
 import ChallengeDetailPage from './pages/Team/ChallengeDetailPage';
 import './App.css';
 import useTokenExpiration from './hooks/useTokenExpiration';
+import CommunityWritePage from './pages/Community/CommunityWritePage';
+import LetterPage from './pages/Member/LetterPage';
 
 function App() {
     useTokenExpiration();
@@ -38,6 +40,10 @@ function App() {
                 <Route
                     path="/community/datail/:id"
                     element={<CommunityDetailPage />}
+                />
+                <Route
+                    path="/community/write"
+                    element={<CommunityWritePage />}
                 />
                 <Route path="/apply-mentoring" element={<ApplyPage />} />
                 <Route path="/mentor-profile" element={<Profile />} />
@@ -65,6 +71,7 @@ function App() {
                     path="/team/challenge/photo/:id"
                     element={<ChallengeDetailPage />}
                 />
+                <Route path="/letter" element={<LetterPage />} />
             </Routes>
         </>
     );

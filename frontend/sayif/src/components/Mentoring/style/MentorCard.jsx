@@ -56,6 +56,7 @@ const Description = styled.p`
     width: calc(100% - 40px);
     height: 100px;
     overflow: auto;
+    white-space: pre-line;
 `;
 
 const TagListContainer = styled.div`
@@ -101,6 +102,14 @@ const ContentContainer = styled.div`
     box-sizing: border-box;
 `;
 
+const campus = {
+    101: '부울경',
+    102: '서울',
+    103: '광주',
+    104: '대전',
+    105: '구미',
+};
+
 const MentorCard = ({
     id, // ID 추가
     seq,
@@ -123,7 +132,7 @@ const MentorCard = ({
                 <Info>
                     <Name>{nickname}</Name>
                     <Cohort>
-                        {regCode}_{seq}기_{track}
+                        {campus[regCode]}_{seq}기_{track}
                     </Cohort>
                 </Info>
                 <Avatar src={profileImg} alt={`${name} avatar`} />

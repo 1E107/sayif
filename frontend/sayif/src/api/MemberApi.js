@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { API_BASE_URL } from './config';
-import Cookies from 'js-cookie';
 
 export const login = async (username, password) => {
     const loginData = {
@@ -9,9 +8,29 @@ export const login = async (username, password) => {
     };
 
     try {
-        return await axios.post(`${API_BASE_URL}/login`, loginData);
+        return await axios.post(`${API_BASE_URL}/login`, loginData, {
+            withCredentials: true,
+        });
     } catch (error) {
         console.log(error);
+        throw error;
+    }
+};
+
+export const logout = async token => {
+    try {
+        const response = await axios.post(
+            `${API_BASE_URL}/logout`,
+            {},
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+                withCredentials: true,
+            },
+        );
+        return response;
+    } catch (error) {
         throw error;
     }
 };
@@ -67,15 +86,12 @@ export const uploadProfileImage = async (token, formData) => {
 };
 
 export const getNewToken = async () => {
-    const refreshToken = Cookies.get('refresh');
-    console.log(refreshToken);
-
-    // try {
-    //     const response = await axios.post(`${API_BASE_URL}/reissue`, null, {
-    //         withCredentials: true,
-    //     });
-    //     return response;
-    // } catch (error) {
-    //     throw error;
-    // }
+    try {
+        const response = await axios.post(`${API_BASE_URL}/reissue`, null, {
+            withCredentials: true,
+        });
+        return response;
+    } catch (error) {
+        throw error;
+    }
 };

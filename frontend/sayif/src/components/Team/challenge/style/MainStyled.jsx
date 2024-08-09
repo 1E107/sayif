@@ -33,7 +33,7 @@ const MissionBox = styled.div`
 const ExplanText = styled.div`
     width: 550px;
     font-family: ChosunGu;
-    font-size: 14px;
+    font-size: 18px;
     line-height: 140%;
     margin-top: 10px;
 `;
@@ -42,11 +42,12 @@ const ContentText = styled.div`
     width: 500px;
     font-family: PeoplefirstNeatLoudTTF;
     line-height: 170%;
-    font-size: 20px;
+    font-size: 24px;
     margin-top: 50px;
 `;
 
 const CustomButton = styled(Button)({
+    fontSize: '16px !important',
     marginTop: '50px !important',
     width: '200px',
     height: '50px',

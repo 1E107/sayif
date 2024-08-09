@@ -83,33 +83,54 @@ public class MemberService {
             throw new RuntimeException("Member not found");
         }
 
-        String oldFileUrl = member.getProfileImg(); // 기존 이미지 URL 저장
-        String newFileUrl = s3Service.upload(file);
+        final String oldFileUrl = member.getProfileImg(); // 기존 이미지 URL 저장
+        String newFileUrl = oldFileUrl; // 새로운 파일 URL을 초기화
+
+        // 파일이 존재하면 업로드하고 새로운 파일 URL로 변경
+        if (file != null && !file.isEmpty()) {
+            newFileUrl = s3Service.upload(file);
+        }
+
+        // 공통 필드 업데이트를 위한 빌더
+        Member.MemberBuilder<?, ?> memberBuilder = member.toBuilder()
+            .name(
+                updateRequestDto.getName() != null ? updateRequestDto.getName() : member.getName())
+            .nickname(updateRequestDto.getNickname() != null ? updateRequestDto.getNickname()
+                : member.getNickname())
+            .gender(updateRequestDto.getGender() != null ? updateRequestDto.getGender()
+                : member.getGender())
+            .email(updateRequestDto.getEmail() != null ? updateRequestDto.getEmail()
+                : member.getEmail())
+            .profileImg(newFileUrl)
+            .phone(updateRequestDto.getPhone() != null ? updateRequestDto.getPhone()
+                : member.getPhone());
+
+        Member updatedMember = memberBuilder.build();
+
+        final String finalNewFileUrl = newFileUrl; // effectively final로 만들기 위해 추가
 
         if (member.getRole() == Role.Mentee) {
             Optional<Mentee> mentee = menteeRepository.findById(member.getId());
-            if (mentee.isPresent()) {
-                Mentee loginedMentee = mentee.get();
+            mentee.ifPresent(loginedMentee -> {
                 Mentee updatedMentee = loginedMentee.toBuilder()
                     .name(updateRequestDto.getName() != null ? updateRequestDto.getName()
-                        : member.getName())
+                        : loginedMentee.getName())
                     .nickname(
                         updateRequestDto.getNickname() != null ? updateRequestDto.getNickname()
-                            : member.getNickname())
+                            : loginedMentee.getNickname())
                     .gender(updateRequestDto.getGender() != null ? updateRequestDto.getGender()
-                        : member.getGender())
+                        : loginedMentee.getGender())
                     .email(updateRequestDto.getEmail() != null ? updateRequestDto.getEmail()
-                        : member.getEmail())
-                    .profileImg(newFileUrl != null ? newFileUrl : member.getProfileImg())
+                        : loginedMentee.getEmail())
+                    .profileImg(finalNewFileUrl)
                     .phone(updateRequestDto.getPhone() != null ? updateRequestDto.getPhone()
-                        : member.getPhone())
+                        : loginedMentee.getPhone())
                     .build();
                 menteeRepository.save(updatedMentee);
-            }
+            });
         } else if (member.getRole() == Role.Mentor) {
             Optional<Mentor> mentor = mentorRepository.findById(member.getId());
-            if (mentor.isPresent()) {
-                Mentor loginedMentor = mentor.get();
+            mentor.ifPresent(loginedMentor -> {
                 Mentor updatedMentor = loginedMentor.toBuilder()
                     .name(updateRequestDto.getName() != null ? updateRequestDto.getName()
                         : loginedMentor.getName())
@@ -120,19 +141,24 @@ public class MemberService {
                         : loginedMentor.getGender())
                     .email(updateRequestDto.getEmail() != null ? updateRequestDto.getEmail()
                         : loginedMentor.getEmail())
-                    .profileImg(newFileUrl != null ? newFileUrl : member.getProfileImg())
+                    .profileImg(finalNewFileUrl)
                     .phone(updateRequestDto.getPhone() != null ? updateRequestDto.getPhone()
                         : loginedMentor.getPhone())
                     .build();
                 mentorRepository.save(updatedMentor);
-            }
+            });
         }
 
-        // 새로운 파일 업로드 후, 기존 파일이 default.jpg가 아닐 때만 삭제
-        if (newFileUrl != null && oldFileUrl != null && !oldFileUrl.equals(newFileUrl)
-            && !s3Service.getKeyFromFileAddress(oldFileUrl).equals("default.jpg")) {
+        // member 엔티티의 profileImg 필드를 업데이트
+        memberRepository.save(updatedMember);
+
+        // 새로운 파일 업로드 후, 기존 파일이 default.jpg가 아니고 기존 파일과 새로운 파일이 다를 때만 삭제
+        if (!finalNewFileUrl.equals(oldFileUrl) && !s3Service.getKeyFromFileAddress(oldFileUrl)
+            .equals("default.jpg") && s3Service.checkIfObjectExists(oldFileUrl)) {
             s3Service.deleteFileFromS3(oldFileUrl);
         }
+
+
     }
 
 

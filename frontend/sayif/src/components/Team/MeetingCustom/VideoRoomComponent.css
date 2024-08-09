@@ -65,10 +65,39 @@
     left: 0;
     right: 0;
     top: 64px;
-    bottom: 0;
+    bottom: 40px;
     height: inherit;
     min-width: 400px !important;
     width: inherit;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.bounds.one-element .OT_root {
+    width: 100%;
+    height: 100%;
+}
+
+.bounds.two-elements .OT_root {
+    width: 50%;
+    height: 100%;
+}
+
+.bounds.three-elements .OT_root {
+    width: 33.33%;
+    height: 100%;
+}
+
+.bounds.four-elements .OT_root {
+    width: 50%;
+    height: 50%;
+}
+
+.bounds.multiple-elements .OT_root {
+    width: 25%;
+    height: 50%;
 }
 
 /*!
@@ -86,6 +115,24 @@
  */
 
 /* Root OT object, this is where our CSS reset happens */
+
+.OT_root {
+    position: relative;
+    min-width: 48px;
+    min-height: 48px;
+    width: 100%;
+    height: 100%;
+}
+
+.OT_root .OT_video-element {
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-transform-origin: 0 0;
+    transform-origin: 0 0;
+}
+
 .OT_root,
 .OT_root * {
     margin: 0;
@@ -96,36 +143,6 @@
     vertical-align: baseline;
 }
 
-.OT_dialog-centering {
-    display: table;
-    width: 100%;
-    height: 100%;
-}
-
-.OT_dialog-centering-child {
-    display: table-cell;
-    vertical-align: middle;
-}
-
-.OT_dialog {
-    position: relative;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    margin-right: auto;
-    margin-left: auto;
-
-    color: #fff;
-    font-family: 'Chosungu';
-    font-size: 13px;
-    line-height: 1.4;
-}
-
-.OT_dialog * {
-    font-family: inherit;
-    -webkit-box-sizing: inherit;
-    box-sizing: inherit;
-}
-
 .OT_closeButton {
     color: #999999;
     cursor: pointer;
@@ -134,138 +151,6 @@
     position: absolute;
     right: 18px;
     top: 0;
-}
-
-.OT_dialog-messages {
-    text-align: center;
-}
-
-.OT_dialog-messages-main {
-    margin-bottom: 36px;
-    line-height: 36px;
-
-    font-weight: 300;
-    font-size: 24px;
-}
-
-.OT_dialog-messages-minor {
-    margin-bottom: 18px;
-
-    font-size: 13px;
-    line-height: 18px;
-    color: #a4a4a4;
-}
-
-.OT_dialog-messages-minor strong {
-    color: #ffffff;
-}
-
-.OT_dialog-actions-card {
-    display: inline-block;
-}
-
-.OT_dialog-button-title {
-    margin-bottom: 18px;
-    line-height: 18px;
-
-    font-weight: 300;
-    text-align: center;
-    font-size: 14px;
-    color: #999999;
-}
-.OT_dialog-button-title label {
-    color: #999999;
-}
-
-.OT_dialog-button-title a,
-.OT_dialog-button-title a:link,
-.OT_dialog-button-title a:active {
-    color: #02a1de;
-}
-
-.OT_dialog-button-title strong {
-    color: #ffffff;
-    font-weight: 100;
-    display: block;
-}
-
-.OT_dialog-button {
-    display: inline-block;
-
-    margin-bottom: 18px;
-    padding: 0 1em;
-
-    background-color: #1ca3dc;
-    text-align: center;
-    cursor: pointer;
-}
-
-.OT_dialog-button:disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
-}
-
-.OT_dialog-button-large {
-    line-height: 36px;
-    padding-top: 9px;
-    padding-bottom: 9px;
-
-    font-weight: 100;
-    font-size: 24px;
-}
-
-.OT_dialog-button-small {
-    line-height: 18px;
-    padding-top: 9px;
-    padding-bottom: 9px;
-
-    background-color: #444444;
-    color: #999999;
-    font-size: 16px;
-}
-
-.OT_dialog-progress-bar {
-    display: inline-block; /* prevents margin collapse */
-    width: 100%;
-    margin-top: 5px;
-    margin-bottom: 41px;
-
-    border: 1px solid #4e4e4e;
-    height: 8px;
-}
-
-.OT_dialog-progress-bar-fill {
-    height: 100%;
-
-    background-color: #29a4da;
-}
-
-.OT_dialog-plugin-upgrading .OT_dialog-plugin-upgrade-percentage {
-    line-height: 54px;
-
-    font-size: 48px;
-    font-weight: 100;
-}
-
-/* Helpers */
-
-.OT_centered {
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    margin: 0;
-}
-
-.OT_dialog-hidden {
-    display: none;
-}
-
-.OT_dialog-button-block {
-    display: block;
-}
-
-.OT_dialog-no-natural-margin {
-    margin-bottom: 0;
 }
 
 /* Publisher and Subscriber styles */

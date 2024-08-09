@@ -48,26 +48,35 @@ function Community() {
         setPage(0);
     };
 
+    const moveWritePage = () => {
+        navigate(`/community/write`);
+    };
+
     const moveDetailPage = id => {
         navigate(`/community/datail/${id}`);
     };
 
-    useEffect(() => {
-        const callCommunityList = async () => {
-            try {
-                const response = await GetCommunityList(token, value, page, 10);
-                console.log(response);
-                if (response.status === 200) {
-                    SetRows(response.data);
-                }
-            } catch (error) {
-                console.log(error);
+    const callCommunityList = async (token, value, page) => {
+        try {
+            const response = await GetCommunityList(token, value, page, 10);
+            console.log(response);
+            if (response.status === 200) {
+                SetRows(response.data);
             }
-        };
-        callCommunityList();
-    }, [value]);
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
-    const CommunityView = (
+    useEffect(() => {
+        callCommunityList(token, value, page);
+    }, [value, page, token]);
+
+    useEffect(() => {
+        setValue('Total');
+    }, []);
+
+    return (
         <S.Container>
             <S.HeaderWrapper>
                 <Box sx={{ width: '300px' }}>
@@ -108,7 +117,9 @@ function Community() {
                         }}
                     />
                     <S.SearchButton variant="contained">검색</S.SearchButton>
-                    <S.WriteButton variant="outlined">글쓰기</S.WriteButton>
+                    <S.WriteButton variant="outlined" onClick={moveWritePage}>
+                        글쓰기
+                    </S.WriteButton>
                 </div>
             </S.HeaderWrapper>
             <Paper
@@ -139,6 +150,7 @@ function Community() {
                                             fontFamily: 'ChosunGu',
                                             color: '#116530',
                                             fontWeight: 'bold',
+                                            fontSize: '15px',
                                         }}
                                     >
                                         {column.label}
@@ -166,10 +178,13 @@ function Community() {
                                             {columns.map(column => {
                                                 let value = row[column.id];
                                                 if (column.id === 'type') {
-                                                    if (value === 'Free')
+                                                    if (value === 'Free') {
                                                         value = '일상';
-                                                    else if (value === 'Worry')
+                                                    } else if (
+                                                        value === 'Worry'
+                                                    ) {
                                                         value = '고민';
+                                                    }
                                                 }
                                                 return (
                                                     <TableCell
@@ -178,6 +193,7 @@ function Community() {
                                                         style={{
                                                             fontFamily:
                                                                 'ChosunGu',
+                                                            fontSize: '16px',
                                                         }}
                                                     >
                                                         {column.format &&
@@ -209,8 +225,6 @@ function Community() {
             </Paper>
         </S.Container>
     );
-
-    return CommunityView;
 }
 
 export default Community;

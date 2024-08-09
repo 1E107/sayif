@@ -59,27 +59,27 @@ public class ChallengeService {
     public ChallengeResponseDto tryChallenge(int teamId) {
         List<Challenge> processChallenge = challengeRepository.findByTeamIdAndStatus(teamId,
             ChallengeStatus.Process);
+        // 진행중인 챌린지가 있음
         if (!processChallenge.isEmpty()) {
-            // 진행중인 챌린지가 있음
             return null;
         }
         List<Challenge> beforeChallenges = challengeRepository.findByTeamIdAndStatus(teamId,
             ChallengeStatus.Before);
+        // Before 상태인 Challenge가 있을 경우
         if (!beforeChallenges.isEmpty()) {
-            // Before 상태인 Challenge가 있을 경우
             Random random = new Random();
             Challenge challenge = beforeChallenges.get(random.nextInt(beforeChallenges.size()));
             challenge.updateStatus(ChallengeStatus.Process);
             return new ChallengeResponseDto(challenge.getId(), challenge.getChallengeList());
         }
-        // 모든 첼린지를 진행했거나, 진행중이 있는 경우
+        // 모든 챌린지를 진행했거나, 진행중이 있는 경우
         return null;
     }
 
     public boolean changeChallengeStatus(Long challengeNum) {
-        Optional<Challenge> fingChallenge = challengeRepository.findById(challengeNum);
-        if (fingChallenge.isPresent()) {
-            Challenge challenge = fingChallenge.get();
+        Optional<Challenge> findChallenge = challengeRepository.findById(challengeNum);
+        if (findChallenge.isPresent()) {
+            Challenge challenge = findChallenge.get();
             if (challenge.getStatus() == ChallengeStatus.Process) {
                 challenge.updateStatus(ChallengeStatus.Success);
                 return true;

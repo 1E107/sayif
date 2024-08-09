@@ -9,7 +9,10 @@ import {
 import { useState } from 'react';
 import MentoringModal from './MentoringModal';
 import { getTeamStatue } from '../../api/MentoringApi';
-import { getMemberInfo, uploadProfileImage } from '../../api/MemberApi';
+import { getMemberInfo, uploadProfileImage, logout } from '../../api/MemberApi';
+import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
+import styled from 'styled-components';
+import Cookies from 'js-cookie';
 
 function MyPageComponent() {
     const navigate = useNavigate();
@@ -29,6 +32,31 @@ function MyPageComponent() {
     });
     const [file, setFile] = useState(null);
     const [preview, setPreview] = useState(member.profileImg);
+
+    const ProfileImg = styled.img`
+        width: 250px;
+        height: 250px;
+        border-radius: 150px;
+
+        &:hover {
+            ${({ changeInfo }) =>
+                changeInfo &&
+                `
+            cursor: pointer;
+            filter: brightness(0.3);
+            transition: filter 0.3s ease;
+        `}
+        }
+
+        &:hover + div {
+            ${({ changeInfo }) =>
+                changeInfo &&
+                `
+            transition: filter 0.3s ease;
+            display: block;
+        `}
+        }
+    `;
 
     const handleInputChange = field => e => {
         if (field === 'phone') {
@@ -52,13 +80,27 @@ function MyPageComponent() {
         }
     };
 
-    const logout = () => {
-        localStorage.removeItem('persist:root');
-        dispatch(setToken(null));
-        dispatch(setMember({}));
-        dispatch(setExpirationdate(null));
-        alert('로그아웃 되었습니다.');
-        navigate('/');
+    const handleLogout = () => {
+        const callLogout = async () => {
+            try {
+                const response = await logout(token);
+                if (response.status === 200) {
+                    localStorage.removeItem('persist:root');
+                    dispatch(setToken(null));
+                    dispatch(setMember({}));
+                    dispatch(setExpirationdate(null));
+                    alert('로그아웃 되었습니다.');
+                    navigate('/');
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        callLogout();
+    };
+
+    const handleCheckMessage = () => {
+        navigate('/letter');
     };
 
     const handleCloseMentoringModal = () => {
@@ -66,6 +108,7 @@ function MyPageComponent() {
     };
 
     const handleOpenMentoringModal = () => {
+        console.log(member);
         const CallMentoringStatue = async () => {
             try {
                 const response = await getTeamStatue(member.teamId, token);
@@ -111,14 +154,14 @@ function MyPageComponent() {
             });
             formData.append('info', infoBlob);
             // 파일 추가
-            if (file) {
+            if (file !== null) {
                 formData.append('file', file);
             }
 
             try {
                 const response = await uploadProfileImage(token, formData);
                 if (response.status === 200) {
-                    callMemberInfo();
+                    await callMemberInfo();
                     alert('회원 정보가 성공적으로 수정되었어요!');
                     window.location.reload();
                 }
@@ -170,11 +213,24 @@ function MyPageComponent() {
         <S.Container>
             <div style={{ display: 'flex' }}>
                 <div style={{ textAlign: 'center' }}>
-                    <S.ProfileImg
-                        src={preview}
-                        alt="Profile"
-                        onClick={handleProfileImageClick}
-                    />
+                    <S.ImageContainer>
+                        <ProfileImg
+                            src={preview}
+                            alt="Profile"
+                            onClick={handleProfileImageClick}
+                            changeInfo={changeInfo}
+                        />
+                        <S.ImgIcon>
+                            <AddAPhotoIcon style={{ fontSize: '100px' }} />
+                        </S.ImgIcon>
+                        <input
+                            type="file"
+                            id="fileInput"
+                            style={{ display: 'none' }}
+                            onChange={handleImageChange}
+                            accept="image/*"
+                        />
+                    </S.ImageContainer>
                     <input
                         type="file"
                         id="fileInput"
@@ -190,7 +246,10 @@ function MyPageComponent() {
                               : ''}{' '}
                         / {member.nickname}
                     </S.NickNameText>
-                    <S.LogoutBtn onClick={logout}>로그아웃</S.LogoutBtn>
+                    <S.LogoutBtn onClick={handleLogout}>로그아웃</S.LogoutBtn>
+                    <S.LogoutBtn onClick={handleCheckMessage}>
+                        쪽지함
+                    </S.LogoutBtn>
                 </div>
                 <div style={{ marginLeft: '80px' }}>
                     <div
