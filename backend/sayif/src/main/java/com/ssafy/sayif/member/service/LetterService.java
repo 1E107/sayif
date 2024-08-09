@@ -66,7 +66,7 @@ public class LetterService {
         responseDto.setContent(letter.getContent());
         responseDto.setSendId(letter.getSendMember().getUsername());
         responseDto.setReceiveMemberNickname(letter.getReceiveMember().getUsername());
-        responseDto.setReceiveMemberId(letter.getReceiveMember().getId());
+        responseDto.setSendMemberId(letter.getSendMember().getId());
         responseDto.setCreatedAt(letter.getCreatedAt());
         responseDto.setModifiedAt(letter.getModifiedAt());
         return responseDto;
