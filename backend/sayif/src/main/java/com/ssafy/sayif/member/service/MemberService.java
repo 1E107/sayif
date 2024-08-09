@@ -154,9 +154,11 @@ public class MemberService {
 
         // 새로운 파일 업로드 후, 기존 파일이 default.jpg가 아니고 기존 파일과 새로운 파일이 다를 때만 삭제
         if (!finalNewFileUrl.equals(oldFileUrl) && !s3Service.getKeyFromFileAddress(oldFileUrl)
-            .equals("default.jpg")) {
+            .equals("default.jpg") && s3Service.checkIfObjectExists(oldFileUrl)) {
             s3Service.deleteFileFromS3(oldFileUrl);
         }
+
+
     }
 
 

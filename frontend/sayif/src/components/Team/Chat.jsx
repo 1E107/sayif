@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import S from './style/ChatStyled';
 import FormControl from '@mui/material/FormControl';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -9,11 +9,11 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 
 const Chat = () => {
-    const { token, member } = useSelector(state => state.member);
-    const teamId = member.teamId;
-    const currentUserNickname = member.nickname;
-    const [messages, setMessages] = useState([]);
-    const [newMessage, setNewMessage] = useState('');
+  const { token, member } = useSelector((state) => state.member);
+  const teamId = member.teamId;
+  const currentUserNickname = member.nickname;
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState('');
 
     const chatContentRef = useRef(null);
     const chatContentEndRef = useRef(null);
@@ -74,17 +74,50 @@ const Chat = () => {
         if (chatContentEndRef.current) {
             chatContentEndRef.current.scrollIntoView({ behavior: 'smooth' });
         }
-    }, [messages]);
+      })
+      .catch((error) => {
+        console.error('Failed to fetch messages', error);
+      });
 
-    const handleSendBtn = () => {
-        if (newMessage.trim() === '') return; // 입력 칸이 비어 있으면 반환
+    webSocketService.connect(token);
 
-        const message = {
-            msgContent: newMessage,
-        };
+    const subscription = webSocketService.subscribe(`/topic/${teamId}`, (message) => {
+      console.log('Received message:', message);
+      setMessages((prevMessages) => {
+        if (
+          !prevMessages.some(
+            (msg) =>
+              msg.sendAt === message.sendAt && msg.msgContent === message.msgContent
+          )
+        ) {
+          return [...prevMessages, message];
+        }
+        return prevMessages;
+      });
+    });
 
-        webSocketService.sendMessage(`/app/team/${teamId}/chat`, message);
-        setNewMessage('');
+    return () => {
+      isSubscribed = false;
+      if (subscription) {
+        subscription.unsubscribe();
+      }
+      webSocketService.disconnect();
+    };
+  }, [teamId, token, currentUserNickname]);
+
+  useEffect(() => {
+    if (chatContentEndRef.current) {
+      chatContentEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  const handleSendBtn = () => {
+    const message = {
+      msgContent: newMessage,
     };
 
     const handleKeyDown = (e) => {
