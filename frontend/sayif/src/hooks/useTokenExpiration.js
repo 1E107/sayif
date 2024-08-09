@@ -33,19 +33,19 @@ const useTokenExpiration = () => {
 
         const checkTokenExpiration = () => {
             if (expirationDateUtc <= currentDate) {
-                logout();
                 //토큰 재발급
                 const callNewToken = async () => {
                     try {
-                        await getNewToken();
-                        // const response = await getNewToken();
-                        // console.log(response);
+                        const response = await getNewToken();
+                        const authToken = response.headers['access'];
+                        dispatch(setToken(authToken));
                     } catch (error) {
                         console.log(error);
+                        logout();
                     }
                 };
 
-                //callNewToken();
+                callNewToken();
             }
         };
 
