@@ -18,6 +18,24 @@ const Chat = () => {
     const chatContentRef = useRef(null);
     const chatContentEndRef = useRef(null);
 
+    const formatDateTime = (dateString) => {
+        const date = new Date(dateString);
+        const time = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+        return `${time}`;
+    };
+
+    const groupMessagesByDate = (messages) => {
+        const groups = {};
+        messages.forEach(message => {
+            const date = new Date(message.sendAt).toLocaleDateString();
+            if (!groups[date]) {
+                groups[date] = [];
+            }
+            groups[date].push(message);
+        });
+        return Object.entries(groups).map(([date, messages]) => ({date, messages}));
+    };
+
     useEffect(() => {
         let isSubscribed = true;
 
@@ -47,16 +65,24 @@ const Chat = () => {
             message => {
                 console.log('Received message:', message);
                 setMessages(prevMessages => {
-                    if (
-                        !prevMessages.some(
-                            msg =>
-                                msg.sendAt === message.sendAt &&
-                                msg.msgContent === message.msgContent,
-                        )
-                    ) {
-                        return [...prevMessages, message];
+                    const newMessages = [...prevMessages];
+                    const messageDate = new Date(message.sendAt).toLocaleDateString();
+                    const lastMessageDate = newMessages.length > 0 
+                        ? new Date(newMessages[newMessages.length - 1].sendAt).toLocaleDateString()
+                        : null;
+
+                    if (messageDate !== lastMessageDate) {
+                        newMessages.push({type: 'dateDivider', date: messageDate});
                     }
-                    return prevMessages;
+
+                    if (!newMessages.some(
+                        msg =>
+                            msg.sendAt === message.sendAt &&
+                            msg.msgContent === message.msgContent
+                    )) {
+                        newMessages.push(message);
+                    }
+                    return newMessages;
                 });
             },
         );
@@ -72,13 +98,12 @@ const Chat = () => {
 
     useEffect(() => {
         if (chatContentEndRef.current) {
-            // Scroll to the bottom of the chat content
-            chatContentRef.current.scrollTop = chatContentRef.current.scrollHeight;
+            chatContentEndRef.current.scrollIntoView({ behavior: 'smooth' });
         }
     }, [messages]);
 
     const handleSendBtn = () => {
-        if (newMessage.trim() === '') return; // 입력 칸이 비어 있으면 반환
+        if (newMessage.trim() === '') return;
 
         const message = {
             msgContent: newMessage,
@@ -94,35 +119,42 @@ const Chat = () => {
         }
     };
 
+    const groupedMessages = groupMessagesByDate(messages);
+
     return (
         <S.Container>
             <S.ChatContentWrapper ref={chatContentRef}>
-                {messages.map((msg, index) =>
-                    msg.nickname === currentUserNickname ? (
-                        <S.ChatMy key={index}>
-                            <S.ProfileImg src={msg.profileImg} />
-                            <div>
-                                <S.ChatContent style={{ backgroundColor: '#116530', color: 'white' }}>
-                                    {msg.msgContent}
-                                </S.ChatContent>
-                                <S.TimeText align="right">
-                                    {new Date(msg.sendAt).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}
-                                </S.TimeText>
-                            </div>
-                        </S.ChatMy>
-                    ) : (
-                        <S.ChatOther key={index}>
-                            <S.ProfileImg src={msg.profileImg} />
-                            <div>
-                                <S.NameText>{msg.nickname}</S.NameText>
-                                <S.ChatContent>{msg.msgContent}</S.ChatContent>
-                                <S.TimeText>
-                                    {new Date(msg.sendAt).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}
-                                </S.TimeText>
-                            </div>
-                        </S.ChatOther>
-                    )
-                )}
+                {groupedMessages.map(({date, messages}) => (
+                    <React.Fragment key={date}>
+                        <S.DateDivider>{date}</S.DateDivider>
+                        {messages.map((msg, index) =>
+                            msg.nickname === currentUserNickname ? (
+                                <S.ChatMy key={index}>
+                                    <S.ProfileImg src={msg.profileImg} />
+                                    <div>
+                                        <S.ChatContent style={{ backgroundColor: '#116530', color: 'white' }}>
+                                            {msg.msgContent}
+                                        </S.ChatContent>
+                                        <S.TimeText align="right">
+                                            {formatDateTime(msg.sendAt)}
+                                        </S.TimeText>
+                                    </div>
+                                </S.ChatMy>
+                            ) : (
+                                <S.ChatOther key={index}>
+                                    <S.ProfileImg src={msg.profileImg} />
+                                    <div>
+                                        <S.NameText>{msg.nickname}</S.NameText>
+                                        <S.ChatContent>{msg.msgContent}</S.ChatContent>
+                                        <S.TimeText>
+                                            {formatDateTime(msg.sendAt)}
+                                        </S.TimeText>
+                                    </div>
+                                </S.ChatOther>
+                            )
+                        )}
+                    </React.Fragment>
+                ))}
                 <div ref={chatContentEndRef} />
             </S.ChatContentWrapper>
             <FormControl>
