@@ -59,6 +59,22 @@ class VideoRoomComponent extends Component {
         window.addEventListener('beforeunload', this.onbeforeunload);
         window.addEventListener('resize', this.updateLayout);
         window.addEventListener('resize', this.checkSize);
+        window.addEventListener(
+            'fullscreenchange',
+            this.handleFullscreenChange,
+        );
+        window.addEventListener(
+            'mozfullscreenchange',
+            this.handleFullscreenChange,
+        );
+        window.addEventListener(
+            'webkitfullscreenchange',
+            this.handleFullscreenChange,
+        );
+        window.addEventListener(
+            'msfullscreenchange',
+            this.handleFullscreenChange,
+        );
         if (this.state.session) {
             this.addSessionEventHandlers(this.state.session);
         }
@@ -110,6 +126,22 @@ class VideoRoomComponent extends Component {
         window.removeEventListener('beforeunload', this.onbeforeunload);
         window.removeEventListener('resize', this.updateLayout);
         window.removeEventListener('resize', this.checkSize);
+        window.removeEventListener(
+            'fullscreenchange',
+            this.handleFullscreenChange,
+        );
+        window.removeEventListener(
+            'mozfullscreenchange',
+            this.handleFullscreenChange,
+        );
+        window.removeEventListener(
+            'webkitfullscreenchange',
+            this.handleFullscreenChange,
+        );
+        window.removeEventListener(
+            'msfullscreenchange',
+            this.handleFullscreenChange,
+        );
         this.leaveSession();
     }
 
@@ -472,6 +504,22 @@ class VideoRoomComponent extends Component {
             }
         }
     }
+
+    handleFullscreenChange = () => {
+        const bounds = document.querySelector('.bounds');
+        if (
+            document.fullscreenElement ||
+            document.mozFullScreenElement ||
+            document.webkitFullscreenElement ||
+            document.msFullscreenElement
+        ) {
+            // 전체화면 모드일 때
+            bounds.style.top = '0px';
+        } else {
+            // 전체화면 모드가 아닐 때
+            bounds.style.top = '64px';
+        }
+    };
 
     screenShare() {
         const videoSource =
