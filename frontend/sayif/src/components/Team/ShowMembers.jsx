@@ -33,6 +33,10 @@ const CustomButton = styled(Button)`
 
 const campus = {
     101: '부울경',
+    102: '서울',
+    103: '대전',
+    104: '구미',
+    105: '광주'
 };
 
 function ShowMembers() {
@@ -51,6 +55,7 @@ function ShowMembers() {
                     const mentor = response.data.filter(
                         member => member.role === 'Mentor',
                     );
+                    
                     SetMentorList(mentor);
                     SetMenteeList(mentee);
                 }
