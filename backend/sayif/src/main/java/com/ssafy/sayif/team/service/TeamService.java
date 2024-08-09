@@ -115,4 +115,10 @@ public class TeamService {
         team.changeName(newName);
         return teamRepository.save(team);
     }
+
+    public Team getTeamName(Integer teamId) {
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new RuntimeException("Team not found"));
+        return team;
+    }
 }

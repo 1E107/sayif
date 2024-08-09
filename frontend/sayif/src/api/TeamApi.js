@@ -196,3 +196,32 @@ export const GetMySolve = async (id, token) => {
         console.log(error);
     }
 };
+
+export const modifyTeamName = async (id, token, newName) => {
+    try {
+        const response = await axios.put(
+            `${API_BASE_URL}/team/${id}/team-name`,
+            { newName },
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            },
+        );
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getTeamName = async (id, token) => {
+    try {
+        const response = await axios.get(
+            `${API_BASE_URL}/team/${id}/team-name`,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            },
+        );
+        return response;
+    } catch (error) {
+        console.log(error);
+    }
+};
