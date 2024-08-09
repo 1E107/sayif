@@ -66,6 +66,7 @@ function MyPageComponent() {
     };
 
     const handleOpenMentoringModal = () => {
+        console.log(member);
         const CallMentoringStatue = async () => {
             try {
                 const response = await getTeamStatue(member.teamId, token);
@@ -116,10 +117,9 @@ function MyPageComponent() {
             }
 
             try {
-                console.log(file);
                 const response = await uploadProfileImage(token, formData);
                 if (response.status === 200) {
-                    callMemberInfo();
+                    await callMemberInfo();
                     alert('회원 정보가 성공적으로 수정되었어요!');
                     window.location.reload();
                 }
@@ -187,8 +187,8 @@ function MyPageComponent() {
                         {role === 'Mentor'
                             ? '단비'
                             : role === 'Mentee'
-                              ? '새잎'
-                              : ''}{' '}
+                                ? '새잎'
+                                : ''}{' '}
                         / {member.nickname}
                     </S.NickNameText>
                     <S.LogoutBtn onClick={logout}>로그아웃</S.LogoutBtn>
@@ -222,8 +222,8 @@ function MyPageComponent() {
                                 gender === 'F'
                                     ? '여성'
                                     : gender === 'M'
-                                      ? '남성'
-                                      : ''
+                                        ? '남성'
+                                        : ''
                             }
                             onChange={handleGenderChange}
                             onKeyDown={handleKeyDown}

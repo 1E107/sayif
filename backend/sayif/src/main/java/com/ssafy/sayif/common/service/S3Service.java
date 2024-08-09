@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.UUID;
@@ -74,10 +75,16 @@ public class S3Service {
         String extension = "";
         if (originalFilename != null && originalFilename.contains(".")) {
             extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+            originalFilename = originalFilename.substring(0,
+                originalFilename.lastIndexOf(".")); // 확장자 제거
         }
 
-        // S3에 저장될 파일명 생성 (랜덤 UUID + 원본 파일명)
-        String s3FileName = UUID.randomUUID() + originalFilename;
+        // 파일명을 URL-safe하게 인코딩
+        String encodedFilename = URLEncoder.encode(Objects.requireNonNull(originalFilename),
+            StandardCharsets.UTF_8);
+
+        // S3에 저장될 파일명 생성 (랜덤 UUID + 인코딩된 파일명 + 확장자)
+        String s3FileName = UUID.randomUUID() + "_" + encodedFilename + extension;
 
         byte[] bytes;
         try (InputStream is = file.getInputStream()) {
@@ -112,6 +119,7 @@ public class S3Service {
         // 업로드된 파일의 URL 반환
         return amazonS3.getUrl(bucketName, s3FileName).toString();
     }
+
 
     public String getUrl(String fileName) {
         return amazonS3.getUrl(bucketName, fileName).toString();
