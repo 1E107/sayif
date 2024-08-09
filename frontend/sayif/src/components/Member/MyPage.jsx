@@ -9,7 +9,7 @@ import {
 import { useState } from 'react';
 import MentoringModal from './MentoringModal';
 import { getTeamStatue } from '../../api/MentoringApi';
-import { getMemberInfo, uploadProfileImage } from '../../api/MemberApi';
+import { getMemberInfo, uploadProfileImage, logout } from '../../api/MemberApi';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import styled from 'styled-components';
 import Cookies from 'js-cookie';
@@ -80,13 +80,23 @@ function MyPageComponent() {
         }
     };
 
-    const logout = () => {
-        localStorage.removeItem('persist:root');
-        dispatch(setToken(null));
-        dispatch(setMember({}));
-        dispatch(setExpirationdate(null));
-        alert('로그아웃 되었습니다.');
-        navigate('/');
+    const handleLogout = () => {
+        const callLogout = async () => {
+            try {
+                const response = await logout(token);
+                if (response.status === 200) {
+                    localStorage.removeItem('persist:root');
+                    dispatch(setToken(null));
+                    dispatch(setMember({}));
+                    dispatch(setExpirationdate(null));
+                    alert('로그아웃 되었습니다.');
+                    navigate('/');
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        callLogout();
     };
 
     const handleCheckMessage = () => {
@@ -232,11 +242,11 @@ function MyPageComponent() {
                         {role === 'Mentor'
                             ? '단비'
                             : role === 'Mentee'
-                                ? '새잎'
-                                : ''}{' '}
+                              ? '새잎'
+                              : ''}{' '}
                         / {member.nickname}
                     </S.NickNameText>
-                    <S.LogoutBtn onClick={logout}>로그아웃</S.LogoutBtn>
+                    <S.LogoutBtn onClick={handleLogout}>로그아웃</S.LogoutBtn>
                     <S.LogoutBtn onClick={handleCheckMessage}>
                         쪽지함
                     </S.LogoutBtn>
@@ -270,8 +280,8 @@ function MyPageComponent() {
                                 gender === 'F'
                                     ? '여성'
                                     : gender === 'M'
-                                        ? '남성'
-                                        : ''
+                                      ? '남성'
+                                      : ''
                             }
                             onChange={handleGenderChange}
                             onKeyDown={handleKeyDown}

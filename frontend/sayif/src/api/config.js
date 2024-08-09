@@ -1,5 +1,6 @@
 import { getTeamExperience, updateTeamExperience } from './TeamApi';
 
+
 // 배포 주소
 export const API_BASE_URL = 'https://i11e107.p.ssafy.io/api';
 
