@@ -14,6 +14,9 @@ import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import styled from 'styled-components';
 import Alert from '@mui/material/Alert';
 import CheckIcon from '@mui/icons-material/Check';
+import EmailIcon from '@mui/icons-material/Email';
+import LogoutIcon from '@mui/icons-material/Logout';
+import Tooltip from '@mui/material/Tooltip';
 
 function MyPageComponent() {
     const navigate = useNavigate();
@@ -250,10 +253,25 @@ function MyPageComponent() {
                               : ''}{' '}
                         / {member.nickname}
                     </S.NickNameText>
-                    <S.LogoutBtn onClick={handleLogout}>로그아웃</S.LogoutBtn>
-                    <S.LogoutBtn onClick={handleCheckMessage}>
-                        쪽지함
-                    </S.LogoutBtn>
+                    {/* <div>
+                        <S.LetterBtn onClick={handleCheckMessage}>
+                            쪽지함
+                        </S.LetterBtn>
+                    </div> */}
+                    <S.ItemWrapper>
+                        <Tooltip title="쪽지함">
+                            <EmailIcon
+                                style={{ fontSize: '40px', cursor: 'pointer' }}
+                                onClick={handleCheckMessage}
+                            />
+                        </Tooltip>
+                        <Tooltip title="로그아웃">
+                            <LogoutIcon
+                                style={{ fontSize: '40px', cursor: 'pointer' }}
+                                onClick={handleLogout}
+                            />
+                        </Tooltip>
+                    </S.ItemWrapper>
                 </div>
                 <div style={{ marginLeft: '80px' }}>
                     <div
