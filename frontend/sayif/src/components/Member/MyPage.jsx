@@ -12,7 +12,8 @@ import { getTeamStatue } from '../../api/MentoringApi';
 import { getMemberInfo, uploadProfileImage, logout } from '../../api/MemberApi';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import styled from 'styled-components';
-import Cookies from 'js-cookie';
+import Alert from '@mui/material/Alert';
+import CheckIcon from '@mui/icons-material/Check';
 
 function MyPageComponent() {
     const navigate = useNavigate();
@@ -62,10 +63,13 @@ function MyPageComponent() {
         if (field === 'phone') {
             const phonePattern = /^\d{3}-\d{4}-\d{4}$/;
             if (!phonePattern.test(e.target.value)) {
-                SetPhoneError('유효하지 않은 전화번호 형식입니다.');
+                SetPhoneError('하이픈(-)을 포함해 입력해 주세요.');
             } else {
                 SetPhoneError('');
-                SetNewMember({ ...newMember, [field]: e.target.value });
+                SetNewMember(prevState => ({
+                    ...prevState,
+                    [field]: e.target.value,
+                }));
             }
         } else if (field === 'email') {
             const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -265,6 +269,11 @@ function MyPageComponent() {
                             disabled={!changeInfo}
                             onChange={handleInputChange('name')}
                             onKeyDown={handleKeyDown}
+                            style={{
+                                border: changeInfo
+                                    ? '1px solid red'
+                                    : '0px solid black',
+                            }}
                         />
                     </div>
                     <div
@@ -283,9 +292,9 @@ function MyPageComponent() {
                                       ? '남성'
                                       : ''
                             }
+                            disabled={changeInfo}
                             onChange={handleGenderChange}
                             onKeyDown={handleKeyDown}
-                            disabled={!changeInfo}
                         />
                     </div>
                     <div
@@ -301,6 +310,11 @@ function MyPageComponent() {
                             disabled={!changeInfo}
                             onChange={handleInputChange('phone')}
                             onKeyDown={handleKeyDown}
+                            style={{
+                                border: changeInfo
+                                    ? '1px solid red'
+                                    : '0px solid black',
+                            }}
                         />
                     </div>
                     {phoneError && <S.ErrorMsg>{phoneError}</S.ErrorMsg>}
@@ -317,6 +331,11 @@ function MyPageComponent() {
                             disabled={!changeInfo}
                             onChange={handleInputChange('email')}
                             onKeyDown={handleKeyDown}
+                            style={{
+                                border: changeInfo
+                                    ? '1px solid red'
+                                    : '0px solid black',
+                            }}
                         />
                     </div>
                     {emailError && <S.ErrorMsg>{emailError}</S.ErrorMsg>}
@@ -339,10 +358,19 @@ function MyPageComponent() {
                 </S.ProfileUpdateBtn>
             </div>
             {changeInfo && (
-                <S.UpdateText>
+                <Alert
+                    icon={<CheckIcon fontSize="inherit" />}
+                    severity="success"
+                    style={{
+                        width: '800px',
+                        marginTop: '30px',
+                        fontFamily: 'ChosunGu',
+                        fontSize: '17px',
+                    }}
+                >
                     변경하고 싶은 정보를 수정한 후, '변경사항 저장' 버튼을
-                    눌러주세요 😊
-                </S.UpdateText>
+                    눌러주세요!
+                </Alert>
             )}
             {showMentoringModal && (
                 <MentoringModal onClose={handleCloseMentoringModal} />
