@@ -72,7 +72,8 @@ const Chat = () => {
 
     useEffect(() => {
         if (chatContentEndRef.current) {
-            chatContentEndRef.current.scrollIntoView({ behavior: 'smooth' });
+            // Scroll to the bottom of the chat content
+            chatContentRef.current.scrollTop = chatContentRef.current.scrollHeight;
         }
     }, [messages]);
 
@@ -95,11 +96,11 @@ const Chat = () => {
 
     return (
         <S.Container>
-            <S.ChatContentWrapper>
+            <S.ChatContentWrapper ref={chatContentRef}>
                 {messages.map((msg, index) =>
                     msg.nickname === currentUserNickname ? (
                         <S.ChatMy key={index}>
-                            <S.ProfileImg src={msg.profileImg ? msg.profileImg : "/basic-profile.PNG"} />
+                            <S.ProfileImg src={msg.profileImg} />
                             <div>
                                 <S.ChatContent style={{ backgroundColor: '#116530', color: 'white' }}>
                                     {msg.msgContent}
@@ -111,7 +112,7 @@ const Chat = () => {
                         </S.ChatMy>
                     ) : (
                         <S.ChatOther key={index}>
-                            <S.ProfileImg src={msg.profileImg ? msg.profileImg : "/basic-profile.PNG"} />
+                            <S.ProfileImg src={msg.profileImg} />
                             <div>
                                 <S.NameText>{msg.nickname}</S.NameText>
                                 <S.ChatContent>{msg.msgContent}</S.ChatContent>
@@ -122,7 +123,7 @@ const Chat = () => {
                         </S.ChatOther>
                     )
                 )}
-                <div ref={chatContentEndRef} /> {/* Attach the ref here */}
+                <div ref={chatContentEndRef} />
             </S.ChatContentWrapper>
             <FormControl>
                 <S.SendChatWrapper>
@@ -131,7 +132,7 @@ const Chat = () => {
                         placeholder="메시지를 입력하세요."
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
-                        onKeyDown={handleKeyDown} // Add onKeyDown event handler
+                        onKeyDown={handleKeyDown}
                         style={{ border: '1px solid #116530CC', width: '1010px'}}
                     />
                     <SendIcon

@@ -9,6 +9,7 @@ import com.ssafy.sayif.member.repository.MemberRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -45,34 +46,29 @@ public class LetterService {
             throw new IllegalArgumentException("해당 편지를 볼 권한이 없습니다.");
         }
 
-        LetterResponseDto responseDto = new LetterResponseDto();
-        responseDto.setId(letter.getId());
-        responseDto.setTitle(letter.getTitle());
-        responseDto.setContent(letter.getContent());
-        responseDto.setSendId(letter.getSendMember().getUsername());
-        responseDto.setReceiveId(letter.getReceiveMember().getUsername());
-        responseDto.setCreatedAt(letter.getCreatedAt());
-        responseDto.setModifiedAt(letter.getModifiedAt());
-
-        return responseDto;
+        return getLetterResponseDto(letter);
     }
 
     public Page<LetterResponseDto> getReceivedLetters(String username, Pageable pageable) {
         Member loginMember = memberRepository.findByUsername(username);
         Page<Letter> letters = letterRepository.findByReceiveMemberIdOrderByCreatedAtDesc(
             loginMember.getId(), pageable);
-        List<LetterResponseDto> letterResponseDtos = letters.stream().map(letter -> {
-            LetterResponseDto dto = new LetterResponseDto();
-            dto.setId(letter.getId());
-            dto.setTitle(letter.getTitle());
-            dto.setContent(letter.getContent());
-            dto.setSendId(letter.getSendMember().getUsername());
-            dto.setReceiveId(letter.getReceiveMember().getUsername());
-            dto.setCreatedAt(letter.getCreatedAt());
-            dto.setModifiedAt(letter.getModifiedAt());
-            return dto;
-        }).collect(Collectors.toList());
+        List<LetterResponseDto> letterResponseDtos = letters.stream().map(
+            LetterService::getLetterResponseDto).collect(Collectors.toList());
 
         return new PageImpl<>(letterResponseDtos, pageable, letters.getTotalElements());
+    }
+
+    private static @NotNull LetterResponseDto getLetterResponseDto(Letter letter) {
+        LetterResponseDto responseDto = new LetterResponseDto();
+        responseDto.setId(letter.getId());
+        responseDto.setTitle(letter.getTitle());
+        responseDto.setContent(letter.getContent());
+        responseDto.setSendId(letter.getSendMember().getUsername());
+        responseDto.setReceiveMemberNickname(letter.getReceiveMember().getUsername());
+        responseDto.setReceiveMemberId(letter.getReceiveMember().getId());
+        responseDto.setCreatedAt(letter.getCreatedAt());
+        responseDto.setModifiedAt(letter.getModifiedAt());
+        return responseDto;
     }
 }

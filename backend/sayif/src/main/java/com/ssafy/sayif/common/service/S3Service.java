@@ -157,4 +157,8 @@ public class S3Service {
             throw new S3Exception(ErrorCode.IO_EXCEPTION_ON_IMAGE_DELETE);
         }
     }
+
+    public boolean checkIfObjectExists(String url) {
+        return amazonS3.doesObjectExist(bucketName, getKeyFromFileAddress(url));
+    }
 }
