@@ -14,6 +14,7 @@ import '../../styles/fonts.css';
 import { useEffect, useState } from 'react';
 import { getMemberInfo } from '../../api/TeamApi';
 import { useSelector } from 'react-redux';
+import MessageModal from './style/MessageModal'; // MessageModal 컴포넌트 임포트
 
 const CustomCardMedia = styled(CardMedia)`
     height: 40px;
@@ -34,9 +35,9 @@ const CustomButton = styled(Button)`
 const campus = {
     101: '부울경',
     102: '서울',
-    103: '대전',
-    104: '구미',
-    105: '광주'
+    103: '광주',
+    104: '대전',
+    105: '구미',
 };
 
 function ShowMembers() {
@@ -44,11 +45,23 @@ function ShowMembers() {
     const [mentorList, SetMentorList] = useState([]);
     const [menteeList, SetMenteeList] = useState([]);
 
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedMentorId, setSelectedMentorId] = useState(null);
+
+    const handleOpenModal = mentorId => {
+        setSelectedMentorId(mentorId);
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+    };
+
     useEffect(() => {
         const callMemberInfo = async () => {
             try {
                 const response = await getMemberInfo(member.teamId, token);
-                if (response.status == 200) {
+                if (response.status === 200) {
                     const mentee = response.data.filter(
                         member => member.role === 'Mentee',
                     );
@@ -58,6 +71,7 @@ function ShowMembers() {
                     
                     SetMentorList(mentor);
                     SetMenteeList(mentee);
+                    console.log(response.data);
                 }
             } catch (error) {
                 console.log(error);
@@ -70,10 +84,10 @@ function ShowMembers() {
         <S.Container>
             <S.Title>단비</S.Title>
             <S.MentorList>
-                {/* 멘토 반복문 시작 */}
                 {mentorList.map(mentor => {
                     return (
                         <Card
+                            key={mentor.id}
                             sx={{
                                 width: 400,
                                 height: 260,
@@ -108,16 +122,18 @@ function ShowMembers() {
                             <CardContent style={{ paddingBottom: '0px' }}>
                                 <S.MentorExplan>{mentor.intro}</S.MentorExplan>
                                 <S.TagList>
-                                    {/* 태그도 서버에서 데이터 가져와서 반복문 돌립니다 */}
-                                    <S.TagBox>ISFJ</S.TagBox>
+                                    {mentor.tags.map((tag, index) => (
+                                        <S.TagBox key={index}>{tag}</S.TagBox>
+                                    ))}
                                 </S.TagList>
                             </CardContent>
                             <CardActions sx={{ marginTop: 'auto' }}>
                                 <CustomButton
                                     size="small"
                                     endIcon={<SendIcon />}
+                                    onClick={() => handleOpenModal(mentor.id)}
                                 >
-                                    쪽지 보내기 ··{' '}
+                                    쪽지 보내기
                                 </CustomButton>
                             </CardActions>
                         </Card>
@@ -127,14 +143,11 @@ function ShowMembers() {
 
             <S.Title>새잎</S.Title>
             <S.MenteeList>
-                {/* 멘티 리스트 반복문 돌립니다 */}
                 {menteeList.map(mentee => {
                     return (
-                        <S.MenteeCard>
+                        <S.MenteeCard key={mentee.id}>
                             <div>
-                                <S.MenteeImg
-                                    src={mentee.profileImg}
-                                ></S.MenteeImg>
+                                <S.MenteeImg src={mentee.profileImg} />
                                 <S.MenteeNickname>
                                     {mentee.nickname}
                                 </S.MenteeNickname>
@@ -143,6 +156,13 @@ function ShowMembers() {
                     );
                 })}
             </S.MenteeList>
+
+            {/* 모달 컴포넌트 추가 */}
+            <MessageModal
+                isOpen={isModalOpen}
+                onClose={handleCloseModal}
+                receiver={selectedMentorId}
+            />
         </S.Container>
     );
 

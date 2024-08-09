@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { tryChallenge, submitPhoto, getMyImg } from '../../../api/challenge';
 import { useSelector } from 'react-redux';
 
-function UploadModal({ onClose, id }) {
+function UploadModal({ onClose, id, challengeId }) {
     const fileInputRef = useRef(null);
     const { token, member } = useSelector(state => state.member);
     const [open, SetOpen] = useState(true);
@@ -33,9 +33,10 @@ function UploadModal({ onClose, id }) {
     };
 
     const handleUploadBtn = () => {
+        console.log('AI에게 사진을 전송합니다...');
         const callTry = async () => {
             try {
-                const response = await tryChallenge(id, token, file);
+                const response = await tryChallenge(challengeId, token, file);
                 if (response.status === 200) {
                     console.log(response);
                     SetResult(response.data);

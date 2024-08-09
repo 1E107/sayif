@@ -5,6 +5,8 @@ import com.ssafy.sayif.board.entity.BoardType;
 import com.ssafy.sayif.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,9 +33,11 @@ public class BoardController {
      */
     @PostMapping
     public ResponseEntity<?> writePost(@RequestPart("post") PostRequestDto dto,
-        @RequestPart(value = "file", required = false) MultipartFile file) {
+        @RequestPart(value = "file", required = false) MultipartFile file,
+        @AuthenticationPrincipal UserDetails userDetails) {
+        String username = userDetails.getUsername();
         // 게시물 작성 서비스 호출
-        boardService.writePost(dto, file);
+        boardService.writePost(dto, file, username);
         return ResponseEntity.ok("Post created successfully with file");
     }
 
@@ -48,7 +52,9 @@ public class BoardController {
     @PutMapping("/{id}")
     public ResponseEntity<?> modifyPost(@PathVariable("id") int id,
         @RequestPart("post") PostRequestDto dto,
-        @RequestPart(value = "file", required = false) MultipartFile file) {
+        @RequestPart(value = "file", required = false) MultipartFile file,
+        @AuthenticationPrincipal UserDetails userDetails) {
+        String username = userDetails.getUsername();
         // 게시물 수정 서비스 호출
         boardService.modifyPost(id, dto, file);
         return ResponseEntity.ok("Post modified successfully with file");

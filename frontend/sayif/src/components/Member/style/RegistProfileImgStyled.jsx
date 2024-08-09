@@ -3,7 +3,7 @@ import Button from '@mui/material/Button';
 import '../../../styles/fonts.css';
 
 const Container = styled.div`
-    height: 300px;
+    height: auto;
     width: 500px;
     margin: 250px 0px 100px 50px;
     border-radius: 20px;
@@ -15,7 +15,7 @@ const Container = styled.div`
     display: flex;
     justify-content: center;
     flex-direction: column;
-    padding: 50px 0px 50px 0px;
+    padding: 50px 0px;
 `;
 
 const TitleText = styled.div`
@@ -27,10 +27,12 @@ const TitleText = styled.div`
 
 const ImgSelect = styled.img`
     width: 200px;
+    height: 200px;
     border-radius: 50%;
     border: 1px solid #e9ecef;
     margin-top: 20px;
     cursor: pointer;
+    object-fit: cover;
     &:hover {
         filter: brightness(0.3);
         transition: filter 0.3s ease;

@@ -34,11 +34,11 @@ public class TeamController {
         }
 
         List<MemberInfoResponseDto> memberDTOs = members.stream()
-                .map(memberConverter::convertToDTO)
+                .map(member -> memberConverter.convertToDTO(member))
                 .collect(Collectors.toList());
+
         return ResponseEntity.ok(memberDTOs);
     }
-
     @PostMapping("/team-name")
     public ResponseEntity<?> registerTeamName(@PathVariable Integer id, @RequestBody TeamNameRequestDto newName) {
         Team team = teamService.registerTeamName(id, newName.getNewName());
@@ -51,6 +51,13 @@ public class TeamController {
     public ResponseEntity<TeamNameResponseDto> updateTeamName(@PathVariable Integer id, @RequestBody TeamNameRequestDto newName) {
         Team team = teamService.updateTeamName(id, newName.getNewName());
         TeamNameResponseDto responseDto = teamNameConverter.convertToDto(team);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @GetMapping("/team-name")
+    public ResponseEntity<?> getTeamName(@PathVariable Integer id) {
+        Team team = teamService.getTeamName(id);
+        TeamNameResponseDto responseDto =teamNameConverter.convertToDto(team);
         return ResponseEntity.ok(responseDto);
     }
 }

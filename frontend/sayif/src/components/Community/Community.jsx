@@ -48,6 +48,10 @@ function Community() {
         setPage(0);
     };
 
+    const moveWritePage = () => {
+        navigate(`/community/write`);
+    };
+
     const moveDetailPage = id => {
         navigate(`/community/datail/${id}`);
     };
@@ -113,7 +117,9 @@ function Community() {
                         }}
                     />
                     <S.SearchButton variant="contained">검색</S.SearchButton>
-                    <S.WriteButton variant="outlined">글쓰기</S.WriteButton>
+                    <S.WriteButton variant="outlined" onClick={moveWritePage}>
+                        글쓰기
+                    </S.WriteButton>
                 </div>
             </S.HeaderWrapper>
             <Paper
@@ -144,6 +150,7 @@ function Community() {
                                             fontFamily: 'ChosunGu',
                                             color: '#116530',
                                             fontWeight: 'bold',
+                                            fontSize: '15px',
                                         }}
                                     >
                                         {column.label}
@@ -153,52 +160,55 @@ function Community() {
                         </TableHead>
                         <TableBody>
                             {rows
-                            .slice(
-                                page * rowsPerPage,
-                                page * rowsPerPage + rowsPerPage,
-                            )
-                            .map(row => {
-                                return (
-                                    <TableRow
-                                        hover
-                                        role="checkbox"
-                                        tabIndex={-1}
-                                        key={row.writingId}
-                                        onClick={() =>
-                                            moveDetailPage(row.id)
-                                        }
-                                    >
-                                        {columns.map(column => {
-                                            let value = row[column.id];
-                                            if (column.id === 'type') {
-                                                if (value === 'Free') {
-                                                    value = '일상';
-                                                } else if (value === 'Worry') {
-                                                    value = '고민';
-                                                }
+                                .slice(
+                                    page * rowsPerPage,
+                                    page * rowsPerPage + rowsPerPage,
+                                )
+                                .map(row => {
+                                    return (
+                                        <TableRow
+                                            hover
+                                            role="checkbox"
+                                            tabIndex={-1}
+                                            key={row.writingId}
+                                            onClick={() =>
+                                                moveDetailPage(row.id)
                                             }
-                                            return (
-                                                <TableCell
-                                                    key={column.id}
-                                                    align={column.align}
-                                                    style={{
-                                                        fontFamily:
-                                                            'ChosunGu',
-                                                    }}
-                                                >
-                                                    {column.format &&
-                                                    typeof value ===
-                                                    'number'
-                                                        ? column.format(
-                                                            value,
-                                                        )
-                                                        : value}
-                                                </TableCell>
-                                            );
-                                        })}
-                                    </TableRow>
-                                );
-                            })}
+                                        >
+                                            {columns.map(column => {
+                                                let value = row[column.id];
+                                                if (column.id === 'type') {
+                                                    if (value === 'Free') {
+                                                        value = '일상';
+                                                    } else if (
+                                                        value === 'Worry'
+                                                    ) {
+                                                        value = '고민';
+                                                    }
+                                                }
+                                                return (
+                                                    <TableCell
+                                                        key={column.id}
+                                                        align={column.align}
+                                                        style={{
+                                                            fontFamily:
+                                                                'ChosunGu',
+                                                            fontSize: '16px',
+                                                        }}
+                                                    >
+                                                        {column.format &&
+                                                        typeof value ===
+                                                            'number'
+                                                            ? column.format(
+                                                                  value,
+                                                              )
+                                                            : value}
+                                                    </TableCell>
+                                                );
+                                            })}
+                                        </TableRow>
+                                    );
+                                })}
                         </TableBody>
                     </Table>
                 </TableContainer>

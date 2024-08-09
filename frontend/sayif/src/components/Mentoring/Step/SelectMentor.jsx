@@ -5,7 +5,7 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import { useEffect, useState } from 'react';
-import { getMentorList, applyMentoring } from '../../../api/MentoringApi';
+import { applyMentoring, getMentorList } from '../../../api/MentoringApi';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import { useSelector } from 'react-redux';
@@ -51,7 +51,7 @@ function SelectMentor({ formData, reSelectInfo, finishPage }) {
         const callApplyMentoring = async () => {
             try {
                 const response = await applyMentoring(id, token);
-                if (response.status == 200)
+                if (response.status === 200)
                     alert('멘토링 신청이 완료되었습니다.');
             } catch (error) {
                 console.log(error);
@@ -61,7 +61,7 @@ function SelectMentor({ formData, reSelectInfo, finishPage }) {
         finishPage();
     };
 
-    const SelectMentorView = (
+    return (
         <S.Container>
             <S.IconWrapper>
                 <S.Icon />
@@ -121,7 +121,9 @@ function SelectMentor({ formData, reSelectInfo, finishPage }) {
                                             <IconButton sx={{ p: 0 }}>
                                                 <Avatar
                                                     alt="Remy Sharp"
-                                                    src="/static/images/avatar/2.jpg"
+                                                    src={
+                                                        mentor.mentor1ProfileUrl
+                                                    }
                                                 />
                                             </IconButton>
                                         </Box>
@@ -129,7 +131,9 @@ function SelectMentor({ formData, reSelectInfo, finishPage }) {
                                             <IconButton sx={{ p: 0 }}>
                                                 <Avatar
                                                     alt="Remy Sharp"
-                                                    src="/static/images/avatar/2.jpg"
+                                                    src={
+                                                        mentor.mentor2ProfileUrl
+                                                    }
                                                 />
                                             </IconButton>
                                         </Box>
@@ -137,8 +141,8 @@ function SelectMentor({ formData, reSelectInfo, finishPage }) {
                                     <S.MentorInfoContent
                                         style={{ marginBottom: '15px' }}
                                     >
-                                        {mentor.mentor1_nickname} &{' '}
-                                        {mentor.mentor2_nickname}
+                                        {mentor.mentor1Nickname} &{' '}
+                                        {mentor.mentor2Nickname}
                                     </S.MentorInfoContent>
                                 </S.MentorInfoBox>
                                 <S.MentorInfoBox>
@@ -146,7 +150,7 @@ function SelectMentor({ formData, reSelectInfo, finishPage }) {
                                         시작일자&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;종료일자
                                     </S.MentorInfoTitle>
                                     <S.MentorInfoContent>
-                                        {mentor.start_date} ~ {mentor.end_date}
+                                        {mentor.startDate} ~ {mentor.endDate}
                                     </S.MentorInfoContent>
                                 </S.MentorInfoBox>
                                 <S.MentorInfoBox>
@@ -160,7 +164,7 @@ function SelectMentor({ formData, reSelectInfo, finishPage }) {
                                         팀 인원 현황
                                     </S.MentorInfoTitle>
                                     <S.MentorInfoContent>
-                                        {mentor.mentee_cnt}/4
+                                        {mentor.menteeCnt}/4
                                     </S.MentorInfoContent>
                                 </S.MentorInfoBox>
                                 <Button
@@ -186,8 +190,6 @@ function SelectMentor({ formData, reSelectInfo, finishPage }) {
             </S.Wrapper>
         </S.Container>
     );
-
-    return SelectMentorView;
 }
 
 export default SelectMentor;

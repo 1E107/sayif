@@ -3,7 +3,7 @@ import '../../../../styles/fonts.css';
 import Button from '@mui/material/Button';
 
 const Container = styled.div`
-    margin-top: 20px;
+    margin-top: 80px;
 `;
 
 const TitleText = styled.div`
@@ -15,7 +15,7 @@ const TitleText = styled.div`
 `;
 
 const Form = styled.div`
-    height: 600px;
+    height: 500px;
     background-color: white;
     width: 800px;
     border-radius: 30px;
@@ -23,21 +23,23 @@ const Form = styled.div`
 `;
 
 const ContentText = styled.div`
-    padding-top: 20px;
+    padding-top: 30px;
     font-family: ChosunGu;
-    font-size: 14px;
+    font-size: 16px;
     color: gray;
     line-height: 140%;
 `;
 
 const CustomTextarea = styled.textarea`
+    font-size: 20px;
     width: 500px;
-    height: 400px;
+    height: 300px;
     margin-top: 30px;
     border-radius: 10px;
 `;
 
 const CustomBtn = styled(Button)({
+    fontSize: '16px !important',
     marginTop: '30px !important',
     fontFamily: 'ChosunGu !important',
     width: '140px',

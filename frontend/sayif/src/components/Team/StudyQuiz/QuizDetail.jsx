@@ -13,8 +13,11 @@ import ClearIcon from '@mui/icons-material/Clear';
 import { useSelector } from 'react-redux';
 import { acquireExperience } from '../../../api/config';
 import { CheckSolveQuiz } from '../../../api/TeamApi';
+import { useNavigate } from 'react-router-dom';
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 
 function QuizDetail({ quiz }) {
+    const navigate = useNavigate();
     const [isSelect, SetIsSelect] = useState('');
     const [open, SetOpen] = useState(false);
     const [isCorrect, SetIsCorrect] = useState(false);
@@ -39,6 +42,10 @@ function QuizDetail({ quiz }) {
         SetIsSelect(index);
     };
 
+    const handleGoList = () => {
+        window.location.reload();
+    };
+
     const style = {
         position: 'absolute',
         top: '50%',
@@ -54,7 +61,9 @@ function QuizDetail({ quiz }) {
 
     const QuizDetailView = (
         <div>
-            <S.title>퀴즈 문제</S.title>
+            <S.TitleBtn onClick={handleGoList}>
+                <NavigateBeforeIcon /> 퀴즈 리스트
+            </S.TitleBtn>
             <S.Container>
                 <S.TestTitle>{quiz.question}</S.TestTitle>
                 <Box

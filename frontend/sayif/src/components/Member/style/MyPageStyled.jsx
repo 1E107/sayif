@@ -55,6 +55,10 @@ const CustomInput = styled.input`
     background-color: #e8e8ccb2;
     padding: 5px 0px 5px 10px;
     font-family: ChosunGu;
+
+    &::placeholder {
+        color: black;
+    }
 `;
 
 const UpdateText = styled.div`

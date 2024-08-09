@@ -136,6 +136,10 @@ public class MentoringService {
         // 멘토 닉네임 가져오기
         List<String> mentorNicknames = memberRepository.findMentorNicknamesByTeamId(team.getId(),
             Role.Mentor);
+        
+        // 멘토 리스트 가져오기
+        List<Mentor> mentorList = mentorRepository.findAllMentorByTeamId(team.getId());
+
         String member1Nickname = !mentorNicknames.isEmpty() ? mentorNicknames.get(0) : "";
         String member2Nickname = mentorNicknames.size() > 1 ? mentorNicknames.get(1) : "";
 
@@ -167,8 +171,10 @@ public class MentoringService {
             .time(formattedMentoringTime)
             .endDate(team.getEndDate().toString())
             .pmam(pmam)
-            .mentor1Nickname(member1Nickname)
-            .mentor2Nickname(member2Nickname)
+            .mentor1Nickname(mentorList.get(0).getNickname())
+            .mentor1ProfileUrl(mentorList.get(0).getProfileImg())
+            .mentor2Nickname(mentorList.get(1).getNickname())
+            .mentor2ProfileUrl(mentorList.get(1).getProfileImg())
             .menteeCnt(menteeCount)
             .build();
     }

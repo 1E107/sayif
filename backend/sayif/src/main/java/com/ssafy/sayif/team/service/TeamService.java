@@ -39,10 +39,11 @@ public class TeamService {
     private final TeamMsgRepository teamMsgRepository;
 
     public List<Member> getMembersByTeamId(Integer teamId) {
-        return memberRepository.findByTeamId(teamId);
+        List<Member> members = memberRepository.findByTeamId(teamId);
+        return members;
     }
 
-    @Scheduled(cron = "0 0 0 * * ?") // 매일 자정에 실행
+    @Scheduled(cron = "0 0 9 * * ?") // 매일 자정에 팀 상태 변경
     public void processTeamStatuses() {
         List<Team> applyTeams = teamRepository.findByStatus(TeamStatus.Apply);
 
@@ -114,5 +115,11 @@ public class TeamService {
                 .orElseThrow(() -> new RuntimeException("Team not found"));
         team.changeName(newName);
         return teamRepository.save(team);
+    }
+
+    public Team getTeamName(Integer teamId) {
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new RuntimeException("Team not found"));
+        return team;
     }
 }

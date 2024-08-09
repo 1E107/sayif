@@ -22,4 +22,6 @@ public class GetChatResponseDto {
     @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
     @DateTimeFormat(pattern = "yyyy-MM-dd kk:mm:ss")
     private LocalDateTime sendAt;
+
+    private String profileImg;
 }
