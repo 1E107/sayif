@@ -104,8 +104,6 @@ class VideoRoomComponent extends Component {
             openViduLayoutOptions,
         );
         this.setState({ myUserName: this.props.member.nickname });
-
-        // this.joinSession();
     }
 
     componentWillUnmount() {
@@ -356,12 +354,14 @@ class VideoRoomComponent extends Component {
 
     subscribeToStreamCreated() {
         this.state.session.on('streamCreated', event => {
+            console.log('Stream created event: ', event);
             const subscriber = this.state.session.subscribe(
                 event.stream,
                 undefined,
             );
             // var subscribers = this.state.subscribers;
             subscriber.on('streamPlaying', e => {
+                console.log('Stream is playing: ', e);
                 this.checkSomeoneShareScreen();
                 subscriber.videos[0].video.parentElement.classList.remove(
                     'custom-class',
@@ -603,6 +603,20 @@ class VideoRoomComponent extends Component {
         const localUser = this.state.localUser;
         var chatDisplay = { display: this.state.chatDisplay };
 
+        let layoutClass = 'bounds';
+        const totalElements =
+            this.state.subscribers.length + (localUser ? 1 : 0);
+        if (totalElements === 1) {
+            layoutClass += ' one-element';
+        } else if (totalElements === 2) {
+            layoutClass += ' two-elements';
+        } else if (totalElements === 3) {
+            layoutClass += ' three-elements';
+        } else if (totalElements === 4) {
+            layoutClass += ' four-elements';
+        } else if (totalElements > 4) {
+            layoutClass += ' multiple-elements';
+        }
         if (mySession) {
             return (
                 <div className="container" id="container">
@@ -619,7 +633,8 @@ class VideoRoomComponent extends Component {
                         toggleChat={this.toggleChat}
                         sessionStatus={this.state.sessionStatus}
                     />
-                    <div id="layout" className="bounds">
+                    {/* <div id="layout" className="bounds"> */}
+                    <div id="layout" className={layoutClass}>
                         {localUser !== undefined &&
                             localUser.getStreamManager() !== undefined && (
                                 <div
@@ -697,6 +712,9 @@ class VideoRoomComponent extends Component {
                                         }
                                     }}
                                     placeholder="회의실 이름을 '영어로' 입력해주세요."
+                                    sx={{
+                                        fontFamily: 'Chosungu',
+                                    }}
                                 />
                                 <Button
                                     onClick={this.joinSession}
@@ -714,6 +732,7 @@ class VideoRoomComponent extends Component {
                                         },
                                         padding: '10px',
                                         fontSize: '16px',
+                                        fontFamily: 'Chosungu',
                                     }}
                                 >
                                     회의실 생성
@@ -732,6 +751,9 @@ class VideoRoomComponent extends Component {
                                             this.joinSession();
                                         }
                                     }}
+                                    sx={{
+                                        fontFamily: 'Chosungu',
+                                    }}
                                 />
                                 <Button
                                     onClick={this.joinSession}
@@ -744,6 +766,7 @@ class VideoRoomComponent extends Component {
                                         },
                                         padding: '10px',
                                         fontSize: '16px',
+                                        fontFamily: 'Chosungu',
                                     }}
                                 >
                                     회의실 입장

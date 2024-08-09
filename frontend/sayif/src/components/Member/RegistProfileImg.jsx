@@ -2,6 +2,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import S from './style/RegistProfileImgStyled';
 import { createMember } from '../../api/MemberApi';
 import { useEffect, useRef, useState } from 'react';
+import { Box } from '@mui/material';
+import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 
 function RegistProfileImg() {
     const fileInputRef = useRef(null);
@@ -55,6 +57,9 @@ function RegistProfileImg() {
                 onClick={handleImageClick}
                 alt="upload"
             ></S.ImgSelect>
+            <S.ImgIcon>
+                <AddAPhotoIcon style={{ fontSize: '100px' }} />
+            </S.ImgIcon>
             <input
                 type="file"
                 ref={fileInputRef}

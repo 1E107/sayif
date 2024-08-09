@@ -1,12 +1,11 @@
 import styled from 'styled-components';
+import LinearProgress from '@mui/material/LinearProgress';
 import '../../../styles/fonts.css';
 
 const Container = styled.div`
-    margin-top: 60px;
-    margin-bottom: 60px;
+    margin-top: 50px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
 `;
 
@@ -15,6 +14,10 @@ const ImageBox = styled.div`
     width: 300px;
     background-color: white;
     border-radius: 30px;
+    background-image: url(${props => props.imageUrl});
+    background-size: contain; /* 이미지를 잘리지 않게 */
+    background-repeat: no-repeat;
+    background-position: center;
 `;
 
 const Wrapper = styled.div``;
@@ -54,6 +57,18 @@ const TextOverlay = styled.div`
     font-size: 20px;
 `;
 
+const CustomLinearProgress = styled(LinearProgress)`
+    padding: 10px;
+    margin: 20px 10px 10px 10px;
+    width: 250px;
+    border-radius: 10px;
+    background-color: #e8e8cc !important;
+
+    & .MuiLinearProgress-bar {
+        background-color: #116530;
+    }
+`;
+
 const S = {
     Container,
     ImageBox,
@@ -63,6 +78,7 @@ const S = {
     ScoreContainer,
     BubbleImg,
     TextOverlay,
+    CustomLinearProgress,
 };
 
 export default S;

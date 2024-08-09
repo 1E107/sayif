@@ -84,8 +84,11 @@ function CommunityDetail() {
 
     const handleUpdateComment = async commentId => {
         try {
-            const response = await UpdateCommunityComment(commentId,
-                editComment, token);
+            const response = await UpdateCommunityComment(
+                commentId,
+                editComment,
+                token,
+            );
             if (response.status === 200) {
                 alert('댓글이 수정되었습니다!');
                 setIsEditing(null); // Reset editing state
@@ -156,35 +159,50 @@ function CommunityDetail() {
                         <S.CommentList>
                             {comment.map((data, index) => (
                                 <S.CommentItem key={index}>
-                                    <div style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                    }}>
-                                        <span style={{
-                                            fontWeight: 'bold',
-                                            marginRight: '10px',
-                                        }}>
+                                    <div
+                                        style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                        }}
+                                    >
+                                        <span
+                                            style={{
+                                                fontWeight: 'bold',
+                                                marginRight: '10px',
+                                                fontSize: '18px',
+                                            }}
+                                        >
                                             {data.writer}
                                         </span>
-                                        <S.CommentDate>{data.createdAt}</S.CommentDate>
+                                        <S.CommentDate>
+                                            {data.createdAt}
+                                        </S.CommentDate>
                                         {data.writer === member.username && (
-                                            <div style={{
-                                                display: 'flex',
-                                                marginLeft: 'auto',
-                                            }}>
+                                            <div
+                                                style={{
+                                                    display: 'flex',
+                                                    marginLeft: 'auto',
+                                                }}
+                                            >
                                                 {isEditing === data.id ? (
                                                     <>
                                                         <S.SmallButton
                                                             variant="contained"
-                                                            onClick={() => handleUpdateComment(
-                                                                data.id)}
+                                                            onClick={() =>
+                                                                handleUpdateComment(
+                                                                    data.id,
+                                                                )
+                                                            }
                                                         >
                                                             저장
                                                         </S.SmallButton>
                                                         <S.SmallButton
                                                             variant="contained"
-                                                            onClick={() => setIsEditing(
-                                                                null)}
+                                                            onClick={() =>
+                                                                setIsEditing(
+                                                                    null,
+                                                                )
+                                                            }
                                                         >
                                                             취소
                                                         </S.SmallButton>
@@ -195,17 +213,22 @@ function CommunityDetail() {
                                                             variant="contained"
                                                             onClick={() => {
                                                                 setIsEditing(
-                                                                    data.id);
+                                                                    data.id,
+                                                                );
                                                                 setEditComment(
-                                                                    data.content);
+                                                                    data.content,
+                                                                );
                                                             }}
                                                         >
                                                             수정
                                                         </S.SmallButton>
                                                         <S.SmallButton
                                                             variant="contained"
-                                                            onClick={() => handleDeleteComment(
-                                                                data.id)}
+                                                            onClick={() =>
+                                                                handleDeleteComment(
+                                                                    data.id,
+                                                                )
+                                                            }
                                                         >
                                                             삭제
                                                         </S.SmallButton>
@@ -220,7 +243,9 @@ function CommunityDetail() {
                                             onChange={handleEditComment}
                                         />
                                     ) : (
-                                        <S.CommentContent>{data.content}</S.CommentContent>
+                                        <S.CommentContent>
+                                            {data.content}
+                                        </S.CommentContent>
                                     )}
                                 </S.CommentItem>
                             ))}
@@ -241,7 +266,9 @@ function CommunityDetail() {
                 </>
             ) : (
                 <>
-                    <S.LoadingText>게시글이 곧 나타나요! 잠시만 기다려 주세요.</S.LoadingText>
+                    <S.LoadingText>
+                        게시글이 곧 나타나요! 잠시만 기다려 주세요.
+                    </S.LoadingText>
                     <CircularProgress style={{ color: '#116530' }} />
                 </>
             )}
