@@ -16,6 +16,7 @@ const Chat = () => {
     const [newMessage, setNewMessage] = useState('');
 
     const chatContentRef = useRef(null);
+    const chatContentEndRef = useRef(null);
 
     useEffect(() => {
         let isSubscribed = true;
@@ -70,15 +71,8 @@ const Chat = () => {
     }, [teamId, token, currentUserNickname]);
 
     useEffect(() => {
-        if (chatContentRef.current) {
-            const { scrollTop, scrollHeight, clientHeight } =
-                chatContentRef.current;
-            const isScrolledToBottom = scrollTop + clientHeight >= scrollHeight;
-
-            if (isScrolledToBottom) {
-                chatContentRef.current.scrollTop =
-                    chatContentRef.current.scrollHeight;
-            }
+        if (chatContentEndRef.current) {
+            chatContentEndRef.current.scrollIntoView({ behavior: 'smooth' });
         }
     }, [messages]);
 
@@ -93,69 +87,61 @@ const Chat = () => {
         setNewMessage('');
     };
 
-    const handleKeyDown = e => {
-        if (e.key === 'Enter') {
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') { 
             handleSendBtn();
         }
     };
 
-  const handleKeyDown = (e) => {
-    console.log(e.key);
-    if (e.key === 'Enter') { 
-      handleSendBtn();
-    }
-  };
-
-  return (
-    <S.Container>
-
-      <S.ChatContentWrapper>11
-        {messages.map((msg, index) =>
-          msg.nickname === currentUserNickname ? (
-            <S.ChatMy key={index}>
-              <S.ProfileImg src={msg.profileImg ? msg.profileImg : "/basic-profile.PNG"} />
-              <div>
-                <S.ChatContent style={{ backgroundColor: '#116530', color: 'white' }}>
-                  {msg.msgContent}
-                </S.ChatContent>
-                <S.TimeText align="right">
-                  {new Date(msg.sendAt).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}
-                </S.TimeText>
-              </div>
-            </S.ChatMy>
-          ) : (
-            <S.ChatOther key={index}>
-              <S.ProfileImg src={msg.profileImg ? msg.profileImg : "/basic-profile.PNG"} />
-              <div>
-                <S.NameText>{msg.nickname}</S.NameText>
-                <S.ChatContent>{msg.msgContent}</S.ChatContent>
-                <S.TimeText>
-                  {new Date(msg.sendAt).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}
-                </S.TimeText>
-              </div>
-            </S.ChatOther>
-          )
-        )}
-        <div ref={chatContentEndRef} />
-      </S.ChatContentWrapper>
-      <FormControl>
-        <S.SendChatWrapper>
-          <OutlinedInput
-            id="component-outlined"
-            placeholder="메시지를 입력하세요."
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            onKeyDown={handleKeyDown} // Add onKeyDown event handler
-            style={{ border: '1px solid #116530CC', width: '1010px'}}
-          />
-          <SendIcon
-            style={{ color: '#116530CC', marginLeft: '20px', fontSize: '30px' }}
-            onClick={handleSendBtn}
-          />
-        </S.SendChatWrapper>
-      </FormControl>
-    </S.Container>
-  );
+    return (
+        <S.Container>
+            <S.ChatContentWrapper>
+                {messages.map((msg, index) =>
+                    msg.nickname === currentUserNickname ? (
+                        <S.ChatMy key={index}>
+                            <S.ProfileImg src={msg.profileImg ? msg.profileImg : "/basic-profile.PNG"} />
+                            <div>
+                                <S.ChatContent style={{ backgroundColor: '#116530', color: 'white' }}>
+                                    {msg.msgContent}
+                                </S.ChatContent>
+                                <S.TimeText align="right">
+                                    {new Date(msg.sendAt).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}
+                                </S.TimeText>
+                            </div>
+                        </S.ChatMy>
+                    ) : (
+                        <S.ChatOther key={index}>
+                            <S.ProfileImg src={msg.profileImg ? msg.profileImg : "/basic-profile.PNG"} />
+                            <div>
+                                <S.NameText>{msg.nickname}</S.NameText>
+                                <S.ChatContent>{msg.msgContent}</S.ChatContent>
+                                <S.TimeText>
+                                    {new Date(msg.sendAt).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}
+                                </S.TimeText>
+                            </div>
+                        </S.ChatOther>
+                    )
+                )}
+                <div ref={chatContentEndRef} /> {/* Attach the ref here */}
+            </S.ChatContentWrapper>
+            <FormControl>
+                <S.SendChatWrapper>
+                    <OutlinedInput
+                        id="component-outlined"
+                        placeholder="메시지를 입력하세요."
+                        value={newMessage}
+                        onChange={(e) => setNewMessage(e.target.value)}
+                        onKeyDown={handleKeyDown} // Add onKeyDown event handler
+                        style={{ border: '1px solid #116530CC', width: '1010px'}}
+                    />
+                    <SendIcon
+                        style={{ color: '#116530CC', marginLeft: '20px', fontSize: '30px' }}
+                        onClick={handleSendBtn}
+                    />
+                </S.SendChatWrapper>
+            </FormControl>
+        </S.Container>
+    );
 };
 
 export default Chat;
