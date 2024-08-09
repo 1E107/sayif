@@ -1,12 +1,14 @@
 import S from './style/TeamMainStyled';
 import CreateIcon from '@mui/icons-material/Create';
 import * as React from 'react';
-import LinearProgress from '@mui/material/LinearProgress';
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
+
 import '../../styles/fonts.css';
 import { ReactTyped } from 'react-typed';
-import { getTeamExperience } from '../../api/TeamApi';
+import {
+    getTeamExperience,
+    getTeamName,
+    modifyTeamName,
+} from '../../api/TeamApi';
 import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
 
@@ -22,6 +24,9 @@ const images = [
 function TeamMain() {
     const [progress, setProgress] = React.useState(0);
     const [openSnackbar, setOpenSnackbar] = React.useState(true);
+    const [openModal, setOpenModal] = React.useState(false);
+    const [newTeamName, setNewTeamName] = React.useState(''); // 새 팀 이름 상태 관리
+    const [teamName, setTeamName] = React.useState(''); // 팀 이름 상태 관리
     const { token, member } = useSelector(state => state.member);
 
     useEffect(() => {
@@ -29,7 +34,12 @@ function TeamMain() {
             const experience = await getTeamExperience(member.teamId, token);
             setProgress(experience.data.point);
         }
+        async function fetchTeamName() {
+            const response = await getTeamName(member.teamId, token);
+            setTeamName(response.data.name);
+        }
         fetchProgress();
+        fetchTeamName();
     }, [member.teamId, token]);
 
     const handleCloseSnackbar = (event, reason) => {
@@ -37,6 +47,37 @@ function TeamMain() {
             return;
         }
         setOpenSnackbar(false);
+    };
+
+    const handleOpenModal = () => {
+        setOpenModal(true);
+    };
+
+    const handleCloseModal = () => {
+        setOpenModal(false);
+    };
+
+    const handleTeamNameChange = event => {
+        setNewTeamName(event.target.value);
+    };
+
+    const handleConfirmAndSave = async () => {
+        const confirmed = window.confirm('팀 이름을 수정하시겠습니까?');
+        if (confirmed) {
+            try {
+                await modifyTeamName(member.teamId, token, newTeamName);
+                setTeamName(newTeamName); // 팀 이름 상태 업데이트
+                handleCloseModal();
+            } catch (error) {
+                console.error('팀 이름 변경 중 오류 발생:', error);
+            }
+        }
+    };
+
+    const handleKeyPress = event => {
+        if (event.key === 'Enter') {
+            handleConfirmAndSave(); // 엔터키를 누르면 버튼 클릭 함수 실행
+        }
     };
 
     const level = Math.floor(progress / 100);
@@ -60,9 +101,14 @@ function TeamMain() {
                     }}
                 >
                     <S.TeamNameText>
-                        Lv. {Math.floor(progress / 100)} 새이프
+                        Lv. {Math.floor(progress / 100)} {teamName}
                         <CreateIcon
-                            style={{ color: '#DED3A6', marginLeft: '10px' }}
+                            style={{
+                                color: '#DED3A6',
+                                marginLeft: '10px',
+                                cursor: 'pointer',
+                            }}
+                            onClick={handleOpenModal}
                         />
                     </S.TeamNameText>
                 </div>
@@ -111,29 +157,41 @@ function TeamMain() {
                     />
                 </div>
             </div>
-            <Snackbar
+            <S.CustomSnackbar
                 open={openSnackbar}
-                autoHideDuration={6000}
+                autoHideDuration={5000}
                 onClose={handleCloseSnackbar}
                 anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-                sx={{
-                    transform: 'translateY(50px)',
-                    '& .MuiAlert-root': {
-                        backgroundColor: '#0B4619',
-                        color: '#FDFED3',
-                        fontFamily: 'Chosungu',
-                        fontSize: '15px',
-                    },
-                }}
             >
-                <Alert
-                    onClose={handleCloseSnackbar}
-                    severity="none"
-                    sx={{ width: '100%' }}
-                >
+                <S.CustomAlert onClose={handleCloseSnackbar} severity="none">
                     메뉴 버튼을 눌러 더 많은 팀 페이지 기능을 확인해보세요!
-                </Alert>
-            </Snackbar>
+                </S.CustomAlert>
+            </S.CustomSnackbar>
+            <S.CustomModal
+                open={openModal}
+                onClose={handleCloseModal}
+                aria-labelledby="modal-title"
+                aria-describedby="modal-description"
+            >
+                <S.CustomBox>
+                    <h3 id="modal-title">팀 이름을 수정합니다.</h3>
+                    <S.CustomTextField
+                        id="team-name"
+                        label="새 팀 이름"
+                        variant="outlined"
+                        fullWidth
+                        value={newTeamName}
+                        onChange={handleTeamNameChange}
+                        onKeyPress={handleKeyPress}
+                    />
+                    <S.CustomButton
+                        variant="contained"
+                        onClick={handleConfirmAndSave}
+                    >
+                        수정
+                    </S.CustomButton>
+                </S.CustomBox>
+            </S.CustomModal>
         </S.Container>
     );
 
