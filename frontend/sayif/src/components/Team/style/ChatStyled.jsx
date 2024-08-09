@@ -5,7 +5,7 @@ const Container = styled.div`
     margin-top: 100px;
     margin-bottom: 30px;
     background-color: white;
-    height: 600px; /* 고정된 높이 설정 */
+    height: 600px;
     width: 760px;
     border-radius: 30px;
     display: flex;
@@ -17,13 +17,13 @@ const Container = styled.div`
     @media (max-width: 800px) {
         width: 510px;
         padding: 0 10px;
-        height: 500px; /* 고정된 높이 설정 */
+        height: 500px;
     }
     @media (max-width: 640px) {
         width: 380px;
         padding: 0 10px;
         margin-bottom: 60px;
-        height: 450px; /* 고정된 높이 설정 */
+        height: 450px;
     }
 `;
 
@@ -67,7 +67,7 @@ const ChatContentWrapper = styled.div`
     flex-direction: column;
     padding: 20px;
     overflow-y: auto;
-    max-height: 420px; /* 채팅 내용 영역에 고정된 최대 높이 설정 */
+    max-height: 420px;
     scrollbar-width: thin; 
     scrollbar-color: #888 #ddd; 
 
@@ -88,12 +88,12 @@ const ChatContentWrapper = styled.div`
     @media (max-width: 800px) {
         width: 490px;
         padding: 0 10px;
-        max-height: 320px; /* 작은 화면을 위한 고정된 최대 높이 설정 */
+        max-height: 320px;
     }
     @media (max-width: 640px) {
         width: 350px;
         padding: 0 10px;
-        max-height: 270px; /* 더 작은 화면을 위한 고정된 최대 높이 설정 */
+        max-height: 270px;
     }
 `;
 
@@ -121,7 +121,7 @@ const TimeText = styled.div`
     font-family: ChosunGu;
     font-size: 11px;
     color: #888;
-    align-self: flex-end;
+    align-self: flex-start;
     margin-top: 5px;
     margin-left: 4px;
     margin-right: 4px;
@@ -150,6 +150,16 @@ const NameText = styled.div`
     margin-left: 3px;
 `;
 
+const DateDivider = styled.div`
+    text-align: center;
+    padding: 10px 0;
+    margin: 10px 0;
+    font-family: ChosunGu;
+    font-size: 12px;
+    color: #888;
+    border-bottom: 1px solid #ddd;
+`;
+
 const S = {
     Container,
     TeamNameBar,
@@ -161,6 +171,7 @@ const S = {
     ChatContent,
     TimeText,
     NameText,
+    DateDivider,
 };
 
 export default S;
