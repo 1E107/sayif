@@ -14,6 +14,9 @@ import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import styled from 'styled-components';
 import Alert from '@mui/material/Alert';
 import CheckIcon from '@mui/icons-material/Check';
+import { addTags,getTagsForMember,deleteTag } from '../../api/MemberApi';
+import { useEffect } from 'react';
+import { getTotalMentor } from '../../api/MentoringApi';
 
 function MyPageComponent() {
     const navigate = useNavigate();
@@ -33,6 +36,10 @@ function MyPageComponent() {
     });
     const [file, setFile] = useState(null);
     const [preview, setPreview] = useState(member.profileImg);
+    const [tags, setTags] = useState([]); // 현재 태그들을 저장하는 상태
+    const [newTag, setNewTag] = useState(''); // 새로 추가할 태그
+    const [deletedTags, setDeletedTags] = useState([]);
+    const [existingTagIds, setExistingTagIds] = useState([]);
 
     const ProfileImg = styled.img`
         width: 250px;
@@ -157,6 +164,10 @@ function MyPageComponent() {
                 type: 'application/json',
             });
             formData.append('info', infoBlob);
+            // 태그 추가
+            const tagData = new FormData();
+            tagData.append('contents', tags);
+            
             // 파일 추가
             if (file !== null) {
                 formData.append('file', file);
@@ -165,6 +176,17 @@ function MyPageComponent() {
             try {
                 const response = await uploadProfileImage(token, formData);
                 if (response.status === 200) {
+                    const newTags = tags.filter(tag => !existingTagIds.includes(tag.id));
+                    if (newTags.length > 0) {
+                        await addTags(token, { contents: newTags.map(tag => tag.content) });
+                    }
+                    
+                    // 태그 삭제
+                    if (deletedTags.length > 0) {
+                        for (let tagId of deletedTags) {
+                            await deleteTag(token, { tagId });
+                        }
+                    }
                     await callMemberInfo();
                     alert('회원 정보가 성공적으로 수정되었어요!');
                     window.location.reload();
@@ -211,6 +233,53 @@ function MyPageComponent() {
         if (changeInfo) {
             document.getElementById('fileInput').click();
         }
+    };
+
+    useEffect(() => {
+        const fetchTags = async () => {
+            try {
+                const response = await getTagsForMember(token);
+                const totalMentor = await getTotalMentor(token);
+                console.log(member);
+                console.log(totalMentor.data);
+                if (response.status === 200) {
+                    console.log(response.data);
+                    const fetchedTags = response.data.map(tag => ({
+                        id: tag.id,
+                        content: tag.content
+                    }));
+                    setTags(fetchedTags)
+                    console.log(fetchedTags)
+                    setExistingTagIds(fetchedTags.map(tag => tag.id)); // 기존 태그의 ID를 저장
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchTags();
+    }, []);
+
+    const handleAddTag = () => {
+        if (newTag.trim() !== '') {
+            const isDuplicate = tags.some(tag => tag.content === newTag.trim());
+            if (tags.length >= 6) {
+                alert('태그는 최대 6개까지만 추가할 수 있습니다.');
+            } else if (!isDuplicate) {
+                const newTagObject = {
+                    id: Math.random().toString(36).substr(2, 9),
+                    content: newTag.trim()
+                };
+                setTags([...tags, newTagObject]);
+            } else {
+                alert('이미 존재하는 태그입니다.');
+            }
+            setNewTag('');
+        }
+    };
+    
+    const handleDeleteTag = (tagToDeleteId) => {
+        setTags(tags.filter(tag => tag.id !== tagToDeleteId));
+        setDeletedTags([...deletedTags, tagToDeleteId]);
     };
 
     return (
@@ -341,7 +410,35 @@ function MyPageComponent() {
                     {emailError && <S.ErrorMsg>{emailError}</S.ErrorMsg>}
                 </div>
             </div>
-
+            <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginTop:'30px'}}>
+                <div style={{ width: '45%', marginLeft: '75px' }}>
+                    <S.TitleText style={{ textAlign: 'left', marginLeft: '40px' }}>태그</S.TitleText>
+                    <S.TagContainer>
+                        <div style={{ display: 'flex', marginBottom: '10px' }}>
+                            <S.TagInput
+                                type="text"
+                                value={newTag}
+                                onChange={(e) => setNewTag(e.target.value)}
+                                placeholder="태그 입력"
+                                style={{ width: '300px'}}
+                            />
+                            <S.AddTagButton onClick={handleAddTag}>추가</S.AddTagButton>
+                        </div>
+                        <S.TagList style={{ textAlign: 'left', width: '80%'}}>
+                            {tags.map(tag => (
+                                <S.TagItem key={tag.id}>
+                                    {tag.content}
+                                    <S.DeleteTagButton onClick={() => handleDeleteTag(tag.id)}>X</S.DeleteTagButton>
+                                </S.TagItem>
+                            ))}
+                        </S.TagList>
+                    </S.TagContainer>
+                </div>
+                <div style={{ width: '45%' }}>
+                    <S.TitleText>멘토 인사말</S.TitleText>
+                    {/* 여기 오른쪽 섹션의 코드가 나중에 추가될 것입니다 */}
+                </div>
+            </div>
             <div>
                 {!changeInfo && (
                     <S.ProfileUpdateBtn onClick={handleUpdateBtn}>

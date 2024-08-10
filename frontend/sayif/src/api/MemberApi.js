@@ -95,3 +95,34 @@ export const getNewToken = async () => {
         throw error;
     }
 };
+
+export const addTags = async (token, data) => {
+    try {
+        return await axios.post(`${API_BASE_URL}/member/tag`, data, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getTagsForMember = async (token) => {
+    try {
+        return await axios.get(`${API_BASE_URL}/member/tag`, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const deleteTag = async (token, data) => {
+    try {
+        return await axios.delete(`${API_BASE_URL}/member/tag`, {
+            data: data,
+            headers: { Authorization: `Bearer ${token}` },
+        });
+    } catch (error) {
+        throw error;
+    }
+};
