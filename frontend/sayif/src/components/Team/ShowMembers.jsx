@@ -68,6 +68,7 @@ function ShowMembers() {
                     const mentor = response.data.filter(
                         member => member.role === 'Mentor',
                     );
+                    
                     SetMentorList(mentor);
                     SetMenteeList(mentee);
                     console.log(response.data);
