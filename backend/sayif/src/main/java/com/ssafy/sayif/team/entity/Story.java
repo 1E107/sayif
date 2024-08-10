@@ -41,5 +41,8 @@ public class Story extends BaseTimeEntity {
     @Column(name = "is_read")
     private Boolean isRead;
 
+    public void read() {
+        isRead = Boolean.TRUE;
+    }
 }
 

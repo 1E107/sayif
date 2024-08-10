@@ -7,6 +7,8 @@ import com.ssafy.sayif.team.entity.Story;
 import com.ssafy.sayif.team.repository.StoryRepository;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,5 +32,16 @@ public class StoryService {
 
     public List<Story> getAllStoriesByTeamId(Integer teamId) {
         return storyRepository.findByTeamId(teamId);
+    }
+
+    public Story findStoryById(Integer contentId) {
+        return storyRepository.findById(contentId)
+                .orElseThrow(() -> new IllegalArgumentException("스토리를 찾을 수 없습니다: " + contentId));
+    }
+
+    public void setStoryAsRead(Integer contentId) {
+        Story story = findStoryById(contentId);
+        story.read();
+        storyRepository.save(story);
     }
 }
