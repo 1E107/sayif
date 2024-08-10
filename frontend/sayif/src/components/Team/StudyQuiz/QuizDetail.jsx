@@ -114,7 +114,7 @@ function QuizDetail({ quiz }) {
                     </nav>
                 </Box>
                 <S.CustomButton variant="contained" onClick={handleOpen}>
-                    채점하기
+                    제출하기
                 </S.CustomButton>
             </S.Container>
             <Modal
