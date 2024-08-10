@@ -117,7 +117,6 @@ const ProfileUpdateBtn = styled(Button)({
 });
 
 const LogoutBtn = styled(Button)({
-    marginTop: '10px !important',
     fontFamily: 'ChosunGu !important',
 });
 
@@ -203,6 +202,15 @@ const IntroTextArea = styled.div`
     white-space: pre-wrap; /* 개행 문자 유지 */
 `;
 
+const ItemWrapper = styled.div`
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    color: #116530;
+`;
+
 const S = {
     Container,
     TagAndIntroContainer,
@@ -226,6 +234,7 @@ const S = {
     IntroTextArea,
     SectionContainer, // 새로 추가된 섹션 컨테이너 스타일
     Section, // 새로 추가된 섹션 스타일
+    ItemWrapper,
 };
 
 export default S;
