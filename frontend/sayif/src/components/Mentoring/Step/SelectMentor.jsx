@@ -28,7 +28,7 @@ function SelectMentor({ formData, reSelectInfo, finishPage }) {
         const callMentorList = async () => {
             try {
                 const response = await getMentorList(
-                    1,
+                    0,
                     10,
                     formData.startDate,
                     formData.endDate,
