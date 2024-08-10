@@ -18,7 +18,7 @@ const ContentContainer = styled.div`
     justify-content: space-between;
     align-items: left;
     padding: 0 30px;
-    margin: 30px 120px 0 100px;
+    margin: 30px 60px 0 140px;
     height:405px;
 `;
 
