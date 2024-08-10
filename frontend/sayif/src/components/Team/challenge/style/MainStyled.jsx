@@ -3,6 +3,7 @@ import '../../../../styles/fonts.css';
 import Button from '@mui/material/Button';
 
 const Container = styled.div`
+    margin-top: 60px;
     margin-bottom: 40px;
     text-align: center;
     display: flex;

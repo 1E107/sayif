@@ -14,17 +14,25 @@ function Information() {
     const { token, member } = useSelector(state => state.member);
     const [infoList, SetInfoList] = useState([]);
     const [rows, SetRows] = useState([]);
-    const [page, SetPage] = useState(1);
-    const [totalCount, SetTotalCount] = useState(6);
-    const itemsPerPage = 6;
+    const [page, SetPage] = useState(() => {
+        const savedInfoPage = localStorage.getItem('savedInfoPage');
+        return savedInfoPage ? Number(savedInfoPage) : 1;
+    });
+    const [totalCount, SetTotalCount] = useState(37);
+    const itemsPerPage = 8;
 
     const handleShowDetail = id => {
         navigate(`/support-information/${id}`);
     };
 
     const callGetInfo = async () => {
+        const savedInfoPage = localStorage.getItem('savedInfoPage');
         try {
-            const response = await getSupportInfo(page - 1, 6, token);
+            const response = await getSupportInfo(
+                savedInfoPage - 1,
+                itemsPerPage,
+                token,
+            );
             console.log(response.data);
             if (response.status === 200) {
                 SetInfoList(response.data);
@@ -55,6 +63,7 @@ function Information() {
     };
 
     const handlePageChange = (event, value) => {
+        localStorage.setItem('savedInfoPage', Number(value));
         SetPage(value);
     };
 
@@ -89,7 +98,7 @@ function Information() {
                                 >
                                     <CardMedia
                                         sx={{ height: 200 }}
-                                        image="/img/info-temp-img.jpg"
+                                        image={col.img}
                                         title="green iguana"
                                     />
                                     <CardContent>

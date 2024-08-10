@@ -33,8 +33,9 @@ function InformationDetail() {
                 <div style={{ display: 'flex', margin: '30px' }}>
                     <S.CustomImg
                         src={
-                            detailContent && detailContent.img
-                            && detailContent.img !== ''
+                            detailContent &&
+                            detailContent.img &&
+                            detailContent.img !== ''
                                 ? detailContent.img
                                 : '/img/info-temp-img.jpg'
                         }
@@ -84,8 +85,14 @@ function InformationDetail() {
                                 {detailContent.method}
                             </S.ContentText>
                             <S.ButtonContainer>
-                                <S.Button onClick={() => window.open(
-                                    detailContent.link, '_blank')}>
+                                <S.Button
+                                    onClick={() =>
+                                        window.open(
+                                            detailContent.link,
+                                            '_blank',
+                                        )
+                                    }
+                                >
                                     신청하러 가기
                                 </S.Button>
                             </S.ButtonContainer>

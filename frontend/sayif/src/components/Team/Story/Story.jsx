@@ -62,10 +62,13 @@ function Story() {
             <div
                 style={{
                     display: 'flex',
-                    justifyContent: 'flex-end',
+                    justifyContent: 'space-between',
                     marginTop: '50px',
                 }}
             >
+                <S.ExplainText>
+                    익명 사연 하나를 작성하면 팀 포인트가 2점 증가합니다!{' '}
+                </S.ExplainText>
                 <S.CustomButton variant="outlined" onClick={goCreateStory}>
                     사연 보내기
                     <NavigateNextIcon style={{ marginLeft: '5px' }} />

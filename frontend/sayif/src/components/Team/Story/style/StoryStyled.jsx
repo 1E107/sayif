@@ -48,6 +48,13 @@ const ModalContent = styled.div`
     }
 `;
 
+const ExplainText = styled.div`
+    margin-top: 58px;
+    font-family: ChosunGu;
+    margin-left: 10px;
+    color: gray;
+`;
+
 const CustomButton = styled(Button)({
     marginTop: '50px !important',
     marginBottom: '20px !important',
@@ -78,6 +85,7 @@ const S = {
     Modal,
     ModalContent,
     ModalText,
+    ExplainText,
 };
 
 export default S;
