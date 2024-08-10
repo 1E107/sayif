@@ -27,11 +27,10 @@ public class TagController {
     }
 
     @GetMapping("/tag")
-    public ResponseEntity<TagResponseDto> getTagsForMember(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<List<TagResponseDto>> getTagsForMember(@AuthenticationPrincipal UserDetails userDetails) {
         String username = userDetails.getUsername();
-        List<String> tagContents = tagService.getTagsForMember(username);
-        TagResponseDto response = new TagResponseDto(tagContents);
-        return ResponseEntity.ok(response);
+        List<TagResponseDto> tags = tagService.getTagsForMember(username);
+        return ResponseEntity.ok(tags);
     }
 
     @DeleteMapping("/tag")

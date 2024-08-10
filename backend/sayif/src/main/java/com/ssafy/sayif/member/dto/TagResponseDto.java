@@ -10,6 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TagResponseDto {
-    private List<String> contents;
+    private Long id;
+    private String content;
 
 }

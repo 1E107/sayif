@@ -3,17 +3,48 @@ import Button from '@mui/material/Button';
 import '../../../styles/fonts.css';
 
 const Container = styled.div`
-    margin-top:200px;
+    margin-top: 200px;
     width: 1000px;
     height: 800px;
     border-radius: 40px;
-    box-shadow:
-        0 3px 6px rgba(0, 0, 0, 0.16),
-        0 3px 6px rgba(0, 0, 0, 0.23);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
+`;
+
+const TagAndIntroContainer = styled.div`
+    display: flex;
+    justify-content: space-between;
+    width: 80%; /* 섹션들의 부모 컨테이너의 너비를 줄였습니다 */
+    margin-top: 30px;
+`;
+
+const TagSection = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* 태그 섹션의 모든 요소를 왼쪽 정렬 */
+    width: 48%; /* 태그와 인삿말 섹션의 너비를 동일하게 설정 */
+`;
+
+const IntroSection = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* 인삿말 섹션의 모든 요소를 왼쪽 정렬 */
+    width: 48%;
+`;
+
+const SectionContainer = styled.div`
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 30px;
+`;
+
+const Section = styled.div`
+    width: 45%;
+    margin: 0 10px; // 섹션 사이 간격 조정
 `;
 
 const NickNameText = styled.div`
@@ -99,7 +130,7 @@ const TagContainer = styled.div`
 `;
 
 const TagInput = styled(CustomInput)`
-    width: 250px;
+    width: 270px;
     margin-right: 10px;
     margin-bottom: 10px;
     font-size: 16px;
@@ -111,11 +142,11 @@ const AddTagButton = styled(Button)({
     backgroundColor: '#116530 !important',
     fontSize: '16px !important',
     height: '50px',
+    width:'50px'
 });
 
-const TagList = styled.div`
+const TextArea = styled.div`
     width: 100%;
-    margin-top: 10px;
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
@@ -159,8 +190,24 @@ const DeleteTagButton = styled.button`
     }
 `;
 
+const IntroTextArea = styled.div`
+    width: 340px; // 너비를 100%로 설정하여 섹션 너비에 맞춤
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    min-height: 100px;
+    font-family: ChosunGu;
+    color: #116530;
+    font-size: 16px;
+    word-wrap: break-word; /* 줄 바꿈 처리 */
+    white-space: pre-wrap; /* 개행 문자 유지 */
+`;
+
 const S = {
     Container,
+    TagAndIntroContainer,
+    TagSection,
+    IntroSection,
     TitleText,
     CustomInput,
     NickNameText,
@@ -173,9 +220,12 @@ const S = {
     TagContainer,
     TagInput,
     AddTagButton,
-    TagList,
+    TextArea,
     TagItem,
     DeleteTagButton,
+    IntroTextArea,
+    SectionContainer, // 새로 추가된 섹션 컨테이너 스타일
+    Section, // 새로 추가된 섹션 스타일
 };
 
 export default S;

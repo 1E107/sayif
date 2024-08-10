@@ -1,13 +1,6 @@
 package com.ssafy.sayif.team.controller;
 
-import com.ssafy.sayif.team.dto.MentorNicknameResponse;
-import com.ssafy.sayif.team.dto.MentorProfileResponse;
-import com.ssafy.sayif.team.dto.MentoringApplicationRequest;
-import com.ssafy.sayif.team.dto.MentoringRecruitRequest;
-import com.ssafy.sayif.team.dto.MentoringSearchRequest;
-import com.ssafy.sayif.team.dto.MentoringSearchResponse;
-import com.ssafy.sayif.team.dto.TeamSessionResponse;
-import com.ssafy.sayif.team.dto.TeamStatusResponse;
+import com.ssafy.sayif.team.dto.*;
 import com.ssafy.sayif.team.entity.Team;
 import com.ssafy.sayif.team.service.MentoringService;
 import java.util.List;
@@ -17,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -88,4 +82,20 @@ public class MentoringController {
         return ResponseEntity.ok(mentoringService.getMentoringInfo(id));
     }
 
+    // 멘토 프로필 조회
+    @GetMapping("/profile")
+    public ResponseEntity<MentorProfileResponse> getMentorProfile(@AuthenticationPrincipal UserDetails userDetails) {
+        String username = userDetails.getUsername();
+        MentorProfileResponse mentorProfile = mentoringService.getMentorProfileByUsername(username);
+        return ResponseEntity.ok(mentorProfile);
+    }
+
+    @PutMapping("/profile")
+    public ResponseEntity<Void> updateMentorProfile(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody MentorProfileUpdateRequest profileUpdateRequest) {
+        String username = userDetails.getUsername();
+        mentoringService.updateMentorProfileByUsername(username, profileUpdateRequest);
+        return ResponseEntity.ok().build();
+    }
 }

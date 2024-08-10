@@ -16,7 +16,7 @@ import Alert from '@mui/material/Alert';
 import CheckIcon from '@mui/icons-material/Check';
 import { addTags,getTagsForMember,deleteTag } from '../../api/MemberApi';
 import { useEffect } from 'react';
-import { getTotalMentor } from '../../api/MentoringApi';
+import { getMentorProfile,updateMentorProfile } from '../../api/MemberApi';
 
 function MyPageComponent() {
     const navigate = useNavigate();
@@ -40,6 +40,7 @@ function MyPageComponent() {
     const [newTag, setNewTag] = useState(''); // 새로 추가할 태그
     const [deletedTags, setDeletedTags] = useState([]);
     const [existingTagIds, setExistingTagIds] = useState([]);
+    const [intro, setIntro] = useState(''); // Intro 상태 변수 추가
 
     const ProfileImg = styled.img`
         width: 250px;
@@ -187,6 +188,11 @@ function MyPageComponent() {
                             await deleteTag(token, { tagId });
                         }
                     }
+                    // 멘토 Intro 수정
+                    if (member.role === 'Mentor' && intro) {
+                        const profileUpdateData = { intro };  // intro만 포함된 객체
+                        await updateMentorProfile(token, profileUpdateData);
+                    }
                     await callMemberInfo();
                     alert('회원 정보가 성공적으로 수정되었어요!');
                     window.location.reload();
@@ -236,28 +242,31 @@ function MyPageComponent() {
     };
 
     useEffect(() => {
-        const fetchTags = async () => {
-            try {
-                const response = await getTagsForMember(token);
-                const totalMentor = await getTotalMentor(token);
-                console.log(member);
-                console.log(totalMentor.data);
-                if (response.status === 200) {
-                    console.log(response.data);
-                    const fetchedTags = response.data.map(tag => ({
-                        id: tag.id,
-                        content: tag.content
-                    }));
-                    setTags(fetchedTags)
-                    console.log(fetchedTags)
-                    setExistingTagIds(fetchedTags.map(tag => tag.id)); // 기존 태그의 ID를 저장
+        if (member.role === 'Mentor') {  // member.role이 Mentor인 경우에만 실행
+            const fetchTagsAndIntro = async () => {
+                try {
+                    const tagResponse = await getTagsForMember(token);
+                    const mentorResponse = await getMentorProfile(token);
+                    console.log(mentorResponse);
+                    if (tagResponse.status === 200) {
+                        console.log(tagResponse.data);
+                        const fetchedTags = tagResponse.data.map(tag => ({
+                            id: tag.id,
+                            content: tag.content
+                        }));
+                        setTags(fetchedTags);
+                        console.log(fetchedTags);
+                        setExistingTagIds(fetchedTags.map(tag => tag.id)); // 기존 태그의 ID를 저장
+                    }
+                    console.log(mentorResponse.status);
+                    setIntro(mentorResponse.intro); // Intro 설정
+                } catch (error) {
+                    console.log(error);
                 }
-            } catch (error) {
-                console.log(error);
-            }
-        };
-        fetchTags();
-    }, []);
+            };
+            fetchTagsAndIntro();
+        }
+    }, [member.role, token]);
 
     const handleAddTag = () => {
         if (newTag.trim() !== '') {
@@ -410,35 +419,75 @@ function MyPageComponent() {
                     {emailError && <S.ErrorMsg>{emailError}</S.ErrorMsg>}
                 </div>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginTop:'30px'}}>
-                <div style={{ width: '45%', marginLeft: '75px' }}>
-                    <S.TitleText style={{ textAlign: 'left', marginLeft: '40px' }}>태그</S.TitleText>
-                    <S.TagContainer>
-                        <div style={{ display: 'flex', marginBottom: '10px' }}>
-                            <S.TagInput
-                                type="text"
-                                value={newTag}
-                                onChange={(e) => setNewTag(e.target.value)}
-                                placeholder="태그 입력"
-                                style={{ width: '300px'}}
-                            />
-                            <S.AddTagButton onClick={handleAddTag}>추가</S.AddTagButton>
-                        </div>
-                        <S.TagList style={{ textAlign: 'left', width: '80%'}}>
+            {member.role === 'Mentor' && (
+                <S.TagAndIntroContainer>
+                    <S.TagSection>
+                        <S.TitleText>태그</S.TitleText>
+                        {changeInfo && ( // changeInfo가 true일 때만 렌더링
+                            <S.TagContainer>
+                                <div style={{ display: 'flex', marginBottom: '10px', width: '100%' }}>
+                                    <S.TagInput
+                                        type="text"
+                                        value={newTag}
+                                        onChange={(e) => setNewTag(e.target.value)}
+                                        placeholder ="태그 입력"
+                                        disabled={!changeInfo} // 비활성화 여부 설정
+                                        style={{
+                                            border: changeInfo
+                                                ? '1px solid red' // 수정 모드일 때 빨간 테두리
+                                                : '0px solid black', // 기본 상태일 때 테두리 없음
+                                        }}
+                                    />
+                                    <S.AddTagButton onClick={handleAddTag}>추가</S.AddTagButton>
+                                </div>
+                            </S.TagContainer>
+                        )}
+                        <S.TextArea style={{width:'340px' , marginTop: !changeInfo ? '20px' : '0px'}}>
                             {tags.map(tag => (
                                 <S.TagItem key={tag.id}>
                                     {tag.content}
-                                    <S.DeleteTagButton onClick={() => handleDeleteTag(tag.id)}>X</S.DeleteTagButton>
+                                    {changeInfo && ( // changeInfo가 true일 때만 삭제 버튼 렌더링
+                                        <S.DeleteTagButton 
+                                            onClick={() => handleDeleteTag(tag.id)}
+                                            style={{
+                                                border: '1px solid red', // 여기에 스타일 추가
+                                            }}
+                                        >
+                                            X
+                                        </S.DeleteTagButton>
+                                    )}
                                 </S.TagItem>
                             ))}
-                        </S.TagList>
-                    </S.TagContainer>
-                </div>
-                <div style={{ width: '45%' }}>
-                    <S.TitleText>멘토 인사말</S.TitleText>
-                    {/* 여기 오른쪽 섹션의 코드가 나중에 추가될 것입니다 */}
-                </div>
-            </div>
+                        </S.TextArea>
+                    </S.TagSection>
+                    
+                    <S.IntroSection>
+                        <S.TitleText style={{marginBottom:'20px'}}>멘토 인사말</S.TitleText>
+                        <S.IntroTextArea
+                        as="textarea" // textarea로 렌더링되도록 변경
+                        value={intro} // textarea의 value로 intro 상태를 설정
+                        onChange={(e) => setIntro(e.target.value)} // textarea의 값이 변경될 때 intro 상태를 업데이트
+                        disabled={!changeInfo} // changeInfo가 true일 때만 편집 가능
+                        style={{
+                            border: changeInfo
+                                ? '1px solid red' // 수정 모드일 때 빨간 테두리
+                                : '0px solid black', // 기본 상태일 때 테두리 없음
+                            width: '340px', // 너비 설정
+                            height: '100px', // 높이 설정
+                            resize: 'none', // 사용자가 크기를 조정할 수 없게 설정
+                            padding: '10px', // 패딩 추가
+                            borderRadius: '10px', // 모서리 둥글게
+                            backgroundColor: '#f9f9f9', // 배경색 설정
+                            fontFamily: 'ChosunGu',
+                            color: '#116530',
+                            fontSize: '16px',
+                            wordWrap: 'break-word', // 줄 바꿈 처리
+                            whiteSpace: 'pre-wrap', // 개행 문자 유지
+                        }}
+                        >{intro}</S.IntroTextArea>
+                    </S.IntroSection>
+                </S.TagAndIntroContainer>
+            )}
             <div>
                 {!changeInfo && (
                     <S.ProfileUpdateBtn onClick={handleUpdateBtn}>

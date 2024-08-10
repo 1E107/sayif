@@ -126,3 +126,26 @@ export const deleteTag = async (token, data) => {
         throw error;
     }
 };
+
+// 멘토 프로필 조회
+export const getMentorProfile = async (token) => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/mentoring/profile`, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+// 멘토 프로필 수정
+export const updateMentorProfile = async (token, profileUpdateData) => {
+    try {
+        return await axios.put(`${API_BASE_URL}/mentoring/profile`, profileUpdateData, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+    } catch (error) {
+        throw error;
+    }
+};
