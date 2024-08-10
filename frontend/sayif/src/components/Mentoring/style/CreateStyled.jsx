@@ -5,27 +5,30 @@ import Button from '@mui/material/Button';
 const Container = styled.div`
     display: flex;
     justify-content: center;
+    margin-right: 35px;
 `
 
 const Title = styled.div`
     margin-top: 40px;
     font-family: ONE-Mobile-POP;
-    font-size: 25px;
+    font-size: 28px;
+    margin-left: 40px;
 `
 
 const ExplainText = styled.div`
     font-family: ChosunGu;
-    font-size: 15px;
-    margin-top: 13px;
+    font-size: 18px;
+    margin-top: 15px;
+    margin-left: 40px;
 `
 
 const CustomTdTitle = styled.td`
     background-color: #E7F0DC;
-    width: 300px;
-    height: 100px;
+    width: 475px;
+    height: 125px;
     padding-left: 10px;
     border: 1px solid gray;
-    font-size: 14px;
+    font-size: 18px;
 `
 
 const CustomTable = styled.table`
@@ -39,7 +42,7 @@ const CustomTable = styled.table`
 
 const CustomTdContent = styled.td`
     padding-left: 20px;
-    width: 700px;
+    width: 870px;
     border: 1px solid gray;
 `
 
@@ -78,7 +81,7 @@ const BtnGroup = styled.div`
     display: flex;
     justify-content: flex-end;
     gap: 10px;
-    margin-right: 100px;
+    margin-right: 70px;
 `
 
 const S = {

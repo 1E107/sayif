@@ -8,11 +8,13 @@ const Container = styled.div`
     justify-content: center;
     align-items: center;
     height: 500px;
+    margin-top: 230px;
+    margin-right: 90px;
 `
 
 const Title = styled.div`
     font-family: Freesentation-9Black;
-    font-size: 35px;
+    font-size: 45px;
     margin-top: 10px;
 `
 
@@ -21,6 +23,7 @@ const Content = styled.div`
     margin-top: 50px;
     font-family: ChosunGu;
     line-height: 150%;
+    font-size: 19px;
 `
 
 const CustomBtn = styled(Button)({
