@@ -4,7 +4,7 @@ import '../../../styles/fonts.css';
 
 const Container = styled.div`
     width: 1000px;
-    height: 600px;
+    height: 650px;
     border-radius: 40px;
     box-shadow:
         0 3px 6px rgba(0, 0, 0, 0.16),
@@ -85,9 +85,17 @@ const ProfileUpdateBtn = styled(Button)({
 });
 
 const LogoutBtn = styled(Button)({
-    marginTop: '10px !important',
     fontFamily: 'ChosunGu !important',
 });
+
+const ItemWrapper = styled.div`
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    color: #116530;
+`;
 
 const S = {
     Container,
@@ -100,6 +108,7 @@ const S = {
     ErrorMsg,
     ImgIcon,
     ImageContainer,
+    ItemWrapper,
 };
 
 export default S;

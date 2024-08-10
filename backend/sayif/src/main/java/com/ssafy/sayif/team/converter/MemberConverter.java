@@ -3,10 +3,14 @@ package com.ssafy.sayif.team.converter;
 import com.ssafy.sayif.member.entity.Member;
 import com.ssafy.sayif.member.entity.Mentee;
 import com.ssafy.sayif.member.entity.Mentor;
+import com.ssafy.sayif.member.entity.Tag;
 import com.ssafy.sayif.team.dto.MemberInfoResponseDto;
 import com.ssafy.sayif.team.dto.MenteeInfoResponseDto;
 import com.ssafy.sayif.team.dto.MentorInfoResponseDto;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class MemberConverter {
@@ -26,6 +30,11 @@ public class MemberConverter {
             dto.setSeq(mentor.getSeq());
             dto.setIntro(mentor.getIntro());
             dto.setTrack(mentor.getTrack());
+            List<String> tags = new ArrayList<>();
+            for (Tag tag : mentor.getTags()) {
+                tags.add(tag.getContent());
+            }
+            dto.setTags(tags);
             setCommonFields(dto, member);
             return dto;
         } else {

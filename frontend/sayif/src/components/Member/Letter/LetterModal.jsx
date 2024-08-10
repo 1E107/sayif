@@ -32,7 +32,7 @@ function LetterModal({ onClose, id }) {
 
         try {
             console.log({
-                receiver: detailContent.sendId,
+                receiver: detailContent.sendMemberId,
                 title: sendTitle,
                 content: sendContent,
             });
@@ -40,7 +40,7 @@ function LetterModal({ onClose, id }) {
             const response = await axios.post(
                 `${API_BASE_URL}/member/message`,
                 {
-                    receiver: detailContent.sendId,
+                    receiver: detailContent.sendMemberId,
                     title: sendTitle,
                     content: sendContent,
                 },
