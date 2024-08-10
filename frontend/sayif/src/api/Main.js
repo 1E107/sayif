@@ -5,21 +5,18 @@ import { API_BASE_URL } from './config';
 
 export const WriteCommunity = async (token, data) => {
     try {
-        return await axios.post(`${API_BASE_URL}/board`,
-            data,
-            {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+        return await axios.post(`${API_BASE_URL}/board`, data, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
     } catch (err) {
         console.log(err);
     }
 };
 export const DeleteCommunityComment = async (id, token) => {
     try {
-        return await axios.delete(`${API_BASE_URL}/comment/${id}`,
-            {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+        return await axios.delete(`${API_BASE_URL}/comment/${id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
     } catch (err) {
         console.log(err);
     }
@@ -28,11 +25,9 @@ export const DeleteCommunityComment = async (id, token) => {
 export const UpdateCommunityComment = async (id, content, token) => {
     try {
         const data = { content: content };
-        return await axios.put(`${API_BASE_URL}/comment/${id}`,
-            data,
-            {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+        return await axios.put(`${API_BASE_URL}/comment/${id}`, data, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
     } catch (err) {
         console.log(err);
     }
