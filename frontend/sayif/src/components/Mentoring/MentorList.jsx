@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import MentorCard from './style/MentorCard';
 import axios from 'axios';
@@ -7,9 +7,13 @@ import { API_BASE_URL } from '../../api/config';
 const ListContainer = styled.div`
     display: grid;
     grid-template-columns: repeat(3, 1fr); /* 한 행에 3개의 컴포넌트 배치 */
-    gap: 20px;
+    gap: 70px;
     justify-content: center; /* 그리드 전체를 가로로 중앙 정렬 */
+    align-items: center; /* 그리드 아이템들을 상하로 중앙 정렬 */
+    justify-items: center; /* 그리드 아이템들을 좌우로 중앙 정렬 */
     padding: 20px;
+    max-width: 1200px; /* 컨테이너의 최대 너비 설정 */
+    margin: 0 auto; /* 좌우 마진을 자동으로 설정하여 중앙 정렬 */
 `;
 
 const MentorList = () => {
