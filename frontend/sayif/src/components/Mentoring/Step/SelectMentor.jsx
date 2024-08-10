@@ -8,7 +8,8 @@ import { useEffect, useState } from 'react';
 import { applyMentoring, getMentorList } from '../../../api/MentoringApi';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setMember } from '../../../redux/modules/member';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: '#F5F5F5',
@@ -23,6 +24,7 @@ const Item = styled(Paper)(({ theme }) => ({
 function SelectMentor({ formData, reSelectInfo, finishPage }) {
     const [mentorList, setMentorList] = useState([]);
     const { token } = useSelector(state => state.member);
+    const dispatch = useDispatch();
 
     useEffect(() => {
         const callMentorList = async () => {
@@ -53,8 +55,10 @@ function SelectMentor({ formData, reSelectInfo, finishPage }) {
         const callApplyMentoring = async () => {
             try {
                 const response = await applyMentoring(id, token);
-                if (response.status === 200)
+                if (response.status === 200) {
+                    dispatch(setMember({ teamId: id }));
                     alert('멘토링 신청이 완료되었습니다.');
+                }
             } catch (error) {
                 console.log(error);
             }
@@ -117,35 +121,63 @@ function SelectMentor({ formData, reSelectInfo, finishPage }) {
                             style={{ margin: '15px 0px 15px 0px' }}
                         >
                             <S.MentorListBox>
-                                <S.MentorInfoBox>
-                                    <S.MentorProfileWrapper>
-                                        <Box sx={{ flexGrow: 0 }}>
-                                            <IconButton sx={{ p: 0 }}>
-                                                <Avatar
-                                                    alt="Remy Sharp"
-                                                    src={
-                                                        mentor.mentor1ProfileUrl
-                                                    }
-                                                />
-                                            </IconButton>
-                                        </Box>
-                                        <Box sx={{ flexGrow: 0 }}>
-                                            <IconButton sx={{ p: 0 }}>
-                                                <Avatar
-                                                    alt="Remy Sharp"
-                                                    src={
-                                                        mentor.mentor2ProfileUrl
-                                                    }
-                                                />
-                                            </IconButton>
-                                        </Box>
-                                    </S.MentorProfileWrapper>
-                                    <S.MentorInfoContent
-                                        style={{ marginBottom: '15px' }}
+                                <S.MentorInfoBox style={{ display: 'flex' }}>
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            alignItems: 'center',
+                                            marginRight: '16px',
+                                        }}
                                     >
-                                        {mentor.mentor1Nickname} &{' '}
-                                        {mentor.mentor2Nickname}
-                                    </S.MentorInfoContent>
+                                        <IconButton sx={{ p: 0 }}>
+                                            <Avatar
+                                                alt={mentor.mentor1Nickname}
+                                                src={mentor.mentor1ProfileUrl}
+                                            />
+                                        </IconButton>
+                                        <S.MentorInfoContent>
+                                            {mentor.mentor1Nickname}
+                                        </S.MentorInfoContent>
+                                    </Box>
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            alignItems: 'center',
+                                            marginRight: '16px',
+                                        }}
+                                    >
+                                        <IconButton
+                                            sx={{ p: 0, visibility: 'hidden' }}
+                                        >
+                                            <Avatar
+                                                alt={mentor.mentor2Nickname}
+                                                src={mentor.mentor2ProfileUrl}
+                                            />
+                                        </IconButton>
+                                        <S.MentorInfoContent>
+                                            &
+                                        </S.MentorInfoContent>
+                                    </Box>
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            alignItems: 'center',
+                                            marginRight: '16px',
+                                        }}
+                                    >
+                                        <IconButton sx={{ p: 0 }}>
+                                            <Avatar
+                                                alt={mentor.mentor2Nickname}
+                                                src={mentor.mentor2ProfileUrl}
+                                            />
+                                        </IconButton>
+                                        <S.MentorInfoContent>
+                                            {mentor.mentor2Nickname}
+                                        </S.MentorInfoContent>
+                                    </Box>
                                 </S.MentorInfoBox>
                                 <S.MentorInfoBox>
                                     <S.MentorInfoTitle>
