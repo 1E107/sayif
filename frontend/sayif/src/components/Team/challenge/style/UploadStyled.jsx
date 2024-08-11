@@ -26,12 +26,14 @@ const FinishBtn = styled(Button)({
     marginBottom: '30px !important',
     marginTop: '20px !important',
     backgroundColor: '#116530 !important',
+    marginLeft: '10PX !important',
 });
 
-const ExplanText = styled.div`
+const ExplainText = styled.div`
     font-family: ChosunGu;
     font-size: 12px;
     margin-top: 5px;
+    line-height: 130%;
 `;
 
 const ResultText = styled.div`
@@ -49,7 +51,7 @@ const S = {
     PostBtn,
     ResultText,
     ResultHigh,
-    ExplanText,
+    ExplainText,
     FinishBtn,
 };
 
