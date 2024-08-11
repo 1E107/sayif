@@ -32,7 +32,9 @@ public class MemberConverter {
             dto.setTrack(mentor.getTrack());
             List<String> tags = new ArrayList<>();
             for (Tag tag : mentor.getTags()) {
-                tags.add(tag.getContent());
+                if (!tag.isRemove()) {  // isRemove가 false인 태그만 추가
+                    tags.add(tag.getContent());
+                }
             }
             dto.setTags(tags);
             setCommonFields(dto, member);
