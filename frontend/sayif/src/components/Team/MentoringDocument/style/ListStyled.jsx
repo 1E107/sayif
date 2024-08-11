@@ -7,6 +7,15 @@ const Container = styled.div`
     margin: 70px 20px 50px 20px;
 `;
 
+const Title = styled.div`
+    font-family: ChosunGu;
+    font-size: 24px;
+    font-weight: bold;
+    color: #0b4619;
+    margin-top: 30px;
+    margin-bottom: 30px;
+`;
+
 const CustomButton = styled(Button)({
     backgroundColor: '#116530 !important',
     borderRadius: '13px !important',
@@ -65,6 +74,7 @@ const S = {
     SearchButton,
     CustomTextField,
     FloatingButton,
+    Title,
 };
 
 export default S;

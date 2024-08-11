@@ -14,6 +14,7 @@ const Text = styled.div`
     font-family: ChosunGu;
     text-align: center;
     line-height: 150%;
+    font-size: 18px;
 `;
 
 function Empty() {
@@ -27,7 +28,7 @@ function Empty() {
             />
             <Text>
                 아직{' '}
-                <span style={{ color: '#BA9C03' }}>
+                <span style={{ color: '#969916' }}>
                     미션을 수행한 팀원들이 없어요!
                 </span>{' '}
                 먼저 시작해보는 건 어떨까요? <br /> 같이 하면 더 재미있을 것

@@ -3,19 +3,14 @@ package com.ssafy.sayif.team.controller;
 import com.ssafy.sayif.team.dto.*;
 import com.ssafy.sayif.team.entity.Team;
 import com.ssafy.sayif.team.service.MentoringService;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @Slf4j
@@ -97,5 +92,11 @@ public class MentoringController {
         String username = userDetails.getUsername();
         mentoringService.updateMentorProfileByUsername(username, profileUpdateRequest);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/plan/{id}")
+    public ResponseEntity<?> getMentoringPlan(@PathVariable Integer id) {
+        MentoringSearchResponse mentoringSearchResponse = mentoringService.getMentoringPlan(id);
+        return ResponseEntity.ok(mentoringSearchResponse);
     }
 }

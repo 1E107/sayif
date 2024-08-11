@@ -25,7 +25,7 @@ const MissionBox = styled.div`
     height: 450px;
     border-radius: 30px;
     border: 5px solid #116530;
-    margin-top: 30px;
+    margin-top: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -47,8 +47,16 @@ const ContentText = styled.div`
     margin-top: 50px;
 `;
 
+const ExpText = styled.div`
+    margin-top: 10px;
+    font-family: ChosunGu;
+    font-size: 15px;
+    color: #999999;
+`;
+
 const CustomButton = styled(Button)({
-    fontSize: '16px !important',
+    fontSize: '18px !important',
+    fontWeight: 'bold !important',
     marginTop: '50px !important',
     width: '200px',
     height: '50px',
@@ -83,6 +91,7 @@ const S = {
     ContentText,
     CustomButton,
     FloatingButton,
+    ExpText,
 };
 
 export default S;

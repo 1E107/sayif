@@ -4,6 +4,8 @@ import Button from '@mui/material/Button';
 
 const Title = styled.div`
     font-family: ChosunGu;
+    font-size: 17px;
+    font-weight: bold;
     background-color: #116530;
     padding: 10px;
     border-radius: 13px;
@@ -13,11 +15,13 @@ const Title = styled.div`
 
 const PostBtn = styled(Button)({
     fontFamily: 'ChosunGu !important',
+    fontSize: '16px !important',
     width: '130px',
     color: '#116530 !important',
     border: '1px solid #116530 !important',
     marginBottom: '30px !important',
     marginTop: '20px !important',
+    fontWeight: 'bold !important',
 });
 
 const FinishBtn = styled(Button)({
@@ -27,19 +31,20 @@ const FinishBtn = styled(Button)({
     marginTop: '20px !important',
     backgroundColor: '#116530 !important',
     marginLeft: '10PX !important',
+    fontWeight: 'bold !important',
 });
 
 const ExplainText = styled.div`
     font-family: ChosunGu;
-    font-size: 12px;
-    margin-top: 5px;
-    line-height: 130%;
+    font-size: 16px;
+    margin-top: 10px;
+    line-height: 150%;
 `;
 
 const ResultText = styled.div`
     font-family: ChosunGu;
-    font-size: 14px;
-    line-height: 140%;
+    font-size: 16px;
+    line-height: 150%;
 `;
 
 const ResultHigh = styled.span`

@@ -81,6 +81,7 @@ function Board() {
     const BoardView = (
         <S.Container>
             <div style={{ textAlign: 'center' }}>
+                <S.Title>Q&A 게시판</S.Title>
                 <S.CustomTextField
                     id="input-with-icon-textfield"
                     InputProps={{
