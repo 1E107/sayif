@@ -112,3 +112,23 @@ export const getTotalMentor = async token => {
         throw error;
     }
 };
+
+export const getMentoringPlan = async (teamId, token) => {
+    try {
+        const response = await axios.get(
+            `${API_BASE_URL}/mentoring/plan/${teamId}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            },
+        );
+        return response;
+    } catch (error) {
+        console.error(
+            'Error fetching session ID:',
+            error.response ? error.response.data : error.message,
+        );
+        throw error;
+    }
+};

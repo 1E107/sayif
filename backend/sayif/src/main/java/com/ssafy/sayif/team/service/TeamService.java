@@ -1,9 +1,9 @@
 package com.ssafy.sayif.team.service;
+
 import com.ssafy.sayif.member.entity.Member;
 import com.ssafy.sayif.member.repository.MemberRepository;
 import com.ssafy.sayif.member.repository.MenteeRepository;
 import com.ssafy.sayif.member.service.MemberService;
-import com.ssafy.sayif.team.dto.GetChatResponseDto;
 import com.ssafy.sayif.team.dto.PointResponseDto;
 import com.ssafy.sayif.team.dto.PointUpdateRequestDto;
 import com.ssafy.sayif.team.entity.Team;
@@ -14,7 +14,6 @@ import com.ssafy.sayif.team.repository.TeamRepository;
 import com.ssafy.sayif.team.util.TeamConstants;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -24,8 +23,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
-
-import static org.bouncycastle.asn1.x500.style.RFC4519Style.member;
 
 @Service
 @RequiredArgsConstructor

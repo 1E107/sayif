@@ -15,6 +15,8 @@ const Container = styled.div`
 
 const UploadButton = styled(Button)({
     fontFamily: 'ChosunGu !important',
+    fontWeight: 'bold !important',
+    fontSize: '16px !important',
     backgroundColor: '#116530 !important',
     borderRadius: '30px !important',
     padding: '10px !important',
