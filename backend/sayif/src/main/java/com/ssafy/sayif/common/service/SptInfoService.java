@@ -28,9 +28,13 @@ public class SptInfoService {
             .map(this::convertToDto);
     }
 
-    public List<SptInfo> findAllPaged(int page, int size) {
+    public List<SptInfoResponseDto> findAllPaged(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return sptInfoRepository.findAll(pageable).getContent();
+        return sptInfoRepository.findAll(pageable)
+            .getContent()
+            .stream()
+            .map(this::convertToDto)
+            .toList();
     }
 
     private SptInfoResponseDto convertToDto(SptInfo sptInfo) {
