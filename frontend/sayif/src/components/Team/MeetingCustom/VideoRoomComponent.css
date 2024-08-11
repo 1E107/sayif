@@ -825,3 +825,37 @@
     width: 100% !important;
     height: 100% !important;
 }
+
+/* VideoRoomComponent.css */
+.screen-share-icon {
+    width: 15px; /* 아이콘 크기 조정 */
+    height: 15px; /* 아이콘 크기 조정 */
+    margin-right: 8px;
+}
+.screen-share-text {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    display: flex;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.2); /* 반투명 배경 추가 */
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: white;
+    font-size: 14px;
+}
+
+.screen-share-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.screen-sharing {
+    width: 100%;
+}
+
+.bounds.screen-shared .screen-sharing {
+    width: 85%; /* 화면 공유 시 스트림의 너비를 85%로 설정 */
+    transition: width 0.3s ease;
+}
