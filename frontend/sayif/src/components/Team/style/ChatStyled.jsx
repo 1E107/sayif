@@ -68,21 +68,21 @@ const ChatContentWrapper = styled.div`
     padding: 20px;
     overflow-y: auto;
     max-height: 420px;
-    scrollbar-width: thin; 
-    scrollbar-color: #888 #ddd; 
+    scrollbar-width: thin;
+    scrollbar-color: #888 #ddd;
 
     &::-webkit-scrollbar {
-        width: 8px; 
+        width: 8px;
     }
 
     &::-webkit-scrollbar-thumb {
-        background-color: #888; 
-        border-radius: 4px; 
+        background-color: #888;
+        border-radius: 4px;
     }
 
     &::-webkit-scrollbar-track {
-        background-color: #ddd; 
-        border-radius: 4px; 
+        background-color: #ddd;
+        border-radius: 4px;
     }
 
     @media (max-width: 800px) {
@@ -115,6 +115,7 @@ const ChatContent = styled.div`
     word-wrap: break-word;
     white-space: pre-wrap;
     position: relative;
+    line-height: 160%;
 `;
 
 const TimeText = styled.div`

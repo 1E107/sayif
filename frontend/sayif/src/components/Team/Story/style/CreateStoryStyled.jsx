@@ -31,11 +31,13 @@ const ContentText = styled.div`
 `;
 
 const CustomTextarea = styled.textarea`
-    font-size: 20px;
+    font-size: 18px;
     width: 500px;
     height: 300px;
     margin-top: 30px;
     border-radius: 10px;
+    font-family: ChosunGu;
+    padding: 7px;
 `;
 
 const CustomBtn = styled(Button)({
