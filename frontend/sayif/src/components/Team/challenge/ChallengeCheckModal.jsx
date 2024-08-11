@@ -28,12 +28,13 @@ function ChallengeCheckModal({ onClose, showModal }) {
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        width: 300,
+        width: 400,
         bgcolor: 'background.paper',
         border: '1px solid black',
         boxShadow: 24,
         p: 4,
         textAlign: 'center',
+        borderRadius: '16px',
     };
 
     useEffect(() => {
@@ -69,7 +70,7 @@ function ChallengeCheckModal({ onClose, showModal }) {
                             variant="outlined"
                             onClick={handleUpload}
                         >
-                            사진 확인
+                            사진첩 보기
                             <AddPhotoAlternateIcon
                                 style={{ marginLeft: '5px' }}
                             />

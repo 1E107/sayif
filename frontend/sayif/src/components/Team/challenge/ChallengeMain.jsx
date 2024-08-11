@@ -48,6 +48,9 @@ function ChallengeMain() {
                 <S.ExplanText>
                     우리가 함께 진행할 미션이 무엇인지 알아봅시다! <br />
                 </S.ExplanText>
+                <S.ExpText>
+                    챌린지를 수행하면 팀 포인트가 5점 증가합니다!
+                </S.ExpText>
                 <S.MissionBox>
                     <div
                         style={{

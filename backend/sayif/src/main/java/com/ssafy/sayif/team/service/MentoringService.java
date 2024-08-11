@@ -17,18 +17,19 @@ import com.ssafy.sayif.team.entity.Team;
 import com.ssafy.sayif.team.entity.TeamStatus;
 import com.ssafy.sayif.team.repository.TeamRepository;
 import jakarta.transaction.Transactional;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -305,5 +306,10 @@ public class MentoringService {
 
         // 변경 사항 저장
         mentorRepository.save(mentor);
+    }
+
+    public MentoringSearchResponse getMentoringPlan(Integer id) {
+        Team team = teamRepository.findById(id).orElseThrow(() -> new RuntimeException("Team not found"));
+        return this.convertToDto(team);
     }
 }
