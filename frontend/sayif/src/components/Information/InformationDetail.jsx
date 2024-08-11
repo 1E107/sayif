@@ -51,9 +51,9 @@ function InformationDetail() {
                     <S.CustomImg
                         src={
                             detailContent &&
-                            detailContent.img &&
-                            detailContent.img !== ''
-                                ? detailContent.img
+                            detailContent.fileUrl &&
+                            detailContent.fileUrl !== ''
+                                ? detailContent.fileUrl
                                 : '/img/info-temp-img.jpg'
                         }
                         alt="정보 이미지"
