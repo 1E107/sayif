@@ -16,7 +16,12 @@ function InformationDetail() {
             try {
                 const response = await GetDetailSupportInfo(id, token);
                 if (response.status === 200) {
-                    SetDetailContent(response.data);
+                    // GetDetailSupportInfo에서 받은 데이터를 수정하여 링크를 설정합니다.
+                    const modifiedDetailContent = {
+                        ...response.data,
+                        link: `https://jaripon.ncrc.or.kr/home/kor/support/projectMng/edit.do?menuPos=1&idx=${id}`,
+                    };
+                    SetDetailContent(modifiedDetailContent);
                 }
             } catch (error) {
                 console.log(error);
