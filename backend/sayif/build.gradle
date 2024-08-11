@@ -87,6 +87,8 @@ dependencies {
     implementation 'com.sun.xml.bind:jaxb-impl:2.3.0'
     implementation 'javax.activation:activation:1.1.1'
 
+    // Cool SMS
+    implementation 'net.nurigo:sdk:4.3.0'
 }
 
 tasks.named('test') {

@@ -134,10 +134,15 @@ function Create() {
 
     return (
         <>
-            <S.Title>멘토 그룹 생성</S.Title>
-            <S.ExplainText>
-                멘토링을 같이 할 멤버를 선택해 멘토링을 꾸려보세요.
-            </S.ExplainText>
+            {showApply && (
+            <>
+                <S.Title>멘토 그룹 생성</S.Title>
+                <S.ExplainText>
+                    멘토링을 같이 할 멤버를 선택해 멘토링을 꾸려보세요.
+                </S.ExplainText>
+            </>
+            )}
+
             {showApply && (
                 <>
                     <S.Container>
@@ -154,7 +159,7 @@ function Create() {
                                                     margin: '0px 20px 10px 0px',
                                                 }}
                                             >
-                                                팀장
+                                                단비 1
                                             </S.MentorTitle>
                                             <div>{member.nickname}</div>
                                         </div>
@@ -164,7 +169,7 @@ function Create() {
                                                     margin: '10px 20px 0px 0px',
                                                 }}
                                             >
-                                                팀원
+                                                단비 2
                                             </S.MentorTitle>
                                             <Box sx={{ minWidth: 120 }}>
                                                 <FormControl

@@ -3,7 +3,7 @@ import '../../../styles/fonts.css';
 import Button from '@mui/material/Button';
 
 const Container = styled.div`
-  margin-top: 300px; /* Adjust margin-top to ensure it doesn't get hidden behind header */
+  margin-top: 100px; /* Adjust margin-top to ensure it doesn't get hidden behind header */
   margin-bottom: 100px;
   min-width: 1000px;
   min-height: 700px;
@@ -11,6 +11,7 @@ const Container = styled.div`
   border-radius: 30px;
   text-align: center;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  position: relative; /* Add position relative for positioning the back button */
 `;
 
 const Title = styled.div`
@@ -162,6 +163,30 @@ const Image = styled.img`
   left: 0;
 `;
 
+const BackButton = styled.button`
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  borderRadius: 20px;
+  background-color: #116530; /* 초록색 배경 */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 1000; /* Ensure it's above other content */
+  
+  &:hover {
+    background-color: #218838; /* Darker green on hover */
+  }
+`;
+
 const S = {
     Container,
     Title,
@@ -183,6 +208,7 @@ const S = {
     Legend,
     ImageContainer,
     Image,
+    BackButton, // Add BackButton to S
 };
 
 export default S;

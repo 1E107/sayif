@@ -160,9 +160,9 @@ public class BoardService {
      * @param type 게시글의 타입 (예: 자유게시판, 공지사항 등)
      * @param page 페이지 번호 (0부터 시작)
      * @param size 페이지 크기 (한 페이지에 표시할 게시글 수)
-     * @return 삭제되지 않은(isRemove = false) 게시글 목록의 DTO 리스트
+     * @return 게시글 목록과 페이지네이션 정보가 포함된 Page 객체
      */
-    public List<BoardResponseDto> getPostList(BoardType type, int page, int size) {
+    public Page<BoardResponseDto> getPostList(BoardType type, int page, int size) {
         if (page < 0 || size <= 0) {
             throw new IllegalArgumentException("Invalid page or size parameters");
         }
@@ -170,17 +170,14 @@ public class BoardService {
         Pageable pageable = PageRequest.of(page, size);
         Page<Board> boardPage;
 
-        if (type == BoardType.Total) { // enum 타입 비교
+        if (type == BoardType.Total) {
             boardPage = boardRepository.findAll(pageable);
         } else {
             boardPage = boardRepository.findAllByType(pageable, type);
         }
 
-        // 삭제되지 않은 게시글만 필터링하여 DTO로 변환
-        return boardPage.getContent().stream()
-            .filter(board -> !board.getIsRemove())
-            .map(this::convertToDto)
-            .collect(Collectors.toList());
+        // 페이지네이션 정보를 포함한 게시글 목록 반환
+        return boardPage.map(this::convertToDto);
     }
 
     /**
@@ -194,6 +191,7 @@ public class BoardService {
         // 게시글 조회
         Board board = boardRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Invalid board ID: " + id));
+        board.addHitCount();
         return this.convertToDto(board);
     }
 
@@ -204,12 +202,13 @@ public class BoardService {
      * @return 변환된 BoardResponseDto
      */
     private BoardResponseDto convertToDto(Board board) {
+        String writer = board.getType() == BoardType.Worry ? "***" : board.getMember().getNickname();
         return BoardResponseDto.builder()
             .id(board.getId())
             .title(board.getTitle())
             .content(board.getContent())
             .fileUrl(board.getFile())
-            .writer(board.getMember().getName())
+            .writer(writer)
             .type(board.getType())
             .hitCount(board.getHitCount())
             .createdAt(board.getCreatedAt())

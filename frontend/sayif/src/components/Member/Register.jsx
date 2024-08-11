@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import S from './style/RegisterStyled';
 import { useNavigate } from 'react-router-dom';
+import { sendVerificationCode,verifyCode } from '../../api/sms';
+import { useEffect } from 'react';
 
 function Register() {
     const [selectGender, SetSelectGender] = useState('');
@@ -13,6 +15,11 @@ function Register() {
     const [phoneError, SetPhoneError] = useState('');
     const [emailError, SetEmailError] = useState('');
     const navigate = useNavigate();
+    const [verificationCodeSent, setVerificationCodeSent] = useState(false);
+    const [verificationCode, setVerificationCode] = useState('');
+    const [inputCode, setInputCode] = useState('');
+    const [isCodeVerified, setIsCodeVerified] = useState(false);
+    const [timeRemaining, setTimeRemaining] = useState(180); // 3분 타이머 설정 (180초)
 
     const handleClickGender = data => {
         SetSelectGender(data);
@@ -77,6 +84,54 @@ function Register() {
         }
     };
 
+    const handleSendVerificationCode = async () => {
+        if (phone) {
+            try {
+                await sendVerificationCode(phone);
+                setVerificationCodeSent(true);
+                setTimeRemaining(180); // 타이머 시작
+                alert('인증 코드가 발송되었습니다.');
+            } catch (error) {
+                console.error(error);
+                alert('인증 코드 발송에 실패했습니다.');
+            }
+        } else {
+            alert('휴대폰 번호를 입력해주세요.');
+        }
+    };
+
+    const handleVerifyCode = async () => {
+        if (inputCode) {
+            try {
+                const isValid = await verifyCode(phone, inputCode);
+                if (isValid) {
+                    setIsCodeVerified(true);
+                    alert('인증이 확인되었습니다.');
+                } else {
+                    alert('인증 코드가 올바르지 않습니다. 다시 시도해주세요.');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('인증 코드 검증에 실패했습니다.');
+            }
+        } else {
+            alert('인증 코드를 입력해주세요.');
+        }
+    };
+
+    useEffect(() => {
+        if (verificationCodeSent && timeRemaining > 0) {
+            const timer = setTimeout(() => {
+                setTimeRemaining(timeRemaining - 1);
+            }, 1000);
+            return () => clearTimeout(timer);
+        } else if (timeRemaining === 0) {
+            alert('인증 시간이 초과되었습니다. 다시 시도해주세요.');
+            setVerificationCodeSent(false);
+            setVerificationCode(''); // 기존 인증번호 만료
+        }
+    }, [verificationCodeSent, timeRemaining]);
+    
     const RegisterView = (
         <S.Container>
             <S.ItemWrapper>
@@ -140,7 +195,7 @@ function Register() {
                 </div>
             </S.ItemWrapper>
             <S.ItemWrapper>
-                <S.Text>전화번호</S.Text>
+                <S.Text >전화번호</S.Text>
                 <S.CustomTextField
                     variant="outlined"
                     onChange={e => SetPhone(e.target.value)}
@@ -148,8 +203,39 @@ function Register() {
                     helperText={phoneError}
                     error={!!phoneError}
                     placeholder="010-0000-0000"
+                    style={{ width:'208px'}}
                 />
+                <S.CustomBtn
+                    variant="outlined"
+                    onClick={handleSendVerificationCode}
+                    disabled={verificationCodeSent}
+                    style={{width:'125px',fontSize:'15px',marginRight:'0px'}}
+                >인증코드 발송</S.CustomBtn>
             </S.ItemWrapper>
+            {verificationCodeSent && (
+                <S.ItemWrapper>
+                    <S.Text>인증코드</S.Text>
+                    <S.CustomTextField
+                        variant="outlined"
+                        onChange={e => setInputCode(e.target.value)}
+                        placeholder="인증코드 입력"
+                        style={{ width:'208px'}}
+                    />
+                    <S.CustomBtn
+                        variant="outlined"
+                        onClick={handleVerifyCode}
+                        disabled={isCodeVerified}
+                        style={{width:'40px',fontSize:'15px'}}
+                    >
+                        확인
+                    </S.CustomBtn>
+                    {timeRemaining > 0 && (
+                        <S.Text style={{ marginLeft: '10px', width:'55px', marginLeft:'0px', marginRight:'5px' }}>
+                            {Math.floor(timeRemaining / 60)}분 {timeRemaining % 60}초 남음
+                        </S.Text>
+                    )}
+                </S.ItemWrapper>
+             )}
             <S.ItemWrapper>
                 <S.Text>이메일</S.Text>
                 <S.CustomTextField
@@ -162,7 +248,11 @@ function Register() {
                     placeholder="ssafy@ssafy.com"
                 />
             </S.ItemWrapper>
-            <S.RegistBtn variant="contained" onClick={handleNextButton}>
+            <S.RegistBtn 
+                variant="contained" 
+                onClick={handleNextButton}
+                disabled={!isCodeVerified} // 인증이 완료되어야 버튼 활성화
+            >
                 다음
             </S.RegistBtn>
         </S.Container>

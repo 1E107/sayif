@@ -31,7 +31,8 @@ function Community() {
     const [value, setValue] = useState('Total');
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(7);
-    const [rows, SetRows] = useState([]);
+    const [rows, setRows] = useState([]);
+    const [totalCount, setTotalCount] = useState(0); // 전체 항목 수
     const { token } = useSelector(state => state.member);
 
     const handleChange = (event, newValue) => {
@@ -40,12 +41,12 @@ function Community() {
     };
 
     const handleChangePage = (event, newPage) => {
-        console.log(newPage);
         setPage(newPage);
     };
 
     const handleChangeRowsPerPage = event => {
         setRowsPerPage(+event.target.value);
+        setPage(0); // 페이지를 0으로 리셋
     };
 
     const moveWritePage = () => {
@@ -53,7 +54,7 @@ function Community() {
     };
 
     const moveDetailPage = id => {
-        navigate(`/community/datail/${id}`);
+        navigate(`/community/detail/${id}`);
     };
 
     const callCommunityList = async (token, value, page) => {
@@ -64,18 +65,19 @@ function Community() {
                 page,
                 rowsPerPage,
             );
-            console.log(response);
             if (response.status === 200) {
-                SetRows(response.data);
+                const { content, totalElements } = response.data;
+                setRows(content);
+                setTotalCount(totalElements); // 전체 항목 수 업데이트
             }
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
     };
 
     useEffect(() => {
         callCommunityList(token, value, page);
-    }, [value, page, token]);
+    }, [value, page, rowsPerPage, token]); // rowsPerPage 추가
 
     useEffect(() => {
         setValue('Total');
@@ -164,50 +166,50 @@ function Community() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {rows.map(row => {
-                                return (
-                                    <TableRow
-                                        hover
-                                        role="checkbox"
-                                        tabIndex={-1}
-                                        key={row.writingId}
-                                        onClick={() => moveDetailPage(row.id)}
-                                    >
-                                        {columns.map(column => {
-                                            let value = row[column.id];
-                                            if (column.id === 'type') {
-                                                if (value === 'Free') {
-                                                    value = '일상';
-                                                } else if (value === 'Worry') {
-                                                    value = '고민';
-                                                }
-                                            }
-                                            return (
-                                                <TableCell
-                                                    key={column.id}
-                                                    align={column.align}
-                                                    style={{
-                                                        fontFamily: 'ChosunGu',
-                                                        fontSize: '16px',
-                                                    }}
-                                                >
-                                                    {column.format &&
-                                                    typeof value === 'number'
-                                                        ? column.format(value)
-                                                        : value}
-                                                </TableCell>
-                                            );
-                                        })}
-                                    </TableRow>
-                                );
-                            })}
+                            {rows.map(row => (
+                                <TableRow
+                                    hover
+                                    role="checkbox"
+                                    tabIndex={-1}
+                                    key={row.id}
+                                    onClick={() => moveDetailPage(row.id)}
+                                    sx={{ cursor: 'pointer' }}
+                                >
+                                    {columns.map(column => {
+                                        let value = row[column.id];
+                                        if (column.id === 'type') {
+                                            value =
+                                                value === 'Free'
+                                                    ? '일상'
+                                                    : value === 'Worry'
+                                                      ? '고민'
+                                                      : value;
+                                        }
+                                        return (
+                                            <TableCell
+                                                key={column.id}
+                                                align={column.align}
+                                                style={{
+                                                    fontFamily: 'ChosunGu',
+                                                    fontSize: '16px',
+                                                }}
+                                            >
+                                                {column.format &&
+                                                typeof value === 'number'
+                                                    ? column.format(value)
+                                                    : value}
+                                            </TableCell>
+                                        );
+                                    })}
+                                </TableRow>
+                            ))}
                         </TableBody>
                     </Table>
                 </TableContainer>
                 <TablePagination
                     rowsPerPageOptions={[7, 10, 15]}
                     component="div"
-                    count={10}
+                    count={totalCount} // 전체 항목 수
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={handleChangePage}
