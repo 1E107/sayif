@@ -171,19 +171,19 @@ const Main = () => {
     return (
         <>  
             {/* First section */}
-            <S.MainTop ref={(el) => (sectionsRef.current[0] = el)} style={{ paddingTop: "50px" }}>
+            <S.MainTop ref={(el) => (sectionsRef.current[0] = el)} style={{ paddingTop: "35px" }}>
                 <S.GifContainer>
                     <img src={`${process.env.PUBLIC_URL}/gif/랜딩_새잎.gif`} alt="세잎클로버 GIF" />
                 </S.GifContainer>
                 <S.MainTopTitle>청년이 청년에게, <br /> 함께하는 IT 멘토링</S.MainTopTitle>
-                <S.MainText style={{ marginTop: "40px" }}>바로 이 곳<br />새잎에서</S.MainText>
+                <S.MainText style={{ marginTop: "50px" }}>바로 이 곳<br />새잎에서</S.MainText>
                 <S.HoverIcon onClick={() => scrollToSection(1)} />
             </S.MainTop>
             
            {/* Second section */}
            <S.MainTop ref={(el) => (sectionsRef.current[1] = el)} id="nextSection">
                 <S.ImageWrapper className="animated-element" data-delay="500">
-                    <S.MainText style={{ color: "#0B4619", marginTop: "30px", fontSize: "28px" }}>
+                    <S.MainText style={{ color: "#0B4619", fontSize: "35px", marginBottom: "100px"}}>
                         쉽고 재미있는 IT 교육으로 새로운 가능성을 발견하세요. <br />
                         청년 멘토와 같이 성장하고 꿈을 키워나가며, <br />
                         자유롭게 소통하고 정보를 공유하세요. <br />
@@ -246,10 +246,10 @@ const Main = () => {
              {/* Fifth section */}
              <S.InformationSection ref={(el) => (sectionsRef.current[4] = el)}>
                 <S.ImageWrapper className="animated-element" data-delay="500">
-                    <img style={{ width: "32%"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/퀴즈 설명.png`} alt="Quiz Description" />
+                    <img style={{ width: "600px"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/퀴즈 설명.png`} alt="퀴즈 설명" />
                 </S.ImageWrapper>
                 <S.ImageWrapper className="animated-element" data-delay="1000">
-                    <img style={{ width: "63%"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/퀴즈 내용.png`} alt="Quiz Content" />
+                    <img style={{ width: "1000px"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/퀴즈 내용.png`} alt="퀴즈 내용" />
                 </S.ImageWrapper>
             </S.InformationSection>
 
@@ -257,20 +257,20 @@ const Main = () => {
              {/* Sixth section */}
              <S.InformationSection ref={(el) => (sectionsRef.current[5] = el)}>
                 <S.ImageWrapper className="animated-element" data-delay="500">
-                    <img style={{ width: "26%"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/자립 설명.png`} alt="Quiz Description" />
+                    <img style={{ width: "500px"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/자립 설명.png`} alt="자립 지원 정보 기능 설명" />
                 </S.ImageWrapper>
                 <S.ImageWrapper className="animated-element" data-delay="1000">
-                    <img style={{ width: "65%", marginTop: "10px"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/자립 내용.png`} alt="Quiz Content" />
+                    <img style={{ width: "1000px"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/자립 내용.png`} alt="자립 지원 정보 기능 내용" />
                 </S.ImageWrapper>
             </S.InformationSection>
 
             {/* Seventh section */}
             <S.InformationSection ref={(el) => (sectionsRef.current[6] = el)}>
                 <S.ImageWrapper className="animated-element" data-delay="500">
-                    <img style={{ width: "28%"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/챗봇 설명.png`} alt="Quiz Description" />
+                    <img style={{ width: "600px"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/챗봇 설명.png`} alt="챗봇 기능 설명" />
                 </S.ImageWrapper>
                 <S.ImageWrapper className="animated-element" data-delay="1000">
-                    <img style={{ width: "31%", margin: "9px 0px 0px 0px"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/챗봇 내용.png`} alt="Quiz Content" />
+                    <img style={{ width: "520px"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/챗봇 내용.png`} alt="챗봇 기능 내용" />
                 </S.ImageWrapper>
             </S.InformationSection>
 
