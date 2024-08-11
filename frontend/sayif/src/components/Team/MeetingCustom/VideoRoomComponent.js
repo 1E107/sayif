@@ -586,26 +586,6 @@ class VideoRoomComponent extends Component {
     }
 
     checkSomeoneShareScreen() {
-        // let isScreenShared;
-        // // return true if at least one passes the test
-        // isScreenShared =
-        //     this.state.subscribers.some(user => user.isScreenShareActive()) ||
-        //     localUser.isScreenShareActive();
-        // const openviduLayoutOptions = {
-        //     maxRatio: 3 / 2,
-        //     minRatio: 9 / 16,
-        //     fixedRatio: isScreenShared,
-        //     bigClass: 'OV_big',
-        //     bigPercentage: 0.8,
-        //     bigFixedRatio: false,
-        //     bigMaxRatio: 3 / 2,
-        //     bigMinRatio: 9 / 16,
-        //     bigFirst: true,
-        //     animate: true,
-        // };
-        // this.layout.setLayoutOptions(openviduLayoutOptions);
-        // this.updateLayout();
-
         const isScreenShared =
             this.state.subscribers.some(user => user.isScreenShareActive()) ||
             localUser.isScreenShareActive();
@@ -704,6 +684,11 @@ class VideoRoomComponent extends Component {
         } else if (totalElements > 4) {
             layoutClass += ' multiple-elements';
         }
+
+        const isScreenShared =
+            this.state.subscribers.some(user => user.isScreenShareActive()) ||
+            (localUser && localUser.isScreenShareActive());
+
         if (mySession) {
             return (
                 <div className="container" id="container">
@@ -729,12 +714,24 @@ class VideoRoomComponent extends Component {
                                     id="localUser"
                                 >
                                     <StreamComponent user={localUser} />
+                                    {localUser.isScreenShareActive() && (
+                                        <div className="screen-share-text">
+                                            <div className="screen-share-icon">
+                                                <img
+                                                    src="/screen-share-icon.png"
+                                                    alt="Screen sharing"
+                                                />
+                                            </div>
+                                            화면 공유중
+                                        </div>
+                                    )}
                                 </div>
                             )}
                         {this.state.subscribers.map((sub, i) => (
                             <div
                                 key={i}
-                                className="OT_root OT_publisher custom-class"
+                                // className="OT_root OT_publisher custom-class"
+                                className={`OT_root OT_publisher custom-class ${sub.isScreenShareActive() ? 'screen-sharing' : ''}`}
                                 // id="remoteUsers"
                                 id={`remoteUsers_${sub.getConnectionId()}`}
                             >
@@ -742,6 +739,18 @@ class VideoRoomComponent extends Component {
                                     user={sub}
                                     streamId={sub.streamManager.stream.streamId}
                                 />
+
+                                {sub.isScreenShareActive() && (
+                                    <div className="screen-share-text">
+                                        <div className="screen-share-icon">
+                                            <img
+                                                src="/screen-share-icon.png"
+                                                alt="Screen sharing"
+                                            />
+                                        </div>
+                                        화면 공유중
+                                    </div>
+                                )}
                             </div>
                         ))}
                     </div>

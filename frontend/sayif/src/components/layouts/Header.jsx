@@ -32,7 +32,7 @@ function Header() {
     const pages = ['새잎 소개', '멘토링', '소통 공간', '정보 공간'];
 
     const settings = {
-        '새잎 소개': ['서비스 소개', '커리큘럼 로드맵', '공지사항'],
+        '새잎 소개': ['서비스 소개', '커리큘럼 로드맵'],
         멘토링: [
             '멘토 프로필 조회',
             ...(member.role === 'Mentor' ? ['멘토링 자료 공유'] : []),
@@ -45,7 +45,6 @@ function Header() {
     const menuToPage = {
         '서비스 소개': '/serviceIntroduction',
         '커리큘럼 로드맵': '/',
-        공지사항: '/',
         '멘토링 그룹 생성': '/create-mentoring',
         '멘토링 신청': '/apply-mentoring',
         '멘토 프로필 조회': '/mentor-profile',
