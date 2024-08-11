@@ -17,6 +17,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -37,11 +38,14 @@ public class BoardService {
     private final GoodService goodService;
     private final S3Service s3Service;
 
+    @Value("${cloud.aws.s3.bucket-names.board}")
+    private String bucketName; // S3 버킷 이름
+
     /**
      * 새로운 게시글을 작성합니다.
      *
      * @param dto      게시글 작성 요청을 담고 있는 DTO
-     * @param username
+     * @param username 로그인한 사용자의 username
      * @return 작성된 게시글의 DTO를 감싼 Optional 객체
      * @throws MemberNotFoundException 해당 ID의 멤버가 존재하지 않을 경우 예외를 던집니다.
      */
@@ -50,7 +54,7 @@ public class BoardService {
         // 파일이 존재하는 경우에만 파일 저장 및 파일 이름 설정
         String fileUrl = "";
         if (file != null && !file.isEmpty()) {
-            fileUrl = s3Service.upload(file);
+            fileUrl = s3Service.upload(file, bucketName);
         }
 
         // 작성 요청 DTO에서 멤버를 조회
@@ -95,7 +99,7 @@ public class BoardService {
         String newFileUrl = "";
         if (file != null && !file.isEmpty()) {
             // 새로운 파일을 S3에 업로드하고, 해당 파일의 URL을 저장
-            newFileUrl = s3Service.upload(file);
+            newFileUrl = s3Service.upload(file, bucketName);
         }
 
         // 게시글 수정
@@ -114,7 +118,7 @@ public class BoardService {
         // 새로운 파일이 업로드되었고, 기존 파일이 존재하는 경우 S3에서 기존 파일 삭제
         if (!Objects.equals(newFileUrl, "") && oldFileUrl != null && !oldFileUrl.isEmpty()) {
             // S3에서 기존 파일 삭제
-            s3Service.deleteFileFromS3(oldFileUrl);
+            s3Service.deleteFileFromS3(oldFileUrl, bucketName);
         }
 
         // 수정된 게시글을 DTO로 변환하여 반환
