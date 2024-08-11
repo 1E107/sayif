@@ -208,19 +208,28 @@ const Main = () => {
 
             {/* Fourth section */}
             <S.MainMiddle ref={(el) => (sectionsRef.current[3] = el)}>
+                {/* <S.SliderArrow onClick={prevSlide}>
+                    <ArrowBackIosIcon />
+                </S.SliderArrow> */}
                 <S.SliderContainer>
-                    <S.SliderArrow onClick={prevSlide}>
-                        <ArrowBackIosIcon />
-                    </S.SliderArrow>
                     <S.SlideContent key={currentSlide}>
                         <div onClick={() => handleImageClick(contents[currentSlide].link)}>
                             {contents[currentSlide].content}
                         </div>
                     </S.SlideContent>
-                    <S.SliderArrow onClick={nextSlide}>
-                        <ArrowForwardIosIcon />
-                    </S.SliderArrow>
+                    <S.Indicators>
+                        {contents.map((_, index) => (
+                            <S.Dot
+                                key={index}
+                                isActive={index === currentSlide}
+                                onClick={() => setCurrentSlide(index)} // Dot 클릭 시 해당 슬라이드로 이동
+                            />
+                        ))}
+                    </S.Indicators>
                 </S.SliderContainer>
+                {/* <S.SliderArrow onClick={nextSlide}>
+                    <ArrowForwardIosIcon />
+                </S.SliderArrow> */}
             </S.MainMiddle>
             
              {/* Fifth section */}
