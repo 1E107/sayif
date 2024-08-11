@@ -1,8 +1,11 @@
 import S from "./styled";
 import ApplyPage from "../../pages/Mentoring/ApplyPage";
+import { useSelector } from 'react-redux';
 
 function Introduction() {
-    const Main_URL = 'http://localhost:3000/'
+    const Main_URL = 'https://i11e107.p.ssafy.io/'
+    const { token, member } = useSelector(state => state.member);
+    const isMemberValid = member && Object.keys(member).length > 0;
     return (
         <>
         <S.Container>
@@ -18,9 +21,13 @@ function Introduction() {
                 </S.Description>
                 <S.LinkContainer>
                     <S.Link href="https://www.ssafy.com/">SSAFY 홈페이지 바로가기</S.Link>
-                    <S.Link href={`${Main_URL}/apply-mentoring/`}>멘토링 신청 바로가기</S.Link>
-                    <S.Link href={`${Main_URL}/create-mentoring/`}>멘토링 그룹 생성 바로가기</S.Link>
-                </S.LinkContainer>
+                    {isMemberValid && (
+                    <>
+                        {member.role === "Mentee" && <S.Link href={`${Main_URL}/apply-mentoring/`}>멘토링 신청 바로가기</S.Link>}
+                        {member.role === "Mentor" && <S.Link href={`${Main_URL}/create-mentoring/`}>멘토링 그룹 생성 바로가기</S.Link>}
+                    </>
+                    )}
+                    </S.LinkContainer>
             </S.TextContainer>
             <S.ImageContainer>
                 <S.Image src={`${process.env.PUBLIC_URL}/service_intro.png`} alt="서비스 소개" />
