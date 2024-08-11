@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -17,7 +16,9 @@ import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import '../../styles/fonts.css';
 import { useSelector } from 'react-redux';
 import { getTeamStatue } from '../../api/MentoringApi';
+import { useState } from 'react';
 import NoTeamModal from '../Mentoring/NoTeamModal';
+import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 
 function Header() {
     const navigate = useNavigate();
@@ -31,7 +32,7 @@ function Header() {
     const pages = ['새잎 소개', '멘토링', '소통 공간', '정보 공간'];
 
     const settings = {
-        '새잎 소개': ['서비스 소개', '커리큘럼 로드맵', '공지사항'],
+        '새잎 소개': ['서비스 소개', '커리큘럼 로드맵'],
         멘토링: [
             '멘토 프로필 조회',
             ...(member.role === 'Mentor' ? ['멘토링 자료 공유'] : []),
@@ -43,8 +44,7 @@ function Header() {
     };
     const menuToPage = {
         '서비스 소개': '/serviceIntroduction',
-        '커리큘럼 로드맵': '/curriculum',
-        공지사항: '/',
+        '커리큘럼 로드맵': '/',
         '멘토링 그룹 생성': '/create-mentoring',
         '멘토링 신청': '/apply-mentoring',
         '멘토 프로필 조회': '/mentor-profile',
@@ -410,5 +410,4 @@ function Header() {
         </AppBar>
     );
 }
-
 export default Header;
