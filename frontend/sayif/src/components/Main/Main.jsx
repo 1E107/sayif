@@ -72,47 +72,64 @@ const Main = () => {
     };
 
     const scrollToSection = (index) => {
-        if (index >= 0 && index < sectionsRef.current.length) {
-            sectionsRef.current[index].scrollIntoView({ behavior: 'smooth' });
-        }
+      if (index >= 0 && index < sectionsRef.current.length) {
+          const yOffset = -50; // 헤더의 높이나 원하는 오프셋 값
+          const element = sectionsRef.current[index];
+          const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({top: y, behavior: 'smooth'});
+      }
     };
 
     useEffect(() => {
-        window.scrollTo(0, 0);
-
-        const handleScroll = () => {
-            clearTimeout(scrollTimeout.current);
-            scrollTimeout.current = setTimeout(() => {
-                const scrollPos = window.scrollY + window.innerHeight;
-                const footerPos = footerRef.current ? footerRef.current.offsetTop : Infinity;
-
-                // Footer에 도달하지 않았을 때만 스크롤 스냅 적용
-                if (scrollPos < footerPos) {
-                    const index = sectionsRef.current.findIndex(
-                        (section) =>
-                            section.offsetTop <= window.scrollY + window.innerHeight / 2 &&
-                            section.offsetTop + section.clientHeight > window.scrollY + window.innerHeight / 2
-                    );
-                    if (index !== -1) {
-                        scrollToSection(index);
-                    }
-                }
-            }, 100);
-        };
-
-        window.addEventListener('scroll', handleScroll);
-
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-            clearTimeout(scrollTimeout.current);
-        };
+      let lastScrollTop = 0;
+      const handleScroll = () => {
+        clearTimeout(scrollTimeout.current);
+        scrollTimeout.current = setTimeout(() => {
+          const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+          const scrollPos = scrollTop + window.innerHeight / 2;
+          const footerPos = footerRef.current ? footerRef.current.offsetTop : Infinity;
+    
+          // Footer에 도달하지 않았을 때만 스크롤 스냅 적용
+          if (scrollPos < footerPos - window.innerHeight / 2) {
+            let closestSectionIndex = 0;
+            let minDistance = Infinity;
+    
+            sectionsRef.current.forEach((section, index) => {
+              const distance = Math.abs(section.offsetTop - scrollPos);
+              if (distance < minDistance) {
+                minDistance = distance;
+                closestSectionIndex = index;
+              }
+            });
+    
+            // 스크롤 방향 확인
+            if (scrollTop > lastScrollTop) {
+              // 아래로 스크롤
+              scrollToSection(closestSectionIndex);
+              lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; 
+            } else {
+              // 위로 스크롤
+              scrollToSection(Math.max(0, closestSectionIndex - 1));
+              lastScrollTop = scrollTop <= 0 ? 0 : closestSectionIndex - 1; 
+            }
+          }
+        }, 100); // 타임아웃을 100ms로 조정
+      };
+    
+      window.addEventListener('scroll', handleScroll);
+    
+      return () => {
+        window.removeEventListener('scroll', handleScroll);
+        clearTimeout(scrollTimeout.current);
+      };
     }, []);
+
 
     useEffect(() => {
         const observerOptions = {
             root: null,
-            rootMargin: '-20% 0px', // 뷰포트의 20% 만큼 더 내려와야 감지됨
-            threshold: 0.5 // 요소의 50%가 보여야 감지됨
+            rootMargin: '0px',
+            threshold: 0.1 
         };
 
         const observerCallback = (entries, observer) => {
