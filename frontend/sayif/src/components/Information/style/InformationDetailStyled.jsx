@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import '../../../styles/fonts.css';
+import Button from '@mui/material/Button';
 
 const Container = styled.div`
     display: flex;
@@ -8,18 +9,26 @@ const Container = styled.div`
     align-items: center;
 `;
 
+const BeforeButton = styled(Button)({
+    marginBottom: '30px !important',
+    fontFamily: 'ChosunGu !important',
+    color: '#116530 !important',
+    fontSize: '17px !important',
+    marginRight: '550px !important',
+});
+
 const Title = styled.div`
     color: #116530;
     font-family: ONE-Mobile-POP;
-    font-size: 30px;
     margin-top: 130px;
+    font-size: 30px;
 `;
 
 const Line = styled.hr`
     margin-top: 15px;
-    width: 210px;
+    width: 230px;
     border-top: 2px solid #116530;
-    margin-bottom: 50px;
+    margin-bottom: 15px;
 `;
 
 const Form = styled.div`
@@ -53,7 +62,7 @@ const ContentText = styled.div`
     font-family: ChosunGu;
 `;
 
-const Button = styled.button`
+const ButtonCustom = styled.button`
     background-color: #116530; /* Green */
     border: none;
     color: white;
@@ -82,8 +91,9 @@ const S = {
     CustomImg,
     TitleText,
     ContentText,
-    Button,
+    ButtonCustom,
     ButtonContainer,
+    BeforeButton,
 };
 
 export default S;
