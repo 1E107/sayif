@@ -98,7 +98,7 @@ function Information() {
                                 >
                                     <CardMedia
                                         sx={{ height: 200 }}
-                                        image={col.img}
+                                        image={col.fileUrl}
                                         title="green iguana"
                                     />
                                     <CardContent>
