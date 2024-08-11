@@ -68,21 +68,21 @@ const ChatContentWrapper = styled.div`
     padding: 20px;
     overflow-y: auto;
     max-height: 420px;
-    scrollbar-width: thin; 
-    scrollbar-color: #888 #ddd; 
+    scrollbar-width: thin;
+    scrollbar-color: #888 #ddd;
 
     &::-webkit-scrollbar {
-        width: 8px; 
+        width: 8px;
     }
 
     &::-webkit-scrollbar-thumb {
-        background-color: #888; 
-        border-radius: 4px; 
+        background-color: #888;
+        border-radius: 4px;
     }
 
     &::-webkit-scrollbar-track {
-        background-color: #ddd; 
-        border-radius: 4px; 
+        background-color: #ddd;
+        border-radius: 4px;
     }
 
     @media (max-width: 800px) {
@@ -160,6 +160,23 @@ const DateDivider = styled.div`
     border-bottom: 1px solid #ddd;
 `;
 
+const FloatingButton = styled.button`
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    border: none;
+    border-radius: 50%;
+    background-image: url('/img/clover.png');
+    background-size: cover;
+    background-color: #116530;
+    background-position: center;
+    cursor: pointer;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+`;
+
 const S = {
     Container,
     TeamNameBar,
@@ -172,6 +189,7 @@ const S = {
     TimeText,
     NameText,
     DateDivider,
+    FloatingButton,
 };
 
 export default S;

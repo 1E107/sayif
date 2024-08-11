@@ -4,11 +4,13 @@ import { getStoryList } from '../../../api/TeamApi';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import ChatbotModal from '../ChatBotModal';
 
 function Story() {
     const [selectPostIt, setSelectPostIt] = useState(false);
     const [imgNum, setImgNum] = useState(1);
     const [selectContent, setSelectContent] = useState('');
+    const [isChatBotModalOpen, setIsChatBotModalOpen] = useState(false);
     const { token, member } = useSelector(state => state.member);
     const [writing, SetWriting] = useState([]);
     const navigate = useNavigate();
@@ -17,6 +19,14 @@ function Story() {
         setImgNum(num);
         setSelectContent(writing[index].content);
         setSelectPostIt(true);
+    };
+
+    const handleChatBotButtonClick = () => {
+        setIsChatBotModalOpen(true); // ChatBotModal을 염
+    };
+
+    const handleChatBotModalClose = () => {
+        setIsChatBotModalOpen(false); // ChatBotModal을 닫음
     };
 
     const closeDetail = () => {
@@ -97,6 +107,11 @@ function Story() {
                         );
                     })}
                 </S.PostItWrapper>
+                <S.FloatingButton onClick={handleChatBotButtonClick} />
+                <ChatbotModal
+                    open={isChatBotModalOpen}
+                    handleClose={handleChatBotModalClose}
+                />
             </S.Container>
 
             {selectPostIt && (

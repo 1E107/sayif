@@ -58,6 +58,23 @@ const CustomButton = styled(Button)({
     borderRadius: '30px  !important',
 });
 
+const FloatingButton = styled.button`
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    border: none;
+    border-radius: 50%;
+    background-image: url('/img/clover.png');
+    background-size: cover;
+    background-color: #116530;
+    background-position: center;
+    cursor: pointer;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+`;
+
 const S = {
     Container,
     MissionBox,
@@ -65,6 +82,7 @@ const S = {
     ExplanText,
     ContentText,
     CustomButton,
+    FloatingButton,
 };
 
 export default S;
