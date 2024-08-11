@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import S from './style/CommunityDetailStyled';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
@@ -13,6 +13,7 @@ import {
 
 function CommunityDetail() {
     const { id } = useParams();
+    const navigate = useNavigate(); // Add useNavigate hook
     const { token, member } = useSelector(state => state.member);
     const [content, SetContent] = useState(null); // 초기값을 null로 변경
     const [comment, SetComment] = useState([]);
@@ -126,6 +127,7 @@ function CommunityDetail() {
 
     return (
         <S.Container>
+            <S.BackButton onClick={() => navigate(-1)}>←</S.BackButton> {/* Add BackButton here */}
             {content ? (
                 <>
                     <S.Title>{content.title}</S.Title>
