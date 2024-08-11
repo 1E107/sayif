@@ -3,7 +3,8 @@ import '../../../styles/fonts.css';
 
 const Title = styled.div`
     font-family: ONE-Mobile-POP;
-    font-size: 25px;
+    font-size: 28px;
+    margin-left: 40px;
 `;
 
 const MainWrapper = styled.div`
@@ -20,8 +21,9 @@ const Container = styled.div`
 
 const ExplainText = styled.div`
     font-family: ChosunGu;
-    font-size: 15px;
+    font-size: 18px;
     margin-top: 13px;
+    margin-left: 40px;
 `;
 
 const ApplyIconContainer = styled.div`

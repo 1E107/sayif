@@ -14,12 +14,13 @@ import '../../../styles/fonts.css';
 import { useNavigate } from 'react-router-dom';
 import { getQnAList } from '../../../api/TeamApi';
 import { useSelector } from 'react-redux';
+import ChatbotModal from '../ChatBotModal';
 
 const columns = [
     { id: 'title', label: '제목', minWidth: 250, align: 'center' },
     { id: 'writer', label: '작성자', minWidth: 100, align: 'center' },
     { id: 'createdAt', label: '작성일', minWidth: 170, align: 'center' },
-    { id: 'comment', label: '댓글', minWidth: 50, align: 'center' },
+    // { id: 'comment', label: '댓글', minWidth: 50, align: 'center' },
     // { id: 'read', label: '조회수', minWidth: 50, align: 'center' },
 ];
 
@@ -28,6 +29,8 @@ function Board() {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(7);
     const [rows, SetRows] = useState([]);
+    const [isChatBotModalOpen, setIsChatBotModalOpen] = useState(false);
+
     const { token, member } = useSelector(state => state.member);
 
     const handleChangePage = (event, newPage) => {
@@ -41,6 +44,18 @@ function Board() {
 
     const moveDetailPage = id => {
         navigate(`/team/board/detail/${id}`);
+    };
+
+    const handleChatBotButtonClick = () => {
+        setIsChatBotModalOpen(true); // ChatBotModal을 염
+    };
+
+    const handleChatBotModalClose = () => {
+        setIsChatBotModalOpen(false); // ChatBotModal을 닫음
+    };
+
+    const handleWriteClick = () => {
+        navigate('/team/board/write');
     };
 
     useEffect(() => {
@@ -79,7 +94,9 @@ function Board() {
                 <S.SearchButton variant="contained">검색</S.SearchButton>
             </div>
             <div style={{ textAlign: 'right' }}>
-                <S.CustomButton variant="contained">글쓰기</S.CustomButton>
+                <S.CustomButton variant="contained" onClick={handleWriteClick}>
+                    글쓰기
+                </S.CustomButton>
             </div>
             <Paper
                 sx={{
@@ -173,6 +190,11 @@ function Board() {
                     style={{ color: '#116530', fontWeight: 'bold' }}
                 />
             </Paper>
+            <S.FloatingButton onClick={handleChatBotButtonClick} />
+            <ChatbotModal
+                open={isChatBotModalOpen}
+                handleClose={handleChatBotModalClose}
+            />
         </S.Container>
     );
 

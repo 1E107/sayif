@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import Button from '@mui/material/Button';
 import '../../../../styles/fonts.css';
+import { BorderBottom } from '@mui/icons-material';
 
 const Main = styled.div``;
 
@@ -20,6 +21,7 @@ const CustomImg = styled.img`
     width: 100px;
     height: 100px;
     margin: 10px;
+    cursor: pointer;
 `;
 
 const PostItWrapper = styled.div`
@@ -39,6 +41,7 @@ const Modal = styled.div`
 `;
 
 const ModalContent = styled.div`
+    position: relative;
     margin-top: 100px;
     max-width: 500px;
     max-height: 500px;
@@ -46,6 +49,13 @@ const ModalContent = styled.div`
         width: 100%;
         height: auto;
     }
+`;
+
+const ExplainText = styled.div`
+    margin-top: 58px;
+    font-family: ChosunGu;
+    margin-left: 10px;
+    color: gray;
 `;
 
 const CustomButton = styled(Button)({
@@ -62,12 +72,39 @@ const CustomButton = styled(Button)({
 
 const ModalText = styled.div`
     position: absolute;
-    top: 40%;
+    top: 100px;
     margin-left: 55px;
     width: 400px;
     font-family: ChosunGu;
     line-height: 1.5em;
 `;
+
+const FloatingButton = styled.button`
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    border: none;
+    border-radius: 50%;
+    background-image: url('/img/clover.png');
+    background-size: cover;
+    background-color: #116530;
+    background-position: center;
+    cursor: pointer;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+`;
+
+const ReadButton = styled(Button)({
+    position: 'absolute !important',
+    top: '15px !important',
+    right: '20px !important',
+    color: '#116530CC !important',
+    fontWeight: 'bold !important',
+    fontSize: '16px !important',
+    fontFamily: 'ChosunGu !important',
+});
 
 const S = {
     Container,
@@ -78,6 +115,9 @@ const S = {
     Modal,
     ModalContent,
     ModalText,
+    ExplainText,
+    FloatingButton,
+    ReadButton,
 };
 
 export default S;

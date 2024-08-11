@@ -11,4 +11,6 @@ public interface BoardRepository extends JpaRepository<Board, Integer> {
 
     Page<Board> findAllByType(Pageable pageable, BoardType type);
 
+    // 전체 게시글 목록 조회
+    Page<Board> findAll(Pageable pageable);
 }

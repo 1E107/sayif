@@ -12,15 +12,7 @@ import com.ssafy.sayif.member.entity.Tag;
 import com.ssafy.sayif.member.repository.MemberRepository;
 import com.ssafy.sayif.member.repository.MentorRepository;
 import com.ssafy.sayif.member.repository.TagRepository;
-import com.ssafy.sayif.team.dto.MentorNicknameResponse;
-import com.ssafy.sayif.team.dto.MentorProfileResponse;
-import com.ssafy.sayif.team.dto.MentoringApplicationRequest;
-import com.ssafy.sayif.team.dto.MentoringInfoResponseDto;
-import com.ssafy.sayif.team.dto.MentoringRecruitRequest;
-import com.ssafy.sayif.team.dto.MentoringSearchRequest;
-import com.ssafy.sayif.team.dto.MentoringSearchResponse;
-import com.ssafy.sayif.team.dto.TeamSessionResponse;
-import com.ssafy.sayif.team.dto.TeamStatusResponse;
+import com.ssafy.sayif.team.dto.*;
 import com.ssafy.sayif.team.entity.Team;
 import com.ssafy.sayif.team.entity.TeamStatus;
 import com.ssafy.sayif.team.repository.TeamRepository;
@@ -273,4 +265,45 @@ public class MentoringService {
         return mentoringInfoResponseDto;
     }
 
+    public MentorProfileResponse getMentorProfileByUsername(String username) {
+        Mentor mentor = mentorRepository.findByUsername(username);
+
+        if (mentor == null) {
+            throw new RuntimeException("Mentor not found");
+        }
+
+        List<String> tags = tagRepository.findAllByMentorId(mentor.getId()).stream()
+                .map(Tag::getContent)
+                .collect(Collectors.toList());
+
+        return MentorProfileResponse.builder()
+                .id(mentor.getId())
+                .nickname(mentor.getNickname())
+                .name(mentor.getName())
+                .email(mentor.getEmail())
+                .major(mentor.getMajor())
+                .track(mentor.getTrack().toString())
+                .profileImg(mentor.getProfileImg())
+                .intro(mentor.getIntro())
+                .regCode(mentor.getRegCode())
+                .seq(mentor.getSeq())
+                .tags(tags)
+                .build();
+    }
+
+    // 멘토 프로필 수정 서비스 메소드
+    @Transactional
+    public void updateMentorProfileByUsername(String username, MentorProfileUpdateRequest profileUpdateRequest) {
+        Mentor mentor = mentorRepository.findByUsername(username);
+
+        if (mentor == null) {
+            throw new RuntimeException("Mentor not found");
+        }
+
+        // 멘토 인사말 업데이트
+        mentor.setIntro(profileUpdateRequest.getIntro());
+
+        // 변경 사항 저장
+        mentorRepository.save(mentor);
+    }
 }

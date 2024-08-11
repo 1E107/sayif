@@ -7,6 +7,7 @@ import webSocketService from '../../api/WebSocketService';
 import { API_BASE_URL } from '../../api/config';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
+import ChatbotModal from './ChatBotModal';
 
 const Chat = () => {
     const { token, member } = useSelector(state => state.member);
@@ -14,17 +15,30 @@ const Chat = () => {
     const currentUserNickname = member.nickname;
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
+    const [isChatBotModalOpen, setIsChatBotModalOpen] = useState(false);
 
     const chatContentRef = useRef(null);
     const chatContentEndRef = useRef(null);
 
-    const formatDateTime = (dateString) => {
+    const handleChatBotButtonClick = () => {
+        setIsChatBotModalOpen(true); // ChatBotModal을 염
+    };
+
+    const handleChatBotModalClose = () => {
+        setIsChatBotModalOpen(false); // ChatBotModal을 닫음
+    };
+
+    const formatDateTime = dateString => {
         const date = new Date(dateString);
-        const time = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+        const time = date.toLocaleTimeString('en-US', {
+            hour: 'numeric',
+            minute: 'numeric',
+            hour12: true,
+        });
         return `${time}`;
     };
 
-    const groupMessagesByDate = (messages) => {
+    const groupMessagesByDate = messages => {
         const groups = {};
         messages.forEach(message => {
             const date = new Date(message.sendAt).toLocaleDateString();
@@ -33,7 +47,10 @@ const Chat = () => {
             }
             groups[date].push(message);
         });
-        return Object.entries(groups).map(([date, messages]) => ({date, messages}));
+        return Object.entries(groups).map(([date, messages]) => ({
+            date,
+            messages,
+        }));
     };
 
     useEffect(() => {
@@ -66,20 +83,30 @@ const Chat = () => {
                 console.log('Received message:', message);
                 setMessages(prevMessages => {
                     const newMessages = [...prevMessages];
-                    const messageDate = new Date(message.sendAt).toLocaleDateString();
-                    const lastMessageDate = newMessages.length > 0 
-                        ? new Date(newMessages[newMessages.length - 1].sendAt).toLocaleDateString()
-                        : null;
+                    const messageDate = new Date(
+                        message.sendAt,
+                    ).toLocaleDateString();
+                    const lastMessageDate =
+                        newMessages.length > 0
+                            ? new Date(
+                                  newMessages[newMessages.length - 1].sendAt,
+                              ).toLocaleDateString()
+                            : null;
 
                     if (messageDate !== lastMessageDate) {
-                        newMessages.push({type: 'dateDivider', date: messageDate});
+                        newMessages.push({
+                            type: 'dateDivider',
+                            date: messageDate,
+                        });
                     }
 
-                    if (!newMessages.some(
-                        msg =>
-                            msg.sendAt === message.sendAt &&
-                            msg.msgContent === message.msgContent
-                    )) {
+                    if (
+                        !newMessages.some(
+                            msg =>
+                                msg.sendAt === message.sendAt &&
+                                msg.msgContent === message.msgContent,
+                        )
+                    ) {
                         newMessages.push(message);
                     }
                     return newMessages;
@@ -113,8 +140,9 @@ const Chat = () => {
         setNewMessage('');
     };
 
-    const handleKeyDown = (e) => {
-        if (e.key === 'Enter') { 
+    const handleKeyDown = e => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault(); // 기본 줄바꿈 동작 막기
             handleSendBtn();
         }
     };
@@ -124,7 +152,7 @@ const Chat = () => {
     return (
         <S.Container>
             <S.ChatContentWrapper ref={chatContentRef}>
-                {groupedMessages.map(({date, messages}) => (
+                {groupedMessages.map(({ date, messages }) => (
                     <React.Fragment key={date}>
                         <S.DateDivider>{date}</S.DateDivider>
                         {messages.map((msg, index) =>
@@ -132,7 +160,12 @@ const Chat = () => {
                                 <S.ChatMy key={index}>
                                     <S.ProfileImg src={msg.profileImg} />
                                     <div>
-                                        <S.ChatContent style={{ backgroundColor: '#116530', color: 'white' }}>
+                                        <S.ChatContent
+                                            style={{
+                                                backgroundColor: '#116530',
+                                                color: 'white',
+                                            }}
+                                        >
                                             {msg.msgContent}
                                         </S.ChatContent>
                                         <S.TimeText align="right">
@@ -145,13 +178,15 @@ const Chat = () => {
                                     <S.ProfileImg src={msg.profileImg} />
                                     <div>
                                         <S.NameText>{msg.nickname}</S.NameText>
-                                        <S.ChatContent>{msg.msgContent}</S.ChatContent>
+                                        <S.ChatContent>
+                                            {msg.msgContent}
+                                        </S.ChatContent>
                                         <S.TimeText>
                                             {formatDateTime(msg.sendAt)}
                                         </S.TimeText>
                                     </div>
                                 </S.ChatOther>
-                            )
+                            ),
                         )}
                     </React.Fragment>
                 ))}
@@ -163,16 +198,27 @@ const Chat = () => {
                         id="component-outlined"
                         placeholder="메시지를 입력하세요."
                         value={newMessage}
-                        onChange={(e) => setNewMessage(e.target.value)}
+                        onChange={e => setNewMessage(e.target.value)}
                         onKeyDown={handleKeyDown}
-                        style={{ border: '1px solid #116530CC', width: '1010px'}}
+                        multiline // 여러 줄 입력을 허용
+                        rows={1} // 기본적으로 1줄 높이
+                        style={{ border: '1px solid #116530CC', width: '100%' }} // 입력창 크기 조정
                     />
                     <SendIcon
-                        style={{ color: '#116530CC', marginLeft: '20px', fontSize: '30px' }}
+                        style={{
+                            color: '#116530CC',
+                            marginLeft: '20px',
+                            fontSize: '30px',
+                        }}
                         onClick={handleSendBtn}
                     />
                 </S.SendChatWrapper>
             </FormControl>
+            <S.FloatingButton onClick={handleChatBotButtonClick} />
+            <ChatbotModal
+                open={isChatBotModalOpen}
+                handleClose={handleChatBotModalClose}
+            />
         </S.Container>
     );
 };

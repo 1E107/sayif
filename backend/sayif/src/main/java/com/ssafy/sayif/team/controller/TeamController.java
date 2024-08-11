@@ -34,11 +34,11 @@ public class TeamController {
         }
 
         List<MemberInfoResponseDto> memberDTOs = members.stream()
-                .map(memberConverter::convertToDTO)
+                .map(member -> memberConverter.convertToDTO(member))
                 .collect(Collectors.toList());
+
         return ResponseEntity.ok(memberDTOs);
     }
-
     @PostMapping("/team-name")
     public ResponseEntity<?> registerTeamName(@PathVariable Integer id, @RequestBody TeamNameRequestDto newName) {
         Team team = teamService.registerTeamName(id, newName.getNewName());

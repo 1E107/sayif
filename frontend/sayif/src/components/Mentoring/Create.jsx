@@ -21,7 +21,7 @@ function Create() {
     const [selectTime, SetSelectTime] = useState('09:00'); // 기본 시간 설정
     const [selectPMAM, SetSelectPMAM] = useState('오전'); // 기본 PMAM 설정
     const navigate = useNavigate();
-    const { token } = useSelector(state => state.member);
+    const { token, member } = useSelector(state => state.member);
     const [showFinish, SetShowFinish] = useState(false);
     const [showApply, SetShowApply] = useState(true);
     const [mentorList, SetMentorList] = useState([]);
@@ -134,196 +134,205 @@ function Create() {
 
     return (
         <>
-            <S.Title>멘토 그룹 생성</S.Title>
-            <S.ExplainText>
-                멘토링을 같이 할 멤버를 선택해 멘토링을 꾸려보세요.
-            </S.ExplainText>
+            {showApply && (
+            <>
+                <S.Title>멘토 그룹 생성</S.Title>
+                <S.ExplainText>
+                    멘토링을 같이 할 멤버를 선택해 멘토링을 꾸려보세요.
+                </S.ExplainText>
+            </>
+            )}
+
             {showApply && (
                 <>
                     <S.Container>
                         <S.CustomTable>
                             <tbody>
-                            <tr>
-                                <S.CustomTdTitle>멘토링 팀원</S.CustomTdTitle>
-                                <S.CustomTdContent>
-                                    <div style={{ display: 'flex' }}>
-                                        <S.MentorTitle
-                                            style={{
-                                                margin: '0px 20px 10px 0px',
-                                            }}
-                                        >
-                                            팀장
-                                        </S.MentorTitle>
-                                        <div>메루</div>
-                                    </div>
-                                    <div style={{ display: 'flex' }}>
-                                        <S.MentorTitle
-                                            style={{
-                                                margin: '10px 20px 0px 0px',
-                                            }}
-                                        >
-                                            팀원
-                                        </S.MentorTitle>
-                                        <Box sx={{ minWidth: 120 }}>
-                                            <FormControl
-                                                style={{ width: '100px' }}
-                                            >
-                                                <NativeSelect
-                                                    value={otherMentor}
-                                                    onChange={
-                                                        handleChangeMentor
-                                                    }
-                                                    style={{
-                                                        fontFamily:
-                                                            'ChosunGu',
-                                                    }}
-                                                >
-                                                    {mentorList.map(
-                                                        mentor => (
-                                                            <option
-                                                                key={
-                                                                    mentor.username
-                                                                }
-                                                                value={
-                                                                    mentor.username
-                                                                }
-                                                            >
-                                                                {
-                                                                    mentor.nickname
-                                                                }
-                                                            </option>
-                                                        )
-                                                    )}
-                                                </NativeSelect>
-                                            </FormControl>
-                                        </Box>
-                                    </div>
-                                </S.CustomTdContent>
-                            </tr>
-                            <tr>
-                                <S.CustomTdTitle>
-                                    멘토링 시작 날짜
-                                </S.CustomTdTitle>
-                                <S.CustomTdContent>
-                                    <LocalizationProvider
-                                        dateAdapter={AdapterDayjs}
-                                    >
-                                        <DemoContainer
-                                            components={['DatePicker']}
-                                        >
-                                            <DatePicker
-                                                value={dayjs(selectDate)}
-                                                format="YYYY/MM/DD"
-                                                onChange={
-                                                    handleChangeDate
-                                                }
-                                            />
-                                        </DemoContainer>
-                                    </LocalizationProvider>
-                                </S.CustomTdContent>
-                            </tr>
-                            <tr>
-                                <S.CustomTdTitle>멘토링 요일</S.CustomTdTitle>
-                                <S.CustomTdContent>
-                                    <div
-                                        style={{
-                                            display: 'flex',
-                                            gap: '10px',
-                                        }}
-                                    >
-                                        {[
-                                            '월',
-                                            '화',
-                                            '수',
-                                            '목',
-                                            '금',
-                                            '토',
-                                            '일',
-                                        ].map(day => (
-                                            <S.CustomDayBtn
-                                                key={day}
-                                                variant="outlined"
+                                <tr>
+                                    <S.CustomTdTitle>
+                                        멘토링 팀원
+                                    </S.CustomTdTitle>
+                                    <S.CustomTdContent>
+                                        <div style={{ display: 'flex' }}>
+                                            <S.MentorTitle
                                                 style={{
-                                                    backgroundColor:
-                                                        selectDays.includes(
-                                                            day
-                                                        )
-                                                            ? '#C6D0BE'
-                                                            : 'white',
-                                                }}
-                                                onClick={() => {
-                                                    handleClick(day);
+                                                    margin: '0px 20px 10px 0px',
                                                 }}
                                             >
-                                                {day}
-                                            </S.CustomDayBtn>
-                                        ))}
-                                    </div>
-                                </S.CustomTdContent>
-                            </tr>
-                            <tr>
-                                <S.CustomTdTitle>멘토링 시간</S.CustomTdTitle>
-                                <S.CustomTdContent>
-                                    <div style={{ display: 'flex' }}>
-                                        <Box sx={{ minWidth: 120 }}>
-                                            <FormControl
-                                                style={{ width: '100px' }}
+                                                단비 1
+                                            </S.MentorTitle>
+                                            <div>{member.nickname}</div>
+                                        </div>
+                                        <div style={{ display: 'flex' }}>
+                                            <S.MentorTitle
+                                                style={{
+                                                    margin: '10px 20px 0px 0px',
+                                                }}
                                             >
-                                                <NativeSelect
-                                                    value={selectPMAM} // 기본 PMAM 값 설정
-                                                    style={{
-                                                        fontFamily:
-                                                            'ChosunGu',
-                                                    }}
-                                                    onChange={
-                                                        handleChangePMAM
-                                                    }
+                                                단비 2
+                                            </S.MentorTitle>
+                                            <Box sx={{ minWidth: 120 }}>
+                                                <FormControl
+                                                    style={{ width: '100px' }}
                                                 >
-                                                    <option value={'오전'}>
-                                                        오전
-                                                    </option>
-                                                    <option value={'오후'}>
-                                                        오후
-                                                    </option>
-                                                </NativeSelect>
-                                            </FormControl>
-                                        </Box>
-                                        <Box sx={{ minWidth: 120 }}>
-                                            <FormControl
-                                                style={{ width: '100px' }}
+                                                    <NativeSelect
+                                                        value={otherMentor}
+                                                        onChange={
+                                                            handleChangeMentor
+                                                        }
+                                                        style={{
+                                                            fontFamily:
+                                                                'ChosunGu',
+                                                        }}
+                                                    >
+                                                        {mentorList.map(
+                                                            mentor => (
+                                                                <option
+                                                                    key={
+                                                                        mentor.username
+                                                                    }
+                                                                    value={
+                                                                        mentor.username
+                                                                    }
+                                                                >
+                                                                    {
+                                                                        mentor.nickname
+                                                                    }
+                                                                </option>
+                                                            ),
+                                                        )}
+                                                    </NativeSelect>
+                                                </FormControl>
+                                            </Box>
+                                        </div>
+                                    </S.CustomTdContent>
+                                </tr>
+                                <tr>
+                                    <S.CustomTdTitle>
+                                        멘토링 시작 날짜
+                                    </S.CustomTdTitle>
+                                    <S.CustomTdContent>
+                                        <LocalizationProvider
+                                            dateAdapter={AdapterDayjs}
+                                        >
+                                            <DemoContainer
+                                                components={['DatePicker']}
                                             >
-                                                <NativeSelect
-                                                    value={selectTime} // 기본 시간 값 설정
+                                                <DatePicker
+                                                    value={dayjs(selectDate)}
+                                                    format="YYYY/MM/DD"
+                                                    onChange={handleChangeDate}
+                                                />
+                                            </DemoContainer>
+                                        </LocalizationProvider>
+                                    </S.CustomTdContent>
+                                </tr>
+                                <tr>
+                                    <S.CustomTdTitle>
+                                        멘토링 요일
+                                    </S.CustomTdTitle>
+                                    <S.CustomTdContent>
+                                        <div
+                                            style={{
+                                                display: 'flex',
+                                                gap: '10px',
+                                            }}
+                                        >
+                                            {[
+                                                '월',
+                                                '화',
+                                                '수',
+                                                '목',
+                                                '금',
+                                                '토',
+                                                '일',
+                                            ].map(day => (
+                                                <S.CustomDayBtn
+                                                    key={day}
+                                                    variant="outlined"
                                                     style={{
-                                                        fontFamily:
-                                                            'ChosunGu',
+                                                        backgroundColor:
+                                                            selectDays.includes(
+                                                                day,
+                                                            )
+                                                                ? '#C6D0BE'
+                                                                : 'white',
                                                     }}
-                                                    onChange={
-                                                        handleChangeTime
-                                                    }
+                                                    onClick={() => {
+                                                        handleClick(day);
+                                                    }}
                                                 >
-                                                    {optionsTime.map(
-                                                        option => (
-                                                            <option
-                                                                key={
-                                                                    option.value
-                                                                }
-                                                                value={
-                                                                    option.value
-                                                                }
-                                                            >
-                                                                {
-                                                                    option.label
-                                                                }
-                                                            </option>
-                                                        )
-                                                    )}
-                                                </NativeSelect>
-                                            </FormControl>
-                                        </Box>
-                                    </div>
-                                </S.CustomTdContent>
-                            </tr>
+                                                    {day}
+                                                </S.CustomDayBtn>
+                                            ))}
+                                        </div>
+                                    </S.CustomTdContent>
+                                </tr>
+                                <tr>
+                                    <S.CustomTdTitle>
+                                        멘토링 시간
+                                    </S.CustomTdTitle>
+                                    <S.CustomTdContent>
+                                        <div style={{ display: 'flex' }}>
+                                            <Box sx={{ minWidth: 120 }}>
+                                                <FormControl
+                                                    style={{ width: '100px' }}
+                                                >
+                                                    <NativeSelect
+                                                        value={selectPMAM} // 기본 PMAM 값 설정
+                                                        style={{
+                                                            fontFamily:
+                                                                'ChosunGu',
+                                                        }}
+                                                        onChange={
+                                                            handleChangePMAM
+                                                        }
+                                                    >
+                                                        <option value={'오전'}>
+                                                            오전
+                                                        </option>
+                                                        <option value={'오후'}>
+                                                            오후
+                                                        </option>
+                                                    </NativeSelect>
+                                                </FormControl>
+                                            </Box>
+                                            <Box sx={{ minWidth: 120 }}>
+                                                <FormControl
+                                                    style={{ width: '100px' }}
+                                                >
+                                                    <NativeSelect
+                                                        value={selectTime} // 기본 시간 값 설정
+                                                        style={{
+                                                            fontFamily:
+                                                                'ChosunGu',
+                                                        }}
+                                                        onChange={
+                                                            handleChangeTime
+                                                        }
+                                                    >
+                                                        {optionsTime.map(
+                                                            option => (
+                                                                <option
+                                                                    key={
+                                                                        option.value
+                                                                    }
+                                                                    value={
+                                                                        option.value
+                                                                    }
+                                                                >
+                                                                    {
+                                                                        option.label
+                                                                    }
+                                                                </option>
+                                                            ),
+                                                        )}
+                                                    </NativeSelect>
+                                                </FormControl>
+                                            </Box>
+                                        </div>
+                                    </S.CustomTdContent>
+                                </tr>
                             </tbody>
                         </S.CustomTable>
                     </S.Container>

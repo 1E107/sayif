@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 
 @Entity
 @Getter
@@ -28,4 +30,12 @@ public class Mentor extends Member {
 
     @Enumerated(EnumType.STRING)
     private Track track;
+
+    @OneToMany(mappedBy = "mentor", fetch = FetchType.LAZY)
+    private List<Tag> tags;
+
+    // Setter method for intro
+    public void setIntro(String intro) {
+        this.intro = intro;
+    }
 }

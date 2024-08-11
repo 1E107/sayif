@@ -3,7 +3,7 @@ import '../../../styles/fonts.css';
 import Button from '@mui/material/Button';
 
 const Container = styled.div`
-  margin-top: 400px; /* Adjust margin-top to ensure it doesn't get hidden behind header */
+  margin-top: 100px; /* Adjust margin-top to ensure it doesn't get hidden behind header */
   margin-bottom: 100px;
   min-width: 1000px;
   min-height: 700px;
@@ -11,66 +11,68 @@ const Container = styled.div`
   border-radius: 30px;
   text-align: center;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  position: relative; /* Add position relative for positioning the back button */
 `;
 
 const Title = styled.div`
-    margin-top: 50px;
-    font-size: 35px;
-    font-family: ChosunGu;
-    font-weight: bold;
+  margin-top: 50px;
+  font-size: 35px;
+  font-family: ChosunGu;
+  font-weight: bold;
 `;
 
 const DateAndWriter = styled.div`
-    margin-top: 25px;
-    font-size: 20px;
-    color: gray;
-    font-family: ChosunGu;
+  margin-top: 25px;
+  font-size: 20px;
+  color: gray;
+  font-family: ChosunGu;
 `;
 
 const CustomHr = styled.hr`
-    margin: 30px;
-    background: #e9ecef;
-    height: 1px;
-    border: 0;
+  margin: 30px;
+  background: #e9ecef;
+  height: 1px;
+  border: 0;
 `;
 
 const Content = styled.div`
-    text-align: left;
-    font-size: 20px;
-    min-height: 300px;
-    margin: 50px;
-    color: #343a40;
-    font-family: ChosunGu;
+  text-align: left;
+  font-size: 20px;
+  min-height: 300px;
+  margin: 50px;
+  color: #343a40;
+  line-height: 25px;
+  font-family: ChosunGu;
 `;
 
 const CommentTitle = styled.div`
-    font-size: 18px;
-    text-align: left;
-    padding-left: 60px;
-    font-family: ChosunGu;
+  font-size: 18px;
+  text-align: left;
+  padding-left: 60px;
+  font-family: ChosunGu;
 `;
 
 const CommentBox = styled.div`
-    min-height: 130px;
-    font-family: ChosunGu;
-    text-align: left;
-    padding-left: 60px;
+  min-height: 130px;
+  font-family: ChosunGu;
+  text-align: left;
+  padding-left: 60px;
 `;
 
 const CommentItem = styled.div`
-    margin-bottom: 25px;
+  margin-bottom: 25px;
 `;
 
 const CommentDate = styled.span`
-    margin-left: 10px;
-    font-size: 14px;
-    color: gray;
+  margin-left: 10px;
+  font-size: 14px;
+  color: gray;
 `;
 
 const CommentContent = styled.div`
-    margin-top: 10px;
-    font-size: 17px;
-    line-height: 130%;
+  margin-top: 10px;
+  font-size: 17px;
+  line-height: 130%;
 `;
 
 const CommentList = styled.div``;
@@ -86,30 +88,30 @@ const CustomButton = styled(Button)({
 });
 
 const CommentWriteBox = styled.textarea`
-    margin-top: 30px;
-    font-size: 18px;
-    height: 100px;
-    margin-right: 10px;
-    border: 1px solid gray;
-    border-radius: 10px;
-    margin-bottom: 30px;
-    width: 1000px;
+  margin-top: 30px;
+  font-size: 18px;
+  height: 100px;
+  margin-right: 10px;
+  border: 1px solid gray;
+  border-radius: 10px;
+  margin-bottom: 30px;
+  width: 1000px;
 `;
 
 const CommentEditBox = styled.textarea`
-    margin-top: 30px;
-    font-size: 18px;
-    height: 100px;
-    margin-right: 10px;
-    border: 1px solid gray;
-    border-radius: 10px;
-    margin-bottom: 30px;
-    width: 90%;
+  margin-top: 30px;
+  font-size: 18px;
+  height: 100px;
+  margin-right: 10px;
+  border: 1px solid gray;
+  border-radius: 10px;
+  margin-bottom: 30px;
+  width: 90%;
 `;
 
 const LoadingText = styled.div`
-    font-family: ChosunGu;
-    margin-bottom: 50px;
+  font-family: ChosunGu;
+  margin-bottom: 50px;
 `;
 
 const SmallButton = styled(Button)({
@@ -161,6 +163,30 @@ const Image = styled.img`
   left: 0;
 `;
 
+const BackButton = styled.button`
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  borderRadius: 20px;
+  background-color: #116530; /* 초록색 배경 */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 1000; /* Ensure it's above other content */
+  
+  &:hover {
+    background-color: #218838; /* Darker green on hover */
+  }
+`;
+
 const S = {
     Container,
     Title,
@@ -182,6 +208,7 @@ const S = {
     Legend,
     ImageContainer,
     Image,
+    BackButton, // Add BackButton to S
 };
 
 export default S;

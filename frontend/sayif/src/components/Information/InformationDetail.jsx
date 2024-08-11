@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react';
 import S from './style/InformationDetailStyled';
 import { GetDetailSupportInfo } from '../../api/Main';
 import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 
 function InformationDetail() {
+    const navigate = useNavigate();
     const { token, member } = useSelector(state => state.member);
     const { id } = useParams();
     const [detailContent, SetDetailContent] = useState();
@@ -23,16 +25,32 @@ function InformationDetail() {
         callDetailInfo();
     }, [id, token]);
 
+    const handleGoList = () => {
+        navigate('/support-information');
+    };
+
     const DetailView = (
         <S.Container>
             <S.Title>자립 지원 정보</S.Title>
+
             <div>
                 <S.Line />
             </div>
+            <S.BeforeButton onClick={handleGoList}>
+                <NavigateBeforeIcon />
+                목록으로 이동
+            </S.BeforeButton>
+
             <S.Form>
                 <div style={{ display: 'flex', margin: '30px' }}>
                     <S.CustomImg
-                        src="/img/info-temp-img.jpg"
+                        src={
+                            detailContent &&
+                            detailContent.img &&
+                            detailContent.img !== ''
+                                ? detailContent.img
+                                : '/img/info-temp-img.jpg'
+                        }
                         alt="정보 이미지"
                     />
                     <div>
@@ -78,6 +96,18 @@ function InformationDetail() {
                             <S.ContentText style={{ marginTop: '15px' }}>
                                 {detailContent.method}
                             </S.ContentText>
+                            <S.ButtonContainer>
+                                <S.ButtonCustom
+                                    onClick={() =>
+                                        window.open(
+                                            detailContent.link,
+                                            '_blank',
+                                        )
+                                    }
+                                >
+                                    신청하러 가기
+                                </S.ButtonCustom>
+                            </S.ButtonContainer>
                         </>
                     ) : (
                         <S.ContentText>로딩 중...</S.ContentText>

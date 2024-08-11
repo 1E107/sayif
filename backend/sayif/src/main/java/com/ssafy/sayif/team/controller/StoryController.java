@@ -2,7 +2,9 @@ package com.ssafy.sayif.team.controller;
 
 import com.ssafy.sayif.member.jwt.JWTUtil;
 import com.ssafy.sayif.member.repository.MemberRepository;
+import com.ssafy.sayif.member.service.MemberService;
 import com.ssafy.sayif.team.repository.TeamRepository;
+import com.ssafy.sayif.team.service.TeamService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,8 +30,8 @@ public class StoryController {
 
     private final StoryService storyService;
     private final StoryConverter storyConverter;
-    private final MemberRepository memberRepository;
-    private final TeamRepository teamRepository;
+    private final MemberService memberService;
+    private final TeamService teamService;
     private final JWTUtil jwtUtil;
 
 
@@ -38,11 +40,9 @@ public class StoryController {
                                                         @AuthenticationPrincipal UserDetails userDetails,
                                                         @RequestBody PostStoryRequestDto storyDto) {
         String username = userDetails.getUsername();
-        Member member = memberRepository.findByUsername(username);
+        Member member = memberService.getMemberByUsername(username);
 
-        Team team = teamRepository.findById(teamId)
-                .orElseThrow(() -> new RuntimeException("해당 팀을 찾을 수 없습니다."));
-
+        Team team = teamService.getTeamName(teamId);
 
         Story story = storyConverter.convertToEntity(storyDto, team, member);
         Story savedStory = storyService.saveStory(story);
@@ -61,5 +61,16 @@ public class StoryController {
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(responseDtos);
+    }
+
+    @GetMapping("/{contentId}")
+    public ResponseEntity<Void> markStoryAsRead(@PathVariable Integer teamId, @PathVariable Integer contentId) {
+        storyService.setStoryAsRead(contentId);
+        return ResponseEntity.ok().build();
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 }

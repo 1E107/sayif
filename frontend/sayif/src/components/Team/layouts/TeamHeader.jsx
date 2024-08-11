@@ -14,18 +14,16 @@ import MenuItem from '@mui/material/MenuItem';
 import { useNavigate } from 'react-router-dom';
 import TeamSideMenu from './TeamSideMenu';
 import Drawer from '@mui/material/Drawer';
-import ChatbotModal from '../ChatBotModal';
 import '../../../styles/fonts.css';
 import { useSelector } from 'react-redux';
 
-const pages = ['AI 새잎 클로버', '새잎 홈페이지'];
+const pages = ['새잎 홈페이지'];
 
 function TeamHeader() {
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
     const [showSide, setShowSide] = useState(false);
     const [selectSideMenu, setSelectSideMenu] = useState('');
-    const [openModal, setOpenModal] = useState(false);
     const { token, member } = useSelector(state => state.member);
     const navigate = useNavigate();
 
@@ -43,14 +41,6 @@ function TeamHeader() {
 
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
-    };
-
-    const handleAIClover = () => {
-        setOpenModal(true);
-    };
-
-    const handleCloseAIClover = () => {
-        setOpenModal(false);
     };
 
     const handleGoMain = () => {
@@ -213,18 +203,6 @@ function TeamHeader() {
                         }}
                     >
                         <Button
-                            onClick={handleAIClover}
-                            sx={{
-                                my: 2,
-                                display: 'block',
-                                fontFamily: 'ChosunGu',
-                                color: '#416D19',
-                                fontWeight: '600',
-                            }}
-                        >
-                            AI 새잎 클로버
-                        </Button>
-                        <Button
                             onClick={handleGoMain}
                             sx={{
                                 my: 2,
@@ -260,7 +238,6 @@ function TeamHeader() {
                     </Drawer>
                 </Toolbar>
             </Container>
-            <ChatbotModal open={openModal} handleClose={handleCloseAIClover} />
         </AppBar>
     );
 }

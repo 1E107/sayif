@@ -7,53 +7,48 @@ import FormControl from '@mui/material/FormControl';
 import NativeSelect from '@mui/material/NativeSelect';
 import { getQuizList, GetMySolve } from '../../../api/TeamApi';
 import { useSelector } from 'react-redux';
+import ChatbotModal from '../ChatBotModal';
 
 function QuizList() {
     const [showDetail, setShowDetail] = useState(false);
     const { token } = useSelector(state => state.member);
     const [quizList, SetQuizList] = useState([]);
     const [quiz, SetQuiz] = useState();
+    const [isChatBotModalOpen, setIsChatBotModalOpen] = useState(false);
     const [solvedQuiz, SetSolvedQuiz] = useState([]);
+    const [selectChapter, SetSelectChapter] = useState(() => {
+        const savedChapter = localStorage.getItem('selectChapter');
+        return savedChapter ? Number(savedChapter) : 1;
+    });
 
     const handleQuizBtn = data => {
         SetQuiz(data);
         setShowDetail(true);
     };
 
+    const handleChatBotButtonClick = () => {
+        setIsChatBotModalOpen(true); // ChatBotModal을 염
+    };
+
+    const handleChatBotModalClose = () => {
+        setIsChatBotModalOpen(false); // ChatBotModal을 닫음
+    };
+
     const handleChange = event => {
-        const callQuizList = async () => {
-            try {
-                const response = await getQuizList(event.target.value, token);
-                if (response.status == 200) {
-                    SetQuizList(response.data);
-                    const results = await Promise.all(
-                        response.data.map(async quiz => {
-                            const isSolveRes = await GetMySolve(quiz.id, token);
-                            return { id: quiz.id, solved: isSolveRes.data };
-                        }),
-                    );
-
-                    const solvedMapping = results.reduce(
-                        (acc, { id, solved }) => {
-                            acc[id] = solved;
-                            return acc;
-                        },
-                        {},
-                    );
-
-                    SetSolvedQuiz(solvedMapping);
-                }
-            } catch (error) {
-                console.log(error);
-            }
-        };
-        callQuizList();
+        const newChapter = Number(event.target.value);
+        SetSelectChapter(event.target.value);
+        localStorage.setItem('selectChapter', newChapter);
     };
 
     useEffect(() => {
         const callQuizList = async () => {
+            const savedChapter = localStorage.getItem('selectChapter');
+            if (savedChapter) {
+                SetSelectChapter(Number(savedChapter));
+            }
+
             try {
-                const response = await getQuizList(1, token);
+                const response = await getQuizList(savedChapter, token);
                 if (response.status == 200) {
                     SetQuizList(response.data);
 
@@ -77,8 +72,9 @@ function QuizList() {
                 console.log(error);
             }
         };
+
         callQuizList();
-    }, []);
+    }, [selectChapter]);
 
     const QuizListView = (
         <S.Container>
@@ -98,6 +94,7 @@ function QuizList() {
                         <Box sx={{ minWidth: 120 }}>
                             <FormControl style={{ width: '100px' }}>
                                 <NativeSelect
+                                    value={selectChapter}
                                     defaultValue={10}
                                     inputProps={{
                                         name: 'age',
@@ -139,14 +136,16 @@ function QuizList() {
                                     <S.QuizTitle>{quiz.question}</S.QuizTitle>
                                 </S.QuizWrapper>
                                 <S.QuizWrapper>
-                                    <S.PointText>1OOP</S.PointText>
+                                    <S.PointText>1OP</S.PointText>
                                     <S.CustomBtn
                                         variant="outlined"
                                         onClick={() => {
                                             handleQuizBtn(quiz);
                                         }}
                                     >
-                                        퀴즈 풀기
+                                        {solvedQuiz[quiz.id] === true
+                                            ? '퀴즈 성공'
+                                            : '퀴즈 풀기'}
                                     </S.CustomBtn>
                                 </S.QuizWrapper>
                             </S.QuizBox>
@@ -154,6 +153,11 @@ function QuizList() {
                     })}
                 </>
             )}
+            <S.FloatingButton onClick={handleChatBotButtonClick} />
+            <ChatbotModal
+                open={isChatBotModalOpen}
+                handleClose={handleChatBotModalClose}
+            />
         </S.Container>
     );
     return QuizListView;

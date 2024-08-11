@@ -15,12 +15,13 @@ import InformationPage from './pages/Information/InformationPage';
 import InformationDetailPage from './pages/Information/InformationDetailPage';
 import MyPage from './pages/Member/MyPage';
 import MaterialPage from './pages/Team/MaterialPage';
-import CommunityDetailPage from './pages/Community/CoomunityDetailPage';
+import CommunityDetailPage from './pages/Community/ComunityDetailPage';
 import ChallengeDetailPage from './pages/Team/ChallengeDetailPage';
 import './App.css';
 import useTokenExpiration from './hooks/useTokenExpiration';
 import CommunityWritePage from './pages/Community/CommunityWritePage';
 import LetterPage from './pages/Member/LetterPage';
+import BoardWritePage from './pages/Team/BoardWritePage';
 
 function App() {
     useTokenExpiration();
@@ -38,7 +39,7 @@ function App() {
                 <Route path="/serviceIntroduction" element={<IntroPage />} />
                 <Route path="/community" element={<CommunityPage />} />
                 <Route
-                    path="/community/datail/:id"
+                    path="/community/detail/:id"
                     element={<CommunityDetailPage />}
                 />
                 <Route
@@ -48,6 +49,7 @@ function App() {
                 <Route path="/apply-mentoring" element={<ApplyPage />} />
                 <Route path="/mentor-profile" element={<Profile />} />
                 <Route path="/team/*" element={<TeamPage />} />
+                <Route path="/team/board/write" element={<BoardWritePage />} />
                 <Route path="/team/board/detail/:id" element={<BoardPage />} />
                 <Route
                     path="/team/material/detail/:id"
@@ -68,7 +70,7 @@ function App() {
                 />
                 <Route path="/my-page" element={<MyPage />} />
                 <Route
-                    path="/team/challenge/photo/:id"
+                    path="/team/challenge/photo/:id/:challengeId"
                     element={<ChallengeDetailPage />}
                 />
                 <Route path="/letter" element={<LetterPage />} />

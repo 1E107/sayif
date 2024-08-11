@@ -17,6 +17,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -37,11 +38,14 @@ public class BoardService {
     private final GoodService goodService;
     private final S3Service s3Service;
 
+    @Value("${cloud.aws.s3.bucket-names.board}")
+    private String bucketName; // S3 버킷 이름
+
     /**
      * 새로운 게시글을 작성합니다.
      *
      * @param dto      게시글 작성 요청을 담고 있는 DTO
-     * @param username
+     * @param username 로그인한 사용자의 username
      * @return 작성된 게시글의 DTO를 감싼 Optional 객체
      * @throws MemberNotFoundException 해당 ID의 멤버가 존재하지 않을 경우 예외를 던집니다.
      */
@@ -50,7 +54,7 @@ public class BoardService {
         // 파일이 존재하는 경우에만 파일 저장 및 파일 이름 설정
         String fileUrl = "";
         if (file != null && !file.isEmpty()) {
-            fileUrl = s3Service.upload(file);
+            fileUrl = s3Service.upload(file, bucketName);
         }
 
         // 작성 요청 DTO에서 멤버를 조회
@@ -95,7 +99,7 @@ public class BoardService {
         String newFileUrl = "";
         if (file != null && !file.isEmpty()) {
             // 새로운 파일을 S3에 업로드하고, 해당 파일의 URL을 저장
-            newFileUrl = s3Service.upload(file);
+            newFileUrl = s3Service.upload(file, bucketName);
         }
 
         // 게시글 수정
@@ -114,7 +118,7 @@ public class BoardService {
         // 새로운 파일이 업로드되었고, 기존 파일이 존재하는 경우 S3에서 기존 파일 삭제
         if (!Objects.equals(newFileUrl, "") && oldFileUrl != null && !oldFileUrl.isEmpty()) {
             // S3에서 기존 파일 삭제
-            s3Service.deleteFileFromS3(oldFileUrl);
+            s3Service.deleteFileFromS3(oldFileUrl, bucketName);
         }
 
         // 수정된 게시글을 DTO로 변환하여 반환
@@ -156,9 +160,9 @@ public class BoardService {
      * @param type 게시글의 타입 (예: 자유게시판, 공지사항 등)
      * @param page 페이지 번호 (0부터 시작)
      * @param size 페이지 크기 (한 페이지에 표시할 게시글 수)
-     * @return 삭제되지 않은(isRemove = false) 게시글 목록의 DTO 리스트
+     * @return 게시글 목록과 페이지네이션 정보가 포함된 Page 객체
      */
-    public List<BoardResponseDto> getPostList(BoardType type, int page, int size) {
+    public Page<BoardResponseDto> getPostList(BoardType type, int page, int size) {
         if (page < 0 || size <= 0) {
             throw new IllegalArgumentException("Invalid page or size parameters");
         }
@@ -166,17 +170,14 @@ public class BoardService {
         Pageable pageable = PageRequest.of(page, size);
         Page<Board> boardPage;
 
-        if (type == BoardType.Total) { // enum 타입 비교
+        if (type == BoardType.Total) {
             boardPage = boardRepository.findAll(pageable);
         } else {
             boardPage = boardRepository.findAllByType(pageable, type);
         }
 
-        // 삭제되지 않은 게시글만 필터링하여 DTO로 변환
-        return boardPage.getContent().stream()
-            .filter(board -> !board.getIsRemove())
-            .map(this::convertToDto)
-            .collect(Collectors.toList());
+        // 페이지네이션 정보를 포함한 게시글 목록 반환
+        return boardPage.map(this::convertToDto);
     }
 
     /**
@@ -190,6 +191,7 @@ public class BoardService {
         // 게시글 조회
         Board board = boardRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Invalid board ID: " + id));
+        board.addHitCount();
         return this.convertToDto(board);
     }
 
@@ -200,12 +202,13 @@ public class BoardService {
      * @return 변환된 BoardResponseDto
      */
     private BoardResponseDto convertToDto(Board board) {
+        String writer = board.getType() == BoardType.Worry ? "***" : board.getMember().getNickname();
         return BoardResponseDto.builder()
             .id(board.getId())
             .title(board.getTitle())
             .content(board.getContent())
             .fileUrl(board.getFile())
-            .writer(board.getMember().getName())
+            .writer(writer)
             .type(board.getType())
             .hitCount(board.getHitCount())
             .createdAt(board.getCreatedAt())

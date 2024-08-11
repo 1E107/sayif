@@ -19,6 +19,7 @@ const InputTitle = styled.textarea`
     font-size: 17px;
     margin-bottom: 15px;
     resize: none;
+    padding: 5px;
 `;
 
 const InputContent = styled.textarea`
@@ -28,6 +29,7 @@ const InputContent = styled.textarea`
     height: 150px;
     margin-bottom: 15px;
     resize: none;
+    padding: 5px;
 `;
 
 const S = {

@@ -59,4 +59,8 @@ public class Board extends BaseTimeEntity {
         this.type = type;
     }
 
+    public void addHitCount() {
+        this.hitCount++;
+    }
+
 }

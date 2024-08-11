@@ -134,17 +134,6 @@ const VideoContainer = styled.div`
     }
 `;
 
-const SliderContainer = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    height: 100%;
-    overflow: hidden; // 추가
-    position: relative;
-    overflow-x: hidden; /* 가로 스크롤 숨기기 */
-`;
-
 const SliderArrow = styled.div`
     cursor: pointer;
     padding: 10px;
@@ -163,6 +152,17 @@ const slideTransition = keyframes`
   }
 `;
 
+const SliderContainer = styled.div`
+    display: flex;
+    flex-direction: column; /* 수직 방향으로 배열 */
+    align-items: center; /* 중앙 정렬 */
+    justify-content: center; /* 중앙 정렬 */
+    width: 100%;
+    height: 100%;
+    overflow: hidden; // 추가
+    position: relative;
+`;
+
 const SlideContent = styled.div`
   flex: 1;
   display: flex;
@@ -170,8 +170,22 @@ const SlideContent = styled.div`
   align-items: center;
   animation: ${slideTransition} 1.2s ease-out;
   height: 500px; // 적절한 고정 높이 설정
-  overflow: hidden; // 내용이 넘칠 경우 숨김 처리
   cursor: pointer;  // 이 줄을 추가
+  position: relative; // 위치를 상대적으로 설정
+`;
+
+const Indicators = styled.div`
+    display: flex;
+    justify-content: center; /* 중앙 정렬 */
+`;
+
+const Dot = styled.div`
+    width: 10px;
+    height: 10px;
+    margin: 0px 5px 110px;
+    border-radius: 50%;
+    background-color: ${(props) => (props.isActive ? '#E8E8CC' : '#344100')}; /* 활성화된 점 색깔 변경 */
+    cursor: pointer; /* 커서 포인터 추가 */
 `;
 
 const ContentWrapper = styled.div`
@@ -233,6 +247,8 @@ const S = {
     SliderArrow,
     slideTransition,
     SlideContent,
+    Indicators,
+    Dot,
     ContentWrapper,
     Image,
     InformationSection,

@@ -2,9 +2,11 @@ import { useState } from 'react';
 import S from './style/MainStyled';
 import { motion } from 'framer-motion';
 import ChallengeCheckModal from './ChallengeCheckModal';
+import ChatbotModal from '../ChatBotModal';
 
 function ChallengeMain() {
     const [showModal, SetShowModal] = useState(false);
+    const [isChatBotModalOpen, setIsChatBotModalOpen] = useState(false);
 
     const handleOpenCheck = () => {
         SetShowModal(true);
@@ -12,6 +14,14 @@ function ChallengeMain() {
 
     const handleCloseCheck = () => {
         SetShowModal(false);
+    };
+
+    const handleChatBotButtonClick = () => {
+        setIsChatBotModalOpen(true); // ChatBotModal을 염
+    };
+
+    const handleChatBotModalClose = () => {
+        setIsChatBotModalOpen(false); // ChatBotModal을 닫음
     };
 
     const variants = {
@@ -71,6 +81,11 @@ function ChallengeMain() {
                         </motion.div>
                     </div>
                 </S.MissionBox>
+                <S.FloatingButton onClick={handleChatBotButtonClick} />
+                <ChatbotModal
+                    open={isChatBotModalOpen}
+                    handleClose={handleChatBotModalClose}
+                />
             </S.Container>
             {showModal && (
                 <ChallengeCheckModal

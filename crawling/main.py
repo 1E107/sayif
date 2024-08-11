@@ -3,6 +3,7 @@ import base64
 import json
 import os
 import io
+import boto3
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -16,22 +17,20 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
-from minio import Minio
-from minio.error import S3Error
 
 LOAD_TIME = 1
 
-with open("minio_config.json", "r") as config_file:
-    minio_config = json.load(config_file)
+with open("aws_config.json", "r") as config_file:
+    aws_config = json.load(config_file)
 
-minio_client = Minio(
-    minio_config["endpoint"],
-    access_key=minio_config["access_key"],
-    secret_key=minio_config["secret_key"],
-    secure=minio_config["secure"],
+s3_client = boto3.client(
+    's3',
+    aws_access_key_id=aws_config['access_key'],
+    aws_secret_access_key=aws_config['secret_key'],
+    region_name=aws_config['region']
 )
 
-bucket_name = "spt-info-images"
+bucket_name = "sayif-spt-info"
 
 service = Service(ChromeDriverManager().install())
 
@@ -49,16 +48,14 @@ def is_image_url(url):
 def get_filename(index, file_extension):
     return f"image_{index}.{file_extension}"
 
-def upload_image_to_minio(data, index, file_extension):
+def upload_image_to_s3(data, index, file_extension):
     try:
         filename = get_filename(index, file_extension)
-        data_bytes = io.BytesIO(data)
-        file_size = len(data)
-        minio_client.put_object(bucket_name, filename, data_bytes, file_size, content_type=f"image/{file_extension}")
-        print(f"Uploaded to Minio: {filename}")
+        s3_client.put_object(Bucket=bucket_name, Key=filename, Body=data, ContentType=f"image/{file_extension}")
+        print(f"Uploaded to S3: {filename}")
         return filename
-    except S3Error as e:
-        print(f"Error uploading to Minio: {e}")
+    except Exception as e:
+        print(f"Error uploading to S3: {e}")
     return None
 
 def download_base64_image(data_url, index):
@@ -66,7 +63,7 @@ def download_base64_image(data_url, index):
         header, encoded = data_url.split(",", 1)
         data = base64.b64decode(encoded)
         file_extension = header.split(";")[0].split("/")[1]
-        return upload_image_to_minio(data, index, file_extension)
+        return upload_image_to_s3(data, index, file_extension)
     except Exception as e:
         print(f"Error downloading base64 image: {e}")
     return None
@@ -79,14 +76,14 @@ def extract_item(soup, class_name, default="No data"):
             return text_wrap.string.strip()
     return default
 
-def object_exists_in_minio(filename):
+def object_exists_in_s3(filename):
     try:
-        minio_client.stat_object(bucket_name, filename)
+        s3_client.head_object(Bucket=bucket_name, Key=filename)
         return True
-    except S3Error as e:
-        if e.code == "NoSuchKey":
+    except s3_client.exceptions.ClientError as e:
+        if e.response['Error']['Code'] == "404":
             return False
-        print(f"Error checking if object exists in Minio: {e}")
+        print(f"Error checking if object exists in S3: {e}")
         return False
 
 def save_query(data, sql_file, existing_ids):
@@ -118,7 +115,7 @@ if os.path.exists(sql_file):
 try:
     for i in range(800, -1, -1):
         filename = get_filename(i, "png")
-        if object_exists_in_minio(filename):
+        if object_exists_in_s3(filename):
             print(f"Index {i} already processed, skipping...")
             continue
 

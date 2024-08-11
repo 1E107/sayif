@@ -12,7 +12,14 @@ import { getTeamStatue } from '../../api/MentoringApi';
 import { getMemberInfo, uploadProfileImage, logout } from '../../api/MemberApi';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import styled from 'styled-components';
-import Cookies from 'js-cookie';
+import Alert from '@mui/material/Alert';
+import CheckIcon from '@mui/icons-material/Check';
+import { addTags,getTagsForMember,deleteTag } from '../../api/MemberApi';
+import { useEffect } from 'react';
+import { getMentorProfile,updateMentorProfile } from '../../api/MemberApi';
+import EmailIcon from '@mui/icons-material/Email';
+import LogoutIcon from '@mui/icons-material/Logout';
+import Tooltip from '@mui/material/Tooltip';
 
 function MyPageComponent() {
     const navigate = useNavigate();
@@ -32,6 +39,11 @@ function MyPageComponent() {
     });
     const [file, setFile] = useState(null);
     const [preview, setPreview] = useState(member.profileImg);
+    const [tags, setTags] = useState([]); // 현재 태그들을 저장하는 상태
+    const [newTag, setNewTag] = useState(''); // 새로 추가할 태그
+    const [deletedTags, setDeletedTags] = useState([]);
+    const [existingTagIds, setExistingTagIds] = useState([]);
+    const [intro, setIntro] = useState(''); // Intro 상태 변수 추가
 
     const ProfileImg = styled.img`
         width: 250px;
@@ -62,10 +74,13 @@ function MyPageComponent() {
         if (field === 'phone') {
             const phonePattern = /^\d{3}-\d{4}-\d{4}$/;
             if (!phonePattern.test(e.target.value)) {
-                SetPhoneError('유효하지 않은 전화번호 형식입니다.');
+                SetPhoneError('하이픈(-)을 포함해 입력해 주세요.');
             } else {
                 SetPhoneError('');
-                SetNewMember({ ...newMember, [field]: e.target.value });
+                SetNewMember(prevState => ({
+                    ...prevState,
+                    [field]: e.target.value,
+                }));
             }
         } else if (field === 'email') {
             const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -153,6 +168,10 @@ function MyPageComponent() {
                 type: 'application/json',
             });
             formData.append('info', infoBlob);
+            // 태그 추가
+            const tagData = new FormData();
+            tagData.append('contents', tags);
+            
             // 파일 추가
             if (file !== null) {
                 formData.append('file', file);
@@ -161,6 +180,22 @@ function MyPageComponent() {
             try {
                 const response = await uploadProfileImage(token, formData);
                 if (response.status === 200) {
+                    const newTags = tags.filter(tag => !existingTagIds.includes(tag.id));
+                    if (newTags.length > 0) {
+                        await addTags(token, { contents: newTags.map(tag => tag.content) });
+                    }
+                    
+                    // 태그 삭제
+                    if (deletedTags.length > 0) {
+                        for (let tagId of deletedTags) {
+                            await deleteTag(token, { tagId });
+                        }
+                    }
+                    // 멘토 Intro 수정
+                    if (member.role === 'Mentor' && intro) {
+                        const profileUpdateData = { intro };  // intro만 포함된 객체
+                        await updateMentorProfile(token, profileUpdateData);
+                    }
                     await callMemberInfo();
                     alert('회원 정보가 성공적으로 수정되었어요!');
                     window.location.reload();
@@ -209,6 +244,56 @@ function MyPageComponent() {
         }
     };
 
+    useEffect(() => {
+        if (member.role === 'Mentor') {  // member.role이 Mentor인 경우에만 실행
+            const fetchTagsAndIntro = async () => {
+                try {
+                    const tagResponse = await getTagsForMember(token);
+                    const mentorResponse = await getMentorProfile(token);
+                    console.log(mentorResponse);
+                    if (tagResponse.status === 200) {
+                        console.log(tagResponse.data);
+                        const fetchedTags = tagResponse.data.map(tag => ({
+                            id: tag.id,
+                            content: tag.content
+                        }));
+                        setTags(fetchedTags);
+                        console.log(fetchedTags);
+                        setExistingTagIds(fetchedTags.map(tag => tag.id)); // 기존 태그의 ID를 저장
+                    }
+                    console.log(mentorResponse.status);
+                    setIntro(mentorResponse.intro); // Intro 설정
+                } catch (error) {
+                    console.log(error);
+                }
+            };
+            fetchTagsAndIntro();
+        }
+    }, [member.role, token]);
+
+    const handleAddTag = () => {
+        if (newTag.trim() !== '') {
+            const isDuplicate = tags.some(tag => tag.content === newTag.trim());
+            if (tags.length >= 6) {
+                alert('태그는 최대 6개까지만 추가할 수 있습니다.');
+            } else if (!isDuplicate) {
+                const newTagObject = {
+                    id: Math.random().toString(36).substr(2, 9),
+                    content: newTag.trim()
+                };
+                setTags([...tags, newTagObject]);
+            } else {
+                alert('이미 존재하는 태그입니다.');
+            }
+            setNewTag('');
+        }
+    };
+    
+    const handleDeleteTag = (tagToDeleteId) => {
+        setTags(tags.filter(tag => tag.id !== tagToDeleteId));
+        setDeletedTags([...deletedTags, tagToDeleteId]);
+    };
+
     return (
         <S.Container>
             <div style={{ display: 'flex' }}>
@@ -246,10 +331,25 @@ function MyPageComponent() {
                               : ''}{' '}
                         / {member.nickname}
                     </S.NickNameText>
-                    <S.LogoutBtn onClick={handleLogout}>로그아웃</S.LogoutBtn>
-                    <S.LogoutBtn onClick={handleCheckMessage}>
-                        쪽지함
-                    </S.LogoutBtn>
+                    {/* <div>
+                        <S.LetterBtn onClick={handleCheckMessage}>
+                            쪽지함
+                        </S.LetterBtn>
+                    </div> */}
+                    <S.ItemWrapper>
+                        <Tooltip title="쪽지함">
+                            <EmailIcon
+                                style={{ fontSize: '40px', cursor: 'pointer' }}
+                                onClick={handleCheckMessage}
+                            />
+                        </Tooltip>
+                        <Tooltip title="로그아웃">
+                            <LogoutIcon
+                                style={{ fontSize: '40px', cursor: 'pointer' }}
+                                onClick={handleLogout}
+                            />
+                        </Tooltip>
+                    </S.ItemWrapper>
                 </div>
                 <div style={{ marginLeft: '80px' }}>
                     <div
@@ -265,6 +365,11 @@ function MyPageComponent() {
                             disabled={!changeInfo}
                             onChange={handleInputChange('name')}
                             onKeyDown={handleKeyDown}
+                            style={{
+                                border: changeInfo
+                                    ? '1px solid red'
+                                    : '0px solid black',
+                            }}
                         />
                     </div>
                     <div
@@ -283,9 +388,9 @@ function MyPageComponent() {
                                       ? '남성'
                                       : ''
                             }
+                            disabled={changeInfo}
                             onChange={handleGenderChange}
                             onKeyDown={handleKeyDown}
-                            disabled={!changeInfo}
                         />
                     </div>
                     <div
@@ -301,6 +406,11 @@ function MyPageComponent() {
                             disabled={!changeInfo}
                             onChange={handleInputChange('phone')}
                             onKeyDown={handleKeyDown}
+                            style={{
+                                border: changeInfo
+                                    ? '1px solid red'
+                                    : '0px solid black',
+                            }}
                         />
                     </div>
                     {phoneError && <S.ErrorMsg>{phoneError}</S.ErrorMsg>}
@@ -317,12 +427,85 @@ function MyPageComponent() {
                             disabled={!changeInfo}
                             onChange={handleInputChange('email')}
                             onKeyDown={handleKeyDown}
+                            style={{
+                                border: changeInfo
+                                    ? '1px solid red'
+                                    : '0px solid black',
+                            }}
                         />
                     </div>
                     {emailError && <S.ErrorMsg>{emailError}</S.ErrorMsg>}
                 </div>
             </div>
-
+            {member.role === 'Mentor' && (
+                <S.TagAndIntroContainer>
+                    <S.TagSection>
+                        <S.TitleText>태그</S.TitleText>
+                        {changeInfo && ( // changeInfo가 true일 때만 렌더링
+                            <S.TagContainer>
+                                <div style={{ display: 'flex', marginBottom: '10px', width: '100%' }}>
+                                    <S.TagInput
+                                        type="text"
+                                        value={newTag}
+                                        onChange={(e) => setNewTag(e.target.value)}
+                                        placeholder ="태그 입력"
+                                        disabled={!changeInfo} // 비활성화 여부 설정
+                                        style={{
+                                            border: changeInfo
+                                                ? '1px solid red' // 수정 모드일 때 빨간 테두리
+                                                : '0px solid black', // 기본 상태일 때 테두리 없음
+                                        }}
+                                    />
+                                    <S.AddTagButton onClick={handleAddTag}>추가</S.AddTagButton>
+                                </div>
+                            </S.TagContainer>
+                        )}
+                        <S.TextArea style={{width:'340px' , marginTop: !changeInfo ? '20px' : '0px'}}>
+                            {tags.map(tag => (
+                                <S.TagItem key={tag.id}>
+                                    {tag.content}
+                                    {changeInfo && ( // changeInfo가 true일 때만 삭제 버튼 렌더링
+                                        <S.DeleteTagButton 
+                                            onClick={() => handleDeleteTag(tag.id)}
+                                            style={{
+                                                border: '1px solid red', // 여기에 스타일 추가
+                                            }}
+                                        >
+                                            X
+                                        </S.DeleteTagButton>
+                                    )}
+                                </S.TagItem>
+                            ))}
+                        </S.TextArea>
+                    </S.TagSection>
+                    
+                    <S.IntroSection>
+                        <S.TitleText style={{marginBottom:'20px'}}>멘토 인사말</S.TitleText>
+                        <S.IntroTextArea
+                        as="textarea" // textarea로 렌더링되도록 변경
+                        value={intro} // textarea의 value로 intro 상태를 설정
+                        onChange={(e) => setIntro(e.target.value)} // textarea의 값이 변경될 때 intro 상태를 업데이트
+                        disabled={!changeInfo} // changeInfo가 true일 때만 편집 가능
+                        style={{
+                            border: changeInfo
+                                ? '1px solid red' // 수정 모드일 때 빨간 테두리
+                                : '0px solid black', // 기본 상태일 때 테두리 없음
+                            width: '340px', // 너비 설정
+                            height: '100px', // 높이 설정
+                            resize: 'none', // 사용자가 크기를 조정할 수 없게 설정
+                            padding: '10px', // 패딩 추가
+                            borderRadius: '10px', // 모서리 둥글게
+                            backgroundColor: '#f9f9f9', // 배경색 설정
+                            fontFamily: 'ChosunGu',
+                            color: '#116530',
+                            fontSize: '16px',
+                            wordWrap: 'break-word', // 줄 바꿈 처리
+                            whiteSpace: 'pre-wrap', // 개행 문자 유지
+                        }}
+                        >{intro}</S.IntroTextArea>
+                    </S.IntroSection>
+                </S.TagAndIntroContainer>
+            )}
             <div>
                 {!changeInfo && (
                     <S.ProfileUpdateBtn onClick={handleUpdateBtn}>
@@ -339,10 +522,19 @@ function MyPageComponent() {
                 </S.ProfileUpdateBtn>
             </div>
             {changeInfo && (
-                <S.UpdateText>
+                <Alert
+                    icon={<CheckIcon fontSize="inherit" />}
+                    severity="success"
+                    style={{
+                        width: '800px',
+                        marginTop: '30px',
+                        fontFamily: 'ChosunGu',
+                        fontSize: '17px',
+                    }}
+                >
                     변경하고 싶은 정보를 수정한 후, '변경사항 저장' 버튼을
-                    눌러주세요 😊
-                </S.UpdateText>
+                    눌러주세요!
+                </Alert>
             )}
             {showMentoringModal && (
                 <MentoringModal onClose={handleCloseMentoringModal} />
