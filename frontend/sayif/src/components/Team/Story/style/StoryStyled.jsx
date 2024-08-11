@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import Button from '@mui/material/Button';
 import '../../../../styles/fonts.css';
+import { BorderBottom } from '@mui/icons-material';
 
 const Main = styled.div``;
 
@@ -20,6 +21,7 @@ const CustomImg = styled.img`
     width: 100px;
     height: 100px;
     margin: 10px;
+    cursor: pointer;
 `;
 
 const PostItWrapper = styled.div`
@@ -39,6 +41,7 @@ const Modal = styled.div`
 `;
 
 const ModalContent = styled.div`
+    position: relative;
     margin-top: 100px;
     max-width: 500px;
     max-height: 500px;
@@ -69,12 +72,22 @@ const CustomButton = styled(Button)({
 
 const ModalText = styled.div`
     position: absolute;
-    top: 40%;
+    top: 100px;
     margin-left: 55px;
     width: 400px;
     font-family: ChosunGu;
     line-height: 1.5em;
 `;
+
+const ReadButton = styled(Button)({
+    position: 'absolute !important',
+    top: '15px !important',
+    right: '20px !important',
+    color: '#116530CC !important',
+    fontWeight: 'bold !important',
+    fontSize: '16px !important',
+    fontFamily: 'ChosunGu !important',
+});
 
 const S = {
     Container,
@@ -86,6 +99,7 @@ const S = {
     ModalContent,
     ModalText,
     ExplainText,
+    ReadButton,
 };
 
 export default S;

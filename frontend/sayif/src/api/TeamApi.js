@@ -61,6 +61,18 @@ export const postStory = async (teamId, token, content) => {
     }
 };
 
+export const getReadStatus = async (teamId, contenetId, token) => {
+    try {
+        const response = await axios.get(
+            `${API_BASE_URL}/team/${teamId}/story/${contenetId}`,
+            { headers: { Authorization: `Bearer ${token}` } },
+        );
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const getQnAList = async (teamId, token, page, size) => {
     try {
         const response = await axios.get(
@@ -233,6 +245,10 @@ export const postBoardWrite = async (teamId, token, postData) => {
         },
     };
 
-    const response = await axios.post(`${API_BASE_URL}/team/board/${teamId}`, postData, config);
+    const response = await axios.post(
+        `${API_BASE_URL}/team/board/${teamId}`,
+        postData,
+        config,
+    );
     return response;
 };
