@@ -7,12 +7,14 @@ import FormControl from '@mui/material/FormControl';
 import NativeSelect from '@mui/material/NativeSelect';
 import { getQuizList, GetMySolve } from '../../../api/TeamApi';
 import { useSelector } from 'react-redux';
+import ChatbotModal from '../ChatBotModal';
 
 function QuizList() {
     const [showDetail, setShowDetail] = useState(false);
     const { token } = useSelector(state => state.member);
     const [quizList, SetQuizList] = useState([]);
     const [quiz, SetQuiz] = useState();
+    const [isChatBotModalOpen, setIsChatBotModalOpen] = useState(false);
     const [solvedQuiz, SetSolvedQuiz] = useState([]);
     const [selectChapter, SetSelectChapter] = useState(() => {
         const savedChapter = localStorage.getItem('selectChapter');
@@ -22,6 +24,14 @@ function QuizList() {
     const handleQuizBtn = data => {
         SetQuiz(data);
         setShowDetail(true);
+    };
+
+    const handleChatBotButtonClick = () => {
+        setIsChatBotModalOpen(true); // ChatBotModal을 염
+    };
+
+    const handleChatBotModalClose = () => {
+        setIsChatBotModalOpen(false); // ChatBotModal을 닫음
     };
 
     const handleChange = event => {
@@ -143,6 +153,11 @@ function QuizList() {
                     })}
                 </>
             )}
+            <S.FloatingButton onClick={handleChatBotButtonClick} />
+            <ChatbotModal
+                open={isChatBotModalOpen}
+                handleClose={handleChatBotModalClose}
+            />
         </S.Container>
     );
     return QuizListView;

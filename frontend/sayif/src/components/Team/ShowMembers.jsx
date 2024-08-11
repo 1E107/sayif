@@ -15,6 +15,7 @@ import { useEffect, useState } from 'react';
 import { getMemberInfo } from '../../api/TeamApi';
 import { useSelector } from 'react-redux';
 import MessageModal from './style/MessageModal'; // MessageModal 컴포넌트 임포트
+import ChatbotModal from './ChatBotModal';
 
 const CustomCardMedia = styled(CardMedia)`
     height: 40px;
@@ -48,6 +49,8 @@ function ShowMembers() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedMentorId, setSelectedMentorId] = useState(null);
 
+    const [isChatBotModalOpen, setIsChatBotModalOpen] = useState(false);
+
     const handleOpenModal = mentorId => {
         setSelectedMentorId(mentorId);
         setIsModalOpen(true);
@@ -55,6 +58,14 @@ function ShowMembers() {
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
+    };
+
+    const handleChatBotButtonClick = () => {
+        setIsChatBotModalOpen(true); // ChatBotModal을 염
+    };
+
+    const handleChatBotModalClose = () => {
+        setIsChatBotModalOpen(false); // ChatBotModal을 닫음
     };
 
     useEffect(() => {
@@ -68,7 +79,7 @@ function ShowMembers() {
                     const mentor = response.data.filter(
                         member => member.role === 'Mentor',
                     );
-                    
+
                     SetMentorList(mentor);
                     SetMenteeList(mentee);
                     console.log(response.data);
@@ -168,6 +179,11 @@ function ShowMembers() {
                 isOpen={isModalOpen}
                 onClose={handleCloseModal}
                 receiver={selectedMentorId}
+            />
+            <S.FloatingButton onClick={handleChatBotButtonClick} />
+            <ChatbotModal
+                open={isChatBotModalOpen}
+                handleClose={handleChatBotModalClose}
             />
         </S.Container>
     );

@@ -14,6 +14,7 @@ import '../../../styles/fonts.css';
 import { useNavigate } from 'react-router-dom';
 import { getQnAList } from '../../../api/TeamApi';
 import { useSelector } from 'react-redux';
+import ChatbotModal from '../ChatBotModal';
 
 const columns = [
     { id: 'title', label: '제목', minWidth: 250, align: 'center' },
@@ -28,6 +29,8 @@ function Board() {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(7);
     const [rows, SetRows] = useState([]);
+    const [isChatBotModalOpen, setIsChatBotModalOpen] = useState(false);
+
     const { token, member } = useSelector(state => state.member);
 
     const handleChangePage = (event, newPage) => {
@@ -41,6 +44,14 @@ function Board() {
 
     const moveDetailPage = id => {
         navigate(`/team/board/detail/${id}`);
+    };
+
+    const handleChatBotButtonClick = () => {
+        setIsChatBotModalOpen(true); // ChatBotModal을 염
+    };
+
+    const handleChatBotModalClose = () => {
+        setIsChatBotModalOpen(false); // ChatBotModal을 닫음
     };
 
     const handleWriteClick = () => {
@@ -179,6 +190,11 @@ function Board() {
                     style={{ color: '#116530', fontWeight: 'bold' }}
                 />
             </Paper>
+            <S.FloatingButton onClick={handleChatBotButtonClick} />
+            <ChatbotModal
+                open={isChatBotModalOpen}
+                handleClose={handleChatBotModalClose}
+            />
         </S.Container>
     );
 
