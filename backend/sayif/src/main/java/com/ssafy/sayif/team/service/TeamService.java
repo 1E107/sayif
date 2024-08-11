@@ -43,7 +43,7 @@ public class TeamService {
         return members;
     }
 
-    @Scheduled(cron = "0 0 0 * * ?") // 매일 자정에 팀 상태 변경
+    @Scheduled(cron = "0 20 0 * * ?") // 매일 자정에 팀 상태 변경
     public void processTeamStatuses() {
         List<Team> applyTeams = teamRepository.findByStatus(TeamStatus.Apply);
 
@@ -79,6 +79,15 @@ public class TeamService {
         int menteeCount = menteeRepository.countByTeamId(team.getId());
 
         return menteeCount >= TeamConstants.MINIMUM_REQUIRED_MENTEES;
+    }
+
+    public PointResponseDto getTeamExperienceById(Integer id) {
+        Team team = teamRepository.findById(id).orElse(null);
+        if (team != null) {
+            return new PointResponseDto(team.getPoint());
+        } else {
+            return null;
+        }
     }
 
     public PointResponseDto updateTeamExperienceById(Integer id, PointUpdateRequestDto request) {
