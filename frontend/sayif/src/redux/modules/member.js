@@ -22,7 +22,10 @@ export default function member(state = initailState, action) {
         case SET_MEMBER:
             return {
                 ...state,
-                member: action.data,
+                member: {
+                    ...state.member,
+                    ...action.data,
+                },
             };
         case SET_EXPIRATIONDATE:
             return {

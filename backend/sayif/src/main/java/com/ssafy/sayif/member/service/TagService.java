@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import com.ssafy.sayif.member.dto.TagResponseDto;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -33,15 +35,12 @@ public class TagService {
     }
 
     @Transactional
-    public List<String> getTagsForMember(String username) {
+    public List<TagResponseDto> getTagsForMember(String username) {
         Mentor mentor = mentorRepository.findByUsername(username);
         List<Tag> tags = tagRepository.findByMentorAndIsRemoveFalse(mentor);
-        List<String> collect = new ArrayList<>();
-        for (Tag tag : tags) {
-            String content = tag.getContent();
-            collect.add(content);
-        }
-        return collect;
+        return tags.stream()
+                .map(tag -> new TagResponseDto(tag.getId(), tag.getContent()))
+                .collect(Collectors.toList());
     }
 
     @Transactional

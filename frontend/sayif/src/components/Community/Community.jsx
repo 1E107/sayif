@@ -36,16 +36,16 @@ function Community() {
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
-        console.log(newValue);
+        setPage(0);
     };
 
     const handleChangePage = (event, newPage) => {
+        console.log(newPage);
         setPage(newPage);
     };
 
     const handleChangeRowsPerPage = event => {
         setRowsPerPage(+event.target.value);
-        setPage(0);
     };
 
     const moveWritePage = () => {
@@ -58,7 +58,12 @@ function Community() {
 
     const callCommunityList = async (token, value, page) => {
         try {
-            const response = await GetCommunityList(token, value, page, 10);
+            const response = await GetCommunityList(
+                token,
+                value,
+                page,
+                rowsPerPage,
+            );
             console.log(response);
             if (response.status === 200) {
                 SetRows(response.data);
@@ -159,63 +164,50 @@ function Community() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {rows
-                                .slice(
-                                    page * rowsPerPage,
-                                    page * rowsPerPage + rowsPerPage,
-                                )
-                                .map(row => {
-                                    return (
-                                        <TableRow
-                                            hover
-                                            role="checkbox"
-                                            tabIndex={-1}
-                                            key={row.writingId}
-                                            onClick={() =>
-                                                moveDetailPage(row.id)
-                                            }
-                                        >
-                                            {columns.map(column => {
-                                                let value = row[column.id];
-                                                if (column.id === 'type') {
-                                                    if (value === 'Free') {
-                                                        value = '일상';
-                                                    } else if (
-                                                        value === 'Worry'
-                                                    ) {
-                                                        value = '고민';
-                                                    }
+                            {rows.map(row => {
+                                return (
+                                    <TableRow
+                                        hover
+                                        role="checkbox"
+                                        tabIndex={-1}
+                                        key={row.writingId}
+                                        onClick={() => moveDetailPage(row.id)}
+                                    >
+                                        {columns.map(column => {
+                                            let value = row[column.id];
+                                            if (column.id === 'type') {
+                                                if (value === 'Free') {
+                                                    value = '일상';
+                                                } else if (value === 'Worry') {
+                                                    value = '고민';
                                                 }
-                                                return (
-                                                    <TableCell
-                                                        key={column.id}
-                                                        align={column.align}
-                                                        style={{
-                                                            fontFamily:
-                                                                'ChosunGu',
-                                                            fontSize: '16px',
-                                                        }}
-                                                    >
-                                                        {column.format &&
-                                                        typeof value ===
-                                                            'number'
-                                                            ? column.format(
-                                                                  value,
-                                                              )
-                                                            : value}
-                                                    </TableCell>
-                                                );
-                                            })}
-                                        </TableRow>
-                                    );
-                                })}
+                                            }
+                                            return (
+                                                <TableCell
+                                                    key={column.id}
+                                                    align={column.align}
+                                                    style={{
+                                                        fontFamily: 'ChosunGu',
+                                                        fontSize: '16px',
+                                                    }}
+                                                >
+                                                    {column.format &&
+                                                    typeof value === 'number'
+                                                        ? column.format(value)
+                                                        : value}
+                                                </TableCell>
+                                            );
+                                        })}
+                                    </TableRow>
+                                );
+                            })}
                         </TableBody>
                     </Table>
                 </TableContainer>
                 <TablePagination
                     rowsPerPageOptions={[7, 10, 15]}
                     component="div"
-                    count={rows.length}
+                    count={10}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={handleChangePage}

@@ -68,6 +68,7 @@ function ShowMembers() {
                     const mentor = response.data.filter(
                         member => member.role === 'Mentor',
                     );
+                    
                     SetMentorList(mentor);
                     SetMenteeList(mentee);
                     console.log(response.data);
@@ -120,11 +121,17 @@ function ShowMembers() {
                             </CustomCardMedia>
                             <CardContent style={{ paddingBottom: '0px' }}>
                                 <S.MentorExplan>{mentor.intro}</S.MentorExplan>
-                                <S.TagList>
-                                    {mentor.tags.map((tag, index) => (
-                                        <S.TagBox key={index}>{tag}</S.TagBox>
-                                    ))}
-                                </S.TagList>
+                                {mentor.tags && mentor.tags.length > 0 ? (
+                                    <S.TagList>
+                                        {mentor.tags.map((tag, index) => (
+                                            <S.TagBox key={index}>
+                                                {tag}
+                                            </S.TagBox>
+                                        ))}
+                                    </S.TagList>
+                                ) : (
+                                    <></>
+                                )}
                             </CardContent>
                             <CardActions sx={{ marginTop: 'auto' }}>
                                 <CustomButton

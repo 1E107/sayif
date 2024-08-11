@@ -34,4 +34,8 @@ public class Mentor extends Member {
     @OneToMany(mappedBy = "mentor", fetch = FetchType.LAZY)
     private List<Tag> tags;
 
+    // Setter method for intro
+    public void setIntro(String intro) {
+        this.intro = intro;
+    }
 }
