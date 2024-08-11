@@ -26,14 +26,14 @@ const MainTop = styled.div`
 
 const MainTopTitle = styled.div`
     margin-top: 10px;
-    font-size: 50px;
+    font-size: 60px;
     font-family: Freesentation-9Black;
     animation: ${fadeInUp} 1.1s ease-out; 
 `;
 
 const MainText = styled.div`
     font-family: NanumBarunpen;
-    font-size: 18px;
+    font-size: 30px;
     font-weight: bold;
     transition: opacity 1s ease-out, transform 1s ease-out;
 `;
@@ -42,7 +42,7 @@ const GifContainer = styled.div`
     margin-bottom: 20px; 
     
     img {
-        width: 250px; 
+        width: 280px; 
         height: auto; 
     }
 `;
@@ -73,7 +73,7 @@ const SectionContent = styled.div`
     font-family: 'NanumBarunpen', sans-serif;
     z-index: 2; /* 텍스트를 위에 표시 */
     position: absolute;
-    top: 55%;
+    top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     padding: 20px; /* 텍스트 주변 여백 */
@@ -100,7 +100,7 @@ const Overlay = styled.div`
 `;
 
 const HoverIcon = styled(ExpandMoreIcon)`
-    font-size: 55px; 
+    font-size: 55px;
     margin-top: 60px;
     cursor: pointer;
     color: #888888; 
@@ -122,11 +122,11 @@ const MainSplitSection = styled.div`
 `;
 
 const VideoContainer = styled.div`
-    margin-top: 70px;
-    width: 50vw; /* 화면 너비의 50%로 줄이기 */
-    height: 28.125vw; /* 16:9 비율을 유지하기 위한 높이 */
+    width: 60vw; /* 화면 너비의 60% */
+    height: 33.75vw; /* 16:9 비율을 유지하기 위한 높이 (60vw * 9/16) */
     display: flex;
     justify-content: center;
+    margin-bottom: 20px;
 
     iframe {
         width: 100%;
@@ -190,14 +190,21 @@ const Dot = styled.div`
 
 const ContentWrapper = styled.div`
     width: 100%;
-    max-width: 500px;
     padding: 20px;
+    align-items: center; /* 중앙 정렬 */
+    display: flex;
 `;
 
 const Image = styled.img`
-    width: 100%;
-    height: 400px; // 모든 이미지에 대해 동일한 높이 설정
     object-fit: contain; // 이미지 비율 유지
+    cursor: default; 
+    ${(props) => props.clickable && `
+      cursor: pointer;
+      
+      &:hover {
+      transform: scale(1.05); /* 버튼이 약간 커짐 */
+    }
+    `}
 `;
 
 const InformationSection = styled.div`
@@ -206,7 +213,7 @@ const InformationSection = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin: 20px 50px 0px 0px;
+    margin-right: 50px;
     overflow-x: hidden; /* 가로 스크롤 숨기기 */
 `;
 
@@ -215,7 +222,6 @@ const ImageWrapper = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 20px 0px 0px 5px;
     opacity: 0;
     transform: translateY(20px);
     transition: opacity 2s ease-out, transform 2s ease-out;
@@ -226,7 +232,29 @@ const ImageWrapper = styled.div`
     }
 
     img {
-        margin-left: 60px;
+        margin-left: 70px;
+        margin-bottom: 40px;
+    }
+`;
+
+const TopButton = styled.button`
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #116530;
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s;
+
+    &:hover {
+        background-color: #0B4619;
     }
 `;
 
@@ -252,7 +280,8 @@ const S = {
     ContentWrapper,
     Image,
     InformationSection,
-    ImageWrapper
+    ImageWrapper,
+    TopButton
 };
 
 export default S;
