@@ -40,49 +40,42 @@ public class TeamService {
         return members;
     }
 
-    @Scheduled(cron = "0 0 9 * * ?") // 매일 자정에 팀 상태 변경
+    @Scheduled(cron = "0 0 0 * * ?") // 매일 자정에 팀 상태 변경
     public void processTeamStatuses() {
         List<Team> applyTeams = teamRepository.findByStatus(TeamStatus.Apply);
 
         for (Team team : applyTeams) {
-            if (shouldUpdateToProceed(team)) {
-                team.updateStatus(TeamStatus.Proceed);
-                teamRepository.save(team);
-                TeamMsg message = TeamMsg.builder()
-                        .msgContent(team.getName() + "팀의 채팅방이 생성되었습니다 !")
-                        .member(memberService.getMemberByUsername("관리자1"))
-                        .team(team)
-                        .sendAt(ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime())
-                        .build();
+            if (isThreeDaysBeforeStartDate(team)) { // 3일 남은 팀만 상태를 변경하도록 체크
+                if (shouldUpdateToProceed(team)) {
+                    team.updateStatus(TeamStatus.Proceed);
+                    teamRepository.save(team);
+                    TeamMsg message = TeamMsg.builder()
+                            .msgContent(team.getName() + "팀의 채팅방이 생성되었습니다 !")
+                            .member(memberService.getMemberByUsername("관리자1"))
+                            .team(team)
+                            .sendAt(LocalDateTime.now())
+                            .build();
 
-                teamMsgRepository.save(message);
-            } else {
-                team.updateStatus(TeamStatus.Cancel);
-                teamRepository.save(team);
+                    teamMsgRepository.save(message);
+                } else {
+                    team.updateStatus(TeamStatus.Cancel);
+                    teamRepository.save(team);
+                }
             }
         }
     }
 
-    private boolean shouldUpdateToProceed(Team team) {
+    private boolean isThreeDaysBeforeStartDate(Team team) {
         LocalDateTime threeDaysBeforeStartDate = team.getStartDate().minusDays(3).atStartOfDay();
         LocalDateTime now = LocalDateTime.now();
 
-        if (now.isBefore(threeDaysBeforeStartDate)) {
-            return false;
-        }
+        return now.isAfter(threeDaysBeforeStartDate) || now.isEqual(threeDaysBeforeStartDate);
+    }
 
+    private boolean shouldUpdateToProceed(Team team) {
         int menteeCount = menteeRepository.countByTeamId(team.getId());
 
         return menteeCount >= TeamConstants.MINIMUM_REQUIRED_MENTEES;
-    }
-
-    public PointResponseDto getTeamExperienceById(Integer id) {
-        Team team = teamRepository.findById(id).orElse(null);
-        if (team != null) {
-            return new PointResponseDto(team.getPoint());
-        } else {
-            return null;
-        }
     }
 
     public PointResponseDto updateTeamExperienceById(Integer id, PointUpdateRequestDto request) {
