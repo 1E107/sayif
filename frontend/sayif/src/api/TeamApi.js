@@ -225,3 +225,14 @@ export const getTeamName = async (id, token) => {
         console.log(error);
     }
 };
+
+export const postBoardWrite = async (teamId, token, postData) => {
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    };
+
+    const response = await axios.post(`${API_BASE_URL}/team/board/${teamId}`, postData, config);
+    return response;
+};
