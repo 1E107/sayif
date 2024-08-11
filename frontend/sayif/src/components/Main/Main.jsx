@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import S from "./styled";
-import Footer from "./Footer";
+import Footer from "../layouts/Footer";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import { getTeamStatue } from '../../api/MentoringApi';
 import { useSelector } from 'react-redux';
 
@@ -15,6 +16,7 @@ const Main = () => {
     const [currentSlide, setCurrentSlide] = useState(0);
     const slideInterval = useRef(null);
     const { token, member } = useSelector(state => state.member);
+    const [showTopButton, setShowTopButton] = useState(false);
 
     const contents = [
         { type: 'profile', content: <MentorProfileContent />},
@@ -168,6 +170,23 @@ const Main = () => {
         };
     }, []);
 
+    useEffect(() => {
+      const handleScroll = () => {
+          const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+          const firstSectionHeight = sectionsRef.current[0]?.offsetHeight || 0;
+          const footerTop = footerRef.current?.offsetTop || Infinity;
+          
+          setShowTopButton(scrollTop > firstSectionHeight - window.innerHeight && scrollTop < footerTop - window.innerHeight);
+      };
+
+      window.addEventListener('scroll', handleScroll);
+      return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
     return (
         <>  
             {/* First section */}
@@ -284,6 +303,12 @@ const Main = () => {
                     나눔의 가치를 실천하며 더 나은 미래를 만들어 갑니다. <br />함께 가요 미래로! Enabling People
                 </S.SectionContent>
             </S.MainBottom>
+
+            {showTopButton && (
+                <S.TopButton onClick={scrollToTop}>
+                    <ArrowUpwardIcon />
+                </S.TopButton>
+            )}
 
             <div ref={footerRef}>
                 <Footer />

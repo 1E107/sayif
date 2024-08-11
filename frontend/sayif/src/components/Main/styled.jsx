@@ -237,6 +237,27 @@ const ImageWrapper = styled.div`
     }
 `;
 
+const TopButton = styled.button`
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #116530;
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s;
+
+    &:hover {
+        background-color: #0B4619;
+    }
+`;
+
 const S = {
     MainTop,
     MainMiddle,
@@ -259,7 +280,8 @@ const S = {
     ContentWrapper,
     Image,
     InformationSection,
-    ImageWrapper
+    ImageWrapper,
+    TopButton
 };
 
 export default S;
