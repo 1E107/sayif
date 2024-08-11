@@ -43,7 +43,7 @@ public class TeamService {
         return members;
     }
 
-    @Scheduled(cron = "0 20 0 * * ?") // 매일 자정에 팀 상태 변경
+    @Scheduled(cron = "0 0 0 * * ?") // 매일 자정에 팀 상태 변경
     public void processTeamStatuses() {
         List<Team> applyTeams = teamRepository.findByStatus(TeamStatus.Apply);
 
