@@ -21,7 +21,6 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.Tika;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,20 +32,17 @@ public class S3Service {
     private final AmazonS3 amazonS3; // AmazonS3 클라이언트 객체
     private final Tika tika = new Tika(); // Tika 객체를 사용하여 파일의 ContentType을 감지
 
-    @Value("${cloud.aws.s3.bucket-name}")
-    private String bucketName; // S3 버킷 이름
-
     /**
      * 파일을 S3 버킷에 업로드
      *
      * @param file 업로드할 파일
      * @return 업로드된 파일의 URL
      */
-    public String upload(MultipartFile file) {
+    public String upload(MultipartFile file, String bucketName) {
         if (file.isEmpty() || Objects.isNull(file.getOriginalFilename())) {
             return null;
         }
-        return this.uploadFile(file);
+        return this.uploadFile(file, bucketName);
     }
 
     /**
@@ -55,9 +51,9 @@ public class S3Service {
      * @param file 업로드할 파일
      * @return 업로드된 파일의 URL
      */
-    private String uploadFile(MultipartFile file) {
+    private String uploadFile(MultipartFile file, String bucketName) {
         try {
-            return this.uploadFileToS3(file);
+            return this.uploadFileToS3(file, bucketName);
         } catch (IOException e) {
             throw new S3Exception(ErrorCode.IO_EXCEPTION_ON_IMAGE_UPLOAD);
         }
@@ -70,7 +66,7 @@ public class S3Service {
      * @return 업로드된 파일의 URL
      * @throws IOException 파일 처리 중 발생할 수 있는 예외
      */
-    private String uploadFileToS3(MultipartFile file) throws IOException {
+    private String uploadFileToS3(MultipartFile file, String bucketName) throws IOException {
         String originalFilename = file.getOriginalFilename(); // 원본 파일명
         String extension = "";
         if (originalFilename != null && originalFilename.contains(".")) {
@@ -120,8 +116,7 @@ public class S3Service {
         return amazonS3.getUrl(bucketName, s3FileName).toString();
     }
 
-
-    public String getUrl(String fileName) {
+    public String getUrl(String fileName, String bucketName) {
         return amazonS3.getUrl(bucketName, fileName).toString();
     }
 
@@ -130,7 +125,7 @@ public class S3Service {
      *
      * @param fileAddress 삭제할 파일의 URL
      */
-    public void deleteFileFromS3(String fileAddress) {
+    public void deleteFileFromS3(String fileAddress, String bucketName) {
         String key = getKeyFromFileAddress(fileAddress); // 파일의 키 추출
         try {
             amazonS3.deleteObject(new DeleteObjectRequest(bucketName, key)); // 파일 삭제 요청
@@ -158,7 +153,7 @@ public class S3Service {
         }
     }
 
-    public boolean checkIfObjectExists(String url) {
+    public boolean checkIfObjectExists(String url, String bucketName) {
         return amazonS3.doesObjectExist(bucketName, getKeyFromFileAddress(url));
     }
 }

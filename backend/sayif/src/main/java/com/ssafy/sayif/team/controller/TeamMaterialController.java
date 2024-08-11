@@ -14,12 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/team/material")
-public class TeamMatorialController {
+public class TeamMaterialController {
 
     private final MaterialService materialService;
 
     @GetMapping("/{page}/{size}")
-    public Page<MaterialResponseDto> getMaterials(@AuthenticationPrincipal UserDetails userDetails, @PathVariable int page, @PathVariable int size) {
+    public Page<MaterialResponseDto> getMaterials(@AuthenticationPrincipal UserDetails userDetails,
+        @PathVariable int page, @PathVariable int size) {
         String username = userDetails.getUsername();
         return materialService.getMaterialsByTeamId(username, page, size);
     }
