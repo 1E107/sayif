@@ -158,15 +158,15 @@ const Main = () => {
         };
     }, []);
 
-    // useEffect(() => {
-    //     slideInterval.current = setInterval(() => {
-    //         nextSlide();
-    //     }, 8000); // 8초마다 슬라이드 변경
+    useEffect(() => {
+        slideInterval.current = setInterval(() => {
+            nextSlide();
+        }, 8000); // 8초마다 슬라이드 변경
 
-    //     return () => {
-    //         clearInterval(slideInterval.current);
-    //     };
-    // }, []);
+        return () => {
+            clearInterval(slideInterval.current);
+        };
+    }, []);
 
     return (
         <>  
