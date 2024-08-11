@@ -17,10 +17,10 @@ const Main = () => {
     const { token, member } = useSelector(state => state.member);
 
     const contents = [
-        { type: 'profile', content: <MentorProfileContent />, link: '/mentor-profile' },
-        { type: 'apply', content: <MentoringApplyContent />, link: '/apply-mentoring' },
-        { type: 'team', content: <TeamOfficeContent />, link: '/team' },
-        { type: 'mentoring', content: <MentoringVideoContent />, link: '/team/meeting' }
+        { type: 'profile', content: <MentorProfileContent />},
+        { type: 'apply', content: <MentoringApplyContent />},
+        { type: 'team', content: <TeamOfficeContent />},
+        { type: 'mentoring', content: <MentoringVideoContent />}
     ];
 
     const nextSlide = () => {
@@ -158,15 +158,15 @@ const Main = () => {
         };
     }, []);
 
-    useEffect(() => {
-        slideInterval.current = setInterval(() => {
-            nextSlide();
-        }, 8000); // 8초마다 슬라이드 변경
+    // useEffect(() => {
+    //     slideInterval.current = setInterval(() => {
+    //         nextSlide();
+    //     }, 8000); // 8초마다 슬라이드 변경
 
-        return () => {
-            clearInterval(slideInterval.current);
-        };
-    }, []);
+    //     return () => {
+    //         clearInterval(slideInterval.current);
+    //     };
+    // }, []);
 
     return (
         <>  
@@ -213,8 +213,19 @@ const Main = () => {
                 </S.SliderArrow> */}
                 <S.SliderContainer>
                     <S.SlideContent key={currentSlide}>
-                        <div onClick={() => handleImageClick(contents[currentSlide].link)}>
-                            {contents[currentSlide].content}
+                        <div>
+                            {contents[currentSlide].type === 'profile' && (
+                                <MentorProfileContent handleImageClick={handleImageClick} />
+                            )}
+                            {contents[currentSlide].type === 'apply' && (
+                                <MentoringApplyContent handleImageClick={handleImageClick} />
+                            )}
+                            {contents[currentSlide].type === 'team' && (
+                                <TeamOfficeContent handleImageClick={handleImageClick} />
+                            )}
+                            {contents[currentSlide].type === 'mentoring' && (
+                                <MentoringVideoContent handleImageClick={handleImageClick} />
+                            )}
                         </div>
                     </S.SlideContent>
                     <S.Indicators>
@@ -281,28 +292,84 @@ const Main = () => {
     );
 }
 
-const MentorProfileContent = () => (
-    <S.ContentWrapper style={{ marginRight: "120px" }}>
-        <S.Image style={{ width: "150%"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/프로필 카드 소개.png`} alt="프로필 이미지" />
-    </S.ContentWrapper>
+const MentorProfileContent = ({ handleImageClick }) => (
+  <S.ContentWrapper style={{flexDirection: "row", marginTop: "25px"}}>
+      {/* 프로필 이미지 */}
+      <S.Image src={`${process.env.PUBLIC_URL}/img/LandingPage/mentor-profile/이미지.png`} style={{width: "380px", marginRight: "50px", marginLeft: "110px"}} alt="멘토 프로필 이미지" />
+      
+      <div style={{display: "flex", flexDirection: "column"}}>
+        {/* 멘트 */}
+        <S.Image src={`${process.env.PUBLIC_URL}/img/LandingPage/mentor-profile/멘트.png`} style={{width: "490px", marginBottom: "50px", marginTop: "10px"}} alt="멘토 프로필 기능 설명" />
+
+        {/* 하단 버튼 */}
+        <S.Image
+            src={`${process.env.PUBLIC_URL}/img/LandingPage/mentor-profile/바로가기.png`}
+            onClick={() => handleImageClick('/mentor-profile')}
+            style={{width: "290px"}}
+            alt="멘토 프로필 바로가기"
+            clickable // 이 prop을 추가하면 커서가 포인터로 변경됨
+        />
+      </div>
+  </S.ContentWrapper>
 );
 
-const MentoringApplyContent = () => (
-    <S.ContentWrapper style={{ marginRight: "95px" }}>
-        <S.Image style={{ width: "120%"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/멘토링 신청.png`} alt="캘린더 이미지" />
-    </S.ContentWrapper>
+const MentoringApplyContent = ({ handleImageClick }) => (
+  <S.ContentWrapper style={{flexDirection: "column", marginTop: "40px"}}>
+      {/* 멘트 */}
+      <S.Image src={`${process.env.PUBLIC_URL}/img/LandingPage/apply-mentoring/멘트.png`} style={{width: "570px", marginRight: "40px"}} alt="멘토링 신청 기능 설명" />
+      
+      {/* 프로필 이미지 */}
+      <S.Image src={`${process.env.PUBLIC_URL}/img/LandingPage/apply-mentoring/이미지.png`} style={{width: "720px", marginRight: "40px", marginTop: "35px"}} alt="멘토링 신청 이미지" />
+  
+      {/* 하단 버튼 */}
+      <S.Image
+          src={`${process.env.PUBLIC_URL}/img/LandingPage/apply-mentoring/바로가기.png`}
+          onClick={() => handleImageClick('/apply-mentoring')}
+          style={{width: "300px", marginRight: "40px", marginTop: "35px"}}
+          alt="멘토링 신청 바로가기"
+          clickable // 이 prop을 추가하면 커서가 포인터로 변경됨
+      />
+  </S.ContentWrapper>
 );
 
-const TeamOfficeContent = () => (
-    <S.ContentWrapper style={{ marginRight: "200px" }}>
-        <S.Image style={{ width: "150%"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/팀 오피스.png`} alt="선인장 이미지" />
-    </S.ContentWrapper>
+const TeamOfficeContent  = ({ handleImageClick }) => (
+  <S.ContentWrapper style={{flexDirection: "row", marginTop: "25px"}}>
+      {/* 프로필 이미지 */}
+      <S.Image src={`${process.env.PUBLIC_URL}/img/LandingPage/team-office/이미지.png`} style={{width: "380px", marginRight: "20px", marginLeft: "90px"}} alt="팀 오피스 이미지" />
+      
+      <div style={{display: "flex", flexDirection: "column"}}>
+        {/* 멘트 */}
+        <S.Image src={`${process.env.PUBLIC_URL}/img/LandingPage/team-office/멘트.png`} style={{width: "490px", marginBottom: "50px", marginTop: "10px"}} alt="팀 오피스 기능 설명" />
+
+        {/* 하단 버튼 */}
+        <S.Image
+            src={`${process.env.PUBLIC_URL}/img/LandingPage/team-office/바로가기.png`}
+            onClick={() => handleImageClick('/team')}
+            style={{width: "270px"}}
+            alt="팀 오피스 바로가기"
+            clickable // 이 prop을 추가하면 커서가 포인터로 변경됨
+        />
+      </div>
+  </S.ContentWrapper>
 );
 
-const MentoringVideoContent = () => (
-    <S.ContentWrapper style={{ margin: "30px 120px 0px 0px" }}>
-        <S.Image style={{ width: "120%"}} src={`${process.env.PUBLIC_URL}/img/LandingPage/화상 멘토링.png`} alt="스크래치 이미지" />
-    </S.ContentWrapper>
+const MentoringVideoContent = ({ handleImageClick }) => (
+  <S.ContentWrapper style={{flexDirection: "column", marginTop: "40px"}}>
+      {/* 멘트 */}
+      <S.Image src={`${process.env.PUBLIC_URL}/img/LandingPage/mentoring/멘트.png`} style={{width: "560px", marginRight: "40px"}} alt="멘토링 기능 설명" />
+      
+      {/* 프로필 이미지 */}
+      <S.Image src={`${process.env.PUBLIC_URL}/img/LandingPage/mentoring/이미지.png`} style={{width: "720px", marginRight: "40px", marginTop: "20px"}} alt="멘토링 이미지" />
+  
+      {/* 하단 버튼 */}
+      <S.Image
+          src={`${process.env.PUBLIC_URL}/img/LandingPage/mentoring/바로가기.png`}
+          onClick={() => handleImageClick('/team/meeting')}
+          style={{width: "280px", marginRight: "40px", marginTop: "20px"}}
+          alt="멘토링 바로가기"
+          clickable // 이 prop을 추가하면 커서가 포인터로 변경됨
+      />
+  </S.ContentWrapper>
 );
 
 export default Main;

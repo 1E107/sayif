@@ -190,14 +190,21 @@ const Dot = styled.div`
 
 const ContentWrapper = styled.div`
     width: 100%;
-    max-width: 500px;
     padding: 20px;
+    align-items: center; /* 중앙 정렬 */
+    display: flex;
 `;
 
 const Image = styled.img`
-    width: 100%;
-    height: 400px; // 모든 이미지에 대해 동일한 높이 설정
     object-fit: contain; // 이미지 비율 유지
+    cursor: default; 
+    ${(props) => props.clickable && `
+      cursor: pointer;
+      
+      &:hover {
+      transform: scale(1.05); /* 버튼이 약간 커짐 */
+    }
+    `}
 `;
 
 const InformationSection = styled.div`
