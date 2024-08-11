@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react';
 import S from './style/InformationDetailStyled';
 import { GetDetailSupportInfo } from '../../api/Main';
 import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 
 function InformationDetail() {
+    const navigate = useNavigate();
     const { token, member } = useSelector(state => state.member);
     const { id } = useParams();
     const [detailContent, SetDetailContent] = useState();
@@ -23,12 +25,22 @@ function InformationDetail() {
         callDetailInfo();
     }, [id, token]);
 
+    const handleGoList = () => {
+        navigate('/support-information');
+    };
+
     const DetailView = (
         <S.Container>
             <S.Title>자립 지원 정보</S.Title>
+
             <div>
                 <S.Line />
             </div>
+            <S.BeforeButton onClick={handleGoList}>
+                <NavigateBeforeIcon />
+                목록으로 이동
+            </S.BeforeButton>
+
             <S.Form>
                 <div style={{ display: 'flex', margin: '30px' }}>
                     <S.CustomImg
@@ -85,7 +97,7 @@ function InformationDetail() {
                                 {detailContent.method}
                             </S.ContentText>
                             <S.ButtonContainer>
-                                <S.Button
+                                <S.ButtonCustom
                                     onClick={() =>
                                         window.open(
                                             detailContent.link,
@@ -94,7 +106,7 @@ function InformationDetail() {
                                     }
                                 >
                                     신청하러 가기
-                                </S.Button>
+                                </S.ButtonCustom>
                             </S.ButtonContainer>
                         </>
                     ) : (

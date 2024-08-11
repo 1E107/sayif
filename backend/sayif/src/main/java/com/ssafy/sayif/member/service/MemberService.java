@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +41,9 @@ public class MemberService {
     private final MentorRepository mentorRepository;
     private final S3Service s3Service;
 
+    @Value("${cloud.aws.s3.bucket-names.member}")
+    private String bucketName;
+
 
     public Boolean registerMember(RegisterRequestDto registerRequestDto, MultipartFile file) {
         String username = registerRequestDto.getUsername();
@@ -52,9 +56,9 @@ public class MemberService {
 
         String fileUrl;
         if (file != null) {
-            fileUrl = s3Service.upload(file);
+            fileUrl = s3Service.upload(file, bucketName);
         } else {
-            fileUrl = s3Service.getUrl("default.jpg");
+            fileUrl = s3Service.getUrl("default.jpg", bucketName);
         }
 
         Mentee mentee = Mentee.builder()
@@ -88,7 +92,7 @@ public class MemberService {
 
         // 파일이 존재하면 업로드하고 새로운 파일 URL로 변경
         if (file != null && !file.isEmpty()) {
-            newFileUrl = s3Service.upload(file);
+            newFileUrl = s3Service.upload(file, bucketName);
         }
 
         // 공통 필드 업데이트를 위한 빌더
@@ -154,8 +158,8 @@ public class MemberService {
 
         // 새로운 파일 업로드 후, 기존 파일이 default.jpg가 아니고 기존 파일과 새로운 파일이 다를 때만 삭제
         if (!finalNewFileUrl.equals(oldFileUrl) && !s3Service.getKeyFromFileAddress(oldFileUrl)
-            .equals("default.jpg") && s3Service.checkIfObjectExists(oldFileUrl)) {
-            s3Service.deleteFileFromS3(oldFileUrl);
+            .equals("default.jpg") && s3Service.checkIfObjectExists(oldFileUrl, bucketName)) {
+            s3Service.deleteFileFromS3(oldFileUrl, bucketName);
         }
 
 
@@ -166,7 +170,7 @@ public class MemberService {
         Member member = memberRepository.findByUsername(username);
         if (member != null) {
             memberRepository.delete(member);
-            s3Service.deleteFileFromS3(member.getProfileImg());
+            s3Service.deleteFileFromS3(member.getProfileImg(), bucketName);
             deleteRefreshTokens(username);
         } else {
             throw new RuntimeException("존재하지 않는 회원입니다.");

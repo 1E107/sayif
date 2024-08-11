@@ -43,6 +43,7 @@ function UploadModal({ onClose, id, challengeId }) {
                 }
             } catch (error) {
                 console.log(error);
+                SetResult(false);
             }
         };
 
@@ -119,17 +120,26 @@ function UploadModal({ onClose, id, challengeId }) {
                     onChange={handleFileChange}
                     style={{ display: 'none' }}
                 ></input>
-                <S.ExplanText>
-                    이미지를 클릭해서 파일을 업로드해주세요!
-                </S.ExplanText>
+                <S.ExplainText>
+                    이미지를 클릭해서 파일을 업로드해주세요! <br /> 결과
+                    출력까지 약 5분 정도 소요되니 잠시만 기다려주세요~
+                </S.ExplainText>
                 {result == undefined ? (
                     <S.PostBtn variant="outlined" onClick={handleUploadBtn}>
                         사진 전송
                     </S.PostBtn>
                 ) : (
-                    <S.FinishBtn variant="contained" onClick={handleFinishBtn}>
-                        사진 올리기
-                    </S.FinishBtn>
+                    <>
+                        <S.PostBtn variant="outlined" onClick={handleUploadBtn}>
+                            사진 재전송
+                        </S.PostBtn>
+                        <S.FinishBtn
+                            variant="contained"
+                            onClick={handleFinishBtn}
+                        >
+                            사진 올리기
+                        </S.FinishBtn>
+                    </>
                 )}
                 {result == undefined ? (
                     <></>

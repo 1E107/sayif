@@ -132,7 +132,7 @@ const MentorCard = ({
                 <Info>
                     <Name>{nickname}</Name>
                     <Cohort>
-                        {campus[regCode]}_{seq}기_{track}
+                        {track}_{campus[regCode]}_{seq}기
                     </Cohort>
                 </Info>
                 <Avatar src={profileImg} alt={`${name} avatar`} />

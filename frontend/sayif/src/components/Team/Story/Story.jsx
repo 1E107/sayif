@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import S from './style/StoryStyled';
-import { getStoryList } from '../../../api/TeamApi';
+import { getStoryList, getReadStatus } from '../../../api/TeamApi';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import ChatbotModal from '../ChatBotModal';
+import CheckIcon from '@mui/icons-material/Check';
 
 function Story() {
     const [selectPostIt, setSelectPostIt] = useState(false);
@@ -12,12 +13,17 @@ function Story() {
     const [selectContent, setSelectContent] = useState('');
     const [isChatBotModalOpen, setIsChatBotModalOpen] = useState(false);
     const { token, member } = useSelector(state => state.member);
+    const [selectContentId, setSelectContentId] = useState('');
+    const [selectIsRead, setSelectIsRead] = useState(false);
     const [writing, SetWriting] = useState([]);
+    const [hidden, SetHidden] = useState([]);
     const navigate = useNavigate();
 
     const showDetail = (index, num) => {
         setImgNum(num);
         setSelectContent(writing[index].content);
+        setSelectContentId(writing[index].contentId);
+        setSelectIsRead(writing[index].read);
         setSelectPostIt(true);
     };
 
@@ -37,6 +43,26 @@ function Story() {
         navigate('/team/create-story');
     };
 
+    const handleRead = () => {
+        const callReadStatus = async () => {
+            try {
+                const response = await getReadStatus(
+                    member.teamId,
+                    selectContentId,
+                    token,
+                );
+                if (response.status === 200) {
+                    alert('해당 사연을 읽었습니다!');
+                    SetHidden(prev => [...prev, selectContentId]);
+                    // window.location.reload();
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        callReadStatus();
+    };
+
     useEffect(() => {
         const callStoryList = async () => {
             try {
@@ -44,18 +70,20 @@ function Story() {
                 if (response.status == 200) {
                     const storyList = response.data;
                     {
-                        storyList.map(story => {
-                            const randomValue =
-                                Math.floor(Math.random() * 5) + 1;
-                            const randomRotation =
-                                Math.floor(Math.random() * 91) - 45;
-                            const randomX = Math.floor(Math.random() * 900);
-                            const randomY = Math.floor(Math.random() * 500);
-                            story.randomValue = randomValue;
-                            story.randomRotation = randomRotation;
-                            story.randomX = randomX;
-                            story.randomY = randomY;
-                        });
+                        storyList
+                            .filter(story => !story.read)
+                            .map(story => {
+                                const randomValue =
+                                    Math.floor(Math.random() * 5) + 1;
+                                const randomRotation =
+                                    Math.floor(Math.random() * 91) - 45;
+                                const randomX = Math.floor(Math.random() * 900);
+                                const randomY = Math.floor(Math.random() * 500);
+                                story.randomValue = randomValue;
+                                story.randomRotation = randomRotation;
+                                story.randomX = randomX;
+                                story.randomY = randomY;
+                            });
                     }
                     SetWriting(storyList);
                 }
@@ -96,14 +124,24 @@ function Story() {
                         };
 
                         return (
-                            <S.CustomImg
-                                key={write.contentId}
-                                src={`/img/Story/Post-it${write.randomValue}.png`}
-                                style={style}
-                                onClick={() => {
-                                    showDetail(index, write.randomValue);
-                                }}
-                            />
+                            <>
+                                {!write.read &&
+                                !hidden.includes(write.contentId) ? (
+                                    <S.CustomImg
+                                        key={write.contentId}
+                                        src={`/img/Story/Post-it${write.randomValue}.png`}
+                                        style={style}
+                                        onClick={() => {
+                                            showDetail(
+                                                index,
+                                                write.randomValue,
+                                            );
+                                        }}
+                                    />
+                                ) : (
+                                    <></>
+                                )}
+                            </>
                         );
                     })}
                 </S.PostItWrapper>
@@ -118,6 +156,20 @@ function Story() {
                 <S.Modal onClick={closeDetail}>
                     <S.ModalContent>
                         <img src={`/img/Story/Post-it${imgNum}.png`} />
+                        {member.role === 'Mentor' && !selectIsRead ? (
+                            <S.ReadButton onClick={handleRead}>
+                                <CheckIcon
+                                    style={{
+                                        marginRight: '5px',
+                                        fontSize: '16px',
+                                    }}
+                                />
+                                읽기
+                            </S.ReadButton>
+                        ) : (
+                            <></>
+                        )}
+
                         <S.ModalText>{selectContent}</S.ModalText>
                     </S.ModalContent>
                 </S.Modal>

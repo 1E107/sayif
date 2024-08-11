@@ -115,6 +115,7 @@ const ChatContent = styled.div`
     word-wrap: break-word;
     white-space: pre-wrap;
     position: relative;
+    line-height: 160%;
 `;
 
 const TimeText = styled.div`

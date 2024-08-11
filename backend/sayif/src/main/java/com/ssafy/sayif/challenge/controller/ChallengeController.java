@@ -12,6 +12,7 @@ import com.ssafy.sayif.member.repository.MemberRepository;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -37,6 +38,9 @@ public class ChallengeController {
     private final ChallengeRepository challengeRepository;
 
     private final S3Service s3Service;
+
+    @Value("${cloud.aws.s3.bucket-names.challenge}")
+    private String bucketName;
 
     @PostMapping("/predict")
     public Mono<ResponseEntity<Boolean>> predict(@RequestParam("challengeNum") int challengeNum,
@@ -109,7 +113,7 @@ public class ChallengeController {
         // 파일이 존재하는 경우
         if (file != null && !file.isEmpty()) {
             // S3 버킷에 파일 저장
-            String fileUrl = s3Service.upload(file);
+            String fileUrl = s3Service.upload(file, bucketName);
 
             // 파일이 제대로 저장되지 않았거나, 반환된 파일 이름이 null인 경우 예외를 발생시킵니다.
             if (fileUrl == null) {
