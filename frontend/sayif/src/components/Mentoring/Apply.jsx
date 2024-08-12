@@ -71,6 +71,7 @@ function Apply() {
                                 width: '250px',
                                 height: '50px',
                                 marginBottom: '50px',
+                                fontSize: '17px',
                             }}
                         >
                             멘토링 신청하러 가기
