@@ -200,8 +200,10 @@ public class MentoringService {
                 .intro(mentor.getIntro())
                 .regCode(mentor.getRegCode())
                 .seq(mentor.getSeq())
-                .tags(tagRepository.findAllByMentorId(member.getId()).stream().map(Tag::getContent)
-                    .collect(Collectors.toList()))
+                .tags(tagRepository.findAllByMentorId(member.getId()).stream()
+                        .filter(tag -> !tag.isRemove()) // isRemove가 False인 태그만 필터링
+                        .map(Tag::getContent)
+                        .collect(Collectors.toList()))
                 .build();
         }).collect(Collectors.toList());
     }
