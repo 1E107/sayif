@@ -5,25 +5,25 @@ const Container = styled.div`
     margin-top: 100px;
     margin-bottom: 30px;
     background-color: white;
-    height: 600px;
-    width: 760px;
+    height: 80vh;  // 화면의 80% 높이로 조정
+    width: 760px;  // 가로 폭은 그대로 유지
     border-radius: 30px;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    overflow: hidden;
+
 
     @media (max-width: 800px) {
         width: 510px;
         padding: 0 10px;
-        height: 500px;
+        height: 70vh; // 화면의 70% 높이로 조정
     }
     @media (max-width: 640px) {
         width: 380px;
         padding: 0 10px;
         margin-bottom: 60px;
-        height: 450px;
+        height: 60vh; // 화면의 60% 높이로 조정
     }
 `;
 
@@ -67,33 +67,39 @@ const ChatContentWrapper = styled.div`
     flex-direction: column;
     padding: 20px;
     overflow-y: auto;
-    max-height: 420px;
-    scrollbar-width: thin;
-    scrollbar-color: #888 #ddd;
-
+    max-height: 80%; // 최대 높이를 80%로 설정
+    
     &::-webkit-scrollbar {
-        width: 8px;
+        width: 10px  ;  // 스크롤바의 너비
     }
 
     &::-webkit-scrollbar-thumb {
-        background-color: #888;
-        border-radius: 4px;
+        background: rgba(17, 101, 48, 0.5) ; // 스크롤바 색상
+        border-radius: 10px ; // 스크롤바 둥근 테두리
+        height: 50px; // 스크롤바의 높이를 조정
     }
 
     &::-webkit-scrollbar-track {
-        background-color: #ddd;
-        border-radius: 4px;
+        background: rgba(17, 101, 48, 0.1) ;  // 스크롤바 뒷 배경 색상
+        margin-top: 30px;
+    }
+
+    &::-webkit-scrollbar-button {
+        display: none  /* 스크롤바 버튼 숨기기 */
     }
 
     @media (max-width: 800px) {
-        width: 490px;
+        width: 480px;
         padding: 0 10px;
-        max-height: 320px;
+        padding-top: 20px; // 상단 여백 유지
+        max-height: 70%; // 최대 높이를 70%로 설정
     }
+
     @media (max-width: 640px) {
-        width: 350px;
+        width: 340px;
         padding: 0 10px;
-        max-height: 270px;
+        padding-top: 20px; // 상단 여백 유지
+        max-height: 60%; // 최대 높이를 60%로 설정
     }
 `;
 
@@ -156,7 +162,8 @@ const DateDivider = styled.div`
     padding: 10px 0;
     margin: 10px 0;
     font-family: ChosunGu;
-    font-size: 12px;
+    font-size: 14px;
+    letter-spacing: 1px;
     color: #888;
     border-bottom: 1px solid #ddd;
 `;

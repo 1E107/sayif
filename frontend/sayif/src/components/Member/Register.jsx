@@ -96,7 +96,7 @@ function Register() {
     };
 
     const handleSendVerificationCode = async () => {
-        if (phone) {
+        if (phone && phoneError === '') {
             try {
                 await sendVerificationCode(phone);
                 setVerificationCodeSent(true);
@@ -125,6 +125,7 @@ function Register() {
                 text: '휴대폰 번호를 입력해주세요.',
                 confirmButtonColor: '#6c8e23',
             });
+            alert('하이픈(-)을 포함해 입력해 주세요.');
         }
     };
 
@@ -169,6 +170,8 @@ function Register() {
         }
     };
 
+    const handleCheckId = () => {};
+
     useEffect(() => {
         if (verificationCodeSent && timeRemaining > 0) {
             const timer = setTimeout(() => {
@@ -192,9 +195,13 @@ function Register() {
             <S.ItemWrapper>
                 <S.Text>아이디</S.Text>
                 <S.CustomTextField
+                    style={{ width: '260px' }}
                     variant="outlined"
                     onChange={e => SetId(e.target.value)}
                 />
+                <S.IdChecktBtn onClick={{ handleCheckId }}>
+                    중복 확인
+                </S.IdChecktBtn>
             </S.ItemWrapper>
             <S.ItemWrapper>
                 <S.Text>비밀번호</S.Text>

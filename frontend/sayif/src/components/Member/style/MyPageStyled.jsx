@@ -3,13 +3,18 @@ import Button from '@mui/material/Button';
 import '../../../styles/fonts.css';
 
 const Container = styled.div`
-    margin-top: 200px;
+    margin-top: 0;
+    margin-bottom: 0;
     width: 1000px;
-    height: 800px;
+    height: ${({ changeInfo, role }) => {
+        if (role === 'Mentor') return changeInfo ? '840px' : '780px';
+        if (role === 'Mentee') return changeInfo ? '600px' : '540px';
+        return '720px'; // 기본값
+    }};
     border-radius: 40px;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     flex-direction: column;
 `;
@@ -111,7 +116,7 @@ const ProfileUpdateBtn = styled(Button)({
     fontFamily: 'ChosunGu !important',
     color: '#E8E8CC !important',
     backgroundColor: '#116530 !important',
-    margin: '50px 10px 0px 10px !important',
+    margin: '20px 10px 0px 10px !important',
     width: '170px',
     fontSize: '18px !important',
 });
@@ -211,6 +216,19 @@ const ItemWrapper = styled.div`
     color: #116530;
 `;
 
+const Spacer = styled.div`
+    height: ${({ changeInfo, role }) => {
+        if (role === 'Mentor') return changeInfo ? '870px' : '800px';
+        return '580px';
+    }};
+    /* 원하는 높이로 설정 */
+    width: '100%';
+    margin-top:${({ changeInfo, role }) => {
+        if (role === 'Mentor') return changeInfo ? '240px' : '160px';
+        if (role === 'Mentee') return changeInfo ? '50px' : '20px';
+    }};
+`;
+
 const S = {
     Container,
     TagAndIntroContainer,
@@ -235,6 +253,7 @@ const S = {
     SectionContainer, // 새로 추가된 섹션 컨테이너 스타일
     Section, // 새로 추가된 섹션 스타일
     ItemWrapper,
+    Spacer
 };
 
 export default S;

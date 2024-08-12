@@ -35,7 +35,6 @@ function Header() {
         '새잎 소개': ['서비스 소개', '커리큘럼 로드맵'],
         멘토링: [
             '멘토 프로필 조회',
-            ...(member.role === 'Mentor' ? ['멘토링 자료 공유'] : []),
             ...(member.role === 'Mentor' ? ['멘토링 그룹 생성'] : []),
             ...(member.role === 'Mentee' ? ['멘토링 신청'] : []),
         ],
@@ -48,7 +47,6 @@ function Header() {
         '멘토링 그룹 생성': '/create-mentoring',
         '멘토링 신청': '/apply-mentoring',
         '멘토 프로필 조회': '/mentor-profile',
-        '멘토링 자료 공유': '/',
         '자유 게시판': '/community',
         '자립 지원 정보': '/support-information',
     };
@@ -167,6 +165,7 @@ function Header() {
                             letterSpacing: '.3rem',
                             color: 'black',
                             textDecoration: 'none',
+                            paddingRight: 7.9,
                         }}
                     >
                         <img src="/logo.png" alt="Logo" />
