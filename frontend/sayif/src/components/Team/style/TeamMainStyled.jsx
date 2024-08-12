@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import LinearProgress from '@mui/material/LinearProgress';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
@@ -7,6 +7,18 @@ import Modal from '@mui/material/Modal';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import '../../../styles/fonts.css';
+
+const blinkShadow = keyframes`
+  0% {
+    box-shadow: 0px 0px 5px 1px rgba(222, 211, 166, 0.2);
+  }
+  50% {
+    box-shadow: 0px 0px 13px 4px rgba(222, 211, 166, 0.5);
+  }
+  100% {
+    box-shadow: 0px 0px 5px 1px rgba(222, 211, 166, 0.2);
+  }
+`;
 
 const Container = styled.div`
     margin-top: 50px;
@@ -24,6 +36,7 @@ const ImageBox = styled.div`
     background-size: contain; /* 이미지를 잘리지 않게 */
     background-repeat: no-repeat;
     background-position: center;
+    animation: ${blinkShadow} 1.5s infinite;
 `;
 
 const Wrapper = styled.div``;

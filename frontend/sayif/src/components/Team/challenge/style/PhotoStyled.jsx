@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import '../../../../styles/fonts.css';
-import Button from '@mui/material/Button';
+import { Button } from '@mui/material';
 
 const Title = styled.div`
     font-family: ONE-Mobile-POP;
@@ -33,12 +33,14 @@ const TopWrapper = styled.div`
 const ExplanText = styled.div`
     font-family: ChosunGu;
     margin-right: 10px;
+    font-size: 16px;
 `;
 
 const NextChallengeBtn = styled(Button)({
     fontFamily: 'ChosunGu !important',
     color: '#116530 !important',
     fontWeight: 'bold !important',
+    fontSize: '16px !important',
 });
 
 const BottomWrapper = styled.div`
