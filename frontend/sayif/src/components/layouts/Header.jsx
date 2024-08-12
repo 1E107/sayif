@@ -300,6 +300,7 @@ function Header() {
                                     display: 'block',
                                     fontFamily: 'ChosunGu',
                                     fontWeight: 'bold',
+                                    fontSize: '1.3rem',
                                 }}
                             >
                                 {page}
