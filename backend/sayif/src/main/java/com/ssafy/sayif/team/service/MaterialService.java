@@ -57,6 +57,7 @@ public class MaterialService {
         return MaterialResponseDto.builder()
             .id(material.getId())
             .title(material.getTitle())
+            .chapter(material.getChapter())
             .createdAt(material.getCreatedAt())
             .fileUrl(s3Service.getUrl(material.getFile(), bucketName))
             .hit(material.getHit())

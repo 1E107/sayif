@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom'; // useNavigate 추가
 import S from './style/DetailStyled';
 import { useEffect, useState } from 'react';
 import { getMaterialDetail } from '../../../api/TeamApi';
@@ -6,7 +6,8 @@ import { useSelector } from 'react-redux';
 
 function MaterialDetail() {
     const { id } = useParams();
-    const { token, member } = useSelector(state => state.member);
+    const navigate = useNavigate(); // useNavigate 훅 사용
+    const { token } = useSelector(state => state.member);
     const [content, SetContent] = useState();
 
     useEffect(() => {
@@ -24,8 +25,15 @@ function MaterialDetail() {
         callDetail();
     }, [id, token]);
 
+    const handleBackButtonClick = () => {
+        navigate(-1); // 이전 페이지로 돌아가기
+    };
+
     const DetailView = (
         <S.Container>
+            <S.BackButton onClick={handleBackButtonClick}>
+                <S.BackIcon />
+            </S.BackButton>
             {content ? (
                 <>
                     <S.Title>{content.title}</S.Title>
