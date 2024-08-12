@@ -834,15 +834,28 @@
 }
 .screen-share-text {
     position: absolute;
-    bottom: 10px;
-    left: 10px;
+    bottom: 15px;
+    left: 15px;
     display: flex;
     align-items: center;
-    background-color: rgba(0, 0, 0, 0.2); /* 반투명 배경 추가 */
-    padding: 5px 10px;
+    background-color: rgba(0, 0, 0, 0.4); /* 반투명 배경 추가 */
+    padding: 7px 10px;
     border-radius: 5px;
     color: white;
-    font-size: 14px;
+    font-size: 16px;
+    font-weight: bold;
+    animation: blink-animation 3s infinite;
+}
+@keyframes blink-animation {
+    0%,
+    25%,
+    75%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
 }
 
 .screen-share-icon img {

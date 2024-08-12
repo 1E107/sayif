@@ -300,7 +300,7 @@ function Header() {
                                     display: 'block',
                                     fontFamily: 'ChosunGu',
                                     fontWeight: 'bold',
-                                    fontSize: '1.3rem',
+                                    fontSize: '1.2rem',
                                 }}
                             >
                                 {page}
@@ -376,6 +376,7 @@ function Header() {
                                         display: 'block',
                                         fontFamily: 'ChosunGu',
                                         fontWeight: 'bold',
+                                        fontSize: '16px',
                                     }}
                                 >
                                     팀 오피스
