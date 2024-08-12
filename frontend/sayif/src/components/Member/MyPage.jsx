@@ -14,12 +14,13 @@ import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import styled from 'styled-components';
 import Alert from '@mui/material/Alert';
 import CheckIcon from '@mui/icons-material/Check';
-import { addTags,getTagsForMember,deleteTag } from '../../api/MemberApi';
+import { addTags, getTagsForMember, deleteTag } from '../../api/MemberApi';
 import { useEffect } from 'react';
-import { getMentorProfile,updateMentorProfile } from '../../api/MemberApi';
+import { getMentorProfile, updateMentorProfile } from '../../api/MemberApi';
 import EmailIcon from '@mui/icons-material/Email';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Tooltip from '@mui/material/Tooltip';
+import Swal from 'sweetalert2';
 
 function MyPageComponent() {
     const navigate = useNavigate();
@@ -104,8 +105,13 @@ function MyPageComponent() {
                     dispatch(setToken(null));
                     dispatch(setMember({}));
                     dispatch(setExpirationdate(null));
-                    alert('로그아웃 되었습니다.');
-                    navigate('/');
+                    Swal.fire({
+                        icon: 'success',
+                        title: '로그아웃 되었습니다.',
+                        confirmButtonColor: '#6c8e23',
+                        showConfirmButton: false,
+                        timer: 1500,
+                    }).then(navigate('/'));
                 }
             } catch (error) {
                 console.log(error);
@@ -131,9 +137,13 @@ function MyPageComponent() {
                     if (response.data.status === 'Apply') {
                         SetShowMentoringModal(true);
                     } else {
-                        alert(
-                            '신청한 멘토링이 없거나 현재 멘토링이 진행 중이에요!',
-                        );
+                        Swal.fire({
+                            icon: 'info',
+                            title: '멘토링 신청 현황',
+                            text: '신청한 멘토링이 없거나 현재 멘토링이 진행 중입니다.',
+                            confirmButtonText: '확인',
+                            confirmButtonColor: '#6c8e23',
+                        });
                     }
                 }
             } catch (error) {
@@ -171,7 +181,7 @@ function MyPageComponent() {
             // 태그 추가
             const tagData = new FormData();
             tagData.append('contents', tags);
-            
+
             // 파일 추가
             if (file !== null) {
                 formData.append('file', file);
@@ -180,11 +190,15 @@ function MyPageComponent() {
             try {
                 const response = await uploadProfileImage(token, formData);
                 if (response.status === 200) {
-                    const newTags = tags.filter(tag => !existingTagIds.includes(tag.id));
+                    const newTags = tags.filter(
+                        tag => !existingTagIds.includes(tag.id),
+                    );
                     if (newTags.length > 0) {
-                        await addTags(token, { contents: newTags.map(tag => tag.content) });
+                        await addTags(token, {
+                            contents: newTags.map(tag => tag.content),
+                        });
                     }
-                    
+
                     // 태그 삭제
                     if (deletedTags.length > 0) {
                         for (let tagId of deletedTags) {
@@ -193,15 +207,27 @@ function MyPageComponent() {
                     }
                     // 멘토 Intro 수정
                     if (member.role === 'Mentor' && intro) {
-                        const profileUpdateData = { intro };  // intro만 포함된 객체
+                        const profileUpdateData = { intro }; // intro만 포함된 객체
                         await updateMentorProfile(token, profileUpdateData);
                     }
                     await callMemberInfo();
-                    alert('회원 정보가 성공적으로 수정되었어요!');
+                    Swal.fire({
+                        icon: 'success',
+                        title: '회원 정보가 성공적으로 수정되었습니다!',
+                        showConfirmButton: false,
+                        confirmButtonColor: '#6c8e23',
+                        timer: 1500,
+                    }).then(() => window.location.reload());
                     window.location.reload();
                 }
             } catch (error) {
-                alert('회원 정보 수정에 실패했습니다. 다시 시도해주세요!');
+                Swal.fire({
+                    icon: 'error',
+                    title: '회원 정보 수정 실패',
+                    text: '다시 시도해 주세요!',
+                    confirmButtonText: '확인',
+                    confirmButtonColor: '#6c8e23',
+                });
                 console.log(error);
             }
         };
@@ -209,7 +235,13 @@ function MyPageComponent() {
         if (phoneError === '' && emailError === '') {
             callUpdateInfo();
         } else {
-            alert('입력한 정보가 올바른지 확인해 주세요!');
+            Swal.fire({
+                icon: 'warning',
+                title: '입력 오류',
+                text: '입력한 정보가 올바른지 확인해 주세요!',
+                confirmButtonText: '확인',
+                confirmButtonColor: '#6c8e23',
+            });
         }
     };
 
@@ -245,7 +277,8 @@ function MyPageComponent() {
     };
 
     useEffect(() => {
-        if (member.role === 'Mentor') {  // member.role이 Mentor인 경우에만 실행
+        if (member.role === 'Mentor') {
+            // member.role이 Mentor인 경우에만 실행
             const fetchTagsAndIntro = async () => {
                 try {
                     const tagResponse = await getTagsForMember(token);
@@ -255,7 +288,7 @@ function MyPageComponent() {
                         console.log(tagResponse.data);
                         const fetchedTags = tagResponse.data.map(tag => ({
                             id: tag.id,
-                            content: tag.content
+                            content: tag.content,
                         }));
                         setTags(fetchedTags);
                         console.log(fetchedTags);
@@ -275,21 +308,45 @@ function MyPageComponent() {
         if (newTag.trim() !== '') {
             const isDuplicate = tags.some(tag => tag.content === newTag.trim());
             if (tags.length >= 6) {
-                alert('태그는 최대 6개까지만 추가할 수 있습니다.');
-            } else if (!isDuplicate) {
-                const newTagObject = {
-                    id: Math.random().toString(36).substr(2, 9),
-                    content: newTag.trim()
-                };
-                setTags([...tags, newTagObject]);
-            } else {
-                alert('이미 존재하는 태그입니다.');
+                Swal.fire({
+                    icon: 'warning',
+                    title: '태그 추가 오류',
+                    text: '태그는 최대 6개까지 추가할 수 있습니다.',
+                    confirmButtonText: '확인',
+                    confirmButtonColor: '#6c8e23',
+                });
+                return;
             }
+            if (isDuplicate) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: '태그 추가 오류',
+                    text: '중복된 태그를 추가할 수 없습니다.',
+                    confirmButtonText: '확인',
+                    confirmButtonColor: '#6c8e23',
+                });
+                return;
+            }
+            setTags([
+                ...tags,
+                {
+                    id: new Date().getTime(),
+                    content: newTag.trim(),
+                },
+            ]);
             setNewTag('');
+        } else {
+            Swal.fire({
+                icon: 'warning',
+                title: '태그 추가 오류',
+                text: '태그를 입력해 주세요.',
+                confirmButtonText: '확인',
+                confirmButtonColor: '#6c8e23',
+            });
         }
     };
-    
-    const handleDeleteTag = (tagToDeleteId) => {
+
+    const handleDeleteTag = tagToDeleteId => {
         setTags(tags.filter(tag => tag.id !== tagToDeleteId));
         setDeletedTags([...deletedTags, tagToDeleteId]);
     };
@@ -443,12 +500,20 @@ function MyPageComponent() {
                         <S.TitleText>태그</S.TitleText>
                         {changeInfo && ( // changeInfo가 true일 때만 렌더링
                             <S.TagContainer>
-                                <div style={{ display: 'flex', marginBottom: '10px', width: '100%' }}>
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        marginBottom: '10px',
+                                        width: '100%',
+                                    }}
+                                >
                                     <S.TagInput
                                         type="text"
                                         value={newTag}
-                                        onChange={(e) => setNewTag(e.target.value)}
-                                        placeholder ="태그 입력"
+                                        onChange={e =>
+                                            setNewTag(e.target.value)
+                                        }
+                                        placeholder="태그 입력"
                                         disabled={!changeInfo} // 비활성화 여부 설정
                                         style={{
                                             border: changeInfo
@@ -456,17 +521,26 @@ function MyPageComponent() {
                                                 : '0px solid black', // 기본 상태일 때 테두리 없음
                                         }}
                                     />
-                                    <S.AddTagButton onClick={handleAddTag}>추가</S.AddTagButton>
+                                    <S.AddTagButton onClick={handleAddTag}>
+                                        추가
+                                    </S.AddTagButton>
                                 </div>
                             </S.TagContainer>
                         )}
-                        <S.TextArea style={{width:'340px' , marginTop: !changeInfo ? '20px' : '0px'}}>
+                        <S.TextArea
+                            style={{
+                                width: '340px',
+                                marginTop: !changeInfo ? '20px' : '0px',
+                            }}
+                        >
                             {tags.map(tag => (
                                 <S.TagItem key={tag.id}>
                                     {tag.content}
                                     {changeInfo && ( // changeInfo가 true일 때만 삭제 버튼 렌더링
-                                        <S.DeleteTagButton 
-                                            onClick={() => handleDeleteTag(tag.id)}
+                                        <S.DeleteTagButton
+                                            onClick={() =>
+                                                handleDeleteTag(tag.id)
+                                            }
                                             style={{
                                                 border: '1px solid red', // 여기에 스타일 추가
                                             }}
@@ -478,31 +552,35 @@ function MyPageComponent() {
                             ))}
                         </S.TextArea>
                     </S.TagSection>
-                    
+
                     <S.IntroSection>
-                        <S.TitleText style={{marginBottom:'20px'}}>멘토 인사말</S.TitleText>
+                        <S.TitleText style={{ marginBottom: '20px' }}>
+                            멘토 인사말
+                        </S.TitleText>
                         <S.IntroTextArea
-                        as="textarea" // textarea로 렌더링되도록 변경
-                        value={intro} // textarea의 value로 intro 상태를 설정
-                        onChange={(e) => setIntro(e.target.value)} // textarea의 값이 변경될 때 intro 상태를 업데이트
-                        disabled={!changeInfo} // changeInfo가 true일 때만 편집 가능
-                        style={{
-                            border: changeInfo
-                                ? '1px solid red' // 수정 모드일 때 빨간 테두리
-                                : '0px solid black', // 기본 상태일 때 테두리 없음
-                            width: '340px', // 너비 설정
-                            height: '100px', // 높이 설정
-                            resize: 'none', // 사용자가 크기를 조정할 수 없게 설정
-                            padding: '10px', // 패딩 추가
-                            borderRadius: '10px', // 모서리 둥글게
-                            backgroundColor: '#f9f9f9', // 배경색 설정
-                            fontFamily: 'ChosunGu',
-                            color: '#116530',
-                            fontSize: '16px',
-                            wordWrap: 'break-word', // 줄 바꿈 처리
-                            whiteSpace: 'pre-wrap', // 개행 문자 유지
-                        }}
-                        >{intro}</S.IntroTextArea>
+                            as="textarea" // textarea로 렌더링되도록 변경
+                            value={intro} // textarea의 value로 intro 상태를 설정
+                            onChange={e => setIntro(e.target.value)} // textarea의 값이 변경될 때 intro 상태를 업데이트
+                            disabled={!changeInfo} // changeInfo가 true일 때만 편집 가능
+                            style={{
+                                border: changeInfo
+                                    ? '1px solid red' // 수정 모드일 때 빨간 테두리
+                                    : '0px solid black', // 기본 상태일 때 테두리 없음
+                                width: '340px', // 너비 설정
+                                height: '100px', // 높이 설정
+                                resize: 'none', // 사용자가 크기를 조정할 수 없게 설정
+                                padding: '10px', // 패딩 추가
+                                borderRadius: '10px', // 모서리 둥글게
+                                backgroundColor: '#f9f9f9', // 배경색 설정
+                                fontFamily: 'ChosunGu',
+                                color: '#116530',
+                                fontSize: '16px',
+                                wordWrap: 'break-word', // 줄 바꿈 처리
+                                whiteSpace: 'pre-wrap', // 개행 문자 유지
+                            }}
+                        >
+                            {intro}
+                        </S.IntroTextArea>
                     </S.IntroSection>
                 </S.TagAndIntroContainer>
             )}

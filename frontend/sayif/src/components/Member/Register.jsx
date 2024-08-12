@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import S from './style/RegisterStyled';
 import { useNavigate } from 'react-router-dom';
-import { sendVerificationCode,verifyCode } from '../../api/sms';
+import { sendVerificationCode, verifyCode } from '../../api/sms';
 import { useEffect } from 'react';
+import Swal from 'sweetalert2';
 
 function Register() {
     const [selectGender, SetSelectGender] = useState('');
@@ -69,10 +70,20 @@ function Register() {
             if (phoneError === '' && emailError === '') {
                 navigate('/member/regist/profile-img', { state: { info } });
             } else {
-                alert('입력한 정보가 올바른지 확인해 주세요!');
+                Swal.fire({
+                    icon: 'warning',
+                    title: '입력 오류',
+                    text: '입력한 정보가 올바른지 확인해 주세요!',
+                    confirmButtonColor: '#6c8e23',
+                });
             }
         } else {
-            alert('모든 정보를 올바르게 입력해주세요!');
+            Swal.fire({
+                icon: 'warning',
+                title: '입력 오류',
+                text: '모든 정보를 올바르게 입력해주세요!',
+                confirmButtonColor: '#6c8e23',
+            });
         }
     };
 
@@ -90,13 +101,30 @@ function Register() {
                 await sendVerificationCode(phone);
                 setVerificationCodeSent(true);
                 setTimeRemaining(180); // 타이머 시작
-                alert('인증 코드가 발송되었습니다.');
+                Swal.fire({
+                    icon: 'success',
+                    title: '인증 코드 발송 완료',
+                    text: '인증 코드가 발송되었습니다.',
+                    confirmButtonColor: '#6c8e23',
+                    timer: 1500,
+                    showConfirmButton: false,
+                });
             } catch (error) {
                 console.error(error);
-                alert('인증 코드 발송에 실패했습니다.');
+                Swal.fire({
+                    icon: 'error',
+                    title: '발송 실패',
+                    text: '인증 코드 발송에 실패했습니다.',
+                    confirmButtonColor: '#6c8e23',
+                });
             }
         } else {
-            alert('휴대폰 번호를 입력해주세요.');
+            Swal.fire({
+                icon: 'warning',
+                title: '입력 필요',
+                text: '휴대폰 번호를 입력해주세요.',
+                confirmButtonColor: '#6c8e23',
+            });
         }
     };
 
@@ -106,16 +134,38 @@ function Register() {
                 const isValid = await verifyCode(phone, inputCode);
                 if (isValid) {
                     setIsCodeVerified(true);
-                    alert('인증이 확인되었습니다.');
+                    Swal.fire({
+                        icon: 'success',
+                        title: '인증 완료',
+                        text: '인증이 확인되었습니다.',
+                        timer: 1500,
+                        showConfirmButton: false,
+                        confirmButtonColor: '#6c8e23',
+                    });
                 } else {
-                    alert('인증 코드가 올바르지 않습니다. 다시 시도해주세요.');
+                    Swal.fire({
+                        icon: 'error',
+                        title: '인증 실패',
+                        text: '인증 코드가 올바르지 않습니다. 다시 시도해주세요.',
+                        confirmButtonColor: '#6c8e23',
+                    });
                 }
             } catch (error) {
                 console.error(error);
-                alert('인증 코드 검증에 실패했습니다.');
+                Swal.fire({
+                    icon: 'error',
+                    title: '검증 실패',
+                    text: '인증 코드 검증에 실패했습니다.',
+                    confirmButtonColor: '#6c8e23',
+                });
             }
         } else {
-            alert('인증 코드를 입력해주세요.');
+            Swal.fire({
+                icon: 'warning',
+                title: '입력 필요',
+                text: '인증 코드를 입력해주세요.',
+                confirmButtonColor: '#6c8e23',
+            });
         }
     };
 
@@ -126,12 +176,17 @@ function Register() {
             }, 1000);
             return () => clearTimeout(timer);
         } else if (timeRemaining === 0) {
-            alert('인증 시간이 초과되었습니다. 다시 시도해주세요.');
+            Swal.fire({
+                icon: 'error',
+                title: '인증 시간 초과',
+                text: '인증 시간이 초과되었습니다. 다시 시도해주세요.',
+                confirmButtonColor: '#6c8e23',
+            });
             setVerificationCodeSent(false);
             setVerificationCode(''); // 기존 인증번호 만료
         }
     }, [verificationCodeSent, timeRemaining]);
-    
+
     const RegisterView = (
         <S.Container>
             <S.ItemWrapper>
@@ -195,7 +250,7 @@ function Register() {
                 </div>
             </S.ItemWrapper>
             <S.ItemWrapper>
-                <S.Text >전화번호</S.Text>
+                <S.Text>전화번호</S.Text>
                 <S.CustomTextField
                     variant="outlined"
                     onChange={e => SetPhone(e.target.value)}
@@ -203,14 +258,20 @@ function Register() {
                     helperText={phoneError}
                     error={!!phoneError}
                     placeholder="010-0000-0000"
-                    style={{ width:'208px'}}
+                    style={{ width: '208px' }}
                 />
                 <S.CustomBtn
                     variant="outlined"
                     onClick={handleSendVerificationCode}
                     disabled={verificationCodeSent}
-                    style={{width:'125px',fontSize:'15px',marginRight:'0px'}}
-                >인증코드 발송</S.CustomBtn>
+                    style={{
+                        width: '125px',
+                        fontSize: '15px',
+                        marginRight: '0px',
+                    }}
+                >
+                    인증코드 발송
+                </S.CustomBtn>
             </S.ItemWrapper>
             {verificationCodeSent && (
                 <S.ItemWrapper>
@@ -219,23 +280,31 @@ function Register() {
                         variant="outlined"
                         onChange={e => setInputCode(e.target.value)}
                         placeholder="인증코드 입력"
-                        style={{ width:'208px'}}
+                        style={{ width: '208px' }}
                     />
                     <S.CustomBtn
                         variant="outlined"
                         onClick={handleVerifyCode}
                         disabled={isCodeVerified}
-                        style={{width:'40px',fontSize:'15px'}}
+                        style={{ width: '40px', fontSize: '15px' }}
                     >
                         확인
                     </S.CustomBtn>
                     {timeRemaining > 0 && (
-                        <S.Text style={{ marginLeft: '10px', width:'55px', marginLeft:'0px', marginRight:'5px' }}>
-                            {Math.floor(timeRemaining / 60)}분 {timeRemaining % 60}초 남음
+                        <S.Text
+                            style={{
+                                marginLeft: '10px',
+                                width: '55px',
+                                marginLeft: '0px',
+                                marginRight: '5px',
+                            }}
+                        >
+                            {Math.floor(timeRemaining / 60)}분{' '}
+                            {timeRemaining % 60}초 남음
                         </S.Text>
                     )}
                 </S.ItemWrapper>
-             )}
+            )}
             <S.ItemWrapper>
                 <S.Text>이메일</S.Text>
                 <S.CustomTextField
@@ -248,8 +317,8 @@ function Register() {
                     placeholder="ssafy@ssafy.com"
                 />
             </S.ItemWrapper>
-            <S.RegistBtn 
-                variant="contained" 
+            <S.RegistBtn
+                variant="contained"
                 onClick={handleNextButton}
                 disabled={!isCodeVerified} // 인증이 완료되어야 버튼 활성화
             >
