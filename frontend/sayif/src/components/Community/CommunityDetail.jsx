@@ -3,7 +3,6 @@ import S from './style/CommunityDetailStyled';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
-import Swal from 'sweetalert2'; // SweetAlert2 import 추가
 import {
     DeleteCommunityComment,
     GetCommunityComment,
@@ -65,22 +64,11 @@ function CommunityDetail() {
                 writeComment,
             );
             if (response.status === 200) {
-                await Swal.fire({
-                    icon: 'success',
-                    title: '성공',
-                    text: '댓글이 성공적으로 등록되었습니다!',
-                    confirmButtonColor: '#6c8e23',
-                }).then(() => {
-                    window.location.reload();
-                });
+                alert('댓글이 성공적으로 등록되었습니다!');
+                window.location.reload();
             }
         } catch (error) {
-            Swal.fire({
-                title: '댓글 등록이 실패했어요!',
-                text: '다시 한 번 시도해보세요!',
-                icon: 'error',
-                confirmButtonColor: '#6c8e23',
-            });
+            alert('댓글 등록이 실패했어요! 다시 한 번 시도해보세요!');
             console.log(error);
         }
     };
@@ -89,21 +77,11 @@ function CommunityDetail() {
         try {
             const response = await DeleteCommunityComment(commentId, token);
             if (response.status === 200) {
-                Swal.fire({
-                    title: '댓글이 삭제되었습니다!',
-                    icon: 'success',
-                    confirmButtonColor: '#6c8e23',
-                }).then(() => {
-                    window.location.reload();
-                });
+                alert('댓글이 삭제되었습니다!');
+                window.location.reload();
             }
         } catch (error) {
-            Swal.fire({
-                title: '댓글 삭제에 실패했어요!',
-                text: '다시 한 번 시도해보세요!',
-                icon: 'error',
-                confirmButtonColor: '#6c8e23',
-            });
+            alert('댓글 삭제에 실패했어요! 다시 한 번 시도해보세요!');
             console.log(error);
         }
     };
@@ -116,22 +94,12 @@ function CommunityDetail() {
                 token,
             );
             if (response.status === 200) {
-                Swal.fire({
-                    title: '댓글이 수정되었습니다!',
-                    icon: 'success',
-                    confirmButtonColor: '#6c8e23',
-                }).then(() => {
-                    setIsEditing(null);
-                    window.location.reload();
-                });
+                alert('댓글이 수정되었습니다!');
+                setIsEditing(null);
+                window.location.reload();
             }
         } catch (error) {
-            Swal.fire({
-                title: '댓글 수정에 실패했어요!',
-                text: '다시 한 번 시도해보세요!',
-                icon: 'error',
-                confirmButtonColor: '#6c8e23',
-            });
+            alert('댓글 수정에 실패했어요! 다시 한 번 시도해보세요!');
             console.log(error);
         }
     };
@@ -144,22 +112,16 @@ function CommunityDetail() {
 
     const handleDownloadImage = () => {
         if (content?.fileUrl) {
-            Swal.fire({
-                title: '이미지를 다운로드하시겠습니까?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: '다운로드',
-                cancelButtonText: '취소',
-            }).then(result => {
-                if (result.isConfirmed) {
-                    const link = document.createElement('a');
-                    link.href = content.fileUrl;
-                    link.download = content.fileUrl.split('/').pop();
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                }
-            });
+            const userConfirmed =
+                window.confirm('이미지를 다운로드하시겠습니까?');
+            if (userConfirmed) {
+                const link = document.createElement('a');
+                link.href = content.fileUrl;
+                link.download = content.fileUrl.split('/').pop();
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
         }
     };
 

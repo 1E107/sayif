@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import ChatbotModal from '../ChatBotModal';
 import CheckIcon from '@mui/icons-material/Check';
-import Swal from 'sweetalert2';
 
 function Story() {
     const [selectPostIt, setSelectPostIt] = useState(false);
@@ -44,33 +43,24 @@ function Story() {
         navigate('/team/create-story');
     };
 
-    const handleRead = async () => {
-        try {
-            const response = await getReadStatus(
-                member.teamId,
-                selectContentId,
-                token,
-            );
-            if (response.status === 200) {
-                await Swal.fire({
-                    title: '성공!',
-                    text: '해당 사연을 읽었습니다!',
-                    icon: 'success',
-                    confirmButtonText: '확인',
-                    confirmButtonColor: '#3085d6',
-                });
-                SetHidden(prev => [...prev, selectContentId]);
+    const handleRead = () => {
+        const callReadStatus = async () => {
+            try {
+                const response = await getReadStatus(
+                    member.teamId,
+                    selectContentId,
+                    token,
+                );
+                if (response.status === 200) {
+                    alert('해당 사연을 읽었습니다!');
+                    SetHidden(prev => [...prev, selectContentId]);
+                    // window.location.reload();
+                }
+            } catch (error) {
+                console.log(error);
             }
-        } catch (error) {
-            console.log(error);
-            await Swal.fire({
-                title: '오류!',
-                text: '사연 읽기 중 오류가 발생했습니다. 다시 시도해 주세요.',
-                icon: 'error',
-                confirmButtonText: '확인',
-                confirmButtonColor: '#d33',
-            });
-        }
+        };
+        callReadStatus();
     };
 
     useEffect(() => {

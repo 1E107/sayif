@@ -77,7 +77,7 @@ function ChallengeCheckModal({ onClose, showModal }) {
                         </S.SubmitButton>
                     </>
                 ) : (
-                    <S.Content>진행중인 챌린지가 없습니다...!</S.Content>
+                    <S.Content>챌린지를 가져오고 있어요...!</S.Content>
                 )}
             </Box>
         </Modal>
