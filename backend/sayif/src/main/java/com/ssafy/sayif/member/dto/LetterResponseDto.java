@@ -13,7 +13,7 @@ public class LetterResponseDto {
     private String content;
     private String sendId;
     private int sendMemberId;
-    private String receiveMemberNickname;
+    private String sendMemberNickname;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 }
