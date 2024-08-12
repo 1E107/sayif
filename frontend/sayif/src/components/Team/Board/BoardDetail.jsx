@@ -9,14 +9,13 @@ import {
 import { useSelector } from 'react-redux';
 import CircularProgress from '@mui/material/CircularProgress';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import Swal from 'sweetalert2';
 
 function BoardDetail() {
     const { id } = useParams();
-    const { token } = useSelector(state => state.member);
+    const { token, member } = useSelector(state => state.member);
     const [content, SetContent] = useState([]);
     const [comment, SetComment] = useState([]);
-    const [writeComment, SetWriteComment] = useState('');
+    const [writeComment, SetWriteComment] = useState();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -27,7 +26,7 @@ function BoardDetail() {
                     SetContent(response.data);
                 }
             } catch (error) {
-                console.error(error);
+                console.log(error);
             }
         };
 
@@ -38,7 +37,7 @@ function BoardDetail() {
                     SetComment(response.data);
                 }
             } catch (error) {
-                console.error(error);
+                console.log(error);
             }
         };
 
@@ -50,30 +49,20 @@ function BoardDetail() {
         SetWriteComment(event.target.value);
     };
 
-    const SubmitComment = async () => {
-        try {
-            const response = await postQnAComment(id, token, writeComment);
-            if (response.status === 200) {
-                await Swal.fire({
-                    icon: 'success',
-                    title: '성공',
-                    text: '댓글이 성공적으로 등록되었습니다!',
-                });
-                // 댓글 등록 후 댓글 목록을 새로 고침
-                const updatedComments = await getQnAComment(id, token);
-                if (updatedComments.status === 200) {
-                    SetComment(updatedComments.data);
+    const SubmitComment = () => {
+        const callPostComment = async () => {
+            try {
+                const response = await postQnAComment(id, token, writeComment);
+                if (response.status === 200) {
+                    alert('댓글이 성공적으로 등록되었습니다!');
+                    window.location.reload();
                 }
-                SetWriteComment(''); // 입력 필드 초기화
+            } catch (error) {
+                alert('댓글 등록이 실패했어요! 다시 한 번 시도해보세요!');
+                console.log(error);
             }
-        } catch (error) {
-            await Swal.fire({
-                icon: 'error',
-                title: '실패',
-                text: '댓글 등록이 실패했어요! 다시 한 번 시도해보세요!',
-            });
-            console.error(error);
-        }
+        };
+        callPostComment();
     };
 
     const handleBackClick = () => {
@@ -118,11 +107,7 @@ function BoardDetail() {
                             ))}
                         </S.CommentList>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <S.CommentWriteBox
-                                value={writeComment}
-                                onChange={handleWriteComment}
-                                placeholder="댓글을 입력하세요..."
-                            />
+                            <S.CommentWriteBox onChange={handleWriteComment} />
                             <S.CustomButton
                                 variant="contained"
                                 onClick={SubmitComment}

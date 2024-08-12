@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux';
 import S from './style/ModalStyled';
 import axios from 'axios';
 import { API_BASE_URL } from '../../../api/config';
-import Swal from 'sweetalert2';
 
 function LetterModal({ onClose, id }) {
     const { token, member } = useSelector(state => state.member);
@@ -27,12 +26,7 @@ function LetterModal({ onClose, id }) {
 
     const handleSubmitLetter = async () => {
         if (!sendTitle || !sendContent) {
-            Swal.fire({
-                icon: 'warning',
-                title: '입력 오류',
-                text: '제목과 내용을 모두 입력하세요.',
-                confirmButtonColor: '#6c8e23',
-            });
+            alert('제목과 내용을 모두 입력하세요.');
             return;
         }
 
@@ -56,35 +50,16 @@ function LetterModal({ onClose, id }) {
             );
 
             if (response.status === 200) {
-                Swal.fire({
-                    icon: 'success',
-                    title: '전송 완료',
-                    text: '쪽지가 전송되었습니다.',
-                    timer: 1500,
-                    showConfirmButton: false,
-                }).then(() => {
-                    SetSendTitle('제목');
-                    SetSendContent('내용');
-                    onClose();
-                });
+                alert('쪽지가 전송되었습니다.');
+                SetSendTitle('제목');
+                SetSendContent('내용');
+                onClose();
             } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: '전송 실패',
-                    text: '쪽지 전송에 실패했습니다. 다시 시도해 주세요.',
-                    confirmButtonText: '확인',
-                    confirmButtonColor: '#6c8e23',
-                });
+                alert('쪽지 전송에 실패했습니다. 다시 시도해 주세요.');
             }
         } catch (error) {
-            Swal.fire({
-                icon: 'error',
-                title: '서버 오류',
-                text: '서버와의 연결에 실패했습니다. 나중에 다시 시도해 주세요.',
-                confirmButtonText: '확인',
-                confirmButtonColor: '#6c8e23',
-            });
             console.error('전송 오류:', error);
+            alert('서버와의 연결에 실패했습니다. 나중에 다시 시도해 주세요.');
         }
     };
 
@@ -114,21 +89,9 @@ function LetterModal({ onClose, id }) {
                 const response = await getDetail(token, id);
                 if (response.status === 200) {
                     SetDetailContent(response.data);
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: '상세정보 조회 실패',
-                        text: '쪽지 정보를 가져오는 데 실패했습니다.',
-                        confirmButtonColor: '#6c8e23',
-                    });
+                    console.log(response.data);
                 }
             } catch (error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: '서버 오류',
-                    text: '서버와의 연결에 실패했습니다. 나중에 다시 시도해 주세요.',
-                    confirmButtonColor: '#6c8e23',
-                });
                 console.log(error);
             }
         };

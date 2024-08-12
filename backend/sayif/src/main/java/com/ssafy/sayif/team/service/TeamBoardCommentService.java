@@ -84,7 +84,7 @@ public class TeamBoardCommentService {
             .createdAt(comment.getCreatedAt())
             .modifiedAt(comment.getModifiedAt())
             .teamBoardId(comment.getTeamBoard().getId())
-            .username(comment.getMember().getNickname())
+            .username(comment.getMember().getUsername())
             .build();
     }
 

@@ -41,22 +41,16 @@ const Chat = () => {
     const groupMessagesByDate = messages => {
         const groups = {};
         messages.forEach(message => {
-            const date = new Date(message.sendAt);
-            const formattedDate = `${date.getFullYear().toString().slice(-2)}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getDate().toString().padStart(2, '0')}.${getKoreanDayOfWeek(date)}`;
-            if (!groups[formattedDate]) {
-                groups[formattedDate] = [];
+            const date = new Date(message.sendAt).toLocaleDateString();
+            if (!groups[date]) {
+                groups[date] = [];
             }
-            groups[formattedDate].push(message);
+            groups[date].push(message);
         });
         return Object.entries(groups).map(([date, messages]) => ({
             date,
             messages,
         }));
-    };
-    
-    const getKoreanDayOfWeek = (date) => {
-        const days = ['일', '월', '화', '수', '목', '금', '토'];
-        return days[date.getDay()];
     };
 
     useEffect(() => {

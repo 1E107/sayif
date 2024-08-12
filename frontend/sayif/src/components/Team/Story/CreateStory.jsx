@@ -7,8 +7,6 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { acquireExperience } from '../../../api/config';
 
-import Swal from 'sweetalert2';
-
 function CreateStory() {
     const navigate = useNavigate();
     const [storyContent, SetStoryContent] = useState('');
@@ -29,29 +27,6 @@ function CreateStory() {
     };
 
     const submitStory = async () => {
-        try {
-            await postStory(member.teamId, token, storyContent);
-            acquireExperience(token, member, 2);
-
-            await Swal.fire({
-                title: '성공!',
-                text: '익명 사연이 등록되었습니다.',
-                icon: 'success',
-                confirmButtonText: '확인',
-                confirmButtonColor: '#3085d6',
-            });
-
-            navigate('/team/story-board');
-        } catch (error) {
-            console.log(error);
-            await Swal.fire({
-                title: '오류!',
-                text: '사연 등록 중 오류가 발생했습니다. 다시 시도해 주세요.',
-                icon: 'error',
-                confirmButtonText: '확인',
-                confirmButtonColor: '#d33',
-            });
-        }
         const callPostStory = async () => {
             try {
                 const response = await postStory(

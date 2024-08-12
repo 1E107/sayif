@@ -250,8 +250,4 @@ public class MemberService {
     public Member getMemberByUsername(String username) {
         return memberRepository.findByUsername(username);
     }
-
-    public boolean checkDuplicateId(String username) {
-        return memberRepository.findByUsername(username) != null;
-    }
 }

@@ -14,7 +14,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -50,11 +49,6 @@ public class MemberController {
     public ResponseEntity<?> getMemberInfo(@AuthenticationPrincipal UserDetails userDetails) {
         String username = userDetails.getUsername();
         return ResponseEntity.ok(memberService.getMemberInfo(username));
-    }
-
-    @GetMapping("/check-id/{username}")
-    public ResponseEntity<?> checkDuplicateId(@PathVariable("username") String username) {
-        return ResponseEntity.ok(memberService.checkDuplicateId(username));
     }
 
     @PutMapping("/member-info")
