@@ -209,6 +209,7 @@ function TeamHeader() {
                                 display: 'block',
                                 fontFamily: 'ChosunGu',
                                 color: '#D1C285',
+                                fontSize: '16px',
                                 fontWeight: '600',
                             }}
                         >

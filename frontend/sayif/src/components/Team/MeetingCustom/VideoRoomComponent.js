@@ -17,6 +17,7 @@ import {
     closeSession,
 } from '../../../api/OpenViduApi';
 import { getTeamSessionId } from '../../../api/MentoringApi';
+import { acquireExperience } from '../../../api/config';
 import Swal from 'sweetalert2';
 
 var localUser = new UserModel();
@@ -152,7 +153,7 @@ class VideoRoomComponent extends Component {
             Swal.fire({
                 icon: 'info',
                 title: '회의 종료',
-                text: '회의가 종료되었습니다.',
+                html: '회의가 종료되었습니다.<br>팀포인트가 50점 증가했어요!',
                 confirmButtonText: '확인',
             }).then(() => {
                 window.location.reload();
@@ -190,6 +191,11 @@ class VideoRoomComponent extends Component {
                     to: [], // 모든 참가자에게 신호 전송
                     type: 'sessionEnded',
                 });
+                await acquireExperience(
+                    this.props.userToken,
+                    this.props.member,
+                    50,
+                );
                 await closeSession(this.props.userToken, mySessionId);
             } catch (error) {
                 console.error('Error closing session:', error);
