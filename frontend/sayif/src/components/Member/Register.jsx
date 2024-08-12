@@ -3,6 +3,7 @@ import S from './style/RegisterStyled';
 import { useNavigate } from 'react-router-dom';
 import { sendVerificationCode, verifyCode } from '../../api/sms';
 import { useEffect } from 'react';
+import Swal from 'sweetalert2';
 
 function Register() {
     const [selectGender, SetSelectGender] = useState('');
@@ -69,10 +70,20 @@ function Register() {
             if (phoneError === '' && emailError === '') {
                 navigate('/member/regist/profile-img', { state: { info } });
             } else {
-                alert('입력한 정보가 올바른지 확인해 주세요!');
+                Swal.fire({
+                    icon: 'warning',
+                    title: '입력 오류',
+                    text: '입력한 정보가 올바른지 확인해 주세요!',
+                    confirmButtonColor: '#6c8e23',
+                });
             }
         } else {
-            alert('모든 정보를 올바르게 입력해주세요!');
+            Swal.fire({
+                icon: 'warning',
+                title: '입력 오류',
+                text: '모든 정보를 올바르게 입력해주세요!',
+                confirmButtonColor: '#6c8e23',
+            });
         }
     };
 
@@ -90,12 +101,30 @@ function Register() {
                 await sendVerificationCode(phone);
                 setVerificationCodeSent(true);
                 setTimeRemaining(180); // 타이머 시작
-                alert('인증 코드가 발송되었습니다.');
+                Swal.fire({
+                    icon: 'success',
+                    title: '인증 코드 발송 완료',
+                    text: '인증 코드가 발송되었습니다.',
+                    confirmButtonColor: '#6c8e23',
+                    timer: 1500,
+                    showConfirmButton: false,
+                });
             } catch (error) {
                 console.error(error);
-                alert('인증 코드 발송에 실패했습니다.');
+                Swal.fire({
+                    icon: 'error',
+                    title: '발송 실패',
+                    text: '인증 코드 발송에 실패했습니다.',
+                    confirmButtonColor: '#6c8e23',
+                });
             }
         } else {
+            Swal.fire({
+                icon: 'warning',
+                title: '입력 필요',
+                text: '휴대폰 번호를 입력해주세요.',
+                confirmButtonColor: '#6c8e23',
+            });
             alert('하이픈(-)을 포함해 입력해 주세요.');
         }
     };
@@ -106,16 +135,38 @@ function Register() {
                 const isValid = await verifyCode(phone, inputCode);
                 if (isValid) {
                     setIsCodeVerified(true);
-                    alert('인증이 확인되었습니다.');
+                    Swal.fire({
+                        icon: 'success',
+                        title: '인증 완료',
+                        text: '인증이 확인되었습니다.',
+                        timer: 1500,
+                        showConfirmButton: false,
+                        confirmButtonColor: '#6c8e23',
+                    });
                 } else {
-                    alert('인증 코드가 올바르지 않습니다. 다시 시도해주세요.');
+                    Swal.fire({
+                        icon: 'error',
+                        title: '인증 실패',
+                        text: '인증 코드가 올바르지 않습니다. 다시 시도해주세요.',
+                        confirmButtonColor: '#6c8e23',
+                    });
                 }
             } catch (error) {
                 console.error(error);
-                alert('인증 코드 검증에 실패했습니다.');
+                Swal.fire({
+                    icon: 'error',
+                    title: '검증 실패',
+                    text: '인증 코드 검증에 실패했습니다.',
+                    confirmButtonColor: '#6c8e23',
+                });
             }
         } else {
-            alert('인증 코드를 입력해주세요.');
+            Swal.fire({
+                icon: 'warning',
+                title: '입력 필요',
+                text: '인증 코드를 입력해주세요.',
+                confirmButtonColor: '#6c8e23',
+            });
         }
     };
 
@@ -128,7 +179,12 @@ function Register() {
             }, 1000);
             return () => clearTimeout(timer);
         } else if (timeRemaining === 0) {
-            alert('인증 시간이 초과되었습니다. 다시 시도해주세요.');
+            Swal.fire({
+                icon: 'error',
+                title: '인증 시간 초과',
+                text: '인증 시간이 초과되었습니다. 다시 시도해주세요.',
+                confirmButtonColor: '#6c8e23',
+            });
             setVerificationCodeSent(false);
             setVerificationCode(''); // 기존 인증번호 만료
         }

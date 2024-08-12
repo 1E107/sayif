@@ -4,6 +4,7 @@ import { createMember } from '../../api/MemberApi';
 import { useEffect, useRef, useState } from 'react';
 import { Box } from '@mui/material';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
+import Swal from 'sweetalert2';
 
 function RegistProfileImg() {
     const fileInputRef = useRef(null);
@@ -41,10 +42,28 @@ function RegistProfileImg() {
         try {
             const response = await createMember(formData);
             if (response.status === 200) {
-                navigate('/member/regist/proof-documents');
+                Swal.fire({
+                    icon: 'success',
+                    title: '등록 완료',
+                    text: '프로필 이미지가 성공적으로 등록되었습니다.',
+                    timer: 1500,
+                    showConfirmButton: false,
+                }).then(() => {
+                    navigate('/member/regist/proof-documents');
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: '등록 실패',
+                    text: '프로필 이미지 등록에 실패하였습니다.',
+                });
             }
         } catch (error) {
-            alert('회원가입에 실패했습니다.');
+            Swal.fire({
+                icon: 'error',
+                title: '등록 실패',
+                text: '회원가입에 실패했습니다.',
+            });
             console.log(error);
         }
     };

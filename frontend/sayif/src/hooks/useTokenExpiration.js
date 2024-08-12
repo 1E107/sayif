@@ -7,6 +7,7 @@ import {
 } from '../redux/modules/member';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getNewToken, logout } from '../api/MemberApi';
+import Swal from 'sweetalert2';
 
 const useTokenExpiration = () => {
     const navigate = useNavigate();
@@ -26,7 +27,12 @@ const useTokenExpiration = () => {
                     dispatch(setMember({}));
                     dispatch(setExpirationdate(null));
                     setIsLoggedOut(true);
-                    alert('로그아웃 되었습니다. 다시 로그인하세요!');
+                    Swal.fire({
+                        icon: 'warning',
+                        title: '로그아웃 되었습니다. 다시 로그인하세요!',
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
                     navigate('/member/login');
                 }
             }
