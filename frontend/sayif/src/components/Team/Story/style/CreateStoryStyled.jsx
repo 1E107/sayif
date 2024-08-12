@@ -15,7 +15,7 @@ const TitleText = styled.div`
 `;
 
 const Form = styled.div`
-    height: 500px;
+    height: 525px;
     background-color: white;
     width: 800px;
     border-radius: 30px;
