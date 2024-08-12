@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import S from './style/RegisterStyled';
 import { useNavigate } from 'react-router-dom';
-import { sendVerificationCode,verifyCode } from '../../api/sms';
+import { sendVerificationCode, verifyCode } from '../../api/sms';
 import { useEffect } from 'react';
 
 function Register() {
@@ -85,7 +85,7 @@ function Register() {
     };
 
     const handleSendVerificationCode = async () => {
-        if (phone) {
+        if (phone && phoneError === '') {
             try {
                 await sendVerificationCode(phone);
                 setVerificationCodeSent(true);
@@ -96,7 +96,7 @@ function Register() {
                 alert('인증 코드 발송에 실패했습니다.');
             }
         } else {
-            alert('휴대폰 번호를 입력해주세요.');
+            alert('하이픈(-)을 포함해 입력해 주세요.');
         }
     };
 
@@ -119,6 +119,8 @@ function Register() {
         }
     };
 
+    const handleCheckId = () => {};
+
     useEffect(() => {
         if (verificationCodeSent && timeRemaining > 0) {
             const timer = setTimeout(() => {
@@ -131,15 +133,19 @@ function Register() {
             setVerificationCode(''); // 기존 인증번호 만료
         }
     }, [verificationCodeSent, timeRemaining]);
-    
+
     const RegisterView = (
         <S.Container>
             <S.ItemWrapper>
                 <S.Text>아이디</S.Text>
                 <S.CustomTextField
+                    style={{ width: '260px' }}
                     variant="outlined"
                     onChange={e => SetId(e.target.value)}
                 />
+                <S.IdChecktBtn onClick={{ handleCheckId }}>
+                    중복 확인
+                </S.IdChecktBtn>
             </S.ItemWrapper>
             <S.ItemWrapper>
                 <S.Text>비밀번호</S.Text>
@@ -195,7 +201,7 @@ function Register() {
                 </div>
             </S.ItemWrapper>
             <S.ItemWrapper>
-                <S.Text >전화번호</S.Text>
+                <S.Text>전화번호</S.Text>
                 <S.CustomTextField
                     variant="outlined"
                     onChange={e => SetPhone(e.target.value)}
@@ -203,14 +209,20 @@ function Register() {
                     helperText={phoneError}
                     error={!!phoneError}
                     placeholder="010-0000-0000"
-                    style={{ width:'208px'}}
+                    style={{ width: '208px' }}
                 />
                 <S.CustomBtn
                     variant="outlined"
                     onClick={handleSendVerificationCode}
                     disabled={verificationCodeSent}
-                    style={{width:'125px',fontSize:'15px',marginRight:'0px'}}
-                >인증코드 발송</S.CustomBtn>
+                    style={{
+                        width: '125px',
+                        fontSize: '15px',
+                        marginRight: '0px',
+                    }}
+                >
+                    인증코드 발송
+                </S.CustomBtn>
             </S.ItemWrapper>
             {verificationCodeSent && (
                 <S.ItemWrapper>
@@ -219,23 +231,31 @@ function Register() {
                         variant="outlined"
                         onChange={e => setInputCode(e.target.value)}
                         placeholder="인증코드 입력"
-                        style={{ width:'208px'}}
+                        style={{ width: '208px' }}
                     />
                     <S.CustomBtn
                         variant="outlined"
                         onClick={handleVerifyCode}
                         disabled={isCodeVerified}
-                        style={{width:'40px',fontSize:'15px'}}
+                        style={{ width: '40px', fontSize: '15px' }}
                     >
                         확인
                     </S.CustomBtn>
                     {timeRemaining > 0 && (
-                        <S.Text style={{ marginLeft: '10px', width:'55px', marginLeft:'0px', marginRight:'5px' }}>
-                            {Math.floor(timeRemaining / 60)}분 {timeRemaining % 60}초 남음
+                        <S.Text
+                            style={{
+                                marginLeft: '10px',
+                                width: '55px',
+                                marginLeft: '0px',
+                                marginRight: '5px',
+                            }}
+                        >
+                            {Math.floor(timeRemaining / 60)}분{' '}
+                            {timeRemaining % 60}초 남음
                         </S.Text>
                     )}
                 </S.ItemWrapper>
-             )}
+            )}
             <S.ItemWrapper>
                 <S.Text>이메일</S.Text>
                 <S.CustomTextField
@@ -248,8 +268,8 @@ function Register() {
                     placeholder="ssafy@ssafy.com"
                 />
             </S.ItemWrapper>
-            <S.RegistBtn 
-                variant="contained" 
+            <S.RegistBtn
+                variant="contained"
                 onClick={handleNextButton}
                 disabled={!isCodeVerified} // 인증이 완료되어야 버튼 활성화
             >
