@@ -32,11 +32,20 @@ const NavLink = styled.a`
   }
 `;
 
+const ExternalLink = styled.a`
+  color: #d3d3c7;
+  opacity: 0.8;
+  text-decoration: none;
+  font-size: 14px;
+  &:hover {
+    color: #aaa;
+  }
+`;
+
 const Copyright = styled.div`
   font-size: 12px;
   color: #d3d3c7;
   opacity: 0.8;
-
   margin-left: auto;
   margin-right: 20px; /* Adjust this to control spacing */
 `;
@@ -74,9 +83,9 @@ const Footer = () => {
       <LeftSection>
         <NavLinks>
           <NavLink href="/serviceIntroduction">소개</NavLink>
-          <NavLink href="/">커리큘럼</NavLink>
-          <NavLink href="/">공지사항</NavLink>
-          <NavLink href="/">고객센터</NavLink>
+          <NavLink href="/curriculum">커리큘럼</NavLink>
+          <ExternalLink href="https://www.ssafy.com/ksp/servlet/swp.board.controller.SwpBoardServlet" target="_blank" rel="ssafy life">공지사항</ExternalLink>
+          <ExternalLink href="https://www.ssafy.com/ksp/jsp/swp/swpMain.jsp" target="_blank" rel="ssafy page">고객센터</ExternalLink>
         </NavLinks>
       </LeftSection>
       <Copyright>
