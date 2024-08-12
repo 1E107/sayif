@@ -23,8 +23,8 @@ function Introduction() {
                     <S.Link href="https://www.ssafy.com/" target="_blank" rel="noopener noreferrer">SSAFY 홈페이지 바로가기</S.Link>
                     {isMemberValid && (
                     <>
-                        {member.role === "Mentee" && <S.Link href={`${Main_URL}/apply-mentoring/`}>멘토링 신청 바로가기</S.Link>}
-                        {member.role === "Mentor" && <S.Link href={`${Main_URL}/create-mentoring/`}>멘토링 그룹 생성 바로가기</S.Link>}
+                        {member.role === "Mentee" && <S.Link href={`${Main_URL}apply-mentoring/`}>멘토링 신청 바로가기</S.Link>}
+                        {member.role === "Mentor" && <S.Link href={`${Main_URL}create-mentoring/`}>멘토링 그룹 생성 바로가기</S.Link>}
                     </>
                     )}
                     </S.LinkContainer>
