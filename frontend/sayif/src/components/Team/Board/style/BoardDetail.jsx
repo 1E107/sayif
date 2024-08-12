@@ -10,6 +10,7 @@ const Container = styled.div`
     background-color: white;
     border-radius: 30px;
     text-align: center;
+    position: relative;
 `;
 
 const Title = styled.div`
@@ -32,6 +33,7 @@ const CustomHr = styled.hr`
     height: 1px;
     border: 0;
 `;
+
 const Content = styled.div`
     text-align: left;
     font-size: 18px;
@@ -98,6 +100,15 @@ const LoadingText = styled.div`
     margin-bottom: 50px;
 `;
 
+const BackButton = styled.div`
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    cursor: pointer;
+    font-size: 24px;
+    color: #116530;
+`;
+
 const S = {
     Container,
     Title,
@@ -113,6 +124,7 @@ const S = {
     CustomButton,
     CommentItem,
     LoadingText,
+    BackButton,
 };
 
 export default S;

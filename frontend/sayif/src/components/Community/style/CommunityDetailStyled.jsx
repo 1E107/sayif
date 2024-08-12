@@ -3,76 +3,81 @@ import '../../../styles/fonts.css';
 import Button from '@mui/material/Button';
 
 const Container = styled.div`
-  margin-top: 100px; /* Adjust margin-top to ensure it doesn't get hidden behind header */
-  margin-bottom: 100px;
-  min-width: 1000px;
-  min-height: 700px;
-  background-color: white;
-  border-radius: 30px;
-  text-align: center;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
-  position: relative; /* Add position relative for positioning the back button */
+    width: 1000px;
+    height: 90vh;
+    background-color: white;
+    border-radius: 30px;
+    text-align: center;
+    box-shadow:
+        0 3px 6px rgba(0, 0, 0, 0.16),
+        0 3px 6px rgba(0, 0, 0, 0.23);
+    position: relative;
+    overflow-y: auto;
 `;
 
 const Title = styled.div`
-  margin-top: 50px;
-  font-size: 35px;
-  font-family: ChosunGu;
-  font-weight: bold;
+    margin-top: 50px;
+    font-size: 35px;
+    font-family: ChosunGu;
+    font-weight: bold;
 `;
 
 const DateAndWriter = styled.div`
-  margin-top: 25px;
-  font-size: 20px;
-  color: gray;
-  font-family: ChosunGu;
+    margin-top: 25px;
+    font-size: 20px;
+    color: gray;
+    font-family: ChosunGu;
 `;
 
 const CustomHr = styled.hr`
-  margin: 30px;
-  background: #e9ecef;
-  height: 1px;
-  border: 0;
+    margin: 30px;
+    background: #e9ecef;
+    height: 1px;
+    border: 0;
 `;
 
 const Content = styled.div`
-  text-align: left;
-  font-size: 20px;
-  min-height: 300px;
-  margin: 50px;
-  color: #343a40;
-  line-height: 25px;
-  font-family: ChosunGu;
+    text-align: left;
+    font-size: 20px;
+    min-height: 300px;
+    margin: 50px;
+    color: #343a40;
+    line-height: 25px;
+    font-family: ChosunGu;
+    overflow-wrap: break-word;
 `;
 
 const CommentTitle = styled.div`
-  font-size: 18px;
-  text-align: left;
-  padding-left: 60px;
-  font-family: ChosunGu;
+    font-size: 18px;
+    text-align: left;
+    padding-left: 60px;
+    font-family: ChosunGu;
 `;
 
 const CommentBox = styled.div`
-  min-height: 130px;
-  font-family: ChosunGu;
-  text-align: left;
-  padding-left: 60px;
+    min-height: 130px;
+    font-family: ChosunGu;
+    text-align: left;
+    padding-left: 60px;
+    max-height: 300px;
+    /* overflow-y: hidden; 댓글 섹션의 스크롤을 제거 */
 `;
 
 const CommentItem = styled.div`
-  margin-bottom: 25px;
+    margin-bottom: 25px;
 `;
 
 const CommentDate = styled.span`
-  margin-left: 10px;
-  font-size: 14px;
-  color: gray;
+    margin-left: 10px;
+    font-size: 14px;
+    color: gray;
 `;
 
 const CommentContent = styled.div`
-  margin-top: 10px;
-  font-size: 17px;
-  line-height: 130%;
+    margin-top: 10px;
+    font-size: 17px;
+    line-height: 130%;
+    white-space: pre-wrap;
 `;
 
 const CommentList = styled.div``;
@@ -88,30 +93,30 @@ const CustomButton = styled(Button)({
 });
 
 const CommentWriteBox = styled.textarea`
-  margin-top: 30px;
-  font-size: 18px;
-  height: 100px;
-  margin-right: 10px;
-  border: 1px solid gray;
-  border-radius: 10px;
-  margin-bottom: 30px;
-  width: 1000px;
+    margin-top: 30px;
+    font-size: 18px;
+    height: 100px;
+    margin-right: 10px;
+    border: 1px solid gray;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    width: 1000px;
 `;
 
 const CommentEditBox = styled.textarea`
-  margin-top: 30px;
-  font-size: 18px;
-  height: 100px;
-  margin-right: 10px;
-  border: 1px solid gray;
-  border-radius: 10px;
-  margin-bottom: 30px;
-  width: 90%;
+    margin-top: 30px;
+    font-size: 18px;
+    height: 100px;
+    margin-right: 10px;
+    border: 1px solid gray;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    width: 90%;
 `;
 
 const LoadingText = styled.div`
-  font-family: ChosunGu;
-  margin-bottom: 50px;
+    font-family: ChosunGu;
+    margin-bottom: 50px;
 `;
 
 const SmallButton = styled(Button)({
@@ -123,68 +128,60 @@ const SmallButton = styled(Button)({
     fontFamily: 'ChosunGu !important',
 });
 
-// 추가된 스타일
 const Fieldset = styled.fieldset`
-  border: 2px solid #ddd;
-  padding: 0;
-  margin-top: 10px;
-  border-radius: 4px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  max-width: 300px;
-  margin-left: auto;
-  margin-right: auto;
-  position: relative;
+    border: 2px solid #ddd;
+    padding: 0;
+    margin-top: 10px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
 `;
 
 const Legend = styled.legend`
-  display: block;
-  text-align: center;
-  font-weight: bold;
-  padding: 0 10px;
-  border-bottom: 2px solid #ddd;
-  margin: 0;
-  cursor: pointer; /* 클릭 가능하게 스타일 추가 */
+    display: block;
+    text-align: center;
+    font-weight: bold;
+    padding: 0 10px;
+    border-bottom: 2px solid #ddd;
+    margin: 0;
+    cursor: pointer;
 `;
 
 const ImageContainer = styled.div`
-  width: 300px;
-  height: 300px;
-  overflow: hidden;
-  position: relative;
-  margin: 0 auto;
+    width: 300px;
+    height: 300px;
+    overflow: hidden;
+    position: relative;
+    margin: 0 auto;
 `;
 
 const Image = styled.img`
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  position: absolute;
-  top: 0;
-  left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
 `;
 
 const BackButton = styled.button`
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  borderRadius: 20px;
-  background-color: #116530; /* 초록색 배경 */
-  color: white;
-  border: none;
-  border-radius: 5px;
-  width: 50px;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  z-index: 1000; /* Ensure it's above other content */
-  
-  &:hover {
-    background-color: #218838; /* Darker green on hover */
-  }
+    position: absolute;
+    top: 30px;
+    left: 20px;
+    background-color: transparent;
+    color: #116530;
+    border: none;
+    font-size: 32px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 1000;
+
+    &:hover {
+        color: #218838;
+    }
 `;
 
 const S = {
@@ -208,7 +205,7 @@ const S = {
     Legend,
     ImageContainer,
     Image,
-    BackButton, // Add BackButton to S
+    BackButton,
 };
 
 export default S;
