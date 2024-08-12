@@ -6,7 +6,11 @@ const Container = styled.div`
     margin-top: 0;
     margin-bottom: 0;
     width: 1000px;
-    height: ${({ changeInfo }) => (changeInfo ? '840px' : '700px')}; /* 높이를 동적으로 설정 */
+    height: ${({ changeInfo, role }) => {
+        if (role === 'Mentor') return changeInfo ? '840px' : '780px';
+        if (role === 'Mentee') return changeInfo ? '600px' : '540px';
+        return '720px'; // 기본값
+    }};
     border-radius: 40px;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
     display: flex;
@@ -213,9 +217,16 @@ const ItemWrapper = styled.div`
 `;
 
 const Spacer = styled.div`
-    height: ${({ changeInfo }) => (changeInfo ? '980px' : '720px')} /* 원하는 높이로 설정 */
-    width: 100%;
-    margin-top:${({ changeInfo }) => (changeInfo ? '240px' : '100px')}
+    height: ${({ changeInfo, role }) => {
+        if (role === 'Mentor') return changeInfo ? '870px' : '800px';
+        return '580px';
+    }};
+    /* 원하는 높이로 설정 */
+    width: '100%';
+    margin-top:${({ changeInfo, role }) => {
+        if (role === 'Mentor') return changeInfo ? '240px' : '160px';
+        if (role === 'Mentee') return changeInfo ? '50px' : '20px';
+    }};
 `;
 
 const S = {

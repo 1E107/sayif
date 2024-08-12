@@ -295,8 +295,8 @@ function MyPageComponent() {
     };
 
     return (
-        <S.Spacer changeInfo={changeInfo}>
-            <S.Container changeInfo={changeInfo}>
+        <S.Spacer changeInfo={changeInfo} role={member.role}>
+            <S.Container changeInfo={changeInfo} role={member.role}>
                 <div style={{ display: 'flex', marginTop:'50px'}}>
                     <div style={{ textAlign: 'center' }}>
                         <S.ImageContainer>
