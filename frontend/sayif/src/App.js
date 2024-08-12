@@ -22,6 +22,7 @@ import useTokenExpiration from './hooks/useTokenExpiration';
 import CommunityWritePage from './pages/Community/CommunityWritePage';
 import LetterPage from './pages/Member/LetterPage';
 import BoardWritePage from './pages/Team/BoardWritePage';
+import CurriculumPage from './pages/Introduction/CurriculumPage';
 
 function App() {
     useTokenExpiration();
@@ -37,6 +38,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<MainPage />}></Route>
                 <Route path="/serviceIntroduction" element={<IntroPage />} />
+                <Route path="/curriculum" element={<CurriculumPage />} />
                 <Route path="/community" element={<CommunityPage />} />
                 <Route
                     path="/community/detail/:id"

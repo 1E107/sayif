@@ -1,7 +1,6 @@
 package com.ssafy.sayif.team.controller;
 
 import com.ssafy.sayif.member.entity.Member;
-import com.ssafy.sayif.member.repository.MemberRepository;
 import com.ssafy.sayif.team.converter.MemberConverter;
 import com.ssafy.sayif.team.converter.TeamNameConverter;
 import com.ssafy.sayif.team.dto.MemberInfoResponseDto;

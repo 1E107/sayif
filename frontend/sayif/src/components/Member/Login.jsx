@@ -33,6 +33,8 @@ function Login() {
                 dispatch(setExpirationdate(expirationDate));
 
                 localStorage.setItem('savedInfoPage', 1);
+                localStorage.setItem('selectChapter', 1);
+
                 alert('로그인에 성공하였습니다.');
                 navigate('/');
             } catch (error) {

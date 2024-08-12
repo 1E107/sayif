@@ -13,6 +13,7 @@ import styled from 'styled-components';
 import '../../styles/fonts.css';
 import { useEffect, useState } from 'react';
 import { getMemberInfo } from '../../api/TeamApi';
+import { getMentoringPlan } from '../../api/MentoringApi';
 import { useSelector } from 'react-redux';
 import MessageModal from './style/MessageModal'; // MessageModal 컴포넌트 임포트
 import ChatbotModal from './ChatBotModal';
@@ -50,6 +51,7 @@ function ShowMembers() {
     const [selectedMentorId, setSelectedMentorId] = useState(null);
 
     const [isChatBotModalOpen, setIsChatBotModalOpen] = useState(false);
+    const [mentoringInfo, setMentoringInfo] = useState(null);
 
     const handleOpenModal = mentorId => {
         setSelectedMentorId(mentorId);
@@ -88,11 +90,42 @@ function ShowMembers() {
                 console.log(error);
             }
         };
+        const callMentoringPlan = async () => {
+            try {
+                const response = await getMentoringPlan(member.teamId, token);
+                if (response.status === 200) {
+                    const data = response.data;
+                    const timeOnly = data.time.slice(0, 5); // "11:00" 형태로 변환
+                    setMentoringInfo({
+                        startDate: data.startDate,
+                        endDate: data.endDate,
+                        dayOfWeek: data.dayOfWeek,
+                        time: timeOnly,
+                        pmam: data.pmam,
+                    });
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
         callMemberInfo();
+        callMentoringPlan();
     }, []);
 
     const MainView = (
         <S.Container>
+            <S.Title>멘토링 일정</S.Title>
+            {mentoringInfo && (
+                <S.MentoringDetails>
+                    <div>
+                        {mentoringInfo.startDate} ~ {mentoringInfo.endDate}
+                    </div>
+                    <div>매주 {mentoringInfo.dayOfWeek} 요일</div>
+                    <div>
+                        {mentoringInfo.pmam} {mentoringInfo.time}
+                    </div>
+                </S.MentoringDetails>
+            )}
             <S.Title>단비</S.Title>
             <S.MentorList>
                 {mentorList.map(mentor => {

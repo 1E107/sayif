@@ -10,10 +10,16 @@ import { acquireExperience } from '../../../api/config';
 function CreateStory() {
     const navigate = useNavigate();
     const [storyContent, SetStoryContent] = useState('');
+    const [openSnackbar, setOpenSnackbar] = useState(false);
     const { token, member } = useSelector(state => state.member);
 
     const handleContent = event => {
         SetStoryContent(event.target.value);
+    };
+
+    const handleSnackbarClose = () => {
+        setOpenSnackbar(false);
+        navigate('/team/story-board');
     };
 
     const goStoryMain = () => {
@@ -34,9 +40,8 @@ function CreateStory() {
             }
         };
         callPostStory();
-        acquireExperience(token, member,2);
-        alert('익명 사연이 등록되었습니다.');
-        navigate('/team/story-board');
+        acquireExperience(token, member, 2);
+        setOpenSnackbar(true);
     };
 
     const CreateStoryView = (
@@ -51,6 +56,7 @@ function CreateStory() {
                 <NavigateBeforeIcon style={{ color: '#116530' }} />
                 <S.TitleText onClick={goStoryMain}>사연함</S.TitleText>
             </div>
+
             <S.Form>
                 <S.ContentText>
                     사연함에 여러분의 소중한 이야기를 남겨주세요! <br />{' '}
@@ -64,6 +70,19 @@ function CreateStory() {
                     사연 남기기
                 </S.CustomBtn>
             </S.Form>
+            <S.CustomSnackbar
+                open={openSnackbar}
+                autoHideDuration={null}
+                onClose={handleSnackbarClose}
+            >
+                <S.CustomAlert severity="success">
+                    익명 사연이 등록되었습니다.
+                    <br /> 팀포인트가 2점 증가했어요!
+                    <S.ConfirmButton onClick={handleSnackbarClose}>
+                        확인
+                    </S.ConfirmButton>
+                </S.CustomAlert>
+            </S.CustomSnackbar>
         </S.Container>
     );
 

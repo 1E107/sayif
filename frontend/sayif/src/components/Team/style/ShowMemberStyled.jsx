@@ -5,12 +5,13 @@ const Title = styled.div`
     color: #116530;
     font-family: ChosunGu;
     font-weight: bold;
-    margin-bottom: 30px;
-    margin-top: 30px;
+    font-size: 19px;
+    margin-bottom: 20px;
+    margin-top: 40px;
 `;
 
 const Container = styled.div`
-    margin: 15px 0px 50px 0px;
+    margin: 50px 0px 50px 0px;
 `;
 
 const MentorList = styled.div`
@@ -27,14 +28,14 @@ const MentorNameText = styled.div`
 
 const MentorInfoText = styled.div`
     font-family: ChosunGu;
-    font-size: 13px;
+    font-size: 15px;
 `;
 
 const MentorExplan = styled.div`
     color: #116530;
     font-family: ChosunGu;
     line-height: 25px;
-    font-size: 15px;
+    font-size: 16px;
     margin-bottom: 20px;
 `;
 
@@ -49,7 +50,7 @@ const TagBox = styled.div`
     font-family: ChosunGu;
     color: white;
     padding: 4px;
-    font-size: 12px;
+    font-size: 13px;
     width: 50px;
     border-radius: 14px;
     text-align: center;
@@ -80,7 +81,7 @@ const MenteeImg = styled.img`
 const MenteeNickname = styled.div`
     text-align: center;
     font-family: ChosunGu;
-    font-size: 25px;
+    font-size: 22px;
     margin-top: 20px;
     color: #116530;
     font-weight: bold;
@@ -102,6 +103,17 @@ const FloatingButton = styled.button`
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
     z-index: 1000;
 `;
+const MentoringDetails = styled.div`
+    font-family: 'ChosunGu', sans-serif;
+    font-size: 18px;
+    color: #0b4619;
+    text-align: center;
+    font-weight: bold;
+
+    & > div {
+        margin-bottom: 8px;
+    }
+`;
 
 const S = {
     Title,
@@ -117,6 +129,7 @@ const S = {
     MenteeImg,
     MenteeNickname,
     FloatingButton,
+    MentoringDetails,
 };
 
 export default S;

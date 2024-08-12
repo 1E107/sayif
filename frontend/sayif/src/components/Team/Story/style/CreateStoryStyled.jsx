@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 import '../../../../styles/fonts.css';
 import Button from '@mui/material/Button';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 const Container = styled.div`
     margin-top: 80px;
@@ -15,7 +17,7 @@ const TitleText = styled.div`
 `;
 
 const Form = styled.div`
-    height: 500px;
+    height: 525px;
     background-color: white;
     width: 800px;
     border-radius: 30px;
@@ -48,6 +50,36 @@ const CustomBtn = styled(Button)({
     backgroundColor: '#116530 !important',
 });
 
+const CustomSnackbar = styled(Snackbar)`
+    &.MuiSnackbar-root {
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -30%);
+    }
+`;
+
+const CustomAlert = styled(Alert)`
+    width: 100%;
+    font-family: 'ChosunGu' !important;
+    & .MuiAlert-icon {
+        color: #fdfed3;
+    }
+    & .MuiAlert-message {
+        font-size: 18px;
+    }
+`;
+
+const ConfirmButton = styled(Button)`
+    color: #0b4619 !important;
+    font-family: 'ChosunGu' !important;
+    font-weight: bold !important;
+    padding: 6px 16px !important;
+    background-color: transparent !important;
+    &:hober {
+        background-color: rgba(11, 70, 25, 0.1) !important;
+    }
+`;
+
 const S = {
     Container,
     Form,
@@ -55,6 +87,9 @@ const S = {
     CustomTextarea,
     ContentText,
     CustomBtn,
+    CustomSnackbar,
+    CustomAlert,
+    ConfirmButton,
 };
 
 export default S;

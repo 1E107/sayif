@@ -1,9 +1,9 @@
 package com.ssafy.sayif.team.service;
+
 import com.ssafy.sayif.member.entity.Member;
 import com.ssafy.sayif.member.repository.MemberRepository;
 import com.ssafy.sayif.member.repository.MenteeRepository;
 import com.ssafy.sayif.member.service.MemberService;
-import com.ssafy.sayif.team.dto.GetChatResponseDto;
 import com.ssafy.sayif.team.dto.PointResponseDto;
 import com.ssafy.sayif.team.dto.PointUpdateRequestDto;
 import com.ssafy.sayif.team.entity.Team;
@@ -14,7 +14,6 @@ import com.ssafy.sayif.team.repository.TeamRepository;
 import com.ssafy.sayif.team.util.TeamConstants;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -24,8 +23,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
-
-import static org.bouncycastle.asn1.x500.style.RFC4519Style.member;
 
 @Service
 @RequiredArgsConstructor
@@ -43,37 +40,39 @@ public class TeamService {
         return members;
     }
 
-    @Scheduled(cron = "0 0 9 * * ?") // 매일 자정에 팀 상태 변경
+    @Scheduled(cron = "0 0 0 * * ?") // 매일 자정에 팀 상태 변경
     public void processTeamStatuses() {
         List<Team> applyTeams = teamRepository.findByStatus(TeamStatus.Apply);
 
         for (Team team : applyTeams) {
-            if (shouldUpdateToProceed(team)) {
-                team.updateStatus(TeamStatus.Proceed);
-                teamRepository.save(team);
-                TeamMsg message = TeamMsg.builder()
-                        .msgContent(team.getName() + "팀의 채팅방이 생성되었습니다 !")
-                        .member(memberService.getMemberByUsername("관리자1"))
-                        .team(team)
-                        .sendAt(ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime())
-                        .build();
+            if (isThreeDaysBeforeStartDate(team)) { // 3일 남은 팀만 상태를 변경하도록 체크
+                if (shouldUpdateToProceed(team)) {
+                    team.updateStatus(TeamStatus.Proceed);
+                    teamRepository.save(team);
+                    TeamMsg message = TeamMsg.builder()
+                            .msgContent(team.getName() + "팀의 채팅방이 생성되었습니다 !")
+                            .member(memberService.getMemberByUsername("관리자1"))
+                            .team(team)
+                            .sendAt(LocalDateTime.now())
+                            .build();
 
-                teamMsgRepository.save(message);
-            } else {
-                team.updateStatus(TeamStatus.Cancel);
-                teamRepository.save(team);
+                    teamMsgRepository.save(message);
+                } else {
+                    team.updateStatus(TeamStatus.Cancel);
+                    teamRepository.save(team);
+                }
             }
         }
     }
 
-    private boolean shouldUpdateToProceed(Team team) {
+    private boolean isThreeDaysBeforeStartDate(Team team) {
         LocalDateTime threeDaysBeforeStartDate = team.getStartDate().minusDays(3).atStartOfDay();
         LocalDateTime now = LocalDateTime.now();
 
-        if (now.isBefore(threeDaysBeforeStartDate)) {
-            return false;
-        }
+        return now.isAfter(threeDaysBeforeStartDate) || now.isEqual(threeDaysBeforeStartDate);
+    }
 
+    private boolean shouldUpdateToProceed(Team team) {
         int menteeCount = menteeRepository.countByTeamId(team.getId());
 
         return menteeCount >= TeamConstants.MINIMUM_REQUIRED_MENTEES;

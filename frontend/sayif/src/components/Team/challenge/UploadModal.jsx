@@ -93,6 +93,7 @@ function UploadModal({ onClose, id, challengeId }) {
         boxShadow: 24,
         p: 4,
         textAlign: 'center',
+        borderRadius: '16px',
     };
 
     return (

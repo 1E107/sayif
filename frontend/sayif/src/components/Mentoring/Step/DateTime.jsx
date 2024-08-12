@@ -327,12 +327,13 @@ function DateTime({ selectInfoSave }) {
                         style={{
                             fontFamily: 'ChosunGu',
                             backgroundColor: '#116530',
-                            width: '250px',
+                            width: '200px',
                             height: '50px',
                             margin: '30px 30px 80px 30px',
+                            fontSize: '17px',
                         }}
                     >
-                        적용하기
+                        다음
                     </Button>
                 </div>
             </S.Container>

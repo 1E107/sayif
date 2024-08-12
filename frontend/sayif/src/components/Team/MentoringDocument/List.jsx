@@ -62,7 +62,6 @@ function MaterialList() {
                     10,
                 );
                 if (response.status === 200) {
-                    console.log(response.data.content);
                     SetRows(response.data.content);
                 }
             } catch (error) {
@@ -71,11 +70,12 @@ function MaterialList() {
         };
 
         callMaterialList();
-    }, []);
+    }, [page, rowsPerPage, member.teamId, token]);
 
     const ListView = (
         <S.Container>
             <div style={{ textAlign: 'center' }}>
+                <S.Title>멘토링 자료 게시판</S.Title>
                 <S.CustomTextField
                     id="input-with-icon-textfield"
                     InputProps={{
@@ -140,6 +140,12 @@ function MaterialList() {
                                             onClick={() =>
                                                 moveDetailPage(row.id)
                                             }
+                                            sx={{
+                                                '&:hover': {
+                                                    backgroundColor: '#f0f0f0',
+                                                },
+                                                cursor: 'pointer',
+                                            }}
                                         >
                                             {columns.map(column => {
                                                 const value = row[column.id];

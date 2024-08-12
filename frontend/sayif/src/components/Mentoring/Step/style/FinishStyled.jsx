@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import '../../../../styles/fonts.css'
+import styled from 'styled-components';
+import '../../../../styles/fonts.css';
 
 const Container = styled.div`
     margin-top: 50px;
@@ -26,7 +26,8 @@ const SubText = styled.div`
     font-family: ChosunGu;
     font-size: 16px;
     margin-bottom: 50px;
-`
+    line-height: 140%;
+`;
 
 const SubTextHigh = styled.span`
     background-color: #116530;
@@ -34,14 +35,14 @@ const SubTextHigh = styled.span`
     padding: 2px;
     border-radius: 3px;
     font-size: 13px;
-`
+`;
 
 const Icon = styled.div`
     background-image: url('/img/Apply/apply-step4.png');
     background-size: cover;
     width: 900px;
     height: 200px;
-`
+`;
 
 const S = {
     Container,
@@ -49,7 +50,7 @@ const S = {
     MainTitle,
     SubText,
     SubTextHigh,
-    Icon
+    Icon,
 };
 
 export default S;

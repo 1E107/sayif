@@ -81,6 +81,7 @@ function Board() {
     const BoardView = (
         <S.Container>
             <div style={{ textAlign: 'center' }}>
+                <S.Title>Q&A 게시판</S.Title>
                 <S.CustomTextField
                     id="input-with-icon-textfield"
                     InputProps={{
@@ -150,6 +151,12 @@ function Board() {
                                             onClick={() =>
                                                 moveDetailPage(row.id)
                                             }
+                                            sx={{
+                                                '&:hover': {
+                                                    backgroundColor: '#f0f0f0',
+                                                },
+                                                cursor: 'pointer',
+                                            }}
                                         >
                                             {columns.map(column => {
                                                 const value = row[column.id];
