@@ -18,7 +18,7 @@ function Letter() {
     useEffect(() => {
         const callGetList = async () => {
             try {
-                const response = await getList(token, page, 6);
+                const response = await getList(token, page, 5);
                 if (response.status === 200) {
                     SetTotalData(response.data.totalElements);
                     SetItemList(response.data.content);
@@ -29,7 +29,7 @@ function Letter() {
         };
 
         callGetList();
-    }, []);
+    }, [page]);
 
     const handlePageChange = (event, value) => {
         SetPage(value);
@@ -48,6 +48,13 @@ function Letter() {
         <>
             <S.Container>
                 <S.HeaderText>쪽지함</S.HeaderText>
+                <S.TitleWrapper>
+                    <S.TitleText>보낸 사람</S.TitleText>
+                    <S.TitleText style={{ width: '40px' }}>제목</S.TitleText>
+                    <S.TitleText style={{ width: '150px' }}>
+                        보낸 날짜
+                    </S.TitleText>
+                </S.TitleWrapper>
                 <S.ListWrapper>
                     {itemList.map(data => {
                         return (

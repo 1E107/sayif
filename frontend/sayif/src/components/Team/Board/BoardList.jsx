@@ -151,6 +151,12 @@ function Board() {
                                             onClick={() =>
                                                 moveDetailPage(row.id)
                                             }
+                                            sx={{
+                                                '&:hover': {
+                                                    backgroundColor: '#f0f0f0',
+                                                },
+                                                cursor: 'pointer',
+                                            }}
                                         >
                                             {columns.map(column => {
                                                 const value = row[column.id];

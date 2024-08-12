@@ -194,7 +194,7 @@ public class TeamBoardService {
             .id(teamBoard.getId())
             .title(teamBoard.getTitle())
             .content(teamBoard.getContent())
-            .writer(teamBoard.getMember().getUsername())
+            .writer(teamBoard.getMember().getNickname())
             .createdAt(teamBoard.getCreatedAt())
             .modifiedAt(teamBoard.getModifiedAt())
             .build();

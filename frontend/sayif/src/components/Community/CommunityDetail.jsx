@@ -13,13 +13,13 @@ import {
 
 function CommunityDetail() {
     const { id } = useParams();
-    const navigate = useNavigate(); // Add useNavigate hook
+    const navigate = useNavigate();
     const { token, member } = useSelector(state => state.member);
-    const [content, SetContent] = useState(null); // 초기값을 null로 변경
+    const [content, SetContent] = useState(null);
     const [comment, SetComment] = useState([]);
     const [writeComment, SetWriteComment] = useState('');
     const [editComment, setEditComment] = useState('');
-    const [isEditing, setIsEditing] = useState(null); // Track which comment is being edited
+    const [isEditing, setIsEditing] = useState(null);
 
     useEffect(() => {
         const callDetail = async () => {
@@ -58,8 +58,11 @@ function CommunityDetail() {
 
     const SubmitComment = async () => {
         try {
-            const response = await PostCommunityComment(token, id,
-                writeComment);
+            const response = await PostCommunityComment(
+                token,
+                id,
+                writeComment,
+            );
             if (response.status === 200) {
                 alert('댓글이 성공적으로 등록되었습니다!');
                 window.location.reload();
@@ -92,7 +95,7 @@ function CommunityDetail() {
             );
             if (response.status === 200) {
                 alert('댓글이 수정되었습니다!');
-                setIsEditing(null); // Reset editing state
+                setIsEditing(null);
                 window.location.reload();
             }
         } catch (error) {
@@ -109,11 +112,12 @@ function CommunityDetail() {
 
     const handleDownloadImage = () => {
         if (content?.fileUrl) {
-            const userConfirmed = window.confirm('이미지를 다운로드하시겠습니까?');
+            const userConfirmed =
+                window.confirm('이미지를 다운로드하시겠습니까?');
             if (userConfirmed) {
                 const link = document.createElement('a');
                 link.href = content.fileUrl;
-                link.download = content.fileUrl.split('/').pop(); // Extract filename from URL
+                link.download = content.fileUrl.split('/').pop();
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
@@ -127,20 +131,17 @@ function CommunityDetail() {
 
     return (
         <S.Container>
-            <S.BackButton onClick={() => navigate(-1)}>←</S.BackButton> {/* Add BackButton here */}
+            <S.BackButton onClick={() => navigate(-1)}>&lt;</S.BackButton>
             {content ? (
                 <>
                     <S.Title>{content.title}</S.Title>
                     <S.DateAndWriter>
-                        {content.createdAt} | {content.writer} |
-                        조회수: {content.hitCount}
+                        {content.createdAt} | {content.writer} | 조회수:{' '}
+                        {content.hitCount}
                     </S.DateAndWriter>
                     <S.CustomHr />
-                    <S.Content>
-                        {content.content}
-                    </S.Content>
+                    <S.Content>{content.content}</S.Content>
                     <S.CustomHr />
-                    {/* 파일이 존재하고 이미지일 때만 300x300 사이즈로 표시 */}
                     {content.fileUrl && isImage(content.fileUrl) && (
                         <S.Fieldset>
                             <S.Legend onClick={handleDownloadImage}>

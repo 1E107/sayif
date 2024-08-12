@@ -34,42 +34,68 @@ const Main = () => {
     };
 
     const handleImageClick = async (link) => {
-        if (link === '/mentor-profile' || link === '/apply-mentoring') {
-            navigate(link);
-            return;
-        }
-
+        // 로그인 멘토링 및 팀 오피스에 대한 모든 접근 제한
         if (!token) {
             alert('로그인 후 이용해 주세요');
             navigate('/member/login');
             return;
         }
 
-        if (link === '/team/meeting') {
-            await handleTeamPage();
-        } else {
+        // 새잎/단비 모두 접근가능
+        if (link === '/mentor-profile') {
             navigate(link);
+            return;
+        }
+
+        // 새잎만 가능
+        if (link === '/apply-mentoring') {
+            if(member.role === 'Mentor') {
+                alert('멘토링 신청은 새잎만 가능합니다');
+                navigate('/');
+                return;
+            } else {
+                navigate(link);
+                return;
+            }
+        }
+
+        // 팀이 proceed가 된 새잎/단비 가능
+        if (link === '/team'|| link === '/team/meeting') {
+            await handleTeamPage();
         }
     };
 
-    const handleTeamPage = async () => {
+    const handleTeamPage = async (link) => {
+        // 배정된 팀이 있음
         if (member.teamId) {
             try {
                 const response = await getTeamStatue(member.teamId, token);
                 if (response.status === 200) {
                     if (response.data.status === 'Proceed') {
-                        navigate('/team');
+                        if(link === '/team') {
+                            navigate('/team');
+                        } else {
+                            navigate('/team/meeting');
+                        }
+                        return;
+                    // 배정된 팀이 proceed가 아님
                     } else {
                         alert('팀 오피스가 활성화 되지 않았습니다');
                         navigate('/');
+                        return;
                     }
                 }
+            // 오류가 발생하면 랜딩페이지로 이동
             } catch (error) {
                 console.log(error);
-                navigate('/login'); // 오류가 발생하면 로그인 페이지로 이동
+                navigate('/'); 
+                return;
             }
+        // 팀 ID가 없으면 랜딩페이지로 이동
         } else {
-            navigate('/login'); // 팀 ID가 없으면 로그인 페이지로 이동
+            alert('배정된 멘토링 팀이 없습니다');
+            navigate('/'); 
+            return;
         }
     };
 

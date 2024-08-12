@@ -26,7 +26,7 @@ const HeaderText = styled.div`
 
 const ListWrapper = styled.div`
     margin: 30px;
-    height: 500px;
+    height: 450px;
     display: flex;
     flex-direction: column;
 `;
@@ -53,6 +53,22 @@ const ListText = styled.div`
     font-family: ChosunGu;
 `;
 
+const TitleWrapper = styled.div`
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 30px 10px 30px;
+    font-size: 18px;
+    border-bottom: solid 1px #116530;
+    padding: 0px 0px 20px 0px;
+`;
+
+const TitleText = styled.div`
+    margin: 0px 15px 0px 15px;
+    font-family: ChosunGu;
+    color: #116530;
+    font-weight: bold;
+`;
+
 const S = {
     Container,
     HeaderText,
@@ -60,6 +76,8 @@ const S = {
     ListItem,
     ListText,
     PageWrapper,
+    TitleWrapper,
+    TitleText,
 };
 
 export default S;
