@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import S from './style/RegisterStyled';
 import { useNavigate } from 'react-router-dom';
 import { sendVerificationCode, verifyCode } from '../../api/sms';
-import { useEffect } from 'react';
 import Swal from 'sweetalert2';
+import { API_BASE_URL } from '../../api/config';
+import axios from 'axios';
 
 function Register() {
     const [selectGender, SetSelectGender] = useState('');
@@ -17,10 +18,11 @@ function Register() {
     const [emailError, SetEmailError] = useState('');
     const navigate = useNavigate();
     const [verificationCodeSent, setVerificationCodeSent] = useState(false);
-    const [verificationCode, setVerificationCode] = useState('');
     const [inputCode, setInputCode] = useState('');
     const [isCodeVerified, setIsCodeVerified] = useState(false);
     const [timeRemaining, setTimeRemaining] = useState(180); // 3분 타이머 설정 (180초)
+    const [isIdAvailable, setIsIdAvailable] = useState(false); // 아이디 중복 체크 상태
+    const [hasCheckedId, setHasCheckedId] = useState(false); // 아이디 중복 검사를 수행했는지 여부
 
     const handleClickGender = data => {
         SetSelectGender(data);
@@ -51,7 +53,27 @@ function Register() {
         }
     };
 
-    const handleNextButton = () => {
+    const handleNextButton = async () => {
+        if (!hasCheckedId) {
+            Swal.fire({
+                icon: 'warning',
+                title: '아이디 중복 검사 필요',
+                text: '아이디 중복 검사를 진행해주세요.',
+                confirmButtonColor: '#6c8e23',
+            });
+            return;
+        }
+        // 아이디 중복 여부 확인
+        if (!isIdAvailable) {
+            Swal.fire({
+                icon: 'warning',
+                title: '아이디 중복',
+                text: '아이디가 중복되었습니다. 다른 아이디를 사용해주세요.',
+                confirmButtonColor: '#f50000',
+            });
+            return;
+        }
+
         const info = {
             username: id,
             password: password,
@@ -170,7 +192,48 @@ function Register() {
         }
     };
 
-    const handleCheckId = () => {};
+    const handleCheckId = async (username) => {
+        try {
+            const response = await axios.get(
+                `${API_BASE_URL}/member/check-id/${username}`);
+
+            console.log(response.data);
+            // 응답 데이터가 true/false인지 확인
+            if (typeof response.data === 'boolean') {
+                setIsIdAvailable(!response.data); // true가 중복, false가 사용 가능
+                setHasCheckedId(true); // 중복 검사 수행 완료
+                if (response.data) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: '아이디 중복',
+                        text: '다른 아이디를 입력해주세요.',
+                        confirmButtonColor: '#f60303',
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '사용 가능한 아이디',
+                        text: '사용 가능한 아이디입니다.',
+                        confirmButtonColor: '#1931ad',
+                    });
+                }
+                return !response.data; // 중복이 아니면 true, 중복이면 false
+            } else {
+                throw new Error('Unexpected response format');
+            }
+        } catch (error) {
+            console.error('Error checking ID:', error);
+            setIsIdAvailable(false); // 오류가 발생했을 때는 false로 설정
+            return false;
+        }
+    };
+
+    // 아이디가 변경될 때마다 중복 검사 수행
+    useEffect(() => {
+        if (id) {
+            setHasCheckedId(false); // 아이디가 변경되면 중복 검사 다시 수행
+        }
+    }, [id]);
 
     useEffect(() => {
         if (verificationCodeSent && timeRemaining > 0) {
@@ -186,7 +249,7 @@ function Register() {
                 confirmButtonColor: '#6c8e23',
             });
             setVerificationCodeSent(false);
-            setVerificationCode(''); // 기존 인증번호 만료
+            setInputCode(''); // 기존 인증번호 만료
         }
     }, [verificationCodeSent, timeRemaining]);
 
@@ -198,8 +261,12 @@ function Register() {
                     style={{ width: '260px' }}
                     variant="outlined"
                     onChange={e => SetId(e.target.value)}
+                    value={id}
                 />
-                <S.IdChecktBtn onClick={{ handleCheckId }}>
+                <S.IdChecktBtn
+                    onClick={() => handleCheckId(id)}
+                    disabled={hasCheckedId} // 중복 검사를 수행했을 경우 버튼 비활성화
+                >
                     중복 확인
                 </S.IdChecktBtn>
             </S.ItemWrapper>
@@ -297,18 +364,30 @@ function Register() {
                     >
                         확인
                     </S.CustomBtn>
-                    {timeRemaining > 0 && (
+                    {isCodeVerified ? (
                         <S.Text
                             style={{
                                 marginLeft: '10px',
                                 width: '55px',
-                                marginLeft: '0px',
                                 marginRight: '5px',
+                                color: 'green',
                             }}
                         >
-                            {Math.floor(timeRemaining / 60)}분{' '}
-                            {timeRemaining % 60}초 남음
+                            인증 완료
                         </S.Text>
+                    ) : (
+                        timeRemaining > 0 && (
+                            <S.Text
+                                style={{
+                                    marginLeft: '10px',
+                                    width: '55px',
+                                    marginRight: '5px',
+                                }}
+                            >
+                                {Math.floor(timeRemaining / 60)}분{' '}
+                                {timeRemaining % 60}초 남음
+                            </S.Text>
+                        )
                     )}
                 </S.ItemWrapper>
             )}
@@ -327,7 +406,8 @@ function Register() {
             <S.RegistBtn
                 variant="contained"
                 onClick={handleNextButton}
-                disabled={!isCodeVerified} // 인증이 완료되어야 버튼 활성화
+                disabled={!isCodeVerified
+                    || !isIdAvailable} // 인증 완료와 아이디 사용 가능 여부에 따라 버튼 활성화
             >
                 다음
             </S.RegistBtn>

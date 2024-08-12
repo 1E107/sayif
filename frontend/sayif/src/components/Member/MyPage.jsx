@@ -523,6 +523,21 @@ function MyPageComponent() {
                                             value={newTag}
                                             onChange={(e) => setNewTag(
                                                 e.target.value)}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter'
+                                                    && newTag.trim() !== '') { // 엔터 키와 빈 문자열 체크
+                                                    e.preventDefault(); // 폼 제출 방지
+                                                    // 태그를 추가하는 로직
+                                                    setTags(prevTags => [
+                                                        ...prevTags,
+                                                        {
+                                                            id: Date.now(),
+                                                            content: newTag.trim(),
+                                                        },
+                                                    ]);
+                                                    setNewTag(''); // 입력창 비우기
+                                                }
+                                            }}
                                             placeholder="태그 입력"
                                             disabled={!changeInfo} // 비활성화 여부 설정
                                             style={{
