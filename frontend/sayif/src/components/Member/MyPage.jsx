@@ -6,17 +6,23 @@ import {
     setMember,
     setToken,
 } from '../../redux/modules/member';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import MentoringModal from './MentoringModal';
 import { getTeamStatue } from '../../api/MentoringApi';
-import { getMemberInfo, uploadProfileImage, logout } from '../../api/MemberApi';
+import {
+    addTags,
+    deleteTag,
+    getMemberInfo,
+    getMentorProfile,
+    getTagsForMember,
+    logout,
+    updateMentorProfile,
+    uploadProfileImage,
+} from '../../api/MemberApi';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import styled from 'styled-components';
 import Alert from '@mui/material/Alert';
 import CheckIcon from '@mui/icons-material/Check';
-import { addTags, getTagsForMember, deleteTag } from '../../api/MemberApi';
-import { useEffect } from 'react';
-import { getMentorProfile, updateMentorProfile } from '../../api/MemberApi';
 import EmailIcon from '@mui/icons-material/Email';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Tooltip from '@mui/material/Tooltip';
@@ -47,28 +53,28 @@ function MyPageComponent() {
     const [intro, setIntro] = useState(''); // Intro 상태 변수 추가
 
     const ProfileImg = styled.img`
-        width: 250px;
-        height: 250px;
-        border-radius: 150px;
+      width: 250px;
+      height: 250px;
+      border-radius: 150px;
 
-        &:hover {
-            ${({ changeInfo }) =>
-                changeInfo &&
-                `
+      &:hover {
+        ${({ changeInfo }) =>
+            changeInfo &&
+            `
             cursor: pointer;
             filter: brightness(0.3);
             transition: filter 0.3s ease;
         `}
-        }
+      }
 
-        &:hover + div {
-            ${({ changeInfo }) =>
-                changeInfo &&
-                `
+      &:hover + div {
+        ${({ changeInfo }) =>
+            changeInfo &&
+            `
             transition: filter 0.3s ease;
             display: block;
         `}
-        }
+      }
     `;
 
     const handleInputChange = field => e => {
@@ -354,7 +360,7 @@ function MyPageComponent() {
     return (
         <S.Spacer changeInfo={changeInfo} role={member.role}>
             <S.Container changeInfo={changeInfo} role={member.role}>
-                <div style={{ display: 'flex', marginTop:'50px'}}>
+                <div style={{ display: 'flex', marginTop: '50px' }}>
                     <div style={{ textAlign: 'center' }}>
                         <S.ImageContainer>
                             <ProfileImg
@@ -385,8 +391,8 @@ function MyPageComponent() {
                             {role === 'Mentor'
                                 ? '단비'
                                 : role === 'Mentee'
-                                ? '새잎'
-                                : ''}{' '}
+                                    ? '새잎'
+                                    : ''}{' '}
                             / {member.nickname}
                         </S.NickNameText>
                         {/* <div>
@@ -397,13 +403,19 @@ function MyPageComponent() {
                         <S.ItemWrapper>
                             <Tooltip title="쪽지함">
                                 <EmailIcon
-                                    style={{ fontSize: '40px', cursor: 'pointer' }}
+                                    style={{
+                                        fontSize: '40px',
+                                        cursor: 'pointer',
+                                    }}
                                     onClick={handleCheckMessage}
                                 />
                             </Tooltip>
                             <Tooltip title="로그아웃">
                                 <LogoutIcon
-                                    style={{ fontSize: '40px', cursor: 'pointer' }}
+                                    style={{
+                                        fontSize: '40px',
+                                        cursor: 'pointer',
+                                    }}
                                     onClick={handleLogout}
                                 />
                             </Tooltip>
@@ -443,8 +455,8 @@ function MyPageComponent() {
                                     gender === 'F'
                                         ? '여성'
                                         : gender === 'M'
-                                        ? '남성'
-                                        : ''
+                                            ? '남성'
+                                            : ''
                                 }
                                 disabled={changeInfo}
                                 onChange={handleGenderChange}
@@ -501,12 +513,17 @@ function MyPageComponent() {
                             <S.TitleText>태그</S.TitleText>
                             {changeInfo && ( // changeInfo가 true일 때만 렌더링
                                 <S.TagContainer>
-                                    <div style={{ display: 'flex', marginBottom: '10px', width: '100%' }}>
+                                    <div style={{
+                                        display: 'flex',
+                                        marginBottom: '10px',
+                                        width: '100%',
+                                    }}>
                                         <S.TagInput
                                             type="text"
                                             value={newTag}
-                                            onChange={(e) => setNewTag(e.target.value)}
-                                            placeholder ="태그 입력"
+                                            onChange={(e) => setNewTag(
+                                                e.target.value)}
+                                            placeholder="태그 입력"
                                             disabled={!changeInfo} // 비활성화 여부 설정
                                             style={{
                                                 border: changeInfo
@@ -514,17 +531,22 @@ function MyPageComponent() {
                                                     : '0px solid black', // 기본 상태일 때 테두리 없음
                                             }}
                                         />
-                                        <S.AddTagButton onClick={handleAddTag}>추가</S.AddTagButton>
+                                        <S.AddTagButton
+                                            onClick={handleAddTag}>추가</S.AddTagButton>
                                     </div>
                                 </S.TagContainer>
                             )}
-                            <S.TextArea style={{width:'340px' , marginTop: !changeInfo ? '20px' : '0px'}}>
+                            <S.TextArea style={{
+                                width: '340px',
+                                marginTop: !changeInfo ? '20px' : '0px',
+                            }}>
                                 {tags.map(tag => (
                                     <S.TagItem key={tag.id}>
                                         {tag.content}
                                         {changeInfo && ( // changeInfo가 true일 때만 삭제 버튼 렌더링
                                             <S.DeleteTagButton
-                                                onClick={() => handleDeleteTag(tag.id)}
+                                                onClick={() => handleDeleteTag(
+                                                    tag.id)}
                                                 style={{
                                                     border: '1px solid red', // 여기에 스타일 추가
                                                 }}
@@ -538,33 +560,35 @@ function MyPageComponent() {
                         </S.TagSection>
 
                         <S.IntroSection>
-                            <S.TitleText style={{marginBottom:'20px'}}>멘토 인사말</S.TitleText>
+                            <S.TitleText style={{ marginBottom: '20px' }}>멘토
+                                인사말</S.TitleText>
                             <S.IntroTextArea
-                            as="textarea" // textarea로 렌더링되도록 변경
-                            value={intro} // textarea의 value로 intro 상태를 설정
-                            onChange={(e) => setIntro(e.target.value)} // textarea의 값이 변경될 때 intro 상태를 업데이트
-                            disabled={!changeInfo} // changeInfo가 true일 때만 편집 가능
-                            style={{
-                                border: changeInfo
-                                    ? '1px solid red' // 수정 모드일 때 빨간 테두리
-                                    : '0px solid black', // 기본 상태일 때 테두리 없음
-                                width: '340px', // 너비 설정
-                                height: '100px', // 높이 설정
-                                resize: 'none', // 사용자가 크기를 조정할 수 없게 설정
-                                padding: '10px', // 패딩 추가
-                                borderRadius: '10px', // 모서리 둥글게
-                                backgroundColor: '#f9f9f9', // 배경색 설정
-                                fontFamily: 'ChosunGu',
-                                color: '#116530',
-                                fontSize: '16px',
-                                wordWrap: 'break-word', // 줄 바꿈 처리
-                                whiteSpace: 'pre-wrap', // 개행 문자 유지
-                            }}
+                                as="textarea" // textarea로 렌더링되도록 변경
+                                value={intro} // textarea의 value로 intro 상태를 설정
+                                onChange={(e) => setIntro(
+                                    e.target.value)} // textarea의 값이 변경될 때 intro 상태를 업데이트
+                                disabled={!changeInfo} // changeInfo가 true일 때만 편집 가능
+                                style={{
+                                    border: changeInfo
+                                        ? '1px solid red' // 수정 모드일 때 빨간 테두리
+                                        : '0px solid black', // 기본 상태일 때 테두리 없음
+                                    width: '340px', // 너비 설정
+                                    height: '100px', // 높이 설정
+                                    resize: 'none', // 사용자가 크기를 조정할 수 없게 설정
+                                    padding: '10px', // 패딩 추가
+                                    borderRadius: '10px', // 모서리 둥글게
+                                    backgroundColor: '#f9f9f9', // 배경색 설정
+                                    fontFamily: 'ChosunGu',
+                                    color: '#116530',
+                                    fontSize: '16px',
+                                    wordWrap: 'break-word', // 줄 바꿈 처리
+                                    whiteSpace: 'pre-wrap', // 개행 문자 유지
+                                }}
                             >{intro}</S.IntroTextArea>
                         </S.IntroSection>
                     </S.TagAndIntroContainer>
                 )}
-                <div style={{height:'25px'}}>
+                <div style={{ height: '25px' }}>
                     {!changeInfo && (
                         <S.ProfileUpdateBtn onClick={handleUpdateBtn}>
                             프로필 수정
@@ -599,272 +623,7 @@ function MyPageComponent() {
                 )}
             </S.Container>
         </S.Spacer>
-        <S.Container>
-            <div style={{ display: 'flex' }}>
-                <div style={{ textAlign: 'center' }}>
-                    <S.ImageContainer>
-                        <ProfileImg
-                            src={preview}
-                            alt="Profile"
-                            onClick={handleProfileImageClick}
-                            changeInfo={changeInfo}
-                        />
-                        <S.ImgIcon>
-                            <AddAPhotoIcon style={{ fontSize: '100px' }} />
-                        </S.ImgIcon>
-                        <input
-                            type="file"
-                            id="fileInput"
-                            style={{ display: 'none' }}
-                            onChange={handleImageChange}
-                            accept="image/*"
-                        />
-                    </S.ImageContainer>
-                    <input
-                        type="file"
-                        id="fileInput"
-                        style={{ display: 'none' }}
-                        onChange={handleImageChange}
-                        accept="image/*"
-                    />
-                    <S.NickNameText>
-                        {role === 'Mentor'
-                            ? '단비'
-                            : role === 'Mentee'
-                              ? '새잎'
-                              : ''}{' '}
-                        / {member.nickname}
-                    </S.NickNameText>
-                    {/* <div>
-                        <S.LetterBtn onClick={handleCheckMessage}>
-                            쪽지함
-                        </S.LetterBtn>
-                    </div> */}
-                    <S.ItemWrapper>
-                        <Tooltip title="쪽지함">
-                            <EmailIcon
-                                style={{ fontSize: '40px', cursor: 'pointer' }}
-                                onClick={handleCheckMessage}
-                            />
-                        </Tooltip>
-                        <Tooltip title="로그아웃">
-                            <LogoutIcon
-                                style={{ fontSize: '40px', cursor: 'pointer' }}
-                                onClick={handleLogout}
-                            />
-                        </Tooltip>
-                    </S.ItemWrapper>
-                </div>
-                <div style={{ marginLeft: '80px' }}>
-                    <div
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            marginTop: '30px',
-                        }}
-                    >
-                        <S.TitleText>이름</S.TitleText>
-                        <S.CustomInput
-                            placeholder={member.name}
-                            disabled={!changeInfo}
-                            onChange={handleInputChange('name')}
-                            onKeyDown={handleKeyDown}
-                            style={{
-                                border: changeInfo
-                                    ? '1px solid red'
-                                    : '0px solid black',
-                            }}
-                        />
-                    </div>
-                    <div
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            marginTop: '30px',
-                        }}
-                    >
-                        <S.TitleText>성별</S.TitleText>
-                        <S.CustomInput
-                            placeholder={
-                                gender === 'F'
-                                    ? '여성'
-                                    : gender === 'M'
-                                      ? '남성'
-                                      : ''
-                            }
-                            disabled={changeInfo}
-                            onChange={handleGenderChange}
-                            onKeyDown={handleKeyDown}
-                        />
-                    </div>
-                    <div
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            marginTop: '30px',
-                        }}
-                    >
-                        <S.TitleText>전화번호</S.TitleText>
-                        <S.CustomInput
-                            placeholder={member.phone}
-                            disabled={!changeInfo}
-                            onChange={handleInputChange('phone')}
-                            onKeyDown={handleKeyDown}
-                            style={{
-                                border: changeInfo
-                                    ? '1px solid red'
-                                    : '0px solid black',
-                            }}
-                        />
-                    </div>
-                    {phoneError && <S.ErrorMsg>{phoneError}</S.ErrorMsg>}
-                    <div
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            marginTop: '30px',
-                        }}
-                    >
-                        <S.TitleText>이메일</S.TitleText>
-                        <S.CustomInput
-                            placeholder={member.email}
-                            disabled={!changeInfo}
-                            onChange={handleInputChange('email')}
-                            onKeyDown={handleKeyDown}
-                            style={{
-                                border: changeInfo
-                                    ? '1px solid red'
-                                    : '0px solid black',
-                            }}
-                        />
-                    </div>
-                    {emailError && <S.ErrorMsg>{emailError}</S.ErrorMsg>}
-                </div>
-            </div>
-            {member.role === 'Mentor' && (
-                <S.TagAndIntroContainer>
-                    <S.TagSection>
-                        <S.TitleText>태그</S.TitleText>
-                        {changeInfo && ( // changeInfo가 true일 때만 렌더링
-                            <S.TagContainer>
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        marginBottom: '10px',
-                                        width: '100%',
-                                    }}
-                                >
-                                    <S.TagInput
-                                        type="text"
-                                        value={newTag}
-                                        onChange={e =>
-                                            setNewTag(e.target.value)
-                                        }
-                                        placeholder="태그 입력"
-                                        disabled={!changeInfo} // 비활성화 여부 설정
-                                        style={{
-                                            border: changeInfo
-                                                ? '1px solid red' // 수정 모드일 때 빨간 테두리
-                                                : '0px solid black', // 기본 상태일 때 테두리 없음
-                                        }}
-                                    />
-                                    <S.AddTagButton onClick={handleAddTag}>
-                                        추가
-                                    </S.AddTagButton>
-                                </div>
-                            </S.TagContainer>
-                        )}
-                        <S.TextArea
-                            style={{
-                                width: '340px',
-                                marginTop: !changeInfo ? '20px' : '0px',
-                            }}
-                        >
-                            {tags.map(tag => (
-                                <S.TagItem key={tag.id}>
-                                    {tag.content}
-                                    {changeInfo && ( // changeInfo가 true일 때만 삭제 버튼 렌더링
-                                        <S.DeleteTagButton
-                                            onClick={() =>
-                                                handleDeleteTag(tag.id)
-                                            }
-                                            style={{
-                                                border: '1px solid red', // 여기에 스타일 추가
-                                            }}
-                                        >
-                                            X
-                                        </S.DeleteTagButton>
-                                    )}
-                                </S.TagItem>
-                            ))}
-                        </S.TextArea>
-                    </S.TagSection>
 
-                    <S.IntroSection>
-                        <S.TitleText style={{ marginBottom: '20px' }}>
-                            멘토 인사말
-                        </S.TitleText>
-                        <S.IntroTextArea
-                            as="textarea" // textarea로 렌더링되도록 변경
-                            value={intro} // textarea의 value로 intro 상태를 설정
-                            onChange={e => setIntro(e.target.value)} // textarea의 값이 변경될 때 intro 상태를 업데이트
-                            disabled={!changeInfo} // changeInfo가 true일 때만 편집 가능
-                            style={{
-                                border: changeInfo
-                                    ? '1px solid red' // 수정 모드일 때 빨간 테두리
-                                    : '0px solid black', // 기본 상태일 때 테두리 없음
-                                width: '340px', // 너비 설정
-                                height: '100px', // 높이 설정
-                                resize: 'none', // 사용자가 크기를 조정할 수 없게 설정
-                                padding: '10px', // 패딩 추가
-                                borderRadius: '10px', // 모서리 둥글게
-                                backgroundColor: '#f9f9f9', // 배경색 설정
-                                fontFamily: 'ChosunGu',
-                                color: '#116530',
-                                fontSize: '16px',
-                                wordWrap: 'break-word', // 줄 바꿈 처리
-                                whiteSpace: 'pre-wrap', // 개행 문자 유지
-                            }}
-                        >
-                            {intro}
-                        </S.IntroTextArea>
-                    </S.IntroSection>
-                </S.TagAndIntroContainer>
-            )}
-            <div>
-                {!changeInfo && (
-                    <S.ProfileUpdateBtn onClick={handleUpdateBtn}>
-                        프로필 수정
-                    </S.ProfileUpdateBtn>
-                )}
-                {changeInfo && (
-                    <S.ProfileUpdateBtn onClick={handleUpdateCallBtn}>
-                        변경사항 저장
-                    </S.ProfileUpdateBtn>
-                )}
-                <S.ProfileUpdateBtn onClick={handleOpenMentoringModal}>
-                    멘토링 신청 현황
-                </S.ProfileUpdateBtn>
-            </div>
-            {changeInfo && (
-                <Alert
-                    icon={<CheckIcon fontSize="inherit" />}
-                    severity="success"
-                    style={{
-                        width: '800px',
-                        marginTop: '30px',
-                        fontFamily: 'ChosunGu',
-                        fontSize: '17px',
-                    }}
-                >
-                    변경하고 싶은 정보를 수정한 후, '변경사항 저장' 버튼을
-                    눌러주세요!
-                </Alert>
-            )}
-            {showMentoringModal && (
-                <MentoringModal onClose={handleCloseMentoringModal} />
-            )}
-        </S.Container>
     );
 }
 
