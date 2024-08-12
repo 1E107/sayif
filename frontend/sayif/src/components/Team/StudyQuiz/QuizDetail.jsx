@@ -134,7 +134,7 @@ function QuizDetail({ quiz }) {
                             component="h2"
                             style={{ fontFamily: 'ChosunGu', color: '#116530' }}
                         >
-                            정답입니다.
+                            정답입니다. <br />팀 포인트가 10점 증가했어요!
                         </Typography>
                     </Box>
                 ) : (
