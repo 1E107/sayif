@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { login, getMemberInfo } from '../../api/MemberApi';
 import { useState } from 'react';
 import Alert from '@mui/material/Alert';
+import Swal from 'sweetalert2';
 
 function Login() {
     const dispatch = useDispatch();
@@ -35,8 +36,15 @@ function Login() {
                 localStorage.setItem('savedInfoPage', 1);
                 localStorage.setItem('selectChapter', 1);
 
-                alert('로그인에 성공하였습니다.');
-                navigate('/');
+                Swal.fire({
+                    title: '로그인에 성공하였습니다.',
+                    confirmButtonColor: '#6c8e23',
+                    icon: 'success',
+                }).then(result => {
+                    if (result.isConfirmed) {
+                        navigate('/');
+                    }
+                });
             } catch (error) {
                 console.log(error);
                 setFailedLogin(true);

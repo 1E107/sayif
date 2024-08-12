@@ -18,6 +18,7 @@ import { API_BASE_URL } from '../../api/config';
 import ReactMarkdown from 'react-markdown';
 import '../../styles/fonts.css';
 import remarkGfm from 'remark-gfm'; // GitHub 스타일 마크다운 플러그인
+import Swal from 'sweetalert2';
 
 const ChatbotModal = ({ open, handleClose }) => {
     const [message, setMessage] = useState('');
@@ -35,7 +36,11 @@ const ChatbotModal = ({ open, handleClose }) => {
 
     const handleSendMessage = async () => {
         if (!message.trim()) {
-            alert('메시지를 입력해 주세요!');
+            await Swal.fire({
+                icon: 'warning',
+                title: '메시지 입력 필요',
+                text: '메시지를 입력해 주세요!',
+            });
             return;
         }
 
@@ -88,6 +93,11 @@ const ChatbotModal = ({ open, handleClose }) => {
         } catch (error) {
             console.error('API 요청 오류:', error);
             // 오류 발생 시 챗봇의 응답에 오류 메시지 추가
+            await Swal.fire({
+                icon: 'error',
+                title: '전송 오류',
+                text: '오류가 발생했습니다. 다시 시도해 주세요.',
+            });
             setMessages(prevMessages => {
                 const newMessages = [...prevMessages];
                 newMessages.pop(); // 마지막 메시지 삭제

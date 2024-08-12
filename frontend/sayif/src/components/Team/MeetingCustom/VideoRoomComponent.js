@@ -17,6 +17,7 @@ import {
     closeSession,
 } from '../../../api/OpenViduApi';
 import { getTeamSessionId } from '../../../api/MentoringApi';
+import Swal from 'sweetalert2';
 
 var localUser = new UserModel();
 
@@ -148,8 +149,14 @@ class VideoRoomComponent extends Component {
     addSessionEventHandlers(session) {
         session.on('signal:sessionEnded', event => {
             console.log('Session ended signal received:', event);
-            alert('회의가 종료되었습니다.');
-            window.location.reload();
+            Swal.fire({
+                icon: 'info',
+                title: '회의 종료',
+                text: '회의가 종료되었습니다.',
+                confirmButtonText: '확인',
+            }).then(() => {
+                window.location.reload();
+            });
         });
     }
 
@@ -186,7 +193,12 @@ class VideoRoomComponent extends Component {
                 await closeSession(this.props.userToken, mySessionId);
             } catch (error) {
                 console.error('Error closing session:', error);
-                alert('Error closing session: ' + error.message);
+                Swal.fire({
+                    icon: 'error',
+                    title: '세션 종료 오류',
+                    text: `Error closing session: ${error.message}`,
+                    confirmButtonText: '확인',
+                });
             }
         }
         if (mySession) {
@@ -243,7 +255,12 @@ class VideoRoomComponent extends Component {
                         status: error.status,
                     });
                 }
-                alert('There was an error getting the token:', error.message);
+                Swal.fire({
+                    icon: 'error',
+                    title: '토큰 오류',
+                    text: `There was an error getting the token: ${error.message}`,
+                    confirmButtonText: '확인',
+                });
             }
         }
     }
@@ -263,10 +280,12 @@ class VideoRoomComponent extends Component {
                         status: error.status,
                     });
                 }
-                alert(
-                    'There was an error connecting to the session:',
-                    error.message,
-                );
+                Swal.fire({
+                    icon: 'error',
+                    title: '세션 연결 오류',
+                    text: `There was an error connecting to the session: ${error.message}`,
+                    confirmButtonText: '확인',
+                });
                 console.log(
                     'There was an error connecting to the session:',
                     error.code,
@@ -539,16 +558,29 @@ class VideoRoomComponent extends Component {
                     error &&
                     error.name === 'SCREEN_SHARING_NOT_SUPPORTED'
                 ) {
-                    alert('Your browser does not support screen sharing');
+                    Swal.fire({
+                        icon: 'warning',
+                        title: '화면 공유 지원 안함',
+                        text: 'Your browser does not support screen sharing',
+                        confirmButtonText: '확인',
+                    });
                 } else if (
                     error &&
                     error.name === 'SCREEN_EXTENSION_DISABLED'
                 ) {
-                    alert('You need to enable screen sharing extension');
+                    Swal.fire({
+                        icon: 'warning',
+                        title: '확장 프로그램 비활성화',
+                        text: 'You need to enable screen sharing extension',
+                        confirmButtonText: '확인',
+                    });
                 } else if (error && error.name === 'SCREEN_CAPTURE_DENIED') {
-                    alert(
-                        'You need to choose a window or application to share',
-                    );
+                    Swal.fire({
+                        icon: 'warning',
+                        title: '화면 선택 필요',
+                        text: 'You need to choose a window or application to share',
+                        confirmButtonText: '확인',
+                    });
                 }
             },
         );
