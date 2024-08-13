@@ -81,7 +81,7 @@ function MentoringModal({onClose}) {
                                     </IconButton>
                                 </Tooltip>
                             </Box>
-                            <S.MentorNameText>{mentor.name}</S.MentorNameText> {/* 멤버 이름 표시 */}
+                            <S.MentorNameText>{mentor.nickname}</S.MentorNameText> {/* 멤버 이름 표시 */}
                         </div>
                     ))}
                 </div>
