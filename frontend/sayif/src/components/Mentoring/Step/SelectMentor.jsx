@@ -191,7 +191,7 @@ function SelectMentor({ formData, reSelectInfo, finishPage }) {
                                 </S.MentorInfoBox>
                                 <S.MentorInfoBox>
                                     <S.MentorInfoTitle>
-                                        시작일자&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;종료일자
+                                        시작일자&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;종료일자
                                     </S.MentorInfoTitle>
                                     <S.MentorInfoContent>
                                         {mentor.startDate} ~ {mentor.endDate}
