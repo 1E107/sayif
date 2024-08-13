@@ -16,6 +16,7 @@ import {
 import { useSelector } from 'react-redux';
 import ChatbotModal from './ChatBotModal';
 import Swal from 'sweetalert2';
+import Popover from '@mui/material/Popover';
 
 const images = [
     `${process.env.PUBLIC_URL}/img/Plant/새잎_0단계.png`,
@@ -36,6 +37,10 @@ function TeamMain() {
     const [isChatBotModalOpen, setIsChatBotModalOpen] = React.useState(false);
     const imageBoxRef = React.useRef(null); // 이미지 박스를 참조하는 ref
     const [currentLevel, setCurrentLevel] = React.useState(0); // 현재 표시된 이미지 레벨 상태 관리
+
+    const [anchorEl, setAnchorEl] = React.useState(null); // Popover anchor 상태 관리
+    const open = Boolean(anchorEl);
+    const id = open ? 'simple-popover' : undefined;
 
     useEffect(() => {
         async function fetchProgress() {
@@ -130,6 +135,14 @@ function TeamMain() {
         }
     };
 
+    const handleImageClick = (event) => {
+        setAnchorEl(event.currentTarget); // 이미지 클릭 시 Popover 열기
+    };
+
+    const handlePopoverClose = () => {
+        setAnchorEl(null); // Popover 닫기
+    };
+
     const MainView = (
         <S.Container>
             <S.Wrapper>
@@ -142,6 +155,7 @@ function TeamMain() {
                 >
                     <ArrowBackIosIcon
                         style={{
+                            marginRight: '10',
                             color: currentLevel === 0 ? '#DDD' : '#000',
                             cursor: currentLevel > 0 ? 'pointer' : 'default',
                         }}
@@ -154,42 +168,17 @@ function TeamMain() {
                             cursor: 'pointer',
                         }}
                         ref={imageBoxRef} // 이미지 박스에 ref 연결
+                        onClick={handleImageClick} // 이미지 클릭 시 Popover 열기
                     ></S.ImageBox>
                     <ArrowForwardIosIcon
                         style={{
+                            marginLeft: '15',
                             color: currentLevel === level ? '#DDD' : '#000',
                             cursor:
                                 currentLevel < level ? 'pointer' : 'default',
                         }}
                         onClick={handleNextImage}
                     />
-                    <div
-                        style={{
-                            marginLeft: '10px', // 우측 화살표와의 간격 설정
-                            padding: '10px',
-                            backgroundColor: 'white',
-                            boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
-                            borderRadius: '8px',
-                            fontFamily: 'Chosungu',
-                            color: '#0B4619',
-                            maxWidth: '300px',
-                            zIndex: 1000,
-                        }}
-                    >
-                        팀 포인트를 모아 새싹을 성장시켜 보아요!
-                        <br /> <br />
-                        <br />
-                        사연함에 익명 사연 작성 시 +2P
-                        <br />
-                        <br />
-                        챌린지 한 단계 클리어 시 +5P
-                        <br />
-                        <br />
-                        퀴즈 한 문제 제출 시 +10P
-                        <br />
-                        <br />
-                        멘토링 한 번 진행 시 +50P
-                    </div>
                 </div>
                 <div
                     style={{
@@ -300,6 +289,48 @@ function TeamMain() {
                 open={isChatBotModalOpen}
                 handleClose={handleChatBotModalClose}
             />
+            <Popover
+                id={id}
+                open={open}
+                anchorEl={anchorEl}
+                onClose={handlePopoverClose}
+                anchorOrigin={{
+                    vertical: 'center',
+                    horizontal: 'right',
+                }}
+                transformOrigin={{
+                    vertical: 'center',
+                    horizontal: 'left',
+                }}
+                PaperProps={{
+                    style: {
+                        marginLeft: '20px',
+                        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)', // 연한 그림자 적용
+                    },
+                }}
+            >
+                <div
+                    style={{
+                        padding: '20px',
+                        fontFamily: 'Chosungu',
+                        color: '#0B4619',
+                    }}
+                >
+                    팀 포인트를 모아 새싹을 성장시켜 보아요!
+                    <br /> <br />
+                    <br />
+                    사연함에 익명 사연 작성 시 +2P
+                    <br />
+                    <br />
+                    챌린지 한 번 참여 시 +5P
+                    <br />
+                    <br />
+                    퀴즈 한 문제 제출 시 +10P
+                    <br />
+                    <br />
+                    멘토링 한 번 진행 시 +50P
+                </div>
+            </Popover>
         </S.Container>
     );
 
