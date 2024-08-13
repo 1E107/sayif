@@ -11,10 +11,8 @@ import com.ssafy.sayif.member.exception.MemberNotFoundException;
 import com.ssafy.sayif.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -171,9 +169,9 @@ public class BoardService {
         Page<Board> boardPage;
 
         if (type == BoardType.Total) {
-            boardPage = boardRepository.findAll(pageable);
+            boardPage = boardRepository.findAllByOrderByCreatedAtDesc(pageable);
         } else {
-            boardPage = boardRepository.findAllByType(pageable, type);
+            boardPage = boardRepository.findAllByTypeOrderByCreatedAtDesc(pageable, type);
         }
 
         // 페이지네이션 정보를 포함한 게시글 목록 반환
@@ -202,7 +200,8 @@ public class BoardService {
      * @return 변환된 BoardResponseDto
      */
     private BoardResponseDto convertToDto(Board board) {
-        String writer = board.getType() == BoardType.Worry ? "***" : board.getMember().getNickname();
+        String writer =
+            board.getType() == BoardType.Worry ? "***" : board.getMember().getNickname();
         return BoardResponseDto.builder()
             .id(board.getId())
             .title(board.getTitle())
