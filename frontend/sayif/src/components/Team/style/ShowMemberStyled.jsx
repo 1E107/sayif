@@ -7,7 +7,7 @@ const Title = styled.div`
     font-weight: bold;
     font-size: 19px;
     margin-bottom: 20px;
-    margin-top: 40px;
+    margin-top: 50px;
 `;
 
 const Container = styled.div`
@@ -49,9 +49,8 @@ const TagBox = styled.div`
     background-color: #161616;
     font-family: ChosunGu;
     color: white;
-    padding: 4px;
+    padding: 5px 10px;
     font-size: 13px;
-    width: 50px;
     border-radius: 14px;
     text-align: center;
 `;
@@ -111,7 +110,7 @@ const MentoringDetails = styled.div`
     font-weight: bold;
 
     & > div {
-        margin-bottom: 8px;
+        margin-bottom: 10px;
     }
 `;
 

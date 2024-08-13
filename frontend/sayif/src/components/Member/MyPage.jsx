@@ -40,6 +40,7 @@ function MyPageComponent() {
     const [emailError, SetEmailError] = useState('');
     const [newMember, SetNewMember] = useState({
         name: member.name,
+        nickname: member.nickname,
         phone: member.phone,
         email: member.email,
         gender: member.gender,
@@ -53,28 +54,28 @@ function MyPageComponent() {
     const [intro, setIntro] = useState(''); // Intro 상태 변수 추가
 
     const ProfileImg = styled.img`
-      width: 250px;
-      height: 250px;
-      border-radius: 150px;
+        width: 250px;
+        height: 250px;
+        border-radius: 150px;
 
-      &:hover {
-        ${({ changeInfo }) =>
-            changeInfo &&
-            `
+        &:hover {
+            ${({ changeInfo }) =>
+                changeInfo &&
+                `
             cursor: pointer;
             filter: brightness(0.3);
             transition: filter 0.3s ease;
         `}
-      }
+        }
 
-      &:hover + div {
-        ${({ changeInfo }) =>
-            changeInfo &&
-            `
+        &:hover + div {
+            ${({ changeInfo }) =>
+                changeInfo &&
+                `
             transition: filter 0.3s ease;
             display: block;
         `}
-      }
+        }
     `;
 
     const handleInputChange = field => e => {
@@ -217,9 +218,9 @@ function MyPageComponent() {
                         await updateMentorProfile(token, profileUpdateData);
                     }
                     await callMemberInfo();
-                    Swal.fire({
+                    await Swal.fire({
                         icon: 'success',
-                        title: '회원 정보가 성공적으로 수정되었습니다!',
+                        title: '회원 정보가 수정되었습니다!',
                         showConfirmButton: false,
                         confirmButtonColor: '#6c8e23',
                         timer: 1500,
@@ -313,11 +314,11 @@ function MyPageComponent() {
     const handleAddTag = () => {
         if (newTag.trim() !== '') {
             const isDuplicate = tags.some(tag => tag.content === newTag.trim());
-            if (tags.length >= 6) {
+            if (tags.length >= 5) {
                 Swal.fire({
                     icon: 'warning',
                     title: '태그 추가 오류',
-                    text: '태그는 최대 6개까지 추가할 수 있습니다.',
+                    text: '태그는 최대 5개까지 추가할 수 있습니다.',
                     confirmButtonText: '확인',
                     confirmButtonColor: '#6c8e23',
                 });
@@ -391,8 +392,8 @@ function MyPageComponent() {
                             {role === 'Mentor'
                                 ? '단비'
                                 : role === 'Mentee'
-                                    ? '새잎'
-                                    : ''}{' '}
+                                  ? '새잎'
+                                  : ''}{' '}
                             / {member.nickname}
                         </S.NickNameText>
                         {/* <div>
@@ -426,7 +427,7 @@ function MyPageComponent() {
                             style={{
                                 display: 'flex',
                                 alignItems: 'center',
-                                marginTop: '30px',
+                                marginTop: '10px',
                             }}
                         >
                             <S.TitleText>이름</S.TitleText>
@@ -449,14 +450,34 @@ function MyPageComponent() {
                                 marginTop: '30px',
                             }}
                         >
+                            <S.TitleText>닉네임</S.TitleText>
+                            <S.CustomInput
+                                placeholder={member.nickname}
+                                disabled={!changeInfo}
+                                onChange={handleInputChange('nickname')}
+                                onKeyDown={handleKeyDown}
+                                style={{
+                                    border: changeInfo
+                                        ? '1px solid red'
+                                        : '0px solid black',
+                                }}
+                            />
+                        </div>
+                        <div
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                marginTop: '30px',
+                            }}
+                        >
                             <S.TitleText>성별</S.TitleText>
                             <S.CustomInput
                                 placeholder={
                                     gender === 'F'
                                         ? '여성'
                                         : gender === 'M'
-                                            ? '남성'
-                                            : ''
+                                          ? '남성'
+                                          : ''
                                 }
                                 disabled={changeInfo}
                                 onChange={handleGenderChange}
@@ -513,26 +534,33 @@ function MyPageComponent() {
                             <S.TitleText>태그</S.TitleText>
                             {changeInfo && ( // changeInfo가 true일 때만 렌더링
                                 <S.TagContainer>
-                                    <div style={{
-                                        display: 'flex',
-                                        marginBottom: '10px',
-                                        width: '100%',
-                                    }}>
+                                    <div
+                                        style={{
+                                            display: 'flex',
+                                            marginBottom: '10px',
+                                            width: '100%',
+                                        }}
+                                    >
                                         <S.TagInput
                                             type="text"
                                             value={newTag}
-                                            onChange={(e) => setNewTag(
-                                                e.target.value)}
-                                            onKeyDown={(e) => {
-                                                if (e.key === 'Enter'
-                                                    && newTag.trim() !== '') { // 엔터 키와 빈 문자열 체크
+                                            onChange={e =>
+                                                setNewTag(e.target.value)
+                                            }
+                                            onKeyDown={e => {
+                                                if (
+                                                    e.key === 'Enter' &&
+                                                    newTag.trim() !== ''
+                                                ) {
+                                                    // 엔터 키와 빈 문자열 체크
                                                     e.preventDefault(); // 폼 제출 방지
                                                     // 태그를 추가하는 로직
                                                     setTags(prevTags => [
                                                         ...prevTags,
                                                         {
                                                             id: Date.now(),
-                                                            content: newTag.trim(),
+                                                            content:
+                                                                newTag.trim(),
                                                         },
                                                     ]);
                                                     setNewTag(''); // 입력창 비우기
@@ -546,22 +574,26 @@ function MyPageComponent() {
                                                     : '0px solid black', // 기본 상태일 때 테두리 없음
                                             }}
                                         />
-                                        <S.AddTagButton
-                                            onClick={handleAddTag}>추가</S.AddTagButton>
+                                        <S.AddTagButton onClick={handleAddTag}>
+                                            추가
+                                        </S.AddTagButton>
                                     </div>
                                 </S.TagContainer>
                             )}
-                            <S.TextArea style={{
-                                width: '340px',
-                                marginTop: !changeInfo ? '20px' : '0px',
-                            }}>
+                            <S.TextArea
+                                style={{
+                                    width: '340px',
+                                    marginTop: !changeInfo ? '20px' : '0px',
+                                }}
+                            >
                                 {tags.map(tag => (
                                     <S.TagItem key={tag.id}>
                                         {tag.content}
                                         {changeInfo && ( // changeInfo가 true일 때만 삭제 버튼 렌더링
                                             <S.DeleteTagButton
-                                                onClick={() => handleDeleteTag(
-                                                    tag.id)}
+                                                onClick={() =>
+                                                    handleDeleteTag(tag.id)
+                                                }
                                                 style={{
                                                     border: '1px solid red', // 여기에 스타일 추가
                                                 }}
@@ -575,13 +607,13 @@ function MyPageComponent() {
                         </S.TagSection>
 
                         <S.IntroSection>
-                            <S.TitleText style={{ marginBottom: '20px' }}>멘토
-                                인사말</S.TitleText>
+                            <S.TitleText style={{ marginBottom: '20px' }}>
+                                멘토 인사말
+                            </S.TitleText>
                             <S.IntroTextArea
                                 as="textarea" // textarea로 렌더링되도록 변경
                                 value={intro} // textarea의 value로 intro 상태를 설정
-                                onChange={(e) => setIntro(
-                                    e.target.value)} // textarea의 값이 변경될 때 intro 상태를 업데이트
+                                onChange={e => setIntro(e.target.value)} // textarea의 값이 변경될 때 intro 상태를 업데이트
                                 disabled={!changeInfo} // changeInfo가 true일 때만 편집 가능
                                 style={{
                                     border: changeInfo
@@ -599,7 +631,9 @@ function MyPageComponent() {
                                     wordWrap: 'break-word', // 줄 바꿈 처리
                                     whiteSpace: 'pre-wrap', // 개행 문자 유지
                                 }}
-                            >{intro}</S.IntroTextArea>
+                            >
+                                {intro}
+                            </S.IntroTextArea>
                         </S.IntroSection>
                     </S.TagAndIntroContainer>
                 )}
@@ -638,7 +672,6 @@ function MyPageComponent() {
                 )}
             </S.Container>
         </S.Spacer>
-
     );
 }
 

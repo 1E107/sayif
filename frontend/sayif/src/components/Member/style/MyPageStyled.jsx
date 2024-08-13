@@ -7,7 +7,7 @@ const Container = styled.div`
     margin-bottom: 0;
     width: 1000px;
     height: ${({ changeInfo, role }) => {
-        if (role === 'Mentor') return changeInfo ? '840px' : '780px';
+        if (role === 'Mentor') return changeInfo ? '860px' : '780px';
         if (role === 'Mentee') return changeInfo ? '600px' : '540px';
         return '720px'; // 기본값
     }};

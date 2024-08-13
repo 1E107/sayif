@@ -56,6 +56,7 @@ function UploadModal({ onClose, id, challengeId }) {
                     icon: 'success',
                     title: '성공',
                     text: '사진이 성공적으로 업로드되었습니다!',
+                    confirmButtonColor: '#6c8e23',
                 });
                 window.location.reload();
             }

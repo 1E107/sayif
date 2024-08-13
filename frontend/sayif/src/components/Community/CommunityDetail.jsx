@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import S from './style/CommunityDetailStyled';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
@@ -150,6 +150,7 @@ function CommunityDetail() {
                 showCancelButton: true,
                 confirmButtonText: '다운로드',
                 cancelButtonText: '취소',
+                confirmButtonColor: '#6c8e23',
             }).then(result => {
                 if (result.isConfirmed) {
                     const link = document.createElement('a');
@@ -178,7 +179,9 @@ function CommunityDetail() {
                         {content.hitCount}
                     </S.DateAndWriter>
                     <S.CustomHr />
-                    <S.Content>{content.content}</S.Content>
+                    <S.Content dangerouslySetInnerHTML={{
+                        __html: content.content.replace(/\n/g, '<br />'),
+                    }} />
                     <S.CustomHr />
                     {content.fileUrl && isImage(content.fileUrl) && (
                         <S.Fieldset>

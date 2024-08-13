@@ -69,7 +69,7 @@ function Register() {
                 icon: 'warning',
                 title: '아이디 중복',
                 text: '아이디가 중복되었습니다. 다른 아이디를 사용해주세요.',
-                confirmButtonColor: '#f50000',
+                confirmButtonColor: '#6c8e23',
             });
             return;
         }
@@ -192,10 +192,11 @@ function Register() {
         }
     };
 
-    const handleCheckId = async (username) => {
+    const handleCheckId = async username => {
         try {
             const response = await axios.get(
-                `${API_BASE_URL}/member/check-id/${username}`);
+                `${API_BASE_URL}/member/check-id/${username}`,
+            );
 
             console.log(response.data);
             // 응답 데이터가 true/false인지 확인
@@ -207,14 +208,14 @@ function Register() {
                         icon: 'warning',
                         title: '아이디 중복',
                         text: '다른 아이디를 입력해주세요.',
-                        confirmButtonColor: '#f60303',
+                        confirmButtonColor: '#6c8e23',
                     });
                 } else {
                     Swal.fire({
                         icon: 'success',
                         title: '사용 가능한 아이디',
                         text: '사용 가능한 아이디입니다.',
-                        confirmButtonColor: '#1931ad',
+                        confirmButtonColor: '#6c8e23',
                     });
                 }
                 return !response.data; // 중복이 아니면 true, 중복이면 false
@@ -406,8 +407,7 @@ function Register() {
             <S.RegistBtn
                 variant="contained"
                 onClick={handleNextButton}
-                disabled={!isCodeVerified
-                    || !isIdAvailable} // 인증 완료와 아이디 사용 가능 여부에 따라 버튼 활성화
+                disabled={!isCodeVerified || !isIdAvailable} // 인증 완료와 아이디 사용 가능 여부에 따라 버튼 활성화
             >
                 다음
             </S.RegistBtn>
