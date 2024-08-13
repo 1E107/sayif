@@ -120,9 +120,9 @@ function ShowMembers() {
                     <div>
                         {mentoringInfo.startDate} ~ {mentoringInfo.endDate}
                     </div>
-                    <div>매주 {mentoringInfo.dayOfWeek} 요일</div>
                     <div>
-                        {mentoringInfo.pmam} {mentoringInfo.time}
+                        매주 {mentoringInfo.dayOfWeek} 요일 {mentoringInfo.pmam}{' '}
+                        {mentoringInfo.time}
                     </div>
                 </S.MentoringDetails>
             )}
@@ -153,10 +153,20 @@ function ShowMembers() {
                                 <div>
                                     <Box sx={{ flexGrow: 0 }}>
                                         <Tooltip>
-                                            <IconButton sx={{ p: 0 }}>
+                                            <IconButton
+                                                sx={{
+                                                    p: 0,
+                                                    width: 56,
+                                                    height: 56,
+                                                }}
+                                            >
                                                 <Avatar
                                                     alt="Remy Sharp"
                                                     src={mentor.profileImg}
+                                                    sx={{
+                                                        width: 56,
+                                                        height: 56,
+                                                    }}
                                                 />
                                             </IconButton>
                                         </Tooltip>
@@ -177,13 +187,18 @@ function ShowMembers() {
                                     <></>
                                 )}
                             </CardContent>
-                            <CardActions sx={{ marginTop: 'auto' }}>
+                            <CardActions
+                                sx={{
+                                    marginTop: 'auto',
+                                    marginLeft: 'auto',
+                                    marginRight: '10px',
+                                }}
+                            >
                                 <CustomButton
                                     size="small"
-                                    endIcon={<SendIcon />}
                                     onClick={() => handleOpenModal(mentor.id)}
                                 >
-                                    쪽지 보내기
+                                    📩 쪽지 보내기
                                 </CustomButton>
                             </CardActions>
                         </Card>

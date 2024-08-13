@@ -165,7 +165,6 @@ function TeamMain() {
                         style={{
                             backgroundImage: `url(${imageUrl})`,
                             backgroundSize: 'contain',
-                            cursor: 'pointer',
                         }}
                         ref={imageBoxRef} // 이미지 박스에 ref 연결
                         onClick={handleImageClick} // 이미지 클릭 시 Popover 열기
@@ -223,10 +222,10 @@ function TeamMain() {
                         left: '45%',
                         transform: 'translate(-50%, -50%)',
                         fontFamily: 'Ownglyph_ryurue-Rg',
-                        fontSize: '20px',
+                        fontSize: '26px',
                         color: 'black',
                         textAlign: 'center',
-                        width: '420px',
+                        width: '450px',
                         pointerEvents: 'none',
                     }}
                 >
