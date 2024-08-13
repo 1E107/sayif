@@ -37,6 +37,12 @@ const ImageBox = styled.div`
     background-repeat: no-repeat;
     background-position: center;
     animation: ${blinkShadow} 1.2s infinite;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out;
+
+    &:hover {
+        transform: scale(1.1); /* 이미지가 10% 확대됩니다 */
+    }
 `;
 
 const Wrapper = styled.div``;
@@ -63,8 +69,8 @@ const ScoreContainer = styled.div`
 `;
 
 const BubbleImg = styled.img`
-    height: 130px;
-    width: 570px;
+    height: 180px;
+    width: 670px;
     margin-top: 50px;
 `;
 
