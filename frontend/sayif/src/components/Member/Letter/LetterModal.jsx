@@ -62,6 +62,7 @@ function LetterModal({ onClose, id }) {
                     text: '쪽지가 전송되었습니다.',
                     timer: 1500,
                     showConfirmButton: false,
+                    confirmButtonColor: '#6c8e23',
                 }).then(() => {
                     SetSendTitle('제목');
                     SetSendContent('내용');

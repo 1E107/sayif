@@ -31,6 +31,7 @@ const useTokenExpiration = () => {
                         icon: 'warning',
                         title: '로그아웃 되었습니다. 다시 로그인하세요!',
                         showConfirmButton: false,
+                        confirmButtonColor: '#6c8e23',
                         timer: 1500,
                     });
                     navigate('/member/login');

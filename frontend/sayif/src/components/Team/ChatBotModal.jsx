@@ -40,6 +40,7 @@ const ChatbotModal = ({ open, handleClose }) => {
                 icon: 'warning',
                 title: '메시지 입력 필요',
                 text: '메시지를 입력해 주세요!',
+                confirmButtonColor: '#6c8e23',
             });
             return;
         }
@@ -97,6 +98,7 @@ const ChatbotModal = ({ open, handleClose }) => {
                 icon: 'error',
                 title: '전송 오류',
                 text: '오류가 발생했습니다. 다시 시도해 주세요.',
+                confirmButtonColor: '#6c8e23',
             });
             setMessages(prevMessages => {
                 const newMessages = [...prevMessages];

@@ -150,6 +150,7 @@ function CommunityDetail() {
                 showCancelButton: true,
                 confirmButtonText: '다운로드',
                 cancelButtonText: '취소',
+                confirmButtonColor: '#6c8e23',
             }).then(result => {
                 if (result.isConfirmed) {
                     const link = document.createElement('a');

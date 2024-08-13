@@ -155,6 +155,7 @@ class VideoRoomComponent extends Component {
                 title: '회의 종료',
                 html: '회의가 종료되었습니다.<br>팀포인트가 50점 증가했어요!',
                 confirmButtonText: '확인',
+                confirmButtonColor: '#6c8e23',
             }).then(() => {
                 window.location.reload();
             });
@@ -204,6 +205,7 @@ class VideoRoomComponent extends Component {
                     title: '세션 종료 오류',
                     text: `Error closing session: ${error.message}`,
                     confirmButtonText: '확인',
+                    confirmButtonColor: '#6c8e23',
                 });
             }
         }
@@ -266,6 +268,7 @@ class VideoRoomComponent extends Component {
                     title: '토큰 오류',
                     text: `There was an error getting the token: ${error.message}`,
                     confirmButtonText: '확인',
+                    confirmButtonColor: '#6c8e23',
                 });
             }
         }
@@ -291,6 +294,7 @@ class VideoRoomComponent extends Component {
                     title: '세션 연결 오류',
                     text: `There was an error connecting to the session: ${error.message}`,
                     confirmButtonText: '확인',
+                    confirmButtonColor: '#6c8e23',
                 });
                 console.log(
                     'There was an error connecting to the session:',
@@ -569,6 +573,7 @@ class VideoRoomComponent extends Component {
                         title: '화면 공유 지원 안함',
                         text: 'Your browser does not support screen sharing',
                         confirmButtonText: '확인',
+                        confirmButtonColor: '#6c8e23',
                     });
                 } else if (
                     error &&
@@ -579,6 +584,7 @@ class VideoRoomComponent extends Component {
                         title: '확장 프로그램 비활성화',
                         text: 'You need to enable screen sharing extension',
                         confirmButtonText: '확인',
+                        confirmButtonColor: '#6c8e23',
                     });
                 } else if (error && error.name === 'SCREEN_CAPTURE_DENIED') {
                     Swal.fire({
@@ -586,6 +592,7 @@ class VideoRoomComponent extends Component {
                         title: '화면 선택 필요',
                         text: 'You need to choose a window or application to share',
                         confirmButtonText: '확인',
+                        confirmButtonColor: '#6c8e23',
                     });
                 }
             },

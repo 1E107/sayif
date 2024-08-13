@@ -47,6 +47,7 @@ function ChallengePhoto() {
                         icon: 'success',
                         title: '성공',
                         text: '다음 챌린지가 오픈됩니다!<br>팀 포인트가 5점 증가했어요 !',
+                        confirmButtonColor: '#6c8e23',
                     });
                     await acquireExperience(token, member, 5);
                     navigate('/team/challenge');
@@ -57,12 +58,14 @@ function ChallengePhoto() {
                         icon: 'info',
                         title: '정보',
                         text: '더이상 진행할 미션이 없습니다.',
+                        confirmButtonColor: '#6c8e23',
                     });
                 } else {
                     await Swal.fire({
                         icon: 'error',
                         title: '오류',
                         text: '미션 변경 중 오류가 발생했습니다. 다시 시도해보세요.',
+                        confirmButtonColor: '#6c8e23',
                     });
                 }
                 console.error(error);

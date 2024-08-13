@@ -60,7 +60,7 @@ export default class ToolbarComponent extends Component {
                 title: '회의를 종료하시겠습니까?',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#3085d6',
+                confirmButtonColor: '#6c8e23',
                 cancelButtonColor: '#d33',
                 confirmButtonText: '확인',
                 cancelButtonText: '취소',

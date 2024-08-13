@@ -48,6 +48,7 @@ function RegistProfileImg() {
                     text: '프로필 이미지가 성공적으로 등록되었습니다.',
                     timer: 1500,
                     showConfirmButton: false,
+                    confirmButtonColor: '#6c8e23',
                 }).then(() => {
                     navigate('/member/regist/proof-documents');
                 });
@@ -56,6 +57,7 @@ function RegistProfileImg() {
                     icon: 'error',
                     title: '등록 실패',
                     text: '프로필 이미지 등록에 실패하였습니다.',
+                    confirmButtonColor: '#6c8e23',
                 });
             }
         } catch (error) {
@@ -63,6 +65,7 @@ function RegistProfileImg() {
                 icon: 'error',
                 title: '등록 실패',
                 text: '회원가입에 실패했습니다.',
+                confirmButtonColor: '#6c8e23',
             });
             console.log(error);
         }
