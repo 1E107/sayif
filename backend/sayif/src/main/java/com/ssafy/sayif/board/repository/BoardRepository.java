@@ -9,8 +9,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface BoardRepository extends JpaRepository<Board, Integer> {
 
-    Page<Board> findAllByType(Pageable pageable, BoardType type);
+    Page<Board> findAllByTypeOrderByCreatedAtDesc(Pageable pageable, BoardType type);
 
     // 전체 게시글 목록 조회
-    Page<Board> findAll(Pageable pageable);
+    Page<Board> findAllByOrderByCreatedAtDesc(Pageable pageable);
+
 }
