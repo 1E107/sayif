@@ -18,7 +18,8 @@ import '../../styles/fonts.css';
 import { useSelector } from 'react-redux';
 import { getTeamStatue } from '../../api/MentoringApi';
 import NoTeamModal from '../Mentoring/NoTeamModal';
-import Swal from 'sweetalert2'; // SweetAlert2 import 추가
+import Swal from 'sweetalert2';
+import NoTeamModalMentor from '../Mentoring/NoTeamModalMentor'; // SweetAlert2 import 추가
 
 function Header() {
     const navigate = useNavigate();
@@ -27,6 +28,7 @@ function Header() {
     const [anchorElSubFull, setAnchorElSubFull] = useState(null); // 전체 화면
     const [currentSettings, setCurrentSettings] = useState([]);
     const [showNoTeamModal, setShowNoTeamModal] = useState(false);
+    const [showNoTeamModalMentor, setShowNoTeamModalMentor] = useState(false);
     const { token, member } = useSelector(state => state.member);
 
     const pages = ['새잎 소개', '멘토링', '소통 공간', '정보 공간'];
@@ -112,6 +114,9 @@ function Header() {
     const handleCloseNoTeamModal = () => {
         setShowNoTeamModal(false);
     };
+    const handleCloseNoTeamModalMentor = () => {
+        setShowNoTeamModalMentor(false);
+    };
 
     const handleMyPage = () => {
         navigate('/my-page');
@@ -128,14 +133,22 @@ function Header() {
                         if (response.data.status === 'Proceed') {
                             navigate('/team');
                         } else {
-                            setShowNoTeamModal(true);
+                            if (member.role === 'Mentor') {
+                                setShowNoTeamModalMentor(true);
+                            } else {
+                                setShowNoTeamModal(true);
+                            }
                         }
                     }
                 } catch (error) {
                     console.log(error);
                 }
             } else {
-                setShowNoTeamModal(true);
+                if (member.role === 'Mentor') {
+                    setShowNoTeamModalMentor(true);
+                } else {
+                    setShowNoTeamModal(true);
+                }
             }
         };
         callGetStatus();
@@ -420,6 +433,9 @@ function Header() {
             </Container>
             {showNoTeamModal && (
                 <NoTeamModal onClose={handleCloseNoTeamModal} />
+            )}
+            {showNoTeamModalMentor && (
+                <NoTeamModalMentor onClose={handleCloseNoTeamModalMentor} />
             )}
         </AppBar>
     );

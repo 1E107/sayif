@@ -1,8 +1,10 @@
 import S from './style/TeamMainStyled';
 import CreateIcon from '@mui/icons-material/Create';
-import Popover from '@mui/material/Popover';
 import NorthWestIcon from '@mui/icons-material/NorthWest';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import * as React from 'react';
+import { useEffect } from 'react';
 
 import '../../styles/fonts.css';
 import { ReactTyped } from 'react-typed';
@@ -12,8 +14,8 @@ import {
     modifyTeamName,
 } from '../../api/TeamApi';
 import { useSelector } from 'react-redux';
-import { useEffect } from 'react';
 import ChatbotModal from './ChatBotModal';
+import Swal from 'sweetalert2';
 
 const images = [
     `${process.env.PUBLIC_URL}/img/Plant/새잎_0단계.png`,
@@ -32,17 +34,21 @@ function TeamMain() {
     const [teamName, setTeamName] = React.useState(''); // 팀 이름 상태 관리
     const { token, member } = useSelector(state => state.member);
     const [isChatBotModalOpen, setIsChatBotModalOpen] = React.useState(false);
-    const [anchorEl, setAnchorEl] = React.useState(null);
+    const imageBoxRef = React.useRef(null); // 이미지 박스를 참조하는 ref
+    const [currentLevel, setCurrentLevel] = React.useState(0); // 현재 표시된 이미지 레벨 상태 관리
 
     useEffect(() => {
         async function fetchProgress() {
             const experience = await getTeamExperience(member.teamId, token);
             setProgress(experience.data.point);
+            setCurrentLevel(Math.floor(experience.data.point / 100));
         }
+
         async function fetchTeamName() {
             const response = await getTeamName(member.teamId, token);
             setTeamName(response.data.name);
         }
+
         fetchProgress();
         fetchTeamName();
     }, [member.teamId, token]);
@@ -93,31 +99,98 @@ function TeamMain() {
         setIsChatBotModalOpen(false); // ChatBotModal을 닫음
     };
 
-    const handleImageBoxClick = event => {
-        setAnchorEl(event.currentTarget); // Popover를 여는 anchor 설정
-    };
-
-    const handlePopoverClose = () => {
-        setAnchorEl(null); // Popover를 닫음
-    };
-
-    const open = Boolean(anchorEl);
-    const id = open ? 'simple-popover' : undefined;
-
     const level = Math.floor(progress / 100);
-    const imageUrl = images[level] || images[0];
+    const imageUrl = images[currentLevel] || images[0];
+
+    const handlePreviousImage = () => {
+        if (currentLevel > 0) {
+            setCurrentLevel(prevLevel => prevLevel - 1);
+        } else {
+            Swal.fire({
+                icon: 'warning',
+                title: '이전 이미지가 없습니다.',
+                text: '가장 낮은 레벨입니다.',
+                confirmButtonText: '확인',
+                confirmButtonColor: '#fa0000',
+            });
+        }
+    };
+
+    const handleNextImage = () => {
+        if (currentLevel < level) {
+            setCurrentLevel(prevLevel => prevLevel + 1);
+        } else {
+            Swal.fire({
+                icon: 'warning',
+                title: '레벨 업이 필요합니다.',
+                text: '현재 레벨을 초과한 레벨입니다.',
+                confirmButtonText: '확인',
+                confirmButtonColor: '#fa0000',
+            });
+        }
+    };
 
     const MainView = (
         <S.Container>
             <S.Wrapper>
-                <S.ImageBox
+                <div
                     style={{
-                        backgroundImage: `url(${imageUrl})`,
-                        backgroundSize: 'contain',
-                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
                     }}
-                    onClick={handleImageBoxClick}
-                ></S.ImageBox>
+                >
+                    <ArrowBackIosIcon
+                        style={{
+                            color: currentLevel === 0 ? '#DDD' : '#000',
+                            cursor: currentLevel > 0 ? 'pointer' : 'default',
+                        }}
+                        onClick={handlePreviousImage}
+                    />
+                    <S.ImageBox
+                        style={{
+                            backgroundImage: `url(${imageUrl})`,
+                            backgroundSize: 'contain',
+                            cursor: 'pointer',
+                        }}
+                        ref={imageBoxRef} // 이미지 박스에 ref 연결
+                    ></S.ImageBox>
+                    <ArrowForwardIosIcon
+                        style={{
+                            color: currentLevel === level ? '#DDD' : '#000',
+                            cursor:
+                                currentLevel < level ? 'pointer' : 'default',
+                        }}
+                        onClick={handleNextImage}
+                    />
+                    <div
+                        style={{
+                            marginLeft: '10px', // 우측 화살표와의 간격 설정
+                            padding: '10px',
+                            backgroundColor: 'white',
+                            boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
+                            borderRadius: '8px',
+                            fontFamily: 'Chosungu',
+                            color: '#0B4619',
+                            maxWidth: '300px',
+                            zIndex: 1000,
+                        }}
+                    >
+                        팀 포인트를 모아 새싹을 성장시켜 보아요!
+                        <br /> <br />
+                        <br />
+                        사연함에 익명 사연 작성 시 +2P
+                        <br />
+                        <br />
+                        챌린지 한 단계 클리어 시 +5P
+                        <br />
+                        <br />
+                        퀴즈 한 문제 제출 시 +10P
+                        <br />
+                        <br />
+                        멘토링 한 번 진행 시 +50P
+                    </div>
+                </div>
                 <div
                     style={{
                         display: 'flex',
@@ -127,7 +200,7 @@ function TeamMain() {
                     }}
                 >
                     <S.TeamNameText>
-                        Lv. {Math.floor(progress / 100)} {teamName}
+                        Lv. {level} {teamName}
                         <CreateIcon
                             style={{
                                 color: '#DED3A6',
@@ -227,48 +300,6 @@ function TeamMain() {
                 open={isChatBotModalOpen}
                 handleClose={handleChatBotModalClose}
             />
-            <Popover
-                id={id}
-                open={open}
-                anchorEl={anchorEl}
-                onClose={handlePopoverClose}
-                anchorOrigin={{
-                    vertical: 'center',
-                    horizontal: 'right',
-                }}
-                transformOrigin={{
-                    vertical: 'center',
-                    horizontal: 'left',
-                }}
-                PaperProps={{
-                    style: {
-                        marginLeft: '20px',
-                        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)', // 연한 그림자 적용
-                    },
-                }}
-            >
-                <div
-                    style={{
-                        padding: '20px',
-                        fontFamily: 'Chosungu',
-                        color: '#0B4619',
-                    }}
-                >
-                    팀 포인트를 모아 새싹을 성장시켜 보아요!
-                    <br /> <br />
-                    <br />
-                    사연함에 익명 사연 작성 시 +2P
-                    <br />
-                    <br />
-                    챌린지 한 번 참여 시 +5P
-                    <br />
-                    <br />
-                    퀴즈 한 문제 제출 시 +10P
-                    <br />
-                    <br />
-                    멘토링 한 번 진행 시 +50P
-                </div>
-            </Popover>
         </S.Container>
     );
 
