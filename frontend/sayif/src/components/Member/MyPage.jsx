@@ -40,6 +40,7 @@ function MyPageComponent() {
     const [emailError, SetEmailError] = useState('');
     const [newMember, SetNewMember] = useState({
         name: member.name,
+        nickname:member.nickname,
         phone: member.phone,
         email: member.email,
         gender: member.gender,
@@ -426,12 +427,32 @@ function MyPageComponent() {
                             style={{
                                 display: 'flex',
                                 alignItems: 'center',
-                                marginTop: '30px',
+                                marginTop: '10px',
                             }}
                         >
                             <S.TitleText>이름</S.TitleText>
                             <S.CustomInput
                                 placeholder={member.name}
+                                disabled={!changeInfo}
+                                onChange={handleInputChange('name')}
+                                onKeyDown={handleKeyDown}
+                                style={{
+                                    border: changeInfo
+                                        ? '1px solid red'
+                                        : '0px solid black',
+                                }}
+                            />
+                        </div>
+                        <div
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                marginTop: '30px',
+                            }}
+                        >
+                            <S.TitleText>닉네임</S.TitleText>
+                            <S.CustomInput
+                                placeholder={member.nickname}
                                 disabled={!changeInfo}
                                 onChange={handleInputChange('name')}
                                 onKeyDown={handleKeyDown}
