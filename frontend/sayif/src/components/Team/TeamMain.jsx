@@ -116,7 +116,7 @@ function TeamMain() {
                 title: '이전 이미지가 없습니다.',
                 text: '가장 낮은 레벨입니다.',
                 confirmButtonText: '확인',
-                confirmButtonColor: '#fa0000',
+                confirmButtonColor: '#6c8e23',
             });
         }
     };
@@ -130,12 +130,12 @@ function TeamMain() {
                 title: '레벨 업이 필요합니다.',
                 text: '현재 레벨을 초과한 레벨입니다.',
                 confirmButtonText: '확인',
-                confirmButtonColor: '#fa0000',
+                confirmButtonColor: '#6c8e23',
             });
         }
     };
 
-    const handleImageClick = (event) => {
+    const handleImageClick = event => {
         setAnchorEl(event.currentTarget); // 이미지 클릭 시 Popover 열기
     };
 

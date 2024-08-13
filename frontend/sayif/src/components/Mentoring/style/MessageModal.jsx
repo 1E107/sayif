@@ -154,6 +154,8 @@ const MessageModal = ({ isOpen, onClose, receiver }) => {
                 icon: 'error',
                 title: '서버 오류',
                 text: '서버와의 연결에 실패했습니다. 나중에 다시 시도해 주세요.',
+                confirmButtonText: '확인',
+                confirmButtonColor: '#6c8e23',
             });
         } finally {
             setLoading(false);

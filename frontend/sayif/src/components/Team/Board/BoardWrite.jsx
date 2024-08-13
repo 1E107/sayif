@@ -20,6 +20,7 @@ function BoardWrite() {
                 icon: 'warning',
                 title: '입력 오류',
                 text: '제목과 내용을 모두 입력해 주세요!',
+                confirmButtonColor: '#6c8e23',
             });
             return;
         }
@@ -34,6 +35,7 @@ function BoardWrite() {
                     icon: 'success',
                     title: '성공',
                     text: '글이 성공적으로 등록되었습니다!',
+                    confirmButtonColor: '#6c8e23',
                 });
                 navigate('/team/board');
             }
@@ -42,6 +44,7 @@ function BoardWrite() {
                 icon: 'error',
                 title: '실패',
                 text: '글 등록에 실패했어요. 다시 시도해보세요.',
+                confirmButtonColor: '#6c8e23',
             });
             console.error(error);
         }

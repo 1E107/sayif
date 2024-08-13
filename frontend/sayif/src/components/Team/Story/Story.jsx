@@ -57,7 +57,7 @@ function Story() {
                     text: '해당 사연을 읽었습니다!',
                     icon: 'success',
                     confirmButtonText: '확인',
-                    confirmButtonColor: '#3085d6',
+                    confirmButtonColor: '#6c8e23',
                 });
                 SetHidden(prev => [...prev, selectContentId]);
             }
@@ -68,7 +68,7 @@ function Story() {
                 text: '사연 읽기 중 오류가 발생했습니다. 다시 시도해 주세요.',
                 icon: 'error',
                 confirmButtonText: '확인',
-                confirmButtonColor: '#d33',
+                confirmButtonColor: '#6c8e23',
             });
         }
     };
