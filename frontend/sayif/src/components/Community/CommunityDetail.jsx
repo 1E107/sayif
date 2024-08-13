@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import S from './style/CommunityDetailStyled';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
@@ -178,7 +178,9 @@ function CommunityDetail() {
                         {content.hitCount}
                     </S.DateAndWriter>
                     <S.CustomHr />
-                    <S.Content>{content.content}</S.Content>
+                    <S.Content dangerouslySetInnerHTML={{
+                        __html: content.content.replace(/\n/g, '<br />'),
+                    }} />
                     <S.CustomHr />
                     {content.fileUrl && isImage(content.fileUrl) && (
                         <S.Fieldset>

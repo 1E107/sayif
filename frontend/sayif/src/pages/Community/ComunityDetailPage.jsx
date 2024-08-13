@@ -2,12 +2,12 @@ import CommunityDetail from '../../components/Community/CommunityDetail';
 import styled from 'styled-components';
 
 const Main = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    overflow: hidden;
-    margin: 100px 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  height: 150vh;
+  overflow: hidden;
+  margin: 150px 0;
 `;
 
 const CommunityDetailPage = () => {
