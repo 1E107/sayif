@@ -299,6 +299,7 @@ function Header() {
                             display: { xs: 'none', md: 'flex' },
                             justifyContent: 'center',
                             alignItems: 'center',
+                            gap: '10px',
                         }}
                     >
                         {pages.map(page => (
