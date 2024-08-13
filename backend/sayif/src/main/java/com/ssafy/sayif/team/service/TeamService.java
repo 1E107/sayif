@@ -45,13 +45,13 @@ public class TeamService {
         List<Team> applyTeams = teamRepository.findByStatus(TeamStatus.Apply);
 
         for (Team team : applyTeams) {
-            if (isThreeDaysBeforeStartDate(team)) { // 3일 남은 팀만 상태를 변경하도록 체크
+            if (isThreeDaysBeforeStartDate(team)) { // 3일이하 남은 팀만 상태를 변경하도록 체크
                 if (shouldUpdateToProceed(team)) {
                     team.updateStatus(TeamStatus.Proceed);
                     teamRepository.save(team);
                     TeamMsg message = TeamMsg.builder()
                             .msgContent(team.getName() + "팀의 채팅방이 생성되었습니다 !")
-                            .member(memberService.getMemberByUsername("관리자1"))
+                            .member(memberService.getMemberByUsername("ssafy"))
                             .team(team)
                             .sendAt(LocalDateTime.now())
                             .build();
