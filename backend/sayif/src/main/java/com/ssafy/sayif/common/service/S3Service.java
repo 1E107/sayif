@@ -3,11 +3,14 @@ package com.ssafy.sayif.common.service;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
+import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.util.IOUtils;
 import com.ssafy.sayif.common.exception.ErrorCode;
 import com.ssafy.sayif.common.exception.S3Exception;
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -156,4 +159,29 @@ public class S3Service {
     public boolean checkIfObjectExists(String url, String bucketName) {
         return amazonS3.doesObjectExist(bucketName, getKeyFromFileAddress(url));
     }
+
+    /**
+     * S3 버킷에서 파일을 다운로드
+     *
+     * @param fileAddress 다운로드할 파일의 URL
+     * @return 파일의 InputStream
+     */
+    public InputStream downloadFileFromS3(String fileAddress, String bucketName) {
+        String key = getKeyFromFileAddress(fileAddress); // 파일의 키 추출
+
+        try {
+            // S3에서 파일을 가져오기 위한 요청 생성
+            GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
+
+            // S3에서 파일 가져오기
+            S3Object s3Object = amazonS3.getObject(getObjectRequest);
+
+            // 파일의 InputStream 반환
+            return new BufferedInputStream(s3Object.getObjectContent());
+        } catch (Exception e) {
+            log.error("Error occurred while downloading from S3: ", e);
+            throw new S3Exception(ErrorCode.IO_EXCEPTION_ON_IMAGE_DOWNLOAD);
+        }
+    }
+
 }
