@@ -1,4 +1,3 @@
-import { TextField } from '@mui/material';
 import S from './style/CreateStoryStyled';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import { useState } from 'react';
@@ -31,7 +30,7 @@ function CreateStory() {
     const submitStory = async () => {
         try {
             await postStory(member.teamId, token, storyContent);
-            acquireExperience(token, member, 2);
+            await acquireExperience(token, member, 2);
 
             await Swal.fire({
                 title: '성공!',
@@ -52,20 +51,20 @@ function CreateStory() {
                 confirmButtonColor: '#6c8e23',
             });
         }
-        const callPostStory = async () => {
-            try {
-                const response = await postStory(
-                    member.teamId,
-                    token,
-                    storyContent,
-                );
-                console.log(response);
-            } catch (error) {
-                console.log(error);
-            }
-        };
-        callPostStory();
-        acquireExperience(token, member, 2);
+        // const callPostStory = async () => {
+        //     try {
+        //         const response = await postStory(
+        //             member.teamId,
+        //             token,
+        //             storyContent,
+        //         );
+        //         console.log(response);
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+        // };
+        // await callPostStory();
+        // await acquireExperience(token, member, 2);
         setOpenSnackbar(true);
     };
 
