@@ -15,7 +15,6 @@ import com.ssafy.sayif.team.repository.TeamRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -119,19 +118,20 @@ public class TeamBoardService {
         Team team = findTeamById(teamId);
         Pageable pageable = PageRequest.of(page, size);
         Page<TeamBoard> teamBoardPage = switch (key) {
-            case "content" -> teamBoardRepository.findAllByTeamAndContentContaining(pageable,
-                team, word);
-            case "title" -> teamBoardRepository.findAllByTeamAndTitleContaining(pageable, team,
-                word);
-            default -> teamBoardRepository.findAllByTeam(pageable, team);
+            case "content" ->
+                teamBoardRepository.findAllByTeamAndContentContainingOrderByCreatedAtDesc(pageable,
+                    team, word);
+            case "title" ->
+                teamBoardRepository.findAllByTeamAndTitleContainingOrderByCreatedAtDesc(pageable,
+                    team,
+                    word);
+            default -> teamBoardRepository.findAllByTeamOrderByCreatedAtDesc(pageable, team);
         };
 
-        List<TeamPostResponseDto> result = teamBoardPage.getContent().stream()
-            .map(this::convertToDto)
-            .collect(Collectors.toList());
-
         log.info("팀 ID: {}의 게시글 목록을 성공적으로 가져왔습니다.", teamId);
-        return result;
+        return teamBoardPage.getContent().stream()
+            .map(this::convertToDto)
+            .toList();
     }
 
     /**
