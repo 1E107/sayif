@@ -454,7 +454,7 @@ function MyPageComponent() {
                             <S.CustomInput
                                 placeholder={member.nickname}
                                 disabled={!changeInfo}
-                                onChange={handleInputChange('name')}
+                                onChange={handleInputChange('nickname')}
                                 onKeyDown={handleKeyDown}
                                 style={{
                                     border: changeInfo
