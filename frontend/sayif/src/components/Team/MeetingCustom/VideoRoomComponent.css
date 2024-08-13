@@ -96,7 +96,7 @@
 }
 
 .bounds.multiple-elements .OT_root {
-    width: 25%;
+    width: 33.33%;
     height: 50%;
 }
 
@@ -870,5 +870,6 @@
 
 .bounds.screen-shared .screen-sharing {
     width: 85%; /* 화면 공유 시 스트림의 너비를 85%로 설정 */
+    height: 100%;
     transition: width 0.3s ease;
 }
