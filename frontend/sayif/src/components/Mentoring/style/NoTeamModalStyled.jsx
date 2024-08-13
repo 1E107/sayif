@@ -21,7 +21,7 @@ const highlight = styled.div`
     padding: 2px 5px 2px 5px;
     color: white;
     border-radius: 5px;
-    height: 5px;
+    height: 18px;
     font-size: 13px;
 `;
 
