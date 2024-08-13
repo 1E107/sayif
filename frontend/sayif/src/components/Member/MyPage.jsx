@@ -314,11 +314,11 @@ function MyPageComponent() {
     const handleAddTag = () => {
         if (newTag.trim() !== '') {
             const isDuplicate = tags.some(tag => tag.content === newTag.trim());
-            if (tags.length >= 6) {
+            if (tags.length >= 5) {
                 Swal.fire({
                     icon: 'warning',
                     title: '태그 추가 오류',
-                    text: '태그는 최대 6개까지 추가할 수 있습니다.',
+                    text: '태그는 최대 5개까지 추가할 수 있습니다.',
                     confirmButtonText: '확인',
                     confirmButtonColor: '#6c8e23',
                 });
