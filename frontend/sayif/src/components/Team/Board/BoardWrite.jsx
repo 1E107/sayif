@@ -14,17 +14,37 @@ function BoardWrite() {
     const handleContentChange = e => setContent(e.target.value);
 
     const handleSubmit = async () => {
+        if (!title.trim() || !content.trim()) {
+            await Swal.fire({
+                icon: 'warning',
+                title: '입력 오류',
+                text: '제목과 내용을 모두 입력해 주세요!',
+                confirmButtonColor: '#6c8e23',
+            });
+            return;
+        }
+
         try {
             const response = await postBoardWrite(member.teamId, token, {
                 title,
                 content,
             });
             if (response.status === 200) {
-                alert('글이 성공적으로 등록되었습니다!');
+                await Swal.fire({
+                    icon: 'success',
+                    title: '성공',
+                    text: '글이 성공적으로 등록되었습니다!',
+                    confirmButtonColor: '#6c8e23',
+                });
                 navigate('/team/board');
             }
         } catch (error) {
-            alert('글 등록에 실패했어요. 다시 시도해보세요.');
+            await Swal.fire({
+                icon: 'error',
+                title: '실패',
+                text: '글 등록에 실패했어요. 다시 시도해보세요.',
+                confirmButtonColor: '#6c8e23',
+            });
             console.error(error);
         }
     };

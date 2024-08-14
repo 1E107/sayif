@@ -43,24 +43,33 @@ function Story() {
         navigate('/team/create-story');
     };
 
-    const handleRead = () => {
-        const callReadStatus = async () => {
-            try {
-                const response = await getReadStatus(
-                    member.teamId,
-                    selectContentId,
-                    token,
-                );
-                if (response.status === 200) {
-                    alert('해당 사연을 읽었습니다!');
-                    SetHidden(prev => [...prev, selectContentId]);
-                    // window.location.reload();
-                }
-            } catch (error) {
-                console.log(error);
+    const handleRead = async () => {
+        try {
+            const response = await getReadStatus(
+                member.teamId,
+                selectContentId,
+                token,
+            );
+            if (response.status === 200) {
+                await Swal.fire({
+                    title: '성공!',
+                    text: '해당 사연을 읽었습니다!',
+                    icon: 'success',
+                    confirmButtonText: '확인',
+                    confirmButtonColor: '#6c8e23',
+                });
+                SetHidden(prev => [...prev, selectContentId]);
             }
-        };
-        callReadStatus();
+        } catch (error) {
+            console.log(error);
+            await Swal.fire({
+                title: '오류!',
+                text: '사연 읽기 중 오류가 발생했습니다. 다시 시도해 주세요.',
+                icon: 'error',
+                confirmButtonText: '확인',
+                confirmButtonColor: '#6c8e23',
+            });
+        }
     };
 
     useEffect(() => {

@@ -49,20 +49,34 @@ function BoardDetail() {
         SetWriteComment(event.target.value);
     };
 
-    const SubmitComment = () => {
-        const callPostComment = async () => {
-            try {
-                const response = await postQnAComment(id, token, writeComment);
-                if (response.status === 200) {
-                    alert('댓글이 성공적으로 등록되었습니다!');
-                    window.location.reload();
+    const SubmitComment = async () => {
+        try {
+            const response = await postQnAComment(id, token, writeComment);
+            if (response.status === 200) {
+                await Swal.fire({
+                    icon: 'success',
+                    title: '성공',
+                    text: '댓글이 성공적으로 등록되었습니다!',
+                    confirmButtonColor: '#6c8e23',
+                });
+                // 댓글 등록 후 댓글 목록을 새로 고침
+                const updatedComments = await getQnAComment(id, token);
+                if (updatedComments.status === 200) {
+                    SetComment(updatedComments.data);
                 }
             } catch (error) {
                 alert('댓글 등록이 실패했어요! 다시 한 번 시도해보세요!');
                 console.log(error);
             }
-        };
-        callPostComment();
+        } catch (error) {
+            await Swal.fire({
+                icon: 'error',
+                title: '실패',
+                text: '댓글 등록이 실패했어요! 다시 한 번 시도해보세요!',
+                confirmButtonColor: '#6c8e23',
+            });
+            console.error(error);
+        }
     };
 
     const handleBackClick = () => {

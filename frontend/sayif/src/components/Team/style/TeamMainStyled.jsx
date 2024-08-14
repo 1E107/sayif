@@ -10,13 +10,13 @@ import '../../../styles/fonts.css';
 
 const blinkShadow = keyframes`
   0% {
-    box-shadow: 0px 0px 5px 1px rgba(222, 211, 166, 0.2);
+    box-shadow: 0px 0px 7px 3px rgba(222, 211, 166, 0.2);
   }
   50% {
-    box-shadow: 0px 0px 13px 4px rgba(222, 211, 166, 0.5);
+    box-shadow: 0px 0px 17px 6px rgba(222, 211, 166, 0.7);
   }
   100% {
-    box-shadow: 0px 0px 5px 1px rgba(222, 211, 166, 0.2);
+    box-shadow: 0px 0px 7px 3px rgba(222, 211, 166, 0.2);
   }
 `;
 
@@ -36,7 +36,13 @@ const ImageBox = styled.div`
     background-size: contain; /* 이미지를 잘리지 않게 */
     background-repeat: no-repeat;
     background-position: center;
-    animation: ${blinkShadow} 1.5s infinite;
+    animation: ${blinkShadow} 1.2s infinite;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out;
+
+    &:hover {
+        transform: scale(1.1); /* 이미지가 10% 확대됩니다 */
+    }
 `;
 
 const Wrapper = styled.div``;
@@ -63,8 +69,8 @@ const ScoreContainer = styled.div`
 `;
 
 const BubbleImg = styled.img`
-    height: 130px;
-    width: 570px;
+    height: 180px;
+    width: 670px;
     margin-top: 50px;
 `;
 

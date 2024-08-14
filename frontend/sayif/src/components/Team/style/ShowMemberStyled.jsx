@@ -7,7 +7,7 @@ const Title = styled.div`
     font-weight: bold;
     font-size: 19px;
     margin-bottom: 20px;
-    margin-top: 40px;
+    margin-top: 50px;
 `;
 
 const Container = styled.div`
@@ -49,9 +49,8 @@ const TagBox = styled.div`
     background-color: #161616;
     font-family: ChosunGu;
     color: white;
-    padding: 4px;
+    padding: 5px 10px;
     font-size: 13px;
-    width: 50px;
     border-radius: 14px;
     text-align: center;
 `;
@@ -105,14 +104,56 @@ const FloatingButton = styled.button`
 `;
 const MentoringDetails = styled.div`
     font-family: 'ChosunGu', sans-serif;
-    font-size: 18px;
+    font-size: 20px;
     color: #0b4619;
     text-align: center;
     font-weight: bold;
+    margin-bottom: 30px;
 
     & > div {
-        margin-bottom: 8px;
+        margin-bottom: 10px;
     }
+`;
+
+const MentoringTable = styled.div`
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 40px;
+`;
+
+const MentoringDay = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 100px;
+    background-color: ${({ isMentoringDay }) =>
+        isMentoringDay ? '#FFE066' : '#f4f4f4'}; /* 배경색 변경 */
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+`;
+
+const Day = styled.div`
+    font-family: ChosunGu;
+    font-size: 18px;
+    font-weight: bold;
+    color: #116530;
+    margin-bottom: 10px;
+`;
+
+const MentoringText = styled.div`
+    font-family: ChosunGu;
+    font-size: 14px;
+    color: #116530;
+    text-align: center;
+`;
+
+const EmptyText = styled.div`
+    font-family: ChosunGu;
+    font-size: 14px;
+    color: #bbb;
+    text-align: center;
 `;
 
 const S = {
@@ -130,6 +171,11 @@ const S = {
     MenteeNickname,
     FloatingButton,
     MentoringDetails,
+    MentoringTable,
+    MentoringDay,
+    Day,
+    MentoringText,
+    EmptyText,
 };
 
 export default S;

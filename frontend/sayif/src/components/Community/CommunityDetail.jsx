@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import S from './style/CommunityDetailStyled';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
@@ -112,16 +112,23 @@ function CommunityDetail() {
 
     const handleDownloadImage = () => {
         if (content?.fileUrl) {
-            const userConfirmed =
-                window.confirm('이미지를 다운로드하시겠습니까?');
-            if (userConfirmed) {
-                const link = document.createElement('a');
-                link.href = content.fileUrl;
-                link.download = content.fileUrl.split('/').pop();
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            }
+            Swal.fire({
+                title: '이미지를 다운로드하시겠습니까?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: '다운로드',
+                cancelButtonText: '취소',
+                confirmButtonColor: '#6c8e23',
+            }).then(result => {
+                if (result.isConfirmed) {
+                    const link = document.createElement('a');
+                    link.href = content.fileUrl;
+                    link.download = content.fileUrl.split('/').pop();
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+            });
         }
     };
 
@@ -140,7 +147,9 @@ function CommunityDetail() {
                         {content.hitCount}
                     </S.DateAndWriter>
                     <S.CustomHr />
-                    <S.Content>{content.content}</S.Content>
+                    <S.Content dangerouslySetInnerHTML={{
+                        __html: content.content.replace(/\n/g, '<br />'),
+                    }} />
                     <S.CustomHr />
                     {content.fileUrl && isImage(content.fileUrl) && (
                         <S.Fieldset>

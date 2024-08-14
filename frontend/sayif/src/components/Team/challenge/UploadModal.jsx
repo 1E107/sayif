@@ -50,17 +50,18 @@ function UploadModal({ onClose, id, challengeId }) {
         callTry();
     };
 
-    const handleFinishBtn = () => {
-        const callSubmitPhoto = async () => {
-            try {
-                const response = await submitPhoto(id, file, token);
-                if (response.status === 200) {
-                    alert('사진이 성공적으로 업로드되었습니다!');
-                    handleClose();
-                    window.location.reload();
-                }
-            } catch (error) {
-                console.log(error);
+    const handleFinishBtn = async () => {
+        try {
+            const response = await submitPhoto(id, file, token);
+            if (response.status === 200) {
+                handleClose();
+                await Swal.fire({
+                    icon: 'success',
+                    title: '성공',
+                    text: '사진이 성공적으로 업로드되었습니다!',
+                    confirmButtonColor: '#6c8e23',
+                });
+                window.location.reload();
             }
         };
         callSubmitPhoto();

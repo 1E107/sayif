@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { API_BASE_URL } from './config';
 
-export const getChatData = async token => {};
+export const getChatData = async token => {
+};
 
 export const getMemberInfo = async (teamId, token) => {
     try {
@@ -154,6 +155,7 @@ export const getMaterialDetail = async (materialId, token) => {
                 headers: { Authorization: `Bearer ${token}` },
             },
         );
+        console.log(response.data);
         return response;
     } catch (error) {
         throw error;

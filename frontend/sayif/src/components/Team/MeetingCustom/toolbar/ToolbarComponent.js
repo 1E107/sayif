@@ -54,8 +54,17 @@ export default class ToolbarComponent extends Component {
 
     leaveSession() {
         if (this.props.sessionStatus === 'mentor') {
-            const confirmLeave = window.confirm('회의를 종료하시겠습니까?');
-            if (confirmLeave) {
+            const result = await Swal.fire({
+                title: '회의를 종료하시겠습니까?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#6c8e23',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '확인',
+                cancelButtonText: '취소',
+            });
+
+            if (result.isConfirmed) {
                 this.props.leaveSession();
             }
         } else {

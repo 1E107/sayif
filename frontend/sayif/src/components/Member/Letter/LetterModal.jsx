@@ -50,10 +50,18 @@ function LetterModal({ onClose, id }) {
             );
 
             if (response.status === 200) {
-                alert('쪽지가 전송되었습니다.');
-                SetSendTitle('제목');
-                SetSendContent('내용');
-                onClose();
+                Swal.fire({
+                    icon: 'success',
+                    title: '전송 완료',
+                    text: '쪽지가 전송되었습니다.',
+                    timer: 1500,
+                    showConfirmButton: false,
+                    confirmButtonColor: '#6c8e23',
+                }).then(() => {
+                    SetSendTitle('제목');
+                    SetSendContent('내용');
+                    onClose();
+                });
             } else {
                 alert('쪽지 전송에 실패했습니다. 다시 시도해 주세요.');
             }

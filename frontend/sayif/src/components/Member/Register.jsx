@@ -50,7 +50,27 @@ function Register() {
         }
     };
 
-    const handleNextButton = () => {
+    const handleNextButton = async () => {
+        if (!hasCheckedId) {
+            Swal.fire({
+                icon: 'warning',
+                title: '아이디 중복 검사 필요',
+                text: '아이디 중복 검사를 진행해주세요.',
+                confirmButtonColor: '#6c8e23',
+            });
+            return;
+        }
+        // 아이디 중복 여부 확인
+        if (!isIdAvailable) {
+            Swal.fire({
+                icon: 'warning',
+                title: '아이디 중복',
+                text: '아이디가 중복되었습니다. 다른 아이디를 사용해주세요.',
+                confirmButtonColor: '#6c8e23',
+            });
+            return;
+        }
+
         const info = {
             username: id,
             password: password,
@@ -118,6 +138,50 @@ function Register() {
             alert('인증 코드를 입력해주세요.');
         }
     };
+
+    const handleCheckId = async username => {
+        try {
+            const response = await axios.get(
+                `${API_BASE_URL}/member/check-id/${username}`,
+            );
+
+            console.log(response.data);
+            // 응답 데이터가 true/false인지 확인
+            if (typeof response.data === 'boolean') {
+                setIsIdAvailable(!response.data); // true가 중복, false가 사용 가능
+                setHasCheckedId(true); // 중복 검사 수행 완료
+                if (response.data) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: '아이디 중복',
+                        text: '다른 아이디를 입력해주세요.',
+                        confirmButtonColor: '#6c8e23',
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '사용 가능한 아이디',
+                        text: '사용 가능한 아이디입니다.',
+                        confirmButtonColor: '#6c8e23',
+                    });
+                }
+                return !response.data; // 중복이 아니면 true, 중복이면 false
+            } else {
+                throw new Error('Unexpected response format');
+            }
+        } catch (error) {
+            console.error('Error checking ID:', error);
+            setIsIdAvailable(false); // 오류가 발생했을 때는 false로 설정
+            return false;
+        }
+    };
+
+    // 아이디가 변경될 때마다 중복 검사 수행
+    useEffect(() => {
+        if (id) {
+            setHasCheckedId(false); // 아이디가 변경되면 중복 검사 다시 수행
+        }
+    }, [id]);
 
     useEffect(() => {
         if (verificationCodeSent && timeRemaining > 0) {
@@ -251,7 +315,7 @@ function Register() {
             <S.RegistBtn 
                 variant="contained" 
                 onClick={handleNextButton}
-                disabled={!isCodeVerified} // 인증이 완료되어야 버튼 활성화
+                disabled={!isCodeVerified || !isIdAvailable} // 인증 완료와 아이디 사용 가능 여부에 따라 버튼 활성화
             >
                 다음
             </S.RegistBtn>

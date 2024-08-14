@@ -47,9 +47,18 @@ class WebSocketService {
 
   disconnect() {
     if (this.client !== null) {
+      // 모든 구독을 취소
+      this.subscriptions.forEach((subscription, topic) => {
+        console.log(`Unsubscribing from topic: ${topic}`);
+        subscription.unsubscribe();
+      });
+      // 구독 맵을 초기화
+      this.subscriptions.clear();
+      
+      // WebSocket 연결 해제
       this.client.deactivate();
+      console.log('Disconnected from WebSocket server');
     }
-    console.log('Disconnected from WebSocket server');
   }
 
   sendMessage(topic, message) {

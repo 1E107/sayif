@@ -77,19 +77,39 @@ function Create() {
 
     const handleCompleteBtn = () => {
         if (!selectDate) {
-            alert('멘토링 시작 날짜를 선택하세요.');
+            Swal.fire({
+                icon: 'warning',
+                title: '날짜 미선택',
+                text: '멘토링 시작 날짜를 선택하세요.',
+                confirmButtonColor: '#6c8e23',
+            });
             return;
         }
         if (selectDays.length === 0) {
-            alert('멘토링 요일을 선택하세요.');
+            Swal.fire({
+                icon: 'warning',
+                title: '요일 미선택',
+                text: '멘토링 요일을 선택하세요.',
+                confirmButtonColor: '#6c8e23',
+            });
             return;
         }
         if (!selectTime) {
-            alert('멘토링 시간을 선택하세요.');
+            Swal.fire({
+                icon: 'warning',
+                title: '시간 미선택',
+                text: '멘토링 시간을 선택하세요.',
+                confirmButtonColor: '#6c8e23',
+            });
             return;
         }
         if (!otherMentor) {
-            alert('멘토를 선택하세요.');
+            Swal.fire({
+                icon: 'warning',
+                title: '멘토 미선택',
+                text: '멘토를 선택하세요.',
+                confirmButtonColor: '#6c8e23',
+            });
             return;
         }
 
@@ -106,12 +126,23 @@ function Create() {
                     token,
                 );
                 if (response.status === 200) {
-                    alert('멘토링 그룹 신청이 완료되었습니다.');
+                    await Swal.fire({
+                        icon: 'success',
+                        title: '신청 완료',
+                        text: '멘토링 그룹 신청이 완료되었습니다.',
+                        confirmButtonColor: '#6c8e23',
+                    });
                     SetShowApply(false);
                     SetShowFinish(true);
                 }
             } catch (error) {
                 console.log(error);
+                await Swal.fire({
+                    icon: 'error',
+                    title: '신청 실패',
+                    text: '멘토링 그룹 신청에 실패했습니다. 다시 시도해주세요.',
+                    confirmButtonColor: '#6c8e23',
+                });
             }
         };
         callSubmitGroupd();

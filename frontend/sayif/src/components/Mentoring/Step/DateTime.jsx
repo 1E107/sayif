@@ -10,54 +10,52 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { useState } from 'react';
 
 const StyledButton = styled(Button)`
-    font-size: 20px !important;
-    font-weight: 600 !important;
-    padding: 0px 20px 0px 20px !important;
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  padding: 0px 20px 0px 20px !important;
 `;
 
 const StyledCalendar = styled(Calendar)`
+  border: none;
+  background-color: #f5f5f5;
+  border-radius: 0px 0px 10px 10px;
+  width: 400px;
+  padding: 10px;
+
+  .react-calendar__navigation {
+    height: 3.5rem;
+    display: flex;
+    text-align: center;
+    align-items: center;
+    padding: 0 10px;
     border: none;
-    background-color: #f5f5f5;
-    border-radius: 0px 0px 10px 10px;
-    width: 400px;
-    padding: 10px;
+  }
 
-    .react-calendar__navigation {
-        height: 3.5rem;
-        display: flex;
-        text-align: center;
-        align-items: center;
-        padding: 0 10px;
-        border: none;
-    }
+  .react-calendar__navigation__label {
+    height: 1.375rem;
+    font-size: 18px;
+    border: none;
+    font-weight: bold;
+  }
 
-    .react-calendar__navigation__label {
-        height: 1.375rem;
-        font-size: 18px;
-        border: none;
-        font-weight: bold;
-    }
+  .react-calendar__navigation__prev-button {
+    border: none;
+    cursor: pointer;
+  }
 
-    .react-calendar__navigation__prev-button {
-        border: none;
-        background-color: #fff;
-        cursor: pointer;
-        opacity: 0;
-    }
+  .react-calendar__tile--active {
+    background: #e2f4c5;
+    color: black;
+  }
 
-    .react-calendar__tile--active {
-        background: #e2f4c5;
-        color: black;
-    }
+  .react-calendar__tile--active:enabled:hover,
+  .react-calendar__tile--active:enabled:focus {
+    background: #416d19;
+  }
 
-    .react-calendar__tile--active:enabled:hover,
-    .react-calendar__tile--active:enabled:focus {
-        background: #416d19;
-    }
-
-    .react-calendar__tile--now {
-        background: #e8e8cc;
-    }
+  .react-calendar__tile--now {
+    background: #e8e8cc;
+  }
 `;
 
 function DateTime({ selectInfoSave }) {
@@ -69,8 +67,11 @@ function DateTime({ selectInfoSave }) {
     const [isSelect, SetIsSelect] = useState('');
 
     const handleAMPM = () => {
-        if (TextAMPM === '오전') setTextAMPM('오후');
-        else setTextAMPM('오전');
+        if (TextAMPM === '오전') {
+            setTextAMPM('오후');
+        } else {
+            setTextAMPM('오전');
+        }
     };
 
     const handleNextBtn = () => {

@@ -1,8 +1,10 @@
 import S from './style/TeamMainStyled';
 import CreateIcon from '@mui/icons-material/Create';
-import Popover from '@mui/material/Popover';
 import NorthWestIcon from '@mui/icons-material/NorthWest';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import * as React from 'react';
+import { useEffect } from 'react';
 
 import '../../styles/fonts.css';
 import { ReactTyped } from 'react-typed';
@@ -12,8 +14,9 @@ import {
     modifyTeamName,
 } from '../../api/TeamApi';
 import { useSelector } from 'react-redux';
-import { useEffect } from 'react';
 import ChatbotModal from './ChatBotModal';
+import Swal from 'sweetalert2';
+import Popover from '@mui/material/Popover';
 
 const images = [
     `${process.env.PUBLIC_URL}/img/Plant/새잎_0단계.png`,
@@ -32,17 +35,25 @@ function TeamMain() {
     const [teamName, setTeamName] = React.useState(''); // 팀 이름 상태 관리
     const { token, member } = useSelector(state => state.member);
     const [isChatBotModalOpen, setIsChatBotModalOpen] = React.useState(false);
-    const [anchorEl, setAnchorEl] = React.useState(null);
+    const imageBoxRef = React.useRef(null); // 이미지 박스를 참조하는 ref
+    const [currentLevel, setCurrentLevel] = React.useState(0); // 현재 표시된 이미지 레벨 상태 관리
+
+    const [anchorEl, setAnchorEl] = React.useState(null); // Popover anchor 상태 관리
+    const open = Boolean(anchorEl);
+    const id = open ? 'simple-popover' : undefined;
 
     useEffect(() => {
         async function fetchProgress() {
             const experience = await getTeamExperience(member.teamId, token);
             setProgress(experience.data.point);
+            setCurrentLevel(Math.floor(experience.data.point / 100));
         }
+
         async function fetchTeamName() {
             const response = await getTeamName(member.teamId, token);
             setTeamName(response.data.name);
         }
+
         fetchProgress();
         fetchTeamName();
     }, [member.teamId, token]);
@@ -93,31 +104,81 @@ function TeamMain() {
         setIsChatBotModalOpen(false); // ChatBotModal을 닫음
     };
 
-    const handleImageBoxClick = event => {
-        setAnchorEl(event.currentTarget); // Popover를 여는 anchor 설정
+    const level = Math.floor(progress / 100);
+    const imageUrl = images[currentLevel] || images[0];
+
+    const handlePreviousImage = () => {
+        if (currentLevel > 0) {
+            setCurrentLevel(prevLevel => prevLevel - 1);
+        } else {
+            Swal.fire({
+                icon: 'warning',
+                title: '이전 이미지가 없습니다.',
+                text: '가장 낮은 레벨입니다.',
+                confirmButtonText: '확인',
+                confirmButtonColor: '#6c8e23',
+            });
+        }
+    };
+
+    const handleNextImage = () => {
+        if (currentLevel < level) {
+            setCurrentLevel(prevLevel => prevLevel + 1);
+        } else {
+            Swal.fire({
+                icon: 'warning',
+                title: '레벨 업이 필요합니다.',
+                text: '현재 레벨을 초과한 레벨입니다.',
+                confirmButtonText: '확인',
+                confirmButtonColor: '#6c8e23',
+            });
+        }
+    };
+
+    const handleImageClick = event => {
+        setAnchorEl(event.currentTarget); // 이미지 클릭 시 Popover 열기
     };
 
     const handlePopoverClose = () => {
-        setAnchorEl(null); // Popover를 닫음
+        setAnchorEl(null); // Popover 닫기
     };
-
-    const open = Boolean(anchorEl);
-    const id = open ? 'simple-popover' : undefined;
-
-    const level = Math.floor(progress / 100);
-    const imageUrl = images[level] || images[0];
 
     const MainView = (
         <S.Container>
             <S.Wrapper>
-                <S.ImageBox
+                <div
                     style={{
-                        backgroundImage: `url(${imageUrl})`,
-                        backgroundSize: 'contain',
-                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
                     }}
-                    onClick={handleImageBoxClick}
-                ></S.ImageBox>
+                >
+                    <ArrowBackIosIcon
+                        style={{
+                            marginRight: '10',
+                            color: currentLevel === 0 ? '#DDD' : '#000',
+                            cursor: currentLevel > 0 ? 'pointer' : 'default',
+                        }}
+                        onClick={handlePreviousImage}
+                    />
+                    <S.ImageBox
+                        style={{
+                            backgroundImage: `url(${imageUrl})`,
+                            backgroundSize: 'contain',
+                        }}
+                        ref={imageBoxRef} // 이미지 박스에 ref 연결
+                        onClick={handleImageClick} // 이미지 클릭 시 Popover 열기
+                    ></S.ImageBox>
+                    <ArrowForwardIosIcon
+                        style={{
+                            marginLeft: '15',
+                            color: currentLevel === level ? '#DDD' : '#000',
+                            cursor:
+                                currentLevel < level ? 'pointer' : 'default',
+                        }}
+                        onClick={handleNextImage}
+                    />
+                </div>
                 <div
                     style={{
                         display: 'flex',
@@ -127,7 +188,7 @@ function TeamMain() {
                     }}
                 >
                     <S.TeamNameText>
-                        Lv. {Math.floor(progress / 100)} {teamName}
+                        Lv. {level} {teamName}
                         <CreateIcon
                             style={{
                                 color: '#DED3A6',
@@ -161,10 +222,10 @@ function TeamMain() {
                         left: '45%',
                         transform: 'translate(-50%, -50%)',
                         fontFamily: 'Ownglyph_ryurue-Rg',
-                        fontSize: '20px',
+                        fontSize: '26px',
                         color: 'black',
                         textAlign: 'center',
-                        width: '420px',
+                        width: '450px',
                         pointerEvents: 'none',
                     }}
                 >

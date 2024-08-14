@@ -1,10 +1,10 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 import '../../../styles/fonts.css';
 
 const titleText = styled.div`
     margin-top: 13px;
     font-family: ChosunGu;
-    font-size:  20px;
+    font-size: 20px;
     font-weight: bold;
 `;
 
@@ -13,7 +13,7 @@ const contentText = styled.div`
     margin-top: 40px;
     font-size: 14px;
     line-height: 150%;
-`
+`;
 
 const highlight = styled.div`
     display: inline-block;
@@ -21,14 +21,14 @@ const highlight = styled.div`
     padding: 2px 5px 2px 5px;
     color: white;
     border-radius: 5px;
-    height: 5x;
+    height: 18px;
     font-size: 13px;
-`
+`;
 
 const S = {
     titleText,
     contentText,
-    highlight
-}
+    highlight,
+};
 
 export default S;

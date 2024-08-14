@@ -5,7 +5,11 @@ import '../../../styles/fonts.css';
 const Container = styled.div`
     margin-top: 200px;
     width: 1000px;
-    height: 800px;
+    height: ${({ changeInfo, role }) => {
+        if (role === 'Mentor') return changeInfo ? '860px' : '780px';
+        if (role === 'Mentee') return changeInfo ? '600px' : '540px';
+        return '720px'; // 기본값
+    }};
     border-radius: 40px;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
     display: flex;

@@ -20,7 +20,7 @@ const columns = [
     { id: 'title', label: '제목', minWidth: 250, align: 'center' },
     { id: 'createdAt', label: '작성일', minWidth: 170, align: 'center' },
     { id: 'chapter', label: '단원', minWidth: 50, align: 'center' },
-    { id: 'hit', label: '조회수', minWidth: 50, align: 'center' },
+    // { id: 'hit', label: '조회수', minWidth: 50, align: 'center' },
 ];
 
 function MaterialList() {

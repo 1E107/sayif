@@ -1,4 +1,3 @@
-import { TextField } from '@mui/material';
 import S from './style/CreateStoryStyled';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import { useState } from 'react';
@@ -27,20 +26,43 @@ function CreateStory() {
     };
 
     const submitStory = async () => {
-        const callPostStory = async () => {
-            try {
-                const response = await postStory(
-                    member.teamId,
-                    token,
-                    storyContent,
-                );
-                console.log(response);
-            } catch (error) {
-                console.log(error);
-            }
-        };
-        callPostStory();
-        acquireExperience(token, member, 2);
+        try {
+            await postStory(member.teamId, token, storyContent);
+            await acquireExperience(token, member, 2);
+
+            await Swal.fire({
+                title: '성공!',
+                text: '익명 사연이 등록되었습니다.',
+                icon: 'success',
+                confirmButtonText: '확인',
+                confirmButtonColor: '#6c8e23',
+            });
+
+            navigate('/team/story-board');
+        } catch (error) {
+            console.log(error);
+            await Swal.fire({
+                title: '오류!',
+                text: '사연 등록 중 오류가 발생했습니다. 다시 시도해 주세요.',
+                icon: 'error',
+                confirmButtonText: '확인',
+                confirmButtonColor: '#6c8e23',
+            });
+        }
+        // const callPostStory = async () => {
+        //     try {
+        //         const response = await postStory(
+        //             member.teamId,
+        //             token,
+        //             storyContent,
+        //         );
+        //         console.log(response);
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+        // };
+        // await callPostStory();
+        // await acquireExperience(token, member, 2);
         setOpenSnackbar(true);
     };
 

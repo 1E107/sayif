@@ -18,6 +18,8 @@ import '../../styles/fonts.css';
 import { useSelector } from 'react-redux';
 import { getTeamStatue } from '../../api/MentoringApi';
 import NoTeamModal from '../Mentoring/NoTeamModal';
+import Swal from 'sweetalert2';
+import NoTeamModalMentor from '../Mentoring/NoTeamModalMentor'; // SweetAlert2 import 추가
 
 function Header() {
     const navigate = useNavigate();
@@ -26,6 +28,7 @@ function Header() {
     const [anchorElSubFull, setAnchorElSubFull] = useState(null); // 전체 화면
     const [currentSettings, setCurrentSettings] = useState([]);
     const [showNoTeamModal, setShowNoTeamModal] = useState(false);
+    const [showNoTeamModalMentor, setShowNoTeamModalMentor] = useState(false);
     const { token, member } = useSelector(state => state.member);
 
     const pages = ['새잎 소개', '멘토링', '소통 공간', '정보 공간'];
@@ -98,6 +101,9 @@ function Header() {
     const handleCloseNoTeamModal = () => {
         setShowNoTeamModal(false);
     };
+    const handleCloseNoTeamModalMentor = () => {
+        setShowNoTeamModalMentor(false);
+    };
 
     const handleMyPage = () => {
         navigate('/my-page');
@@ -114,14 +120,22 @@ function Header() {
                         if (response.data.status === 'Proceed') {
                             navigate('/team');
                         } else {
-                            setShowNoTeamModal(true);
+                            if (member.role === 'Mentor') {
+                                setShowNoTeamModalMentor(true);
+                            } else {
+                                setShowNoTeamModal(true);
+                            }
                         }
                     }
                 } catch (error) {
                     console.log(error);
                 }
             } else {
-                setShowNoTeamModal(true);
+                if (member.role === 'Mentor') {
+                    setShowNoTeamModalMentor(true);
+                } else {
+                    setShowNoTeamModal(true);
+                }
             }
         };
         callGetStatus();
@@ -272,6 +286,7 @@ function Header() {
                             display: { xs: 'none', md: 'flex' },
                             justifyContent: 'center',
                             alignItems: 'center',
+                            gap: '10px',
                         }}
                     >
                         {pages.map(page => (
@@ -286,6 +301,7 @@ function Header() {
                                     display: 'block',
                                     fontFamily: 'ChosunGu',
                                     fontWeight: 'bold',
+                                    fontSize: '1.2rem',
                                 }}
                             >
                                 {page}
@@ -361,6 +377,7 @@ function Header() {
                                         display: 'block',
                                         fontFamily: 'ChosunGu',
                                         fontWeight: 'bold',
+                                        fontSize: '16px',
                                     }}
                                 >
                                     팀 오피스
@@ -404,6 +421,9 @@ function Header() {
             </Container>
             {showNoTeamModal && (
                 <NoTeamModal onClose={handleCloseNoTeamModal} />
+            )}
+            {showNoTeamModalMentor && (
+                <NoTeamModalMentor onClose={handleCloseNoTeamModalMentor} />
             )}
         </AppBar>
     );

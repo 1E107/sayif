@@ -112,20 +112,52 @@ function ShowMembers() {
         callMentoringPlan();
     }, []);
 
+    const daysOfWeek = ['월', '화', '수', '목', '금', '토', '일'];
+
+    const formatDate = dateString => {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        return `${year}년 ${month}월 ${day}일`;
+    };
+
     const MainView = (
         <S.Container>
             <S.Title>멘토링 일정</S.Title>
             {mentoringInfo && (
-                <S.MentoringDetails>
-                    <div>
-                        {mentoringInfo.startDate} ~ {mentoringInfo.endDate}
-                    </div>
-                    <div>매주 {mentoringInfo.dayOfWeek} 요일</div>
-                    <div>
-                        {mentoringInfo.pmam} {mentoringInfo.time}
-                    </div>
-                </S.MentoringDetails>
+                <>
+                    <S.MentoringDetails>
+                        <div>
+                            {formatDate(mentoringInfo.startDate)} ~{' '}
+                            {formatDate(mentoringInfo.endDate)}
+                        </div>
+                    </S.MentoringDetails>
+                    <S.MentoringTable>
+                        {daysOfWeek.map((day, index) => (
+                            <S.MentoringDay
+                                key={index}
+                                isMentoringDay={mentoringInfo.dayOfWeek
+                                    .split(',')
+                                    .map(d => d.trim())
+                                    .includes(day)}
+                            >
+                                <S.Day>{day}</S.Day>
+                                {mentoringInfo.dayOfWeek
+                                    .split(',')
+                                    .map(d => d.trim())
+                                    .includes(day) && (
+                                    <S.MentoringText>
+                                        {mentoringInfo.pmam}{' '}
+                                        {mentoringInfo.time}
+                                    </S.MentoringText>
+                                )}
+                            </S.MentoringDay>
+                        ))}
+                    </S.MentoringTable>
+                </>
             )}
+
             <S.Title>단비</S.Title>
             <S.MentorList>
                 {mentorList.map(mentor => {
@@ -153,10 +185,20 @@ function ShowMembers() {
                                 <div>
                                     <Box sx={{ flexGrow: 0 }}>
                                         <Tooltip>
-                                            <IconButton sx={{ p: 0 }}>
+                                            <IconButton
+                                                sx={{
+                                                    p: 0,
+                                                    width: 56,
+                                                    height: 56,
+                                                }}
+                                            >
                                                 <Avatar
                                                     alt="Remy Sharp"
                                                     src={mentor.profileImg}
+                                                    sx={{
+                                                        width: 56,
+                                                        height: 56,
+                                                    }}
                                                 />
                                             </IconButton>
                                         </Tooltip>
@@ -177,13 +219,18 @@ function ShowMembers() {
                                     <></>
                                 )}
                             </CardContent>
-                            <CardActions sx={{ marginTop: 'auto' }}>
+                            <CardActions
+                                sx={{
+                                    marginTop: 'auto',
+                                    marginLeft: 'auto',
+                                    marginRight: '10px',
+                                }}
+                            >
                                 <CustomButton
                                     size="small"
-                                    endIcon={<SendIcon />}
                                     onClick={() => handleOpenModal(mentor.id)}
                                 >
-                                    쪽지 보내기
+                                    📩 쪽지 보내기
                                 </CustomButton>
                             </CardActions>
                         </Card>
