@@ -18,7 +18,6 @@ import { API_BASE_URL } from '../../api/config';
 import ReactMarkdown from 'react-markdown';
 import '../../styles/fonts.css';
 import remarkGfm from 'remark-gfm'; // GitHub 스타일 마크다운 플러그인
-import Swal from 'sweetalert2';
 
 const ChatbotModal = ({ open, handleClose }) => {
     const [message, setMessage] = useState('');

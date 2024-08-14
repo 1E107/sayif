@@ -18,8 +18,6 @@ import StopScreenShare from '@mui/icons-material/StopScreenShare';
 import ExitToApp from '@mui/icons-material/ExitToApp';
 import QuestionAnswer from '@mui/icons-material/QuestionAnswer';
 
-import Swal from 'sweetalert2';
-
 export default class ToolbarComponent extends Component {
     constructor(props) {
         super(props);
@@ -54,7 +52,7 @@ export default class ToolbarComponent extends Component {
         this.props.toggleFullscreen();
     }
 
-    async leaveSession() {
+    leaveSession() {
         if (this.props.sessionStatus === 'mentor') {
             const result = await Swal.fire({
                 title: '회의를 종료하시겠습니까?',

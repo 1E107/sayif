@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import S from './style/BoardWriteStyled';
 import { useSelector } from 'react-redux';
 import { postBoardWrite } from '../../../api/TeamApi';
-import Swal from 'sweetalert2';
 
 function BoardWrite() {
     const navigate = useNavigate();
@@ -73,3 +72,4 @@ function BoardWrite() {
 }
 
 export default BoardWrite;
+

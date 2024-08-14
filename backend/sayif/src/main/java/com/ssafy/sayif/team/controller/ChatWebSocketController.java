@@ -74,7 +74,7 @@ public class ChatWebSocketController {
             .msgContent(chatRequestDto.getMsgContent())
             .member(currentUser)
             .team(team)
-            .sendAt(LocalDateTime.now())
+            .sendAt(ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime())
             .build();
 
         teamMsgRepository.save(message);

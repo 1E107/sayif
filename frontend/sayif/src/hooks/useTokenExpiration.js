@@ -7,7 +7,6 @@ import {
 } from '../redux/modules/member';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getNewToken, logout } from '../api/MemberApi';
-import Swal from 'sweetalert2';
 
 const useTokenExpiration = () => {
     const navigate = useNavigate();

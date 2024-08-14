@@ -132,19 +132,3 @@ export const getMentoringPlan = async (teamId, token) => {
         throw error;
     }
 };
-
-export const getTeamInfo = async (teamId, token) => {
-    try {
-        const response = await axios.get(
-            `${API_BASE_URL}/mentoring/team-info/${teamId}`,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            },
-        );
-        return response;
-    } catch (error) {
-        throw error;
-    }
-};

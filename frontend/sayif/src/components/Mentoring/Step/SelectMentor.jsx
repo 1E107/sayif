@@ -10,7 +10,6 @@ import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import { useDispatch, useSelector } from 'react-redux';
 import { setMember } from '../../../redux/modules/member';
-import Swal from 'sweetalert2';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: '#F5F5F5',
@@ -58,19 +57,10 @@ function SelectMentor({ formData, reSelectInfo, finishPage }) {
                 const response = await applyMentoring(id, token);
                 if (response.status === 200) {
                     dispatch(setMember({ teamId: id }));
-                    await Swal.fire({
-                        icon: 'success',
-                        title: '멘토링 신청 완료',
-                        text: '멘토링 신청이 완료되었습니다.',
-                    });
+                    alert('멘토링 신청이 완료되었습니다.');
                 }
             } catch (error) {
                 console.log(error);
-                await Swal.fire({
-                    icon: 'error',
-                    title: '신청 실패',
-                    text: '멘토링 신청에 실패했습니다. 다시 시도해주세요.',
-                });
             }
         };
         callApplyMentoring();

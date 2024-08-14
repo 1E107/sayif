@@ -60,7 +60,7 @@ const Chat = () => {
             if (!groups[formattedDate]) {
                 groups[formattedDate] = [];
             }
-            groups[formattedDate].push(message);
+            groups[date].push(message);
         });
         console.log('Grouped messages:', groups);
         return Object.entries(groups).map(([formattedDate, messages]) => ({

@@ -13,7 +13,6 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { getTotalMentor, submitMentoringGroup } from '../../api/MentoringApi';
 import CreateFinish from './CreateFinish';
-import Swal from 'sweetalert2';
 
 function Create() {
     const [otherMentor, SetOtherMentor] = useState('');
@@ -167,12 +166,12 @@ function Create() {
     return (
         <>
             {showApply && (
-                <>
-                    <S.Title>멘토 그룹 생성</S.Title>
-                    <S.ExplainText>
-                        멘토링을 같이 할 멤버를 선택해 멘토링을 꾸려보세요.
-                    </S.ExplainText>
-                </>
+            <>
+                <S.Title>멘토 그룹 생성</S.Title>
+                <S.ExplainText>
+                    멘토링을 같이 할 멤버를 선택해 멘토링을 꾸려보세요.
+                </S.ExplainText>
+            </>
             )}
 
             {showApply && (
