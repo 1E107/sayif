@@ -112,20 +112,52 @@ function ShowMembers() {
         callMentoringPlan();
     }, []);
 
+    const daysOfWeek = ['월', '화', '수', '목', '금', '토', '일'];
+
+    const formatDate = dateString => {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        return `${year}년 ${month}월 ${day}일`;
+    };
+
     const MainView = (
         <S.Container>
             <S.Title>멘토링 일정</S.Title>
             {mentoringInfo && (
-                <S.MentoringDetails>
-                    <div>
-                        {mentoringInfo.startDate} ~ {mentoringInfo.endDate}
-                    </div>
-                    <div>
-                        매주 {mentoringInfo.dayOfWeek} 요일 {mentoringInfo.pmam}{' '}
-                        {mentoringInfo.time}
-                    </div>
-                </S.MentoringDetails>
+                <>
+                    <S.MentoringDetails>
+                        <div>
+                            {formatDate(mentoringInfo.startDate)} ~{' '}
+                            {formatDate(mentoringInfo.endDate)}
+                        </div>
+                    </S.MentoringDetails>
+                    <S.MentoringTable>
+                        {daysOfWeek.map((day, index) => (
+                            <S.MentoringDay
+                                key={index}
+                                isMentoringDay={mentoringInfo.dayOfWeek
+                                    .split(',')
+                                    .map(d => d.trim())
+                                    .includes(day)}
+                            >
+                                <S.Day>{day}</S.Day>
+                                {mentoringInfo.dayOfWeek
+                                    .split(',')
+                                    .map(d => d.trim())
+                                    .includes(day) && (
+                                    <S.MentoringText>
+                                        {mentoringInfo.pmam}{' '}
+                                        {mentoringInfo.time}
+                                    </S.MentoringText>
+                                )}
+                            </S.MentoringDay>
+                        ))}
+                    </S.MentoringTable>
+                </>
             )}
+
             <S.Title>단비</S.Title>
             <S.MentorList>
                 {mentorList.map(mentor => {
