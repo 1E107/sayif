@@ -49,15 +49,20 @@ const Chat = () => {
     const groupMessagesByDate = messages => {
         const groups = {};
         messages.forEach(message => {
-            if (!isValidDate(message.sendAt)) return;
+            if (!isValidDate(message.sendAt)) {
+                return;
+            }
             const date = new Date(message.sendAt);
-            const formattedDate = `${date.getFullYear().toString().slice(-2)}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getDate().toString().padStart(2, '0')}.${getKoreanDayOfWeek(date)}`;
+            const formattedDate = `${date.getFullYear().toString().slice(
+                -2)}.${(date.getMonth() + 1).toString().padStart(2,
+                '0')}.${date.getDate().toString().padStart(2,
+                '0')}.${getKoreanDayOfWeek(date)}`;
             if (!groups[formattedDate]) {
                 groups[formattedDate] = [];
             }
             groups[formattedDate].push(message);
         });
-        console.log('Grouped messages:', groups); // 추가된 로그
+        console.log('Grouped messages:', groups);
         return Object.entries(groups).map(([formattedDate, messages]) => ({
             date: formattedDate,
             messages,
@@ -72,49 +77,52 @@ const Chat = () => {
     useEffect(() => {
         let isSubscribed = true;
 
-        const reconnect = () => {
-            if (subscription) {
-                subscription.unsubscribe();
+        const fetchMessages = async () => {
+            try {
+                const response = await axios.get(
+                    `${API_BASE_URL}/team/${teamId}/chat`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    });
+
+                if (isSubscribed) {
+                    setMessages(response.data);
+                    if (chatContentRef.current) {
+                        chatContentRef.current.scrollTop = chatContentRef.current.scrollHeight;
+                    }
+                    console.log('Fetched messages:', response.data);
+                }
+            } catch (error) {
+                console.error('Failed to fetch messages', error);
             }
-            webSocketService.disconnect();
         };
 
-        axios.get(`${API_BASE_URL}/team/${teamId}/chat`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        })
-        .then(response => {
-            if (isSubscribed) {
-                setMessages(response.data);
-                if (chatContentRef.current) {
-                    chatContentRef.current.scrollTop = chatContentRef.current.scrollHeight;
+        const setupWebSocket = () => {
+            webSocketService.connect(token);
+            webSocketService.subscribe(`/topic/${teamId}`, message => {
+                if (!isValidDate(message.sendAt)) {
+                    return;
                 }
-                console.log('Fetched messages:', response.data); // 상태 업데이트 확인
-            }
-        })
-        .catch(error => {
-            console.error('Failed to fetch messages', error);
-        });
 
-        webSocketService.connect(token);
-        const subscription = webSocketService.subscribe(`/topic/${teamId}`, message => {
-            if (!isValidDate(message.sendAt)) return;
+                console.log('Received message:', message);
 
-            console.log('Received message:', message);
-
-            setMessages(prevMessages => {
-                const updatedMessages = [...prevMessages, message];
-                console.log('Updated messages:', updatedMessages); // 상태 업데이트 확인
-                return updatedMessages;
+                setMessages(prevMessages => {
+                    const updatedMessages = [...prevMessages, message];
+                    console.log('Updated messages:', updatedMessages);
+                    return updatedMessages;
+                });
             });
-        });
+        };
+
+        fetchMessages();
+        setupWebSocket();
 
         return () => {
             isSubscribed = false;
-            reconnect();
+            // WebSocket 연결을 끊지 않음 (필요 시 유지)
         };
-    }, [teamId, token, currentUserNickname]);
+    }, [teamId, token]);
 
     useEffect(() => {
         if (chatContentEndRef.current) {
@@ -123,7 +131,9 @@ const Chat = () => {
     }, [messages]);
 
     const handleSendBtn = () => {
-        if (newMessage.trim() === '') return;
+        if (newMessage.trim() === '') {
+            return;
+        }
 
         const message = {
             msgContent: newMessage,
@@ -145,12 +155,13 @@ const Chat = () => {
     return (
         <S.Container>
             <S.ChatContentWrapper ref={chatContentRef}>
-                {groupedMessages.length === 0 && <div>No messages to display</div>}
+                {groupedMessages.length === 0 && <div>No messages to
+                    display</div>}
                 {groupedMessages.map(({ date, messages }) => (
                     <React.Fragment key={date}>
                         <S.DateDivider>{date}</S.DateDivider>
                         {messages.map((msg, index) => {
-                            console.log('Rendering message:', msg); // 렌더링 확인
+                            console.log('Rendering message:', msg);
                             return msg.nickname === currentUserNickname ? (
                                 <S.ChatMy key={index}>
                                     <S.ProfileImg src={msg.profileImg} />
