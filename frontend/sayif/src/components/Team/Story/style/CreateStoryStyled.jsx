@@ -33,7 +33,8 @@ const ContentText = styled.div`
 `;
 
 const CustomTextarea = styled.textarea`
-    font-size: 18px;
+    font-size: 20px;
+    line-height: 28px;
     width: 500px;
     height: 300px;
     margin-top: 30px;
