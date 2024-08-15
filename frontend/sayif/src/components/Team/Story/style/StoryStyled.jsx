@@ -76,6 +76,9 @@ const ModalText = styled.div`
     margin-left: 55px;
     width: 400px;
     font-family: ChosunGu;
+    font-size: 20px;
+    word-wrap: break-word;
+    white-space: pre-wrap;
     line-height: 1.5em;
 `;
 
