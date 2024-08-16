@@ -6,7 +6,7 @@
 </h1>
 
 <div align="center">
-    ![image](/uploads/48277b105b8645f32b6a1e459b17c9f1/image.png)
+    ![image](/uploads/8235a3af62d45448eaca1f85510b3dfa/image.png)
 </div>
 
 <br>
