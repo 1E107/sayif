@@ -37,7 +37,7 @@
     </div>
     <br/>
     <div>
-        🗒️ <a href="https://saeip.notion.site/team-notes">팀 노션</a>
+        🗒️ <a href="https://www.notion.so/SSAFY-ca198dabf2344acd82a0f551cad85ed5?pvs=4">팀 노션</a>
         |
         🌐 <a href="https://github.com/your_repo/wiki">위키</a>
     </div>
