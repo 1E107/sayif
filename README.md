@@ -25,21 +25,17 @@
     <div>
         🔗 <a href="https://i11e107.p.ssafy.io/">서비스 이용하기</a>
         | 
-        🎥 <a href="">주요 기능 및 시나리오</a>
+        🎥 <a href="https://lab.ssafy.com/s11-webmobile1-sub2/S11P12E107.wiki.git">주요 기능 및 시나리오</a>
     </div>
     <br/>
     <div>
-        💡 <a href="">기획서</a>
+        💡 <a href="https://www.notion.so/a58dc595f0434a458d83e007d21438fb?pvs=4">기획서</a>
         |
-        📋 <a href="">백로그</a>
-        |
-        📚 <a href="">기술블로그</a>
+        📚 <a href="https://www.notion.so/6d1e435901e347ce840c192d9c668552?pvs=4">기술블로그</a>
     </div>
     <br/>
     <div>
         🗒️ <a href="https://www.notion.so/SSAFY-ca198dabf2344acd82a0f551cad85ed5?pvs=4">팀 노션</a>
-        |
-        🌐 <a href="https://github.com/your_repo/wiki">위키</a>
     </div>
     <br>
 </div>
