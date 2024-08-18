@@ -6,8 +6,6 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { acquireExperience } from '../../../api/config';
 
-import Swal from 'sweetalert2';
-
 function CreateStory() {
     const navigate = useNavigate();
     const [storyContent, SetStoryContent] = useState('');

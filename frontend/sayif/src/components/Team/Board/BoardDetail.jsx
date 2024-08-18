@@ -9,14 +9,13 @@ import {
 import { useSelector } from 'react-redux';
 import CircularProgress from '@mui/material/CircularProgress';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import Swal from 'sweetalert2';
 
 function BoardDetail() {
     const { id } = useParams();
-    const { token } = useSelector(state => state.member);
+    const { token, member } = useSelector(state => state.member);
     const [content, SetContent] = useState([]);
     const [comment, SetComment] = useState([]);
-    const [writeComment, SetWriteComment] = useState('');
+    const [writeComment, SetWriteComment] = useState();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -27,7 +26,7 @@ function BoardDetail() {
                     SetContent(response.data);
                 }
             } catch (error) {
-                console.error(error);
+                console.log(error);
             }
         };
 
@@ -38,7 +37,7 @@ function BoardDetail() {
                     SetComment(response.data);
                 }
             } catch (error) {
-                console.error(error);
+                console.log(error);
             }
         };
 
@@ -65,7 +64,9 @@ function BoardDetail() {
                 if (updatedComments.status === 200) {
                     SetComment(updatedComments.data);
                 }
-                SetWriteComment(''); // 입력 필드 초기화
+            } catch (error) {
+                alert('댓글 등록이 실패했어요! 다시 한 번 시도해보세요!');
+                console.log(error);
             }
         } catch (error) {
             await Swal.fire({
@@ -120,11 +121,7 @@ function BoardDetail() {
                             ))}
                         </S.CommentList>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <S.CommentWriteBox
-                                value={writeComment}
-                                onChange={handleWriteComment}
-                                placeholder="댓글을 입력하세요..."
-                            />
+                            <S.CommentWriteBox onChange={handleWriteComment} />
                             <S.CustomButton
                                 variant="contained"
                                 onClick={SubmitComment}

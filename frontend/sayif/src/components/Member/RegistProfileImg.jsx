@@ -4,7 +4,6 @@ import { createMember } from '../../api/MemberApi';
 import { useEffect, useRef, useState } from 'react';
 import { Box } from '@mui/material';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
-import Swal from 'sweetalert2';
 
 function RegistProfileImg() {
     const fileInputRef = useRef(null);

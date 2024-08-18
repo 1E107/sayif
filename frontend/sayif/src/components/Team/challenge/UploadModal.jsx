@@ -2,10 +2,10 @@ import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import { useEffect, useRef, useState } from 'react';
 import S from './style/UploadStyled';
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import { useNavigate } from 'react-router-dom';
 import { tryChallenge, submitPhoto, getMyImg } from '../../../api/challenge';
 import { useSelector } from 'react-redux';
-import Swal from 'sweetalert2';
 
 function UploadModal({ onClose, id, challengeId }) {
     const fileInputRef = useRef(null);
@@ -14,7 +14,6 @@ function UploadModal({ onClose, id, challengeId }) {
     const [file, SetFile] = useState();
     const [result, SetResult] = useState(undefined);
     const [imgUrl, setImgUrl] = useState('/img/NoImage.png');
-
     const handleClose = () => {
         SetOpen(false);
         onClose();
@@ -33,18 +32,22 @@ function UploadModal({ onClose, id, challengeId }) {
         }
     };
 
-    const handleUploadBtn = async () => {
+    const handleUploadBtn = () => {
         console.log('AI에게 사진을 전송합니다...');
-        try {
-            const response = await tryChallenge(challengeId, token, file);
-            if (response.status === 200) {
-                console.log(response);
-                SetResult(response.data);
+        const callTry = async () => {
+            try {
+                const response = await tryChallenge(challengeId, token, file);
+                if (response.status === 200) {
+                    console.log(response);
+                    SetResult(response.data);
+                }
+            } catch (error) {
+                console.log(error);
+                SetResult(false);
             }
-        } catch (error) {
-            console.log(error);
-            SetResult(false);
-        }
+        };
+
+        callTry();
     };
 
     const handleFinishBtn = async () => {
@@ -60,9 +63,8 @@ function UploadModal({ onClose, id, challengeId }) {
                 });
                 window.location.reload();
             }
-        } catch (error) {
-            console.log(error);
-        }
+        };
+        callSubmitPhoto();
     };
 
     useEffect(() => {
@@ -79,7 +81,7 @@ function UploadModal({ onClose, id, challengeId }) {
         };
 
         callMyImg();
-    }, [id, token]);
+    }, []);
 
     const style = {
         position: 'absolute',
@@ -93,7 +95,6 @@ function UploadModal({ onClose, id, challengeId }) {
         p: 4,
         textAlign: 'center',
         borderRadius: '16px',
-        zIndex: 1300, // Ensure modal has a high z-index
     };
 
     return (
@@ -114,18 +115,18 @@ function UploadModal({ onClose, id, challengeId }) {
                         width: '250px',
                         height: 'auto',
                     }}
-                />
+                ></img>
                 <input
                     type="file"
                     ref={fileInputRef}
                     onChange={handleFileChange}
                     style={{ display: 'none' }}
-                />
+                ></input>
                 <S.ExplainText>
                     이미지를 클릭해서 파일을 업로드해주세요! <br /> 결과
                     출력까지 약 5분 정도 소요되니 잠시만 기다려주세요~
                 </S.ExplainText>
-                {result === undefined ? (
+                {result == undefined ? (
                     <S.PostBtn variant="outlined" onClick={handleUploadBtn}>
                         사진 전송
                     </S.PostBtn>
@@ -142,7 +143,9 @@ function UploadModal({ onClose, id, challengeId }) {
                         </S.FinishBtn>
                     </>
                 )}
-                {result === undefined ? null : !result ? (
+                {result == undefined ? (
+                    <></>
+                ) : !result ? (
                     <S.ResultText>
                         아쉽게도 이 사진에서는 대상을 인식하지 못했어요. 다시 한
                         번 사진을 찍어보실래요? 그대로 올려도 챌린지 수행에는

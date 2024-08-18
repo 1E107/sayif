@@ -19,7 +19,6 @@ import ChallengeEmpty from '../../LoadingAndEmpty/ChallengeEmpty';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import { color } from 'framer-motion';
 import { acquireExperience } from '../../../api/config';
-import Swal from 'sweetalert2';
 
 function ChallengePhoto() {
     const navigate = useNavigate();
@@ -68,7 +67,7 @@ function ChallengePhoto() {
                         confirmButtonColor: '#6c8e23',
                     });
                 }
-                console.error(error);
+                console.log(error);
             }
         };
 

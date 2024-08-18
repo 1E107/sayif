@@ -4,10 +4,9 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { WriteCommunity } from '../../api/Main';
 import { CircularProgress } from '@mui/material';
-import Swal from 'sweetalert2'; // SweetAlert2 import 추가
 
 function CommunityWrite() {
-    const { token } = useSelector(state => state.member);
+    const { token, member } = useSelector(state => state.member);
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [type, setType] = useState('Free');
@@ -97,22 +96,11 @@ function CommunityWrite() {
         try {
             const response = await WriteCommunity(token, formData);
             if (response.status === 200) {
-                Swal.fire({
-                    icon: 'success',
-                    title: '성공',
-                    text: '글이 성공적으로 등록되었습니다!',
-                    confirmButtonColor: '#6c8e23',
-                }).then(() => {
-                    navigate('/community');
-                });
+                alert('게시글이 성공적으로 등록되었습니다!');
+                navigate('/community');
             }
         } catch (error) {
-            Swal.fire({
-                icon: 'error',
-                title: '실패',
-                text: '글 등록에 실패했어요. 다시 시도해보세요.',
-                confirmButtonColor: '#6c8e23',
-            });
+            alert('게시글 등록에 실패했습니다. 다시 시도해주세요.');
             console.log(error);
         } finally {
             setLoading(false);

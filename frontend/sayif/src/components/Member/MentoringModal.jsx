@@ -1,5 +1,4 @@
 import Modal from '@mui/material/Modal';
-import { useSelector } from 'react-redux';
 import Box from '@mui/material/Box';
 import S from './style/MentoringModalStyled';
 import { useEffect, useState } from 'react';

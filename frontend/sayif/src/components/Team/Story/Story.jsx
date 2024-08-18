@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import ChatbotModal from '../ChatBotModal';
 import CheckIcon from '@mui/icons-material/Check';
-import Swal from 'sweetalert2';
 
 function Story() {
     const [selectPostIt, setSelectPostIt] = useState(false);

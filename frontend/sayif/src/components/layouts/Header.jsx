@@ -56,36 +56,23 @@ function Header() {
     const handleOpenNavMenu = event => {
         setAnchorElNav(event.currentTarget);
     };
-
     const handleOpenSubMenuLow = (event, page) => {
         setAnchorElSubLow(event.currentTarget);
         setCurrentSettings(settings[page]);
         // 멘토링 메뉴의 경우 멘토, 멘티 볼 수 있는 하위 메뉴 다르게 하면 될 것 같음
         console.log(member);
         if (member === 'undefined') {
-            Swal.fire({
-                title: '로그인 해주세요',
-                text: '회원만 접근할 수 있는 메뉴입니다.',
-                icon: 'warning',
-                confirmButtonColor: '#6c8e23',
-            });
+            console.log('로그인하세요');
         }
     };
-
     const handleOpenSubMenuFull = (event, page) => {
         if (page === '새잎 소개') {
             setAnchorElSubFull(event.currentTarget);
             setCurrentSettings(settings[page]);
         } else {
             if (!token) {
-                Swal.fire({
-                    title: '로그인 후 이용해 주세요',
-                    text: '로그인 페이지로 이동합니다.',
-                    icon: 'warning',
-                    confirmButtonColor: '#6c8e23',
-                }).then(() => {
-                    navigate('/member/login');
-                });
+                alert('로그인 후 이용해 주세요');
+                navigate('/member/login');
             } else {
                 setAnchorElSubFull(event.currentTarget);
                 setCurrentSettings(settings[page]);
@@ -161,7 +148,7 @@ function Header() {
                     backgroundColor: 'white',
                     margin: '0px',
                     width: '100%',
-                    padding: '0px 30px 0px 30px',
+                    padding: '0px 30px 0px 3git0px',
                     maxWidth: 'none',
                 }}
             >
@@ -181,7 +168,7 @@ function Header() {
                             paddingRight: 7.9,
                         }}
                     >
-                        <img src="/logo.png" alt="Logo" />
+                        <img src="/logo.png"></img>
                     </Typography>
 
                     {/* 화면 크기 줄이면 */}
@@ -289,7 +276,7 @@ function Header() {
                             textDecoration: 'none',
                         }}
                     >
-                        <img src="/logo.png" alt="Logo" />
+                        <img src="/logo.png"></img>
                     </Typography>
 
                     {/* 전체 화면 */}
