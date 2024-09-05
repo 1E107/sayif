@@ -5,9 +5,7 @@
     </div>
 </h1>
 
-<div align="center">
-    ![image](image.png)
-</div>
+![image](image.png)
 
 <br>
 
