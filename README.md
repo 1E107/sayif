@@ -1,12 +1,12 @@
 <h1>
     <div style="display:flex; gap: 10px; align-items: flex-start;">
-        <img width="26px" src="https://lab.ssafy.com/s11-webmobile1-sub2/S11P12E107/-/raw/develop/frontend/sayif/public/logo.png?ref_type=heads">
+        <img width="26px" src="logo.png">
         <span>자립준비청년을 위한 IT 멘토링 서비스, 새잎</span>
     </div>
 </h1>
 
 <div align="center">
-    ![image](/uploads/8235a3af62d45448eaca1f85510b3dfa/image.png)
+    ![image](image.png)
 </div>
 
 <br>
@@ -124,7 +124,7 @@
 
 ## 시스템 아키텍처
 
-![Web_App_Reference_Architecture](/uploads/f0c6a7338996f8c2c9ef62f033e6c413/Web_App_Reference_Architecture.png)
+![Web_App_Reference_Architecture](image-1.png)
 
 <br>
 
